@@ -1,0 +1,59 @@
+/* SORTING and FILTERING containers */
+#filter-container {
+	display: none;
+	float: right;
+	width: 400px;
+	font-size: 0.85em;
+	color: #007AC2;
+	margin-top: 5px;
+}
+
+.filter-container {
+	float: right;
+	margin-right: 20px;
+}
+
+.filter-container-header {
+	letter-spacing: 2px;
+	float: left;
+	margin-right: 10px;
+}
+
+.filter-item {
+	letter-spacing: 2px;
+}
+
+.filter-item:hover {
+	cursor: pointer;
+	color: #0172B6;
+}
+
+/* COMBOBOX */
+/*.dijitReset .dijitMenuItem {
+	background-color: red !important;
+}*/
+
+.dijitReset .dijitMenuItem {
+	font-family: 'Source Sans Pro', sans-serif !important;
+	font-weight: normal !important;
+	font-size: 0.85em !important;
+	color: #0172B6 !important;
+}
+
+.nihilo .dijitMenuPassive .dijitMenuItemHover, .nihilo .dijitComboBoxMenu .dijitMenuItemHover, .nihilo .dijitMenuItemSelected {
+	color: #0172B6 !important;
+	background-color: #f4f4f4 !important;
+}
+
+/* PERFORMANCE layout */
+.performance-section-header {
+	margin-left: 5px;
+	margin-right: 50px;
+	letter-spacing: 3px;
+	color: #007AC2;
+	font-weight: bold;
+}
+
+.performance-content {
+	margin-left: 5px;
+}
