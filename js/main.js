@@ -21,6 +21,7 @@ define([
 	"dojo/_base/lang",
 	"dojo/Deferred",
 	"dojo/dom",
+	"dojo/dom-attr",
 	"dojo/dom-class",
 	"dojo/dom-construct",
 	"dojo/dom-geometry",
@@ -32,6 +33,10 @@ define([
 	"dojo/promise/all",
 	"dojo/query",
 	"dojo/store/Memory",
+	"dgrid/extensions/Pagination",
+	"dgrid/OnDemandGrid",
+	"dgrid/Keyboard",
+	"dgrid/Selection",
 	"dijit/Editor",
 	"dijit/form/Button",
 	"dijit/form/CheckBox",
@@ -57,7 +62,7 @@ define([
 	"application/sharingUtils",
 	"application/mapUtils",
 	"application/timelineUtils"
-], function (ready, array, declare, fx, lang, Deferred, dom, domClass, domConstruct, domGeom, domStyle, json, number, on, parser, all, query, Memory, Editor, Button, CheckBox, ComboBox, BorderContainer, ContentPane, registry, arcgisPortal, arcgisUtils, Geocoder, Point, SpatialReference, ArcGISImageServiceLayer, ImageServiceParameters, MosaicRule, Map, Query, QueryTask, urlUtils, UserInterfaceUtils, GridUtils, TimelineLegendUtils, SharingUtils, MappingUtils, TimelineUtils) {
+], function (ready, array, declare, fx, lang, Deferred, dom, domAttr, domClass, domConstruct, domGeom, domStyle, json, number, on, parser, all, query, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, BorderContainer, ContentPane, registry, arcgisPortal, arcgisUtils, Geocoder, Point, SpatialReference, ArcGISImageServiceLayer, ImageServiceParameters, MosaicRule, Map, Query, QueryTask, urlUtils, UserInterfaceUtils, GridUtils, TimelineLegendUtils, SharingUtils, MappingUtils, TimelineUtils) {
 	return declare(null, {
 
 		config:{},
@@ -78,30 +83,34 @@ define([
 		portalUrl:"",
 		portal:{},
 
-		selectedItemType : "",
+		selectedRowID: "",
+		selectedItemType:"",
 
 		filterItemTypeStore:{},
 
-		SIGNIN_BUTTON_ID:"signIn",
-		EXPANDED_ROW_NAME : "expanded-row-",
-		SAVE_BUTTON_NAME : "btn-",
-		TAB_CONTAINER_NAME : "tc-",
-		TAB_CONTAINER_TITLE : "title-",
-		TAB_CONTAINER_DESC : "desc-",
-		TAB_CONTAINER_SNIPPET : "snippet-",
-		TAB_CONTAINER_LICENSE : "license-",
-		TAB_CONTAINER_CREDITS : "credits-",
-		TAB_CONTAINER_CATEGORY : "category-",
-		TAB_CONTAINER_TAGS : "tags-",
-		TAB_CONTAINER_USERNAME : "username-",
-		TAB_CONTAINER_USERDESCRIPTION : "userdesc-",
+		monthNames:[ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
+		categoryIDs:["basemapsCB", "lifestylesCB", "urbanSystemsCB", "historicalMapsCB", "imageryCB", "landscapeCB", "transportationCB", "storyMapsCB", "demographgicsCB", "earthObservationsCB", "boundariesAndPlacesCB"],
 
-		INTRO_TEXT : "ArcGIS includes a Living Atlas of the World with beautiful and " +
-					"authoritative maps on hundreds of topics. It combines reference and thematic maps with many topics " +
-					"relating to people, earth, and life.  Explore maps from Esri and thousands or organizations and " +
-					"enrich them with your own data to create new maps and map layers.",
-		INTRO_AUTHENTICATED_TEXT : "Select an item to prepare for nomination.",
-		MAXIMUM_CHAR : "A maximum of xxx characters are available",
+		SIGNIN_BUTTON_ID:"signIn",
+		EXPANDED_ROW_NAME:"expanded-row-",
+		SAVE_BUTTON_NAME:"btn-",
+		TAB_CONTAINER_NAME:"tc-",
+		TAB_CONTAINER_TITLE:"title-",
+		TAB_CONTAINER_DESC:"desc-",
+		TAB_CONTAINER_SNIPPET:"snippet-",
+		TAB_CONTAINER_LICENSE:"license-",
+		TAB_CONTAINER_CREDITS:"credits-",
+		TAB_CONTAINER_CATEGORY:"category-",
+		TAB_CONTAINER_TAGS:"tags-",
+		TAB_CONTAINER_USERNAME:"username-",
+		TAB_CONTAINER_USERDESCRIPTION:"userdesc-",
+
+		INTRO_TEXT:"ArcGIS includes a Living Atlas of the World with beautiful and " +
+				"authoritative maps on hundreds of topics. It combines reference and thematic maps with many topics " +
+				"relating to people, earth, and life.  Explore maps from Esri and thousands or organizations and " +
+				"enrich them with your own data to create new maps and map layers.",
+		INTRO_AUTHENTICATED_TEXT:"Select an item to prepare for nomination.",
+		MAXIMUM_CHAR:"A maximum of xxx characters are available",
 
 		/**
 		 *
@@ -193,22 +202,20 @@ define([
 						num:1000
 					};
 					portal.queryItems(params).then(lang.hitch(this, function (result) {
-						console.log(result);
-					}));
-					/*	if (result.total > 0) {
+						if (result.total > 0) {
 							// thumbnail cell renderer
-							var thumbnailRenderCell = function (object, data, cell) {
-								var thumbnailUrl = formatThumbnailUrl(object);
+							var thumbnailRenderCell = lang.hitch(this, function (object, data, cell) {
+								var thumbnailUrl = this._formatThumbnailUrl(object);
 								var n = domConstruct.create("div", {
 									innerHTML:'<div class="thumbnail"><img src="' + thumbnailUrl + '" />'
 								});
 								cell.appendChild(n);
-							};
+							});
 							// title cell renderer
-							var titleRenderCell = function (object, data, cell) {
-								var snippet = formatSnippet(object.snippet);
-								var type = formatSnippet(object.type);
-								var modifiedDate = formatDate(object.modified);
+							var titleRenderCell = lang.hitch(this, function (object, data, cell) {
+								var snippet = this._formatSnippet(object.snippet);
+								var type = this._formatSnippet(object.type);
+								var modifiedDate = this._formatDate(object.modified);
 								var n = domConstruct.create("div", {
 									innerHTML:'<div class="title-column-container">' +
 											'<div class="title-column-title">' + object.title + '</div>' +
@@ -217,14 +224,14 @@ define([
 											'</div>'
 								});
 								cell.appendChild(n);
-							};
+							});
 							// status cell renderer
-							var statusRenderCell = function (object, data, cell) {
+							var statusRenderCell = lang.hitch(this, function (object, data, cell) {
 								var n = domConstruct.create("div", {
 									innerHTML:"status"
 								});
 								cell.appendChild(n);
-							};
+							});
 
 							// dgrid columns
 							dgridColumns = [
@@ -259,541 +266,22 @@ define([
 							}, "grid");
 							dgrid.startup();
 
-							// item title click handler
-							on(dgrid.domNode, ".title-column-title:click", function (event) {
+							on(dgrid.domNode, ".title-column-title:click", lang.hitch(this, function (event) {
 								// selected row
 								var selectedRow = dgrid.row(event).element;
 								//
-								selectedRowID = domAttr.get(selectedRow, "id").split("grid-row-")[1];
+								this.selectedRowID = domAttr.get(selectedRow, "id").split("grid-row-")[1];
 								// get row width
 								var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
 								// set row height
 								domStyle.set(selectedRow, "height", "600px");
 								// set row background color
 								domStyle.set(selectedRow, "background-color", "white");
-
-								if (previousSelectedRow) {
-									// collapse the previously selected row height
-									updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
-									var categoryNodes = [];
-									array.forEach(categoryIDs, function (category) {
-										categoryNodes.push(category + previousSelectedRowID);
-									});
-									destroyNodes(EXPANDED_ROW_NAME + previousSelectedRowID,
-											TAB_CONTAINER_NAME + previousSelectedRowID,
-											TAB_CONTAINER_TITLE + previousSelectedRowID,
-											TAB_CONTAINER_DESC + previousSelectedRowID,
-											TAB_CONTAINER_SNIPPET + previousSelectedRowID,
-											TAB_CONTAINER_LICENSE + previousSelectedRowID,
-											TAB_CONTAINER_CREDITS + previousSelectedRowID,
-											TAB_CONTAINER_CATEGORY + previousSelectedRowID,
-											TAB_CONTAINER_TAGS + previousSelectedRowID,
-											TAB_CONTAINER_USERNAME + previousSelectedRowID,
-											TAB_CONTAINER_USERDESCRIPTION + previousSelectedRowID,
-											categoryNodes,
-											SAVE_BUTTON_NAME + previousSelectedRowID);
-									if (previousSelectedRowID === selectedRowID) {
-										previousSelectedRowID = "";
-										previousSelectedRow = null;
-									} else {
-										// expand selected row height
-										updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
-										previousSelectedRow = selectedRow;
-									}
-								} else {
-									updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
-									previousSelectedRow = selectedRow;
-								}
-
-								if (previousSelectedRowID !== selectedRowID && previousSelectedRow !== null) {
-									previousSelectedRowID = selectedRowID;
-									// unique id's
-									var rowID = EXPANDED_ROW_NAME + selectedRowID;
-									var btnID = SAVE_BUTTON_NAME + selectedRowID;
-									var tcID = TAB_CONTAINER_NAME + selectedRowID;
-									var titleID = TAB_CONTAINER_TITLE + selectedRowID;
-									var descID = TAB_CONTAINER_DESC + selectedRowID;
-									var snippetID = TAB_CONTAINER_SNIPPET + selectedRowID;
-									var accessID = TAB_CONTAINER_LICENSE + selectedRowID;
-									var creditID = TAB_CONTAINER_CREDITS + selectedRowID;
-									var categoryID = TAB_CONTAINER_CATEGORY + selectedRowID;
-									var tagsID = TAB_CONTAINER_TAGS + selectedRowID;
-									var userNameID = TAB_CONTAINER_USERNAME + selectedRowID;
-									var userDescriptionID = TAB_CONTAINER_USERDESCRIPTION + selectedRowID;
-									domConstruct.place("<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
-											"<div class='content-container'>" +
-											"<div id='map'></div>" +
-											"<div style='margin-bottom: 5px; font-size: 0.9em;'>Some practical characteristics of your item must be present in order to nominate it for the Living Atlas.  A score of at least 80 is required before the map can be nominated.</div>" +
-											"<div style='margin-bottom: 5px; font-size: 0.9em;'>Here is your item's current score. Click on the 'i' buttons for details on how to improve your score.</div>" +
-											"<div class='section-header'>OVERALL</div>" +
-											"<div class='overall-msg'>In the sections below, if the check box is green you have full-filled criteria,<br />" +
-											"If the check box is red, please select that section and look for the items underlined to improve your score.</div>" +
-											"<div id='" + tcID + "'></div>" +
-											"<\/div>" +
-											"<\/div>" +
-											"<button id='" + btnID + "' type='button'></button>", selectedRow.firstElementChild, "last");
-
-									// create the map
-									portalUser.getItem(selectedRowID).then(function (item) {
-										console.log(item);
-										if (item.type === "Web Map") {
-											var mapDrawBegin = performance.now();
-											var mapDrawComplete;
-
-											// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
-											arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
-												map = response.map;
-												// make sure map is loaded
-												if (map.loaded) {
-													console.log(map);
-													mapDrawComplete = performance.now();
-													var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-													var popUps = processPopupData(map);
-													// -------------------------------------------------
-													// TAB CONTAINER
-													// -------------------------------------------------
-													var tc = new TabContainer({
-														style:{ width:selectedNodeWidth + "px" },
-														className:"tab-container"
-													}, tcID);
-													// monitor and respond to changes in widget (Tab Container) properties
-													tc.watch("selectedChildWidget", function (name, oval, nval) {
-														// each tab container needs a different 'Save' button per the spec
-														if (dijit.byId(btnID) !== undefined) {
-															destroyBtn(btnID, selectedRow.firstElementChild);
-														}
-
-														if (nval.title === DETAILS) {
-															// details
-															saveButton = new Button({
-																label:"SAVE",
-																style:{
-																	"position":"absolute",
-																	"left":"50%"
-																},
-																onClick:function () {
-																	domStyle.set(dom.byId("msg-overlay"), "display", "block");
-																	// DETAILS
-																	// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
-																	// The title of the item. This is the name that's displayed to users and by
-																	// which they refer to the item. Every item must have a title.
-																	var _title = dom.byId(TAB_CONTAINER_TITLE + selectedRowID).value;
-																	// A short summary description of the item.
-																	var _snippet = dom.byId(TAB_CONTAINER_SNIPPET + selectedRowID).value;
-																	// Item description.
-																	var _description = dom.byId(TAB_CONTAINER_DESC + selectedRowID).value;
-
-																	portalUser.getItem(selectedRowID).then(function (results) {
-																		var _userItemUrl = results.userItemUrl;
-																		esriRequest({
-																			url:_userItemUrl + "/update",
-																			content:{
-																				f:"json",
-																				title:_title,
-																				snippet:_snippet,
-																				description:_description
-																			}
-																		}, {
-																			usePost:true
-																		}).then(function (response) {
-																					if (response.success) {
-																						domStyle.set(dom.byId("msg-overlay"), "display", "none");
-																					}
-																				});
-																	});
-																}
-															}, btnID).startup();
-														} else if (nval.title === USE_CREDITS) {
-															// USE/CREDITS
-															saveButton = new Button({
-																label:"SAVE",
-																style:{
-																	"position":"absolute",
-																	"left":"50%"
-																},
-																onClick:function () {
-																	domStyle.set(dom.byId("msg-overlay"), "display", "block");
-																	// ACCESS
-																	// Any license information or restrictions.
-																	var _license = dom.byId(TAB_CONTAINER_LICENSE + selectedRowID).value;
-																	// Information on the source of the item.
-																	var _credits = dom.byId(TAB_CONTAINER_CREDITS + selectedRowID).value;
-
-																	portalUser.getItem(selectedRowID).then(function (results) {
-																		console.log(results);
-																		var _userItemUrl = results.userItemUrl;
-																		esriRequest({
-																			url:_userItemUrl + "/update",
-																			content:{
-																				f:"json",
-																				licenseInfo:_license,
-																				accessInformation:_credits
-																			}
-																		}, {
-																			usePost:true
-																		}).then(function (response) {
-																					console.log(response);
-																					if (response.success) {
-																						domStyle.set(dom.byId("msg-overlay"), "display", "none");
-																					}
-																				});
-																	});
-																}
-															}, btnID).startup();
-														} else if (nval.title === TAGS) {
-															// TAGS
-															saveButton = new Button({
-																label:"SAVE",
-																style:{
-																	"position":"absolute",
-																	"left":"50%"
-																},
-																onClick:function () {
-																	portalUser.getItem(selectedRowID).then(function (results) {
-																		console.log(results);
-																		console.log("TAGS");
-																	});
-																}
-															}, btnID).startup();
-														} else if (nval.title === PERFORMANCE) {
-															// PERFORMANCE
-															saveButton = new Button({
-																label:"SAVE",
-																style:{
-																	"position":"absolute",
-																	"left":"50%"
-																},
-																onClick:function () {
-																	portalUser.getItem(selectedRowID).then(function (results) {
-																		console.log(results);
-																		console.log("PERFORMANCE");
-																	});
-																}
-															}, btnID).startup();
-														} else if (nval.title === MY_PROFILE) {
-															// MY PROFILE
-															saveButton = new Button({
-																label:"SAVE",
-																style:{
-																	"position":"absolute",
-																	"left":"50%"
-																},
-																onClick:function () {
-																	domStyle.set(dom.byId("msg-overlay"), "display", "block");
-																	var _fullName = processInput(dom.byId(TAB_CONTAINER_USERNAME + selectedRowID).value);
-																	var _description = processInput(dom.byId(TAB_CONTAINER_USERDESCRIPTION + selectedRowID).value);
-																	portalUser.getItem(selectedRowID).then(function (results) {
-																		console.log(results);
-																		var _portalUrl = results.portal.portalUrl;
-																		var _community = "community/users/";
-																		var _portalUser = results.owner;
-																		esriRequest({
-																			url:"https://www.arcgis.com/sharing/rest/community/users/" + _portalUser + "/update",
-																			content:{
-																				f:"json",
-																				fullname:_fullName,
-																				description:_description
-																			}
-																		}, {
-																			usePost:true
-																		}).then(function (response) {
-																					console.log(response);
-																					if (response.success) {
-																						domStyle.set(dom.byId("msg-overlay"), "display", "none");
-																					}
-																				});
-																	});
-																}
-															}, btnID).startup();
-														}
-													});
-
-													if (dijit.byId(btnID) !== undefined) {
-														destroyBtn(btnID, selectedRow.firstElementChild);
-													} else {
-														saveButton = new Button({
-															label:"SAVE",
-															style:{
-																"position":"absolute",
-																"left":"50%"
-															},
-															onClick:function () {
-																domStyle.set(dom.byId("msg-overlay"), "display", "block");
-																// DETAILS
-																// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
-																// The title of the item. This is the name that's displayed to users and by
-																// which they refer to the item. Every item must have a title.
-																var _title = dom.byId(TAB_CONTAINER_TITLE + selectedRowID).value;
-																// A short summary description of the item.
-																var _snippet = dom.byId(TAB_CONTAINER_SNIPPET + selectedRowID).value;
-																// Item description.
-																var _description = dijit.byId(TAB_CONTAINER_DESC + selectedRowID).value;
-
-																portalUser.getItem(selectedRowID).then(function (results) {
-																	var _userItemUrl = results.userItemUrl;
-																	esriRequest({
-																		url:_userItemUrl + "/update",
-																		content:{
-																			f:"json",
-																			title:_title,
-																			snippet:_snippet,
-																			description:_description
-																		}
-																	}, {
-																		usePost:true
-																	}).then(function (response) {
-																				console.log(response);
-																				if (response.success) {
-																					domStyle.set(dom.byId("msg-overlay"), "display", "none");
-																				}
-																			});
-																});
-															}
-														}, btnID).startup();
-													}
-
-													// DETAILS
-													detailsContentPane(tc, item, DETAILS, titleID, snippetID, descID);
-													// USE/CREDITS
-													useCreditsContentPane(tc, item, USE_CREDITS, accessID, creditID);
-													// TAGS
-													tagsContentPane(tc, item, TAGS, selectedRowID, categoryID, tagsID);
-													// PERFORMANCE
-													performanceContentPane(tc, item, PERFORMANCE, popUps, mapDrawTime);
-													// MY PROFILE
-													loadProfileContentPane(tc, item, MY_PROFILE, portalUser, userNameID, userDescriptionID);
-
-													tc.startup();
-													tc.resize();
-												}
-											});
-										} else {
-											// CityEngine Web Scene, Web Scene, Pro Map
-											// -------------------------------------------------
-											// TAB CONTAINER
-											// -------------------------------------------------
-											var tc = new TabContainer({
-												style:{ width:selectedNodeWidth + "px" },
-												className:"tab-container"
-											}, tcID);
-											// monitor and respond to changes in widget (Tab Container) properties
-											tc.watch("selectedChildWidget", function (name, oval, nval) {
-												// each tab container needs a different 'Save' button per the spec
-												if (dijit.byId(btnID) !== undefined) {
-													destroyBtn(btnID, selectedRow.firstElementChild);
-												}
-
-												if (nval.title === DETAILS) {
-													// details
-													saveButton = new Button({
-														label:"SAVE",
-														style:{
-															"position":"absolute",
-															"left":"50%"
-														},
-														onClick:function () {
-															domStyle.set(dom.byId("msg-overlay"), "display", "block");
-															// DETAILS
-															// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
-															// The title of the item. This is the name that's displayed to users and by
-															// which they refer to the item. Every item must have a title.
-															var _title = dom.byId(TAB_CONTAINER_TITLE + selectedRowID).value;
-															// A short summary description of the item.
-															var _snippet = dom.byId(TAB_CONTAINER_SNIPPET + selectedRowID).value;
-															// Item description.
-															var _description = dom.byId(TAB_CONTAINER_DESC + selectedRowID).value;
-
-															portalUser.getItem(selectedRowID).then(function (results) {
-																var _userItemUrl = results.userItemUrl;
-																esriRequest({
-																	url:_userItemUrl + "/update",
-																	content:{
-																		f:"json",
-																		title:_title,
-																		snippet:_snippet,
-																		description:_description
-																	}
-																}, {
-																	usePost:true
-																}).then(function (response) {
-																			if (response.success) {
-																				domStyle.set(dom.byId("msg-overlay"), "display", "none");
-																			}
-																		});
-															});
-														}
-													}, btnID).startup();
-												} else if (nval.title === USE_CREDITS) {
-													// USE/CREDITS
-													saveButton = new Button({
-														label:"SAVE",
-														style:{
-															"position":"absolute",
-															"left":"50%"
-														},
-														onClick:function () {
-															domStyle.set(dom.byId("msg-overlay"), "display", "block");
-															// ACCESS
-															// Any license information or restrictions.
-															var _license = dom.byId(TAB_CONTAINER_LICENSE + selectedRowID).value;
-															// Information on the source of the item.
-															var _credits = dom.byId(TAB_CONTAINER_CREDITS + selectedRowID).value;
-
-															portalUser.getItem(selectedRowID).then(function (results) {
-																console.log(results);
-																var _userItemUrl = results.userItemUrl;
-																esriRequest({
-																	url:_userItemUrl + "/update",
-																	content:{
-																		f:"json",
-																		licenseInfo:_license,
-																		accessInformation:_credits
-																	}
-																}, {
-																	usePost:true
-																}).then(function (response) {
-																			console.log(response);
-																			if (response.success) {
-																				domStyle.set(dom.byId("msg-overlay"), "display", "none");
-																			}
-																		});
-															});
-														}
-													}, btnID).startup();
-												} else if (nval.title === TAGS) {
-													// TAGS
-													saveButton = new Button({
-														label:"SAVE",
-														style:{
-															"position":"absolute",
-															"left":"50%"
-														},
-														onClick:function () {
-															portalUser.getItem(selectedRowID).then(function (results) {
-																console.log(results);
-																console.log("TAGS");
-															});
-														}
-													}, btnID).startup();
-												} else if (nval.title === PERFORMANCE) {
-													// PERFORMANCE
-													saveButton = new Button({
-														label:"SAVE",
-														style:{
-															"position":"absolute",
-															"left":"50%"
-														},
-														onClick:function () {
-															portalUser.getItem(selectedRowID).then(function (results) {
-																console.log(results);
-																console.log("PERFORMANCE");
-															});
-														}
-													}, btnID).startup();
-												} else if (nval.title === MY_PROFILE) {
-													// MY PROFILE
-													saveButton = new Button({
-														label:"SAVE",
-														style:{
-															"position":"absolute",
-															"left":"50%"
-														},
-														onClick:function () {
-															domStyle.set(dom.byId("msg-overlay"), "display", "block");
-															var _fullName = processInput(dom.byId(TAB_CONTAINER_USERNAME + selectedRowID).value);
-															var _description = processInput(dom.byId(TAB_CONTAINER_USERDESCRIPTION + selectedRowID).value);
-															portalUser.getItem(selectedRowID).then(function (results) {
-																console.log(results);
-																var _portalUrl = results.portal.portalUrl;
-																var _community = "community/users/";
-																var _portalUser = results.owner;
-																esriRequest({
-																	url:"https://www.arcgis.com/sharing/rest/community/users/" + _portalUser + "/update",
-																	content:{
-																		f:"json",
-																		fullname:_fullName,
-																		description:_description
-																	}
-																}, {
-																	usePost:true
-																}).then(function (response) {
-																			console.log(response);
-																			if (response.success) {
-																				domStyle.set(dom.byId("msg-overlay"), "display", "none");
-																			}
-																		});
-															});
-														}
-													}, btnID).startup();
-												}
-											});
-
-											if (dijit.byId(btnID) !== undefined) {
-												destroyBtn(btnID, selectedRow.firstElementChild);
-											} else {
-												saveButton = new Button({
-													label:"SAVE",
-													style:{
-														"position":"absolute",
-														"left":"50%"
-													},
-													onClick:function () {
-														domStyle.set(dom.byId("msg-overlay"), "display", "block");
-														// DETAILS
-														// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
-														// The title of the item. This is the name that's displayed to users and by
-														// which they refer to the item. Every item must have a title.
-														var _title = dom.byId(TAB_CONTAINER_TITLE + selectedRowID).value;
-														// A short summary description of the item.
-														var _snippet = dom.byId(TAB_CONTAINER_SNIPPET + selectedRowID).value;
-														// Item description.
-														var _description = dijit.byId(TAB_CONTAINER_DESC + selectedRowID).value;
-
-														portalUser.getItem(selectedRowID).then(function (results) {
-															var _userItemUrl = results.userItemUrl;
-															esriRequest({
-																url:_userItemUrl + "/update",
-																content:{
-																	f:"json",
-																	title:_title,
-																	snippet:_snippet,
-																	description:_description
-																}
-															}, {
-																usePost:true
-															}).then(function (response) {
-																		console.log(response);
-																		if (response.success) {
-																			domStyle.set(dom.byId("msg-overlay"), "display", "none");
-																		}
-																	});
-														});
-													}
-												}, btnID).startup();
-											}
-
-											// DETAILS
-											detailsContentPane(tc, item, DETAILS, titleID, snippetID, descID);
-											// USE/CREDITS
-											useCreditsContentPane(tc, item, USE_CREDITS, accessID, creditID);
-											// TAGS
-											tagsContentPane(tc, item, TAGS, selectedRowID, categoryID, tagsID);
-											// PERFORMANCE
-											performanceContentPane(tc, item, PERFORMANCE, "", "");
-											// MY PROFILE
-											loadProfileContentPane(tc, item, MY_PROFILE, portalUser, userNameID, userDescriptionID);
-
-											tc.startup();
-											tc.resize();
-										}
-									});
-
-								}
-							});
+							}));
 						} else {
-							console.log("no results");
+							console.log("NO RESULTS");
 						}
-					});*/
+					}));
 				}));
 			} else {
 				portal.signOut().then(function (portalInfo) {
@@ -1008,7 +496,7 @@ define([
 			geocoder.startup();
 		},
 
-		_displayControls: function() {
+		_displayControls:function () {
 			var sortFilterContainer = dom.byId("filter-container");
 			domStyle.set(sortFilterContainer, "display", "block");
 			domStyle.set(sortFilterContainer, "opacity", "0");
@@ -1016,6 +504,36 @@ define([
 				node:"filter-container"
 			};
 			fx.fadeIn(fadeArgs).play();
+		},
+
+		_formatThumbnailUrl:function (obj) {
+			var thumbnailUrl = "";
+			if (obj.largeThumbnail !== null) {
+				thumbnailUrl = obj.largeThumbnail;
+			} else if (obj.thumbnailUrl !== null) {
+				thumbnailUrl = obj.thumbnailUrl;
+			} else {
+				thumbnailUrl = location.protocol + "//" + location.hostname + location.pathname + "img/nullThumbnail.png";
+			}
+			return thumbnailUrl;
+		},
+
+		_formatSnippet:function (str) {
+			if (str === null || "") {
+				return "";
+			} else {
+				return str;
+			}
+		},
+
+		_formatDate:function (date) {
+			var d = new Date(date);
+			if (d.isNaN) {
+				return "";
+			} else {
+				var month = this.monthNames[d.getMonth()]
+				return month + " " + d.getDate() + ", " + d.getFullYear()
+			}
 		}
 	});
 });
