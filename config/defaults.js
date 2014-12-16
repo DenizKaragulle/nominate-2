@@ -55,6 +55,40 @@ define({
 		]
 	},
 
+		monthNames:[ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
+		categoryIDs:["basemapsCB", "lifestylesCB", "urbanSystemsCB", "historicalMapsCB", "imageryCB", "landscapeCB", "transportationCB", "storyMapsCB", "demographgicsCB", "earthObservationsCB", "boundariesAndPlacesCB"],
+
+		// div dimensions
+		COLLAPSE_ROW_HEIGHT : 125,
+		EXPAND_ROW_HEIGHT : 900,
+
+		SIGNIN_BUTTON_ID:"signIn",
+		EXPANDED_ROW_NAME:"expanded-row-",
+		SAVE_BUTTON_NAME:"btn-",
+		TAB_CONTAINER_NAME:"tc-",
+		TAB_CONTAINER_TITLE:"title-",
+		TAB_CONTAINER_DESC:"desc-",
+		TAB_CONTAINER_SNIPPET:"snippet-",
+		TAB_CONTAINER_LICENSE:"license-",
+		TAB_CONTAINER_CREDITS:"credits-",
+		TAB_CONTAINER_CATEGORY:"category-",
+		TAB_CONTAINER_TAGS:"tags-",
+		TAB_CONTAINER_USERNAME:"username-",
+		TAB_CONTAINER_USERDESCRIPTION:"userdesc-",
+
+		INTRO_TEXT:"ArcGIS includes a Living Atlas of the World with beautiful and " +
+				"authoritative maps on hundreds of topics. It combines reference and thematic maps with many topics " +
+				"relating to people, earth, and life.  Explore maps from Esri and thousands or organizations and " +
+				"enrich them with your own data to create new maps and map layers.",
+		INTRO_AUTHENTICATED_TEXT:"Select an item to prepare for nomination.",
+		MAXIMUM_CHAR:"A maximum of xxx characters are available",
+
+		DETAILS : "DETAILS",
+		USE_CREDITS : "USE/CREDITS",
+		TAGS : "TAGS",
+		PERFORMANCE : "PERFORMANCE",
+		MY_PROFILE : "MY PROFILE",
+
 	/**************************************************************************
 	 *
 	 * Browser window title (text that will show up in the browser's bookmarks)
