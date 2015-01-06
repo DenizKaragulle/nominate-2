@@ -63,7 +63,12 @@ require([
 	var performanceNode = "";
 	var profileNode = "";
 	var nodeList = [];
+
+	var searchInputNode = "";
+	var dropdownSortNode = "";
 	var dropdownItemFilterNode = "";
+	var helpButtonNode = "";
+
 	var progressBarAnchorNode = "";
 	var categoryNodes = [];
 	// div dimensions
@@ -149,9 +154,9 @@ require([
 						'<div class="title-column-container">' +
 						'	<div class="title-column-title">' + object.title + '</div>' +
 						'	<div class="title-column-modified" style="position: relative;">' +
-						'		<span style="position: absolute; left: 10px; font-size:1.0em; color: #007AC2;">' + type + '</span>' +
+						'		<span style="position: absolute; font-size:1.0em; color: #007AC2;">' + type + '</span>' +
 						'		<span style="position: absolute; left: 110px; font-size:0.8em; color: #007AC2;"> ' + access + ' - Updated ' + modifiedDate + '</span>' +
-						'		<div class="title-column-snippet" style="position: relative; font-size:0.8em; color: #007AC2; top: 20px; margin-left: 10px;">' + views + ' views</div>' +
+						'		<div class="title-column-snippet" style="position: relative; font-size:0.8em; color: #007AC2; top: 20px;">' + views + ' views</div>' +
 						'	</div>' +
 						'</div>'
 			});
@@ -252,7 +257,10 @@ require([
 			// homepage header message
 			signInNode.innerHTML = INTRO_TEXT_1;
 			// dropdown filter node
+			searchInputNode = query(".search-items")[0];
+			dropdownSortNode = query(".dropdown-item-sort")[0];
 			dropdownItemFilterNode = query(".dropdown-item-filter")[0];
+			helpButtonNode = query(".help-button")[0];
 
 			portalUrl = document.location.protocol + '//www.arcgis.com';
 			portal = new arcgisPortal.Portal(portalUrl);
@@ -533,14 +541,14 @@ require([
 					var alertAnchorNode = query(".section-content")[0];
 					domConstruct.place(
 							'<div class="loader alert-loader save-btn">' +
-									'	<span class="side side-left">' +
-									'		<span class="fill"></span>' +
-									'	</span>' +
-									'	<span class="side side-right">' +
-									'		<span class="fill"></span>' +
-									'	</span>' +
-									'	<p class="loading-word">Loading...</p>' +
-									'</div>', alertAnchorNode, "last");
+							'	<span class="side side-left">' +
+							'		<span class="fill"></span>' +
+							'	</span>' +
+							'	<span class="side side-right">' +
+							'		<span class="fill"></span>' +
+							'	</span>' +
+							'	<p class="loading-word">Loading...</p>' +
+							'</div>', alertAnchorNode, "last");
 					// DETAILS
 					// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
 					// The title of the item. This is the name that's displayed to users and by
@@ -1038,7 +1046,11 @@ require([
 			signInNode.innerHTML = "";
 			//var headerRow = query(".intro").closest(".column-24");
 			//domClass.replace(headerRow[0], "column-19", "column-24");
-			//domStyle.set(dropdownItemFilterNode, "display", "block");
+			domStyle.set(searchInputNode, "display", "block");
+			domStyle.set(dropdownSortNode, "display", "block");
+			domStyle.set(dropdownItemFilterNode, "display", "block");
+			domStyle.set(helpButtonNode, "display", "block");
+
 			var signInRow = query(".sign-in-row")[0];
 			domStyle.set(signInRow, "display", "none");
 			var gridPanel = dom.byId("dgrid");

@@ -15,10 +15,6 @@
 	<link rel="stylesheet" type="text/css" href="http://fast.fonts.net/cssapi/3706abc4-0756-424b-b07b-1748122f85d8.css">
 
 	<style>
-		html, body {
-
-		}
-
 		.test {
 			background-color: #005E95;
 			color: white;
@@ -29,7 +25,7 @@
 
 		}
 
-		.dropdown-item-filter {
+		.search-items, .dropdown-item-sort, .dropdown-item-filter, .help-button {
 			display: none;
 		}
 	</style>
@@ -39,6 +35,7 @@
 <div class="wrapper">
 	<!-- HEADER -->
 	<header class="header">
+		<!-- top ribbon -->
 		<div class="container">
 			<div class="row">
 				<div class="inner-header">
@@ -58,28 +55,64 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- banner -->
 		<div class="row">
 			<div class="column-24 test">
 				<h3 class="icon-globe">Living Atlas of the World: Nominate an app, web map or layer</h3>
 
-				<div class="row">
-					<div class="column-6">
-						<input type="text" name="username" value="" placeholder="Search your items" style="background-color: #0073ad">
+				<div class="row" style="top: 50px;">
+					<!-- SEARCH -->
+					<div class="column-6 search-items">
+						<input type="text" name="username" value="" placeholder="Search your items" style="height: 42px; background-color: #4997D2; border: none;">
 					</div>
 
-					<div class="column-4">
+					<!-- SORT BY -->
+					<div class="column-6 dropdown-item-sort">
 						<div class="dropdown-navigation dropdown-wrapper">
-						<a href="#" class="dropdown" style="background-color: #0073ad; color: white; height: 18px;">Sort by</a>
-
-						<div class="dropdown-content">
-							<div class="dropdown-menu">
-								<ul>
-									<li><a href="#">Title</a></li>
-									<li><a href="#">Type</a></li>
-								</ul>
+							<a href="#" class="dropdown" style="letter-spacing: 1px; -webkit-font-smoothing: antialiased; font-size: 1.1em; line-height: 1.0em; font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif; background-color: #4997D2; color: white;">Sort by</a>
+							<div class="dropdown-content">
+								<div class="dropdown-menu">
+									<ul>
+										<li><a href="#">Title</a></li>
+										<li><a href="#">Type</a></li>
+										<li><a href="#">Number of Views</a></li>
+										<li><a href="#">Date Modified</a></li>
+									</ul>
+								</div>
 							</div>
 						</div>
 					</div>
+
+					<!-- FILTER BY -->
+					<div class="column-7 dropdown-item-filter">
+						<div class="dropdown-navigation dropdown-wrapper left-align">
+							<a class="dropdown" style="letter-spacing: 1px; -webkit-font-smoothing: antialiased; font-size: 1.1em; line-height: 1.0em; font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif; background-color: #4997D2; color: white;"> Filter Items </a>
+							<div class="dropdown-content">
+								<div class="dropdown-menu">
+									<ul>
+										<li><a data-value="all-times" class="filter-list">All Items</a></li>
+									</ul>
+									<hr>
+									<ul>
+										<li><a data-value="Web Map" class="filter-list">Web Map</a></li>
+										<li><a data-value="CityEngine Web Scene" class="filter-list">CityEngine Web
+											Scene</a></li>
+										<li><a data-value="Web Scene" class="filter-list">Web Scene</a></li>
+										<li><a data-value="Pro Map" class="filter-list">Pro Map</a></li>
+										<li><a data-value="Feature Service" class="filter-list">Feature Service</a></li>
+										<li><a data-value="Map Service" class="filter-list">Map Service</a></li>
+										<li><a data-value="Image Service" class="filter-list">Image Service</a></li>
+										<li><a data-value="Web Mapping Application" class="filter-list">Web Mapping
+											Application</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="column-3 right help-button">
+						<button class="btn icon-help"> HELP </button>
 					</div>
 				</div>
 			</div>
@@ -90,51 +123,10 @@
 	<div class="container">
 		<div class="row">
 			<div class="column-24">
-				<p><div class="leader-1 light intro"></div></p>
-			</div>
+				<p>
 
-			<div class="column-5 right dropdown-item-filter">
-				<div class="dropdown-navigation dropdown-wrapper right-align">
-					<a class="dropdown"> Filter Items </a>
-
-					<div class="dropdown-content">
-						<div class="dropdown-menu">
-							<ul>
-								<li><a data-value="all-times" class="filter-list">All Items</a></li>
-							</ul>
-							<hr>
-							<ul>
-								<li><a data-value="Web Map" class="filter-list">Web Map</a></li>
-								<li><a data-value="CityEngine Web Scene" class="filter-list">CityEngine Web Scene</a>
-								</li>
-								<li><a data-value="Web Scene" class="filter-list">Web Scene</a></li>
-								<li><a data-value="Pro Map" class="filter-list">Pro Map</a></li>
-								<li><a data-value="Feature Service" class="filter-list">Feature Service</a></li>
-								<li><a data-value="Map Service" class="filter-list">Map Service</a></li>
-								<li><a data-value="Image Service" class="filter-list">Image Service</a></li>
-								<li><a data-value="Web Mapping Application" class="filter-list">Web Mapping
-									Application</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<!--<ul class="input-list right-align">
-					<li>
-						<label>
-							<select>
-								<option selected value="">All Items</option>
-								<option value="webmap">Web Map</option>
-								<option value="cityEngine">CityEngine Web Scene</option>
-								<option value="webScene">Web Scene</option>
-								<option value="proMap">Pro Map</option>
-								<option value="featureService">Feature Service</option>
-								<option value="mapService">Map Service</option>
-								<option value="imageService">Image Service</option>
-								<option value="webMappingApplication">Web Mapping Application</option>
-							</select>
-						</label>
-					</li>
-				</ul>-->
+				<div class="leader-1 light intro"></div>
+				</p>
 			</div>
 		</div>
 
