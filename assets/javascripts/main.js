@@ -64,6 +64,8 @@ require([
 	var profileNode = "";
 	var nodeList = [];
 
+	var ribbonHeaderTitle = "";
+	var ribbonHeaderNumItemsNode = "";
 	var searchInputNode = "";
 	var dropdownSortNode = "";
 	var dropdownItemFilterNode = "";
@@ -89,6 +91,8 @@ require([
 	var TAB_CONTAINER_USERNAME = "username-";
 	var TAB_CONTAINER_USERDESCRIPTION = "userdesc-";
 	// Messages
+	var HEADER_BLOCK_PUBLIC = "Living Atlas of the World: Nominate an app, web map or layer";
+	var HEADER_BLOCK_PRIVATE = "My Items";
 	var INTRO_TEXT_1 = "ArcGIS includes a Living Atlas of the World with beautiful and " +
 			"authoritative maps on hundreds of topics. It combines reference and thematic maps with many topics " +
 			"relating to people, earth, and life.  Explore maps from Esri and thousands or organizations and " +
@@ -256,7 +260,11 @@ require([
 			signInNode = query(".intro")[0];
 			// homepage header message
 			signInNode.innerHTML = INTRO_TEXT_1;
-			// dropdown filter node
+			// ribbon header
+			ribbonHeaderTitle = query(".ribbon-header-title")[0];
+			ribbonHeaderNumItemsNode = dom.byId("ribbon-header-num-items");
+			ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PUBLIC;
+
 			searchInputNode = query(".search-items")[0];
 			dropdownSortNode = query(".dropdown-item-sort")[0];
 			dropdownItemFilterNode = query(".dropdown-item-filter")[0];
@@ -288,7 +296,16 @@ require([
 					num:1000
 				};
 				portal.queryItems(params).then(function (result) {
-					if (result.total > 0) {
+					// total nuber of items
+					var numItems = result.total;
+					// update the ribbon header
+					// 	remove the globe icon from the ribbon header title
+					domAttr.set(query(".ribbon-header-title").parent()[0], "class", "");
+					//	update the text and icon
+					ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
+					domAttr.set(ribbonHeaderNumItemsNode, "class", "icon-stack");
+
+					if (numItems > 0) {
 						// dgrid columns
 						var dgridColumns = [
 							{
@@ -1044,6 +1061,7 @@ require([
 		function updateHeader() {
 			// homepage header message
 			signInNode.innerHTML = "";
+			ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PRIVATE;
 			//var headerRow = query(".intro").closest(".column-24");
 			//domClass.replace(headerRow[0], "column-19", "column-24");
 			domStyle.set(searchInputNode, "display", "block");

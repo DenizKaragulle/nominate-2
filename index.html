@@ -28,6 +28,12 @@
 		.search-items, .dropdown-item-sort, .dropdown-item-filter, .help-button {
 			display: none;
 		}
+
+		#ribbon-header-num-items {
+			letter-spacing: 1px;
+			-webkit-font-smoothing: antialiased;
+			line-height: 1.0em; font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+		}
 	</style>
 </head>
 
@@ -35,8 +41,8 @@
 <div class="wrapper">
 	<!-- HEADER -->
 	<header class="header">
-		<!-- top ribbon -->
 		<div class="container">
+			<!-- top ribbon -->
 			<div class="row">
 				<div class="inner-header">
 					<div class="site-brand">
@@ -55,14 +61,25 @@
 				</div>
 			</div>
 		</div>
+	</header>
 
+	<!-- CONTENT -->
+	<div class="container">
 		<!-- banner -->
 		<div class="row">
 			<div class="column-24 test">
-				<h3 class="icon-globe">Living Atlas of the World: Nominate an app, web map or layer</h3>
+				<h3 class="icon-globe">
+					<span class="ribbon-header-title"></span>
+				</h3>
 
-				<div class="row" style="top: 50px;">
-					<!-- SEARCH -->
+				<div class="row">
+					<div class="column-4">
+						<div id="ribbon-header-num-items"></div>
+					</div>
+				</div>
+
+				<div class="row" style="top: 30px;">
+					<!-- SEARCH INPUT -->
 					<div class="column-6 search-items">
 						<input type="text" name="username" value="" placeholder="Search your items" style="height: 42px; background-color: #4997D2; border: none;">
 					</div>
@@ -78,6 +95,8 @@
 										<li><a href="#">Type</a></li>
 										<li><a href="#">Number of Views</a></li>
 										<li><a href="#">Date Modified</a></li>
+										<li><a href="#">Status</a></li>
+										<li><a href="#">Sharing</a></li>
 									</ul>
 								</div>
 							</div>
@@ -111,21 +130,18 @@
 						</div>
 					</div>
 
+					<!-- HELP BUTTON -->
 					<div class="column-3 right help-button">
 						<button class="btn icon-help"> HELP </button>
 					</div>
 				</div>
 			</div>
 		</div>
-	</header>
 
-	<!-- CONTENT -->
-	<div class="container">
 		<div class="row">
 			<div class="column-24">
 				<p>
-
-				<div class="leader-1 light intro"></div>
+					<div class="leader-1 light intro"></div>
 				</p>
 			</div>
 		</div>

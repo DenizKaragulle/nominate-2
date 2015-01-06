@@ -22,7 +22,11 @@
 
 /* remove the cell borders */
 .dgrid-cell {
-	border: none !important;
+	/*border: none !important;*/
+	border-top: none !important;
+	border-right: none !important;
+	border-left: none !important;
+	border-bottom: 1px solid red;
 }
 
 /* Styles for auto-height grids; simply add the dgrid-autoheight class */
