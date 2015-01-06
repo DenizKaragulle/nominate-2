@@ -9,6 +9,14 @@
 	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css">
 	<link rel="stylesheet" type="text/css" href="http://fast.fonts.net/cssapi/3706abc4-0756-424b-b07b-1748122f85d8.css">
 
+	<style>
+		.status-container {
+			width: 15px;
+			height: 15px;
+			border: 1px solid #565656;
+		}
+	</style>
+
 	<script src="assets/javascripts/tailcoat.js"></script>
 	<script src="//js.arcgis.com/3.11/"></script>
 
@@ -185,71 +193,87 @@
 		</div>
 	</div>
 
-	<div class="panel white">
-		<h4>Lorem Ipsum</h4>
-		<mark>Beta</mark>
-		<p id="content">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.</p>
-	</div>
-
 	<div class="container content-area">
 		<div class="row">
-			<div class="column-19">
-				<div class="leader-1 light intro">SHARING</div>
-				<div class="leader-1 light intro">POPUPS</div>
+			<div class="column-1">
+				<div class="status-container"></div>
 			</div>
-
-			<div class="column-5 right">
-				<div class="leader-1 light intro">LAYERS</div>
+			<div class="column-1">
+				<div class="status-container"></div>
+			</div>
+			<div class="column-1">
+				<div class="status-container"></div>
 			</div>
 		</div>
 	</div>
 
-	<div class="page sticky-footer"></div>
-	<footer class="footer">
-		<div class="container">
+		<div class="panel white">
+			<h4>Lorem Ipsum</h4>
+			<mark>Beta</mark>
+			<p id="content">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+				mollit.</p>
+		</div>
+
+		<div class="container content-area">
 			<div class="row">
-				<nav class="column-6 tablet-column-24 leader-1">
-					<h4>Header 1</h4>
-					<ul>
-						<li><a href="#">Link 1</a></li>
-						<li><a href="#">Link 2</a></li>
-						<li><a href="#">Link 3</a></li>
-					</ul>
-				</nav>
-				<nav class="column-6 tablet-column-24 leader-1">
-					<h4>Header 2</h4>
-					<ul>
-						<li><a href="#">Link 1</a></li>
-						<li><a href="#">Link 2</a></li>
-						<li><a href="#">Link 3</a></li>
-					</ul>
-				</nav>
-				<nav class="column-6 tablet-column-24 leader-1">
-					<h4>Header 3</h4>
-					<ul>
-						<li><a href="#">Link 1</a></li>
-						<li><a href="#">Link 2</a></li>
-						<li><a href="#">Link 3</a></li>
-						<li><a href="#">Link 4</a></li>
-						<li><a href="#">Link 5</a></li>
-					</ul>
-				</nav>
-				<nav class="column-6 tablet-column-24 leader-1">
-					<a class="esri-logo-footer" href="http://esri.com">Esri</a>
-					<section class="footer-social-nav">
-						<a class="icon-twitter" href="https://twitter.com/Esri/"></a>
-						<a class="icon-facebook" href="https://www.facebook.com/esrigis/"></a>
-						<a class="icon-github" href="http://esri.github.com/"></a>
-						<a class="icon-email" href="http://www.esri.com/about-esri/contact/"></a>
-					</section>
-				</nav>
-				<small class="footer-legal column-24 leader-1 trailer-1">© Copyright 2013 Environmental Systems Research
-					Institute, Inc. | <a href="http://www.esri.com/legal/privacy">Privacy</a> | <a
-							href="http://www.esri.com/legal/software-license">Legal</a></small>
+				<div class="column-19">
+					<div class="leader-1 light intro">SHARING</div>
+					<div class="leader-1 light intro">POPUPS</div>
+				</div>
+
+				<div class="column-5 right">
+					<div class="leader-1 light intro">LAYERS</div>
+				</div>
 			</div>
 		</div>
-	</footer>
-</div>
+
+		<div class="page sticky-footer"></div>
+		<footer class="footer">
+			<div class="container">
+				<div class="row">
+					<nav class="column-6 tablet-column-24 leader-1">
+						<h4>Header 1</h4>
+						<ul>
+							<li><a href="#">Link 1</a></li>
+							<li><a href="#">Link 2</a></li>
+							<li><a href="#">Link 3</a></li>
+						</ul>
+					</nav>
+					<nav class="column-6 tablet-column-24 leader-1">
+						<h4>Header 2</h4>
+						<ul>
+							<li><a href="#">Link 1</a></li>
+							<li><a href="#">Link 2</a></li>
+							<li><a href="#">Link 3</a></li>
+						</ul>
+					</nav>
+					<nav class="column-6 tablet-column-24 leader-1">
+						<h4>Header 3</h4>
+						<ul>
+							<li><a href="#">Link 1</a></li>
+							<li><a href="#">Link 2</a></li>
+							<li><a href="#">Link 3</a></li>
+							<li><a href="#">Link 4</a></li>
+							<li><a href="#">Link 5</a></li>
+						</ul>
+					</nav>
+					<nav class="column-6 tablet-column-24 leader-1">
+						<a class="esri-logo-footer" href="http://esri.com">Esri</a>
+						<section class="footer-social-nav">
+							<a class="icon-twitter" href="https://twitter.com/Esri/"></a>
+							<a class="icon-facebook" href="https://www.facebook.com/esrigis/"></a>
+							<a class="icon-github" href="http://esri.github.com/"></a>
+							<a class="icon-email" href="http://www.esri.com/about-esri/contact/"></a>
+						</section>
+					</nav>
+					<small class="footer-legal column-24 leader-1 trailer-1">© Copyright 2013 Environmental Systems
+						Research
+						Institute, Inc. | <a href="http://www.esri.com/legal/privacy">Privacy</a> | <a
+								href="http://www.esri.com/legal/software-license">Legal</a></small>
+				</div>
+			</div>
+		</footer>
+	</div>
 
 </body>
 </html>

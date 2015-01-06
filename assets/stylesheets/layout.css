@@ -79,3 +79,10 @@ table tr {
 .dijitEditorIFrameContainer iframe {
 	height: 100% !important;
 }
+
+/* STATUS */
+.status-container {
+	width: 15px;
+	height: 15px;
+	border: 1px solid #565656;
+}

@@ -38,8 +38,7 @@ require([
 	"dojo/parser",
 	"dojo/ready",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, BorderContainer, ContentPane, TabContainer, ProgressBar,
-			 array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
+], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, BorderContainer, ContentPane, TabContainer, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
 
 	parser.parse();
 
@@ -133,7 +132,7 @@ require([
 		thumbnailRenderCell = function (object, data, cell) {
 			var thumbnailUrl = formatThumbnailUrl(object);
 			var n = domConstruct.create("div", {
-				innerHTML: '<div class="thumbnail"><img src="' + thumbnailUrl + '" />'
+				innerHTML:'<div class="thumbnail"><img src="' + thumbnailUrl + '" />'
 			});
 			cell.appendChild(n);
 		};
@@ -146,10 +145,9 @@ require([
 			var views = validateStr(object.numViews);
 			var access = object.access;
 			var n = domConstruct.create("div", {
-				innerHTML: '<div class="title-column-container">' +
-						'<div class="title-column-title">' + object.title + '</div>' +
-						/*'<div class="title-column-modified" style="position: relative; top: 40px;">Modified: ' + modifiedDate + '<span style="position: absolute; left: 300px;">' + type + '</span></div>' +
-						'<div class="title-column-snippet" style="position: relative; top: -30px;">' + snippet + '</div>' +*/
+				innerHTML:
+						'<div class="title-column-container">' +
+						'	<div class="title-column-title">' + object.title + '</div>' +
 						'	<div class="title-column-modified" style="position: relative;">' +
 						'		<span style="position: absolute; left: 10px; font-size:1.0em; color: #007AC2;">' + type + '</span>' +
 						'		<span style="position: absolute; left: 110px; font-size:0.8em; color: #007AC2;"> ' + access + ' - Updated ' + modifiedDate + '</span>' +
@@ -162,7 +160,20 @@ require([
 
 		statusRenderCell = function (object, data, cell) {
 			var n = domConstruct.create("div", {
-				innerHTML: "status"
+				innerHTML:
+						'<div class="container content-area">' +
+						'	<div class="row">' +
+						'		<div class="column-5">' +
+						'			<div class="status-container"></div>' +
+						'		</div>' +
+						'		<div class="column-5">' +
+						'			<div class="status-container"></div>' +
+						'		</div>' +
+						'		<div class="column-5">' +
+						'			<div class="status-container"></div>' +
+						'		</div>' +
+						'	</div>' +
+						'</div>'
 			});
 			cell.appendChild(n);
 		};
@@ -181,7 +192,7 @@ require([
 			//	progress: score
 			//});
 			dijit.byId("overall-score-graphic").update({
-				'progress': score
+				'progress':score
 			});
 			//overallScoreGraphic.set("value", score);
 		};
@@ -265,42 +276,42 @@ require([
 				owner = portalUser.username;
 
 				var params = {
-					q: "owner:" + owner,
-					num: 1000
+					q:"owner:" + owner,
+					num:1000
 				};
 				portal.queryItems(params).then(function (result) {
 					if (result.total > 0) {
 						// dgrid columns
 						var dgridColumns = [
 							{
-								label: "",
-								field: "thumbnailUrl",
-								renderCell: thumbnailRenderCell
+								label:"",
+								field:"thumbnailUrl",
+								renderCell:thumbnailRenderCell
 							},
 							{
-								label: "TITLE",
-								field: "title",
-								renderCell: titleRenderCell
+								label:"TITLE",
+								field:"title",
+								renderCell:titleRenderCell
 							},
 							{
-								label: "STATUS",
-								field: "status",
-								renderCell: statusRenderCell
+								label:"STATUS",
+								field:"status",
+								renderCell:statusRenderCell
 							}
 						];
 						// dgrid memory store
 						itemStore = new Memory({
-							data: result.results
+							data:result.results
 						});
 						// dgrid
 						dgrid = new (declare([OnDemandGrid, Pagination]))({
-							store: itemStore,
-							rowsPerPage: 6,
-							pagingLinks: true,
-							pagingTextBox: false,
-							firstLastArrows: true,
-							columns: dgridColumns,
-							showHeader: false
+							store:itemStore,
+							rowsPerPage:6,
+							pagingLinks:true,
+							pagingTextBox:false,
+							firstLastArrows:true,
+							columns:dgridColumns,
+							showHeader:false
 						}, "dgrid");
 						dgrid.startup();
 
@@ -356,22 +367,22 @@ require([
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
 											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
-											"	<div class='content-container'>" +
-											"		<div id='map'></div>" +
-											"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_1 + "</div>" +
-											"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_2 + "</div>" +
-											"		<div class='row'>" +
-											"			<div class='column-3 section-header'>" + OVERALL_HEADER + "</div>" +
-											"			<div class='column-9 overall-score-graphic-container'></div>" +
-											"			<div class='column-3'>" +
-											"				<button id='nominate-btn' class='btn small disabled'> NOMINATE </button>" +
-											"			</div>" +
-											"		</div>" +
-											"		<div class='overall-msg'>" + OVERALL_TXT + "</div>" +
-											"		<div id='" + tcID + "'></div>" +
-											"	</div>" +
-											"</div>" +
-											"<div id='" + btnID + "'></div>",
+													"	<div class='content-container'>" +
+													"		<div id='map'></div>" +
+													"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_1 + "</div>" +
+													"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_2 + "</div>" +
+													"		<div class='row'>" +
+													"			<div class='column-3 section-header'>" + OVERALL_HEADER + "</div>" +
+													"			<div class='column-9 overall-score-graphic-container'></div>" +
+													"			<div class='column-3'>" +
+													"				<button id='nominate-btn' class='btn small disabled'> NOMINATE </button>" +
+													"			</div>" +
+													"		</div>" +
+													"		<div class='overall-msg'>" + OVERALL_TXT + "</div>" +
+													"		<div id='" + tcID + "'></div>" +
+													"	</div>" +
+													"</div>" +
+													"<div id='" + btnID + "'></div>",
 											selectedRow.firstElementChild, "last");
 
 									progressBarAnchorNode = query(".overall-score-graphic-container")[0];
@@ -447,73 +458,73 @@ require([
 				var node = query(".content-container")[0];
 				domConstruct.place(
 						'<div id="section-content">' +
-						'	<div class="row">' +
-						'		<div class="column-4">' +
-						'			<div class="section-header">THUMBNAIL' +
-						'				<div class="tooltip header-tooltip animate">' +
-						'					<span class="icon-help icon-blue"></span>' +
-						'					<div class="tooltip-wrapper">' +
-						'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-						'					</div>' +
-						'				</div>' +
-						'			</div>' +
-						'			<img src="' + thumbnailUrl + '" height="85px">' +
-						'		</div>' +
-						'		<div class="column-20">' +
-						'			<div class="row">' +
-						'				<div class="column-24">' +
-						'					<div class="section-header">TITLE' +
-						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
-						'						<div class="tooltip header-tooltip animate before">' +
-						'							<span class="icon-help icon-blue"></span>' +
-						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-						'							</div>' +
-						'						</div>' +
-						'					</div>' +
-						'					<div class="section-content">' +
-						'						<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
-						'					</div>' +
-						'				</div>' +
-						'				<div class="column-24">' +
-						'					<div class="section-header">SUMMARY' +
-						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
-						'						<div class="tooltip header-tooltip animate before">' +
-						'							<span class="icon-help icon-blue"></span>' +
-						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-						'							</div>' +
-						'						</div>' +
-						'					</div>' +
-						'					<div class="section-content">' +
-						'						<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
-						'					</div>' +
-						'				</div>' +
-						'				<div class="column-24">' +
-						'					<div class="section-header">DESCRIPTION' +
-						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
-						'						<div class="tooltip header-tooltip animate before">' +
-						'							<span class="icon-help icon-blue"></span>' +
-						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-						'							</div>' +
-						'						</div>' +
-						'					</div>' +
-						'					<div class="section-content">' +
-						'						<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
-						'					</div>' +
-						'				</div>' +
-						'			</div>' +
-						'		</div>' +
-						'	</div>' +
-						'</div>',
+								'	<div class="row">' +
+								'		<div class="column-4">' +
+								'			<div class="section-header">THUMBNAIL' +
+								'				<div class="tooltip header-tooltip animate">' +
+								'					<span class="icon-help icon-blue"></span>' +
+								'					<div class="tooltip-wrapper">' +
+								'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+								'					</div>' +
+								'				</div>' +
+								'			</div>' +
+								'			<img src="' + thumbnailUrl + '" height="85px">' +
+								'		</div>' +
+								'		<div class="column-20">' +
+								'			<div class="row">' +
+								'				<div class="column-24">' +
+								'					<div class="section-header">TITLE' +
+								'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+								'						<div class="tooltip header-tooltip animate before">' +
+								'							<span class="icon-help icon-blue"></span>' +
+								'							<div class="tooltip-wrapper">' +
+								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+								'							</div>' +
+								'						</div>' +
+								'					</div>' +
+								'					<div class="section-content">' +
+								'						<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
+								'					</div>' +
+								'				</div>' +
+								'				<div class="column-24">' +
+								'					<div class="section-header">SUMMARY' +
+								'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+								'						<div class="tooltip header-tooltip animate before">' +
+								'							<span class="icon-help icon-blue"></span>' +
+								'							<div class="tooltip-wrapper">' +
+								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+								'							</div>' +
+								'						</div>' +
+								'					</div>' +
+								'					<div class="section-content">' +
+								'						<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
+								'					</div>' +
+								'				</div>' +
+								'				<div class="column-24">' +
+								'					<div class="section-header">DESCRIPTION' +
+								'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+								'						<div class="tooltip header-tooltip animate before">' +
+								'							<span class="icon-help icon-blue"></span>' +
+								'							<div class="tooltip-wrapper">' +
+								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+								'							</div>' +
+								'						</div>' +
+								'					</div>' +
+								'					<div class="section-content">' +
+								'						<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
+								'					</div>' +
+								'				</div>' +
+								'			</div>' +
+								'		</div>' +
+								'	</div>' +
+								'</div>',
 						node, "last");
 
 				// create the SAVE/CANCEL buttons
 				createSaveButtonNode(node);
 
 				descriptionEditor = new Editor({
-					height: "50px"
+					height:"50px"
 				}, dom.byId(descID));
 				descriptionEditor.startup();
 
@@ -543,15 +554,15 @@ require([
 					portalUser.getItem(selectedRowID).then(function (results) {
 						var _userItemUrl = results.userItemUrl;
 						esriRequest({
-							url: _userItemUrl + "/update",
-							content: {
-								f: "json",
-								title: _title,
-								snippet: _snippet,
-								description: _description
+							url:_userItemUrl + "/update",
+							content:{
+								f:"json",
+								title:_title,
+								snippet:_snippet,
+								description:_description
 							}
 						}, {
-							usePost: true
+							usePost:true
 						}).then(function (response) {
 									domConstruct.destroy(query(".alert-loader")[0]);
 
@@ -623,7 +634,7 @@ require([
 				createSaveButtonNode(node);
 
 				accessUseConstraintsEditor = new Editor({
-					height: "50px"
+					height:"50px"
 				}, dom.byId(accessID));
 				accessUseConstraintsEditor.startup();
 
@@ -647,14 +658,14 @@ require([
 					portalUser.getItem(selectedRowID).then(function (results) {
 						var _userItemUrl = results.userItemUrl;
 						esriRequest({
-							url: _userItemUrl + "/update",
-							content: {
-								f: "json",
-								licenseInfo: _license,
-								accessInformation: _credits
+							url:_userItemUrl + "/update",
+							content:{
+								f:"json",
+								licenseInfo:_license,
+								accessInformation:_credits
 							}
 						}, {
-							usePost: true
+							usePost:true
 						}).then(function (response) {
 									domConstruct.destroy(query(".alert-loader")[0]);
 
@@ -692,45 +703,45 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-					"<div id='section-content'>" +
-							"	<div class='row'>" +
-							"		<div class='column-24'>" +
-							"			<div class='section-header'>Select at least one of the following categories" +
-							"				<div class='tooltip header-tooltip animate'>" +
-							"					<span class='icon-help icon-blue'></span>" +
-							"					<div class='tooltip-wrapper'>" +
-							"						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-							"					</div>" +
-							"				</div>" +
-							"			</div>" +
-							"			<div class='row'>" +
-							"				<div class='column-6'><input id='basemapsCB" + selectedRowID + "' /> Basemaps</div>" +
-							"				<div class='column-6'><input id='lifestylesCB" + selectedRowID + "' /> Lifestyles</div>" +
-							"				<div class='column-6'><input id='urbanSystemsCB" + selectedRowID + "' /> Urban Systems</div>" +
-							"				<div class='column-6'><input id='historicalMapsCB" + selectedRowID + "' /> Historical Maps</div>" +
-							"			</div>" +
-							"			<div class='row'>" +
-							"				<div class='column-6'><input id='imageryCB" + selectedRowID + "' /> Imagery</div>" +
-							"				<div class='column-6'><input id='landscapeCB" + selectedRowID + "' /> Landscape</div>" +
-							"				<div class='column-6'><input id='transportationCB" + selectedRowID + "' /> Transportation</div>" +
-							"				<div class='column-6'><input id='storyMapsCB" + selectedRowID + "' /> Story Maps</div>" +
-							"			</div>" +
-							"			<div class='row'>" +
-							"				<div class='column-6'><input id='demographgicsCB" + selectedRowID + "' /> Demographics</div>" +
-							"				<div class='column-6'><input id='earthObservationsCB" + selectedRowID + "' /> Earth Observations</div>" +
-							"				<div class='column-6'><input id='boundariesAndPlacesCB" + selectedRowID + "' /> Boundaries and Places</div>" +
-							"			</div>" +
-							"		</div>" +
-							"	</div>" +
-							"</div>" +
-							"<div class='row'>" +
-							"	<div class='column-24'>" +
-							"		<div class='section-header additional-tags'>Add additional tags" +
-							"			<div class='row'>" +
-							"				<textarea id='" + tagsID + "' data-dojo-type='dijit/form/SimpleTextarea' rows='5' cols='50' style='width:95%;'>" + itemTags,
-					node, "last");
+						"<div id='section-content'>" +
+								"	<div class='row'>" +
+								"		<div class='column-24'>" +
+								"			<div class='section-header'>Select at least one of the following categories" +
+								"				<div class='tooltip header-tooltip animate'>" +
+								"					<span class='icon-help icon-blue'></span>" +
+								"					<div class='tooltip-wrapper'>" +
+								"						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
+								"					</div>" +
+								"				</div>" +
+								"			</div>" +
+								"			<div class='row'>" +
+								"				<div class='column-6'><input id='basemapsCB" + selectedRowID + "' /> Basemaps</div>" +
+								"				<div class='column-6'><input id='lifestylesCB" + selectedRowID + "' /> Lifestyles</div>" +
+								"				<div class='column-6'><input id='urbanSystemsCB" + selectedRowID + "' /> Urban Systems</div>" +
+								"				<div class='column-6'><input id='historicalMapsCB" + selectedRowID + "' /> Historical Maps</div>" +
+								"			</div>" +
+								"			<div class='row'>" +
+								"				<div class='column-6'><input id='imageryCB" + selectedRowID + "' /> Imagery</div>" +
+								"				<div class='column-6'><input id='landscapeCB" + selectedRowID + "' /> Landscape</div>" +
+								"				<div class='column-6'><input id='transportationCB" + selectedRowID + "' /> Transportation</div>" +
+								"				<div class='column-6'><input id='storyMapsCB" + selectedRowID + "' /> Story Maps</div>" +
+								"			</div>" +
+								"			<div class='row'>" +
+								"				<div class='column-6'><input id='demographgicsCB" + selectedRowID + "' /> Demographics</div>" +
+								"				<div class='column-6'><input id='earthObservationsCB" + selectedRowID + "' /> Earth Observations</div>" +
+								"				<div class='column-6'><input id='boundariesAndPlacesCB" + selectedRowID + "' /> Boundaries and Places</div>" +
+								"			</div>" +
+								"		</div>" +
+								"	</div>" +
+								"</div>" +
+								"<div class='row'>" +
+								"	<div class='column-24'>" +
+								"		<div class='section-header additional-tags'>Add additional tags" +
+								"			<div class='row'>" +
+								"				<textarea id='" + tagsID + "' data-dojo-type='dijit/form/SimpleTextarea' rows='5' cols='50' style='width:95%;'>" + itemTags,
+						node, "last");
 
-					array.forEach(CATEGORIES, function (id) {
+				array.forEach(CATEGORIES, function (id) {
 					addCheckbox(id + selectedRowID);
 				});
 
@@ -846,24 +857,24 @@ require([
 
 			if (layers !== undefined && layers.length < 1) {
 				domConstruct.create("div", {
-					innerHTML: "No available layers",
-					style: {
-						"margin-left": "5px",
-						"paddingLeft": "0px"
+					innerHTML:"No available layers",
+					style:{
+						"margin-left":"5px",
+						"paddingLeft":"0px"
 					}
 				}, "layers-list", "first");
 			} else {
 				var ul = domConstruct.create("ul", {
-					style: {
-						"margin-left": "5px",
-						"paddingLeft": "0px"
+					style:{
+						"margin-left":"5px",
+						"paddingLeft":"0px"
 					}
 				}, "layers-list", "first");
 				array.forEach(layers, function (layer) {
 					domConstruct.create("li", {
-						innerHTML: layer.title,
-						style: {
-							"list-style-type": "none"
+						innerHTML:layer.title,
+						style:{
+							"list-style-type":"none"
 						}
 					}, ul);
 				});
@@ -882,50 +893,50 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-					'<div id="section-content">' +
-					'	<div class="row">' +
-					'		<div class="column-4">' +
-					'			<div class="section-header">THUMBNAIL' +
-					'				<div class="tooltip header-tooltip animate">' +
-					'					<span class="icon-help icon-blue"></span>' +
-					'					<div class="tooltip-wrapper">' +
-					'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-					'					</div>' +
-					'				</div>' +
-					'				<img src="' + _userThumbnailUrl + '" height="85px">' +
-					'			</div>' +
-					'		</div>' +
-					'		<div class="column-20">' +
-					'			<div class="row">' +
-					'				<div class="column-24">' +
-					'					<div class="section-header">NAME ' +
-					'						<span class="section-header-message">' + MAXIMUM_CHAR + '<\/span>' +
-					'						<div class="tooltip header-tooltip animate">' +
-					'							<span class="icon-help icon-blue"></span>' +
-					'							<div class="tooltip-wrapper">' +
-					'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-					'							</div>' +
-					'						</div>' +
-					'					</div>' +
-					'					<div class="section-content">' +
-					'						<input type="text" name="title-textbox" value="' + _userFullName + '" data-dojo-type="dijit/form/TextBox" id="' + _userNameID + '" />' +
-					'					</div>' +
-					'				</div>' +
-					'			</div>' +
-					'			<div class="row">' +
-					'				<div class="column-24">' +
-					'					<div class="section-header">DESCRIPTION ' +
-					'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
-					'						<div class="tooltip header-tooltip animate">' +
-					'							<span class="icon-help icon-blue"></span>' +
-					'							<div class="tooltip-wrapper">' +
-					'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-					'							</div>' +
-					'						</div>' +
-					'					</div>' +
-					'					<div class="section-content">' +
-					'						<textarea id="' + _userDescriptionID + '" rows="4" cols="50" style="width:66%;">' + _userDescription,
-					node, "last");
+						'<div id="section-content">' +
+								'	<div class="row">' +
+								'		<div class="column-4">' +
+								'			<div class="section-header">THUMBNAIL' +
+								'				<div class="tooltip header-tooltip animate">' +
+								'					<span class="icon-help icon-blue"></span>' +
+								'					<div class="tooltip-wrapper">' +
+								'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+								'					</div>' +
+								'				</div>' +
+								'				<img src="' + _userThumbnailUrl + '" height="85px">' +
+								'			</div>' +
+								'		</div>' +
+								'		<div class="column-20">' +
+								'			<div class="row">' +
+								'				<div class="column-24">' +
+								'					<div class="section-header">NAME ' +
+								'						<span class="section-header-message">' + MAXIMUM_CHAR + '<\/span>' +
+								'						<div class="tooltip header-tooltip animate">' +
+								'							<span class="icon-help icon-blue"></span>' +
+								'							<div class="tooltip-wrapper">' +
+								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+								'							</div>' +
+								'						</div>' +
+								'					</div>' +
+								'					<div class="section-content">' +
+								'						<input type="text" name="title-textbox" value="' + _userFullName + '" data-dojo-type="dijit/form/TextBox" id="' + _userNameID + '" />' +
+								'					</div>' +
+								'				</div>' +
+								'			</div>' +
+								'			<div class="row">' +
+								'				<div class="column-24">' +
+								'					<div class="section-header">DESCRIPTION ' +
+								'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+								'						<div class="tooltip header-tooltip animate">' +
+								'							<span class="icon-help icon-blue"></span>' +
+								'							<div class="tooltip-wrapper">' +
+								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+								'							</div>' +
+								'						</div>' +
+								'					</div>' +
+								'					<div class="section-content">' +
+								'						<textarea id="' + _userDescriptionID + '" rows="4" cols="50" style="width:66%;">' + _userDescription,
+						node, "last");
 
 				// create the SAVE/CANCEL buttons
 				createSaveButtonNode(node);
@@ -934,15 +945,15 @@ require([
 				on(saveBtn, "click", function () {
 					var alertAnchorNode = query(".section-content")[0];
 					domConstruct.place(
-						'<div class="loader alert-loader save-btn">' +
-						'	<span class="side side-left">' +
-						'		<span class="fill"></span>' +
-						'	</span>' +
-						'	<span class="side side-right">' +
-						'		<span class="fill"></span>' +
-						'	</span>' +
-						'	<p class="loading-word">Loading...</p>' +
-						'</div>', alertAnchorNode, "last");
+							'<div class="loader alert-loader save-btn">' +
+									'	<span class="side side-left">' +
+									'		<span class="fill"></span>' +
+									'	</span>' +
+									'	<span class="side side-right">' +
+									'		<span class="fill"></span>' +
+									'	</span>' +
+									'	<p class="loading-word">Loading...</p>' +
+									'</div>', alertAnchorNode, "last");
 					var _userFullName = dom.byId(_userNameID).value;
 					var _userDescription = dom.byId(_userDescriptionID).value;
 
@@ -952,35 +963,35 @@ require([
 						//var _community = "community/users/";
 						//var _portalUser = results.owner;
 						esriRequest({
-							url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
-							content: {
-								f: "json",
-								fullname: _userFullName,
-								description: _userDescription
+							url:"https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
+							content:{
+								f:"json",
+								fullname:_userFullName,
+								description:_userDescription
 							}
 						}, {
-							usePost: true
+							usePost:true
 						}).then(function (response) {
-							domConstruct.destroy(query(".alert-loader")[0]);
-							if (response.success) {
-								domConstruct.place(
-										'<div class="row alert-success alert-loader-success">' +
-										'	<div class="column-24 center">' +
-										'		<div class="alert success icon-check"> Saved </div>' +
-										'	</div>' +
-										'</div>', alertAnchorNode, "last");
-								setTimeout(function () {
-									domConstruct.destroy(query(".alert-success")[0]);
-								}, 1500);
-							} else {
-								domConstruct.place(
-										'<div class="row alert-loader-error">' +
-										'	<div class="column-24 center">' +
-										'		<div class="alert error icon-alert"> Error </div>' +
-										'	</div>' +
-										'</div>', alertAnchorNode, "last");
-								}
-						});
+									domConstruct.destroy(query(".alert-loader")[0]);
+									if (response.success) {
+										domConstruct.place(
+												'<div class="row alert-success alert-loader-success">' +
+														'	<div class="column-24 center">' +
+														'		<div class="alert success icon-check"> Saved </div>' +
+														'	</div>' +
+														'</div>', alertAnchorNode, "last");
+										setTimeout(function () {
+											domConstruct.destroy(query(".alert-success")[0]);
+										}, 1500);
+									} else {
+										domConstruct.place(
+												'<div class="row alert-loader-error">' +
+														'	<div class="column-24 center">' +
+														'		<div class="alert error icon-alert"> Error </div>' +
+														'	</div>' +
+														'</div>', alertAnchorNode, "last");
+									}
+								});
 					});
 				});
 			});
@@ -990,17 +1001,17 @@ require([
 		function createSaveButtonNode(_node) {
 			domConstruct.place(
 					'<div id="save-row" class="row">' +
-					'	<div class="column-8 center">' +
-					'		<button id="save-btn" class="btn small"> SAVE </button>' +
-					'		<button id="cancel-btn" class="btn small"> CANCEL </button>' +
-					'	</div>' +
-					'</div>', _node, "last");
+							'	<div class="column-8 center">' +
+							'		<button id="save-btn" class="btn small"> SAVE </button>' +
+							'		<button id="cancel-btn" class="btn small"> CANCEL </button>' +
+							'	</div>' +
+							'</div>', _node, "last");
 		}
 
 		function applyFilter(value) {
 			var params = {
-				q: "owner:" + owner + " type: " + value,
-				num: 1000
+				q:"owner:" + owner + " type: " + value,
+				num:1000
 			};
 
 			portal.queryItems(params).then(function (result) {
@@ -1060,10 +1071,10 @@ require([
 
 		function addCheckbox(id) {
 			var checkBox = new CheckBox({
-				name: "checkBox",
-				value: "",
-				checked: false,
-				onChange: function (b) {
+				name:"checkBox",
+				value:"",
+				checked:false,
+				onChange:function (b) {
 					alert('onChange called with parameter = ' + b + ', and widget value = ' + this.get('value'));
 				}
 			}, id).startup();
@@ -1116,7 +1127,7 @@ require([
 		function processMapDrawTime(val) {
 			var temp = (val / 1000) % 60;
 			var seconds = number.format(temp, {
-				places: 5
+				places:5
 			});
 			console.log(seconds);
 			if (seconds) {
