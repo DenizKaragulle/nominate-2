@@ -1024,10 +1024,10 @@ require([
 
 		function updateHeader() {
 			// homepage header message
-			signInNode.innerHTML = INTRO_TEXT_2;
-			var headerRow = query(".intro").closest(".column-24");
-			domClass.replace(headerRow[0], "column-19", "column-24");
-			domStyle.set(dropdownItemFilterNode, "display", "block");
+			signInNode.innerHTML = "";
+			//var headerRow = query(".intro").closest(".column-24");
+			//domClass.replace(headerRow[0], "column-19", "column-24");
+			//domStyle.set(dropdownItemFilterNode, "display", "block");
 			var signInRow = query(".sign-in-row")[0];
 			domStyle.set(signInRow, "display", "none");
 			var gridPanel = dom.byId("dgrid");
