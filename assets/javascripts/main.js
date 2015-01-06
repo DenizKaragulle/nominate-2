@@ -367,22 +367,22 @@ require([
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
 											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
-													"	<div class='content-container'>" +
-													"		<div id='map'></div>" +
-													"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_1 + "</div>" +
-													"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_2 + "</div>" +
-													"		<div class='row'>" +
-													"			<div class='column-3 section-header'>" + OVERALL_HEADER + "</div>" +
-													"			<div class='column-9 overall-score-graphic-container'></div>" +
-													"			<div class='column-3'>" +
-													"				<button id='nominate-btn' class='btn small disabled'> NOMINATE </button>" +
-													"			</div>" +
-													"		</div>" +
-													"		<div class='overall-msg'>" + OVERALL_TXT + "</div>" +
-													"		<div id='" + tcID + "'></div>" +
-													"	</div>" +
-													"</div>" +
-													"<div id='" + btnID + "'></div>",
+											"	<div class='content-container'>" +
+											"		<div id='map'></div>" +
+											"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_1 + "</div>" +
+											"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_2 + "</div>" +
+											"		<div class='row'>" +
+											"			<div class='column-3 section-header'>" + OVERALL_HEADER + "</div>" +
+											"			<div class='column-9 overall-score-graphic-container'></div>" +
+											"			<div class='column-3'>" +
+											"				<button id='nominate-btn' class='btn small disabled'> NOMINATE </button>" +
+											"			</div>" +
+											"		</div>" +
+											"		<div class='overall-msg'>" + OVERALL_TXT + "</div>" +
+											"		<div id='" + tcID + "'></div>" +
+											"	</div>" +
+											"</div>" +
+											"<div id='" + btnID + "'></div>",
 											selectedRow.firstElementChild, "last");
 
 									progressBarAnchorNode = query(".overall-score-graphic-container")[0];
@@ -569,20 +569,20 @@ require([
 									if (response.success) {
 										domConstruct.place(
 												'<div class="row alert-success alert-loader-success">' +
-														'	<div class="column-24 center">' +
-														'		<div class="alert success icon-check"> Saved </div>' +
-														'	</div>' +
-														'</div>', alertAnchorNode, "last");
+												'	<div class="column-24 center">' +
+												'		<div class="alert success icon-check"> Saved </div>' +
+												'	</div>' +
+												'</div>', alertAnchorNode, "last");
 										setTimeout(function () {
 											domConstruct.destroy(query(".alert-success")[0]);
 										}, 1500);
 									} else {
 										domConstruct.place(
 												'<div class="row alert-loader-error">' +
-														'	<div class="column-24 center">' +
-														'		<div class="alert error icon-alert"> Error </div>' +
-														'	</div>' +
-														'</div>', alertAnchorNode, "last");
+												'	<div class="column-24 center">' +
+												'		<div class="alert error icon-alert"> Error </div>' +
+												'	</div>' +
+												'</div>', alertAnchorNode, "last");
 									}
 								});
 					});
@@ -1052,14 +1052,14 @@ require([
 		function createContentButtonGroup(id) {
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
-							'	<div class="btn-group column-24">' +
-							'		<a class="active column-4 details">DETAILS</a>' +
-							'		<a class="column-4 credits">USE/CREDITS</a>' +
-							'		<a class="column-4 tags">TAGS</a>' +
-							'		<a class="column-4 performance">PERFORMANCE</a>' +
-							'		<a class="column-4 profile">MY PROFILE</a>' +
-							'	</div>' +
-							'</div>', id, "last");
+					'	<div class="btn-group column-24">' +
+					'		<a class="active column-4 details">DETAILS</a>' +
+					'		<a class="column-4 credits">USE/CREDITS</a>' +
+					'		<a class="column-4 tags">TAGS</a>' +
+					'		<a class="column-4 performance">PERFORMANCE</a>' +
+					'		<a class="column-4 profile">MY PROFILE</a>' +
+					'	</div>' +
+					'</div>', id, "last");
 
 			detailsNode = query(".details")[0];
 			creditsNode = query(".credits")[0];
@@ -1129,7 +1129,6 @@ require([
 			var seconds = number.format(temp, {
 				places:5
 			});
-			console.log(seconds);
 			if (seconds) {
 				return seconds + " seconds";
 			} else {
