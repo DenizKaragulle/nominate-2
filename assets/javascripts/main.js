@@ -65,6 +65,7 @@ require([
 	var nodeList = [];
 
 	var ribbonHeaderTitle = "";
+	var ribbonHeaderUser = "";
 	var ribbonHeaderNumItemsNode = "";
 	var searchInputNode = "";
 	var dropdownSortNode = "";
@@ -263,6 +264,7 @@ require([
 			signInNode.innerHTML = INTRO_TEXT_1;
 			// ribbon header
 			ribbonHeaderTitle = query(".ribbon-header-title")[0];
+			ribbonHeaderUser = query(".ribbon-header-user")[0];
 			ribbonHeaderNumItemsNode = dom.byId("ribbon-header-num-items");
 			ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PUBLIC;
 
@@ -309,7 +311,8 @@ require([
 					// remove the globe icon from the ribbon header title
 					domAttr.set(query(".ribbon-header-title").parent()[0], "class", "");
 					var HEADER_BLOCK_PRIVATE_NAME = " (" + portalUser.fullName + " - " + owner + ")"
-					ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PRIVATE + HEADER_BLOCK_PRIVATE_NAME;
+					ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PRIVATE;
+					ribbonHeaderUser.innerHTML = HEADER_BLOCK_PRIVATE_NAME;
 					// update the text and icon
 					ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
 					domAttr.set(ribbonHeaderNumItemsNode, "class", "icon-stack");
