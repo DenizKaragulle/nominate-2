@@ -1,0 +1,122 @@
+/* dGrid */
+#dgrid {
+	display: none;
+	border: none;
+}
+
+.dgrid-header {
+	background-color: #ffffff !important;
+	color: #007AC2;
+	border: none;
+}
+
+/* adjust font size */
+.dgrid-row {
+	font-size: 0.9em;
+	height: 100px;
+}
+
+.dgrid-row-table > tr {
+	height: 40px !important;
+}
+
+/* remove the cell borders */
+.dgrid-cell {
+	border: none !important;
+}
+
+/* Styles for auto-height grids; simply add the dgrid-autoheight class */
+.dgrid-autoheight {
+	height: auto;
+}
+
+.dgrid-autoheight .dgrid-scroller {
+	position: relative;
+	overflow-y: hidden;
+}
+
+.dgrid-autoheight .dgrid-header-scroll {
+	display: none;
+}
+
+.dgrid-autoheight .dgrid-header {
+	right: 0;
+}
+
+/* Columns */
+/* http://www.sitepen.com/blog/2012/05/03/css-styling-of-dgrid/ */
+/* Thumbnail */
+.field-thumbnailUrl {
+	/*width: 190px;*/
+	width: 130px;
+}
+
+.field-thumbnailUrl img {
+	border-radius: 2px;
+	height: 75px;
+}
+
+/* Title */
+.field-title {
+
+}
+
+.title-column-container {
+
+}
+
+.title-column-title {
+	color: #007AC2;
+	font-size: 1.4em;
+}
+
+.title-column-title:hover {
+	color: #0658c2;
+	cursor: pointer;
+}
+
+.title-column-snippet {
+	color: #696969;
+	margin-top: 3px;
+}
+
+.title-column-type {
+	color: #696969;
+}
+
+.title-column-modified {
+	color: #696969;
+}
+
+/* Type */
+.field-type {
+	color: #696969;
+	width: 120px;
+}
+
+/* Status */
+.field-status {
+	width: 120px;
+}
+
+.item {
+
+}
+
+.thumbnail {
+	padding: 3px;
+	border-radius: 3px;
+}
+
+.thumbnail img {
+	width: 80px;
+	height: 80px;
+	border-radius: 40px;
+	-webkit-border-radius: 40px;
+	border: 1px solid #007AC2;
+}
+
+.summary {
+	margin-left: 5px;
+	color: #454545;
+}

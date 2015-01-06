@@ -1,0 +1,137 @@
+@import "github";
+@import "tailcoat";
+
+#home-banner {
+  background: image-url("bg-home.jpg", false, true) no-repeat center center $purple;
+}
+
+.styleguide-example {
+	@include leader(2);
+	@include trailer(4);
+  &:first-of-type {
+    @include leader(0);
+  }
+  &:last-of-type {
+    @include trailer(0);
+  }
+}
+
+.styleguide-modifiers {
+  @include clearfix();
+  background: $white;
+  .styleguide-modifier-example {
+    @include column(24);
+    padding: .5em;
+    @include transition(all .25s linear);
+    border-bottom: 1px solid $lightest-gray;
+    border-left: 1px solid $lightest-gray;
+    border-right: 1px solid $lightest-gray;
+    position: relative;
+    @include float(left);
+    clear: both;
+    &:last-child {
+      border-bottom: none;
+    }
+    &:first-child {
+      border-top: 1px solid $lightest-gray;
+      @include border-top-left-radius(6px);
+      @include border-top-right-radius(6px);
+      .modifier-name {
+        @include border-radius(0 3px 0 3px);
+      }
+    }
+    .modifier-name {
+      @include background($light-tan);
+      @include border-radius(0 0 0 3px);
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      @include adjust-font-size-to(12px, .75);
+      padding-left: 3px;
+      padding-right: 3px;
+      z-index: 1;
+    }
+  }
+}
+
+.section-header {
+  a {
+    color: $lighter-gray;
+  }
+}
+
+.styleguide-modifier-list {
+  li {
+    @include leader(.25);
+    @include trailer(.25);
+  }
+}
+
+.gridded-examples {
+  .styleguide-modifier-example {
+    width: 22%;
+    clear:none;
+    float: none;
+    @include box-sizing(border-box);
+    margin: 0.25em 0;
+    padding: 1em 0.5em;
+    border:1px solid $light-tan;
+    background: $off-white;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    &:first-child {
+      display: none;
+    }
+    h3 {
+      font-size: 16px;
+      &:before {
+        font-size: 36px;
+        display: block;
+      }
+    }
+    .modifier-name {
+      display: none;
+    }
+  }
+  .styleguide-sample {
+    display: none;
+  }
+  .styleguide-modifier-list {
+    display: none;
+  }
+}
+
+.styleguide-element {
+  background: $off-white;
+  margin-top: -2px;
+  margin-top: 0;
+  @include border-radius(0 0 3px 3px);
+  background: $off-white;
+  code {
+    border: none;
+  }
+  border: 1px solid $lightest-gray;
+}
+
+.styleguide-sample {
+  background: $off-white;
+  padding: 0 0 0 1em;
+  code {
+    background: $off-white;
+    position:relative;
+  }
+}
+
+.color-swatch {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  border:1px solid $lightest-gray;
+  vertical-align: -14px;
+}
+
+// Fix two Dropdowns on top of one another
+.dropdown-wrapper.right-align {
+  z-index: 2;
+}

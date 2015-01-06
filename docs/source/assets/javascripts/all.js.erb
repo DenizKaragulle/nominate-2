@@ -1,0 +1,16 @@
+// Run tailcoat on document ready
+window.onload = function () {
+  T.init();
+
+  function addSearchEvent (form, input) {
+    T.utils.addEvent(document.querySelector(form), 'submit', function(e) {
+      T.utils.preventDefault(e);
+      var query = encodeURIComponent(document.querySelector(input).value);
+      window.location = '<%= base_url %>search/?q=' + query;
+    });
+  }
+
+  addSearchEvent('.mobile-search', '#mobile-query');
+  addSearchEvent('.site-search-form', '.site-search-input');
+
+};

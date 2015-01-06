@@ -1,0 +1,254 @@
+---
+title: Tailcoat | Layout
+description: Layout classes and helpers for Tailcoat
+search_description: This page covers all the layout classes and helpers for Tailcoat including the grid system and responsive helpers.
+section: 1
+---
+
+<div class="navigation-bar no-nav trailer-2">
+  <div class="container">
+    <header>
+        <h1>Layout</h1>
+    </header>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <aside class="column-5 tablet-column-24">
+
+      <nav class="sidebar-navigation">
+        <header><h4>Grid</h4></header>
+        <ul>
+          <li><a href="#section-1.1"> Overview </a></li>
+          <li><a href="#section-1.1.1"> Grid Settings </a></li>
+          <li><a href="#section-1.1.2"> Responsive Breakpoints </a></li>
+          <li><a href="#section-1.1.3"> Containers </a></li>
+          <li><a href="#section-1.1.4"> Rows </a></li>
+          <li><a href="#section-1.1.5"> Columns </a></li>
+          <li><a href="#section-1.1.6"> Responsive Columns </a></li>
+          <li><a href="#section-1.1.7"> Pre and Post </a></li>
+          <li><a href="#section-1.1.8"> Responsive Pre and Post </a></li>
+        </ul>
+      </nav>
+
+      <nav class="sidebar-navigation">
+        <header><h4>Block Groups</h4></header>
+        <ul>
+          <li><a href="#section-1.2"> Overview </a></li>
+          <li><a href="#section-1.2.1"> Responsive Block Groups </a></li>
+        </ul>
+      </nav>
+
+      <nav class="sidebar-navigation">
+        <header><h4>Layout Helpers</h4></header>
+        <ul>
+          <li><a href="#section-1.3.1"> Show and Hide </a></li>
+          <li><a href="#section-1.3.2"> Responsive Show and Hide </a></li>
+          <li><a href="#section-1.3.3"> Visually Hidden </a></li>
+          <li><a href="#section-1.3.4"> Leader and Trailer </a></li>
+          <li><a href="#section-1.3.5"> Responsive Leader and Trailer </a></li>
+          <li><a href="#section-1.3.6"> Padding Leader and Trailer </a></li>
+          <li><a href="#section-1.3.7"> Responsive Padding Leader and Trailer </a></li>
+          <li><a href="#section-1.3.8"> Full </a></li>
+          <li><a href="#section-1.3.9"> Right </a></li>
+          <li><a href="#section-1.3.10"> Left </a></li>
+          <li><a href="#section-1.3.11"> Responsive Left and Right </a></li>
+          <li><a href="#section-1.3.12"> Clear </a></li>
+          <li><a href="#section-1.3.13"> Clearfix </a></li>
+          <li><a href="#section-1.3.14"> Square </a></li>
+        </ul>
+      </nav>
+
+    </aside>
+
+    <section role="main" class="flow-content pre-1 column-18 tablet-column-24 tablet-pre-0">
+      <%# Grid %>
+      <div id="1.1">
+        <h1>Grid Overview</h1>
+        <p>The default grid is based on a 24 column percentage width grid that uses <code>box-sizing: border-box;</code> to help keep the grid aligned. It is compatible back to Internet Explorer 8.</p>
+        <p>The grid is percentage based, so 12 columns will always be 50% of the parent container. This makes nesting columns tricky, but greatly reduces the complexity of the grid.</p>
+        <p>There is a <code>.container</code> class which will center all content by default and will provide a <code>max-width</code> for the entire grid. The <code>.row</code> class will negate the outside margin of first and last columns. You can create columns with the <code>.column-xx</code> classes.</p>
+        <pre><code><%= strip_whitespace_for_pre('
+          <div class="container">
+            <div class="row">
+              <aside class="column-6"></aside>
+              <main class="column-14"></main>
+              <aside class="column-4"></aside>
+            </div>
+          </div>') %></code></pre>
+
+        <div class="center-text row trailer-half">
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+        </div>
+
+        <div class="center-text row trailer-half">
+          <div class="column-3"><div class="panel blue compact">3</div></div>
+          <div class="column-3"><div class="panel blue compact">3</div></div>
+          <div class="column-3"><div class="panel blue compact">3</div></div>
+          <div class="column-3"><div class="panel blue compact">3</div></div>
+          <div class="column-3"><div class="panel blue compact">3</div></div>
+          <div class="column-3"><div class="panel blue compact">3</div></div>
+          <div class="column-3"><div class="panel blue compact">3</div></div>
+          <div class="column-3"><div class="panel blue compact">3</div></div>
+        </div>
+
+        <div class="center-text row trailer-half">
+          <div class="column-4"><div class="panel blue compact">4</div></div>
+          <div class="column-4"><div class="panel blue compact">4</div></div>
+          <div class="column-4"><div class="panel blue compact">4</div></div>
+          <div class="column-4"><div class="panel blue compact">4</div></div>
+          <div class="column-4"><div class="panel blue compact">4</div></div>
+          <div class="column-4"><div class="panel blue compact">4</div></div>
+        </div>
+
+        <div class="center-text row trailer-half">
+          <div class="column-5"><div class="panel blue compact">5</div></div>
+          <div class="column-5"><div class="panel blue compact">5</div></div>
+          <div class="column-4"><div class="panel blue compact">4</div></div>
+          <div class="column-5"><div class="panel blue compact">5</div></div>
+          <div class="column-5"><div class="panel blue compact">5</div></div>
+        </div>
+
+        <div class="center-text row trailer-half">
+          <div class="column-6"><div class="panel blue compact">6</div></div>
+          <div class="column-6"><div class="panel blue compact">6</div></div>
+          <div class="column-6"><div class="panel blue compact">6</div></div>
+          <div class="column-6"><div class="panel blue compact">6</div></div>
+        </div>
+
+        <div class="center-text row trailer-half">
+          <div class="column-8"><div class="panel blue compact">8</div></div>
+          <div class="column-8"><div class="panel blue compact">8</div></div>
+          <div class="column-8"><div class="panel blue compact">8</div></div>
+        </div>
+
+        <div class="center-text row trailer-half">
+          <div class="column-9"><div class="panel blue compact">9</div></div>
+          <div class="column-6"><div class="panel blue compact">6</div></div>
+          <div class="column-9"><div class="panel blue compact">9</div></div>
+        </div>
+
+        <div class="center-text row trailer-half">
+          <div class="column-10"><div class="panel blue compact">10</div></div>
+          <div class="column-4"><div class="panel blue compact">4</div></div>
+          <div class="column-10"><div class="panel blue compact">10</div></div>
+        </div>
+
+        <div class="center-text row trailer-half">
+          <div class="column-11"><div class="panel blue compact">11</div></div>
+          <div class="column-2"><div class="panel blue compact">2</div></div>
+          <div class="column-11"><div class="panel blue compact">11</div></div>
+        </div>
+
+        <div class="center-text row trailer-1">
+          <div class="column-12"><div class="panel blue compact">12</div></div>
+          <div class="column-12"><div class="panel blue compact">12</div></div>
+        </div>
+
+      </div>
+
+      <%# Grid %>
+      <% styleguide "1.1.1" %>
+      <% styleguide "1.1.2" %>
+      <% styleguide "1.1.3" %>
+      <% styleguide "1.1.4" %>
+      <% styleguide "1.1.5" do %>
+        <div class="row">
+          <div class="column-8 $modifier_class"><div class="panel blue">8 Columns</div></div>
+        </div>
+      <% end %>
+      <% styleguide "1.1.6" do %>
+        <div class="trailer-1">
+          <div class="row">
+            <div class="column-12 tablet-column-18 phone-column-24"><div class="panel blue">Responsive Column</div></div>
+          </div>
+        </div>
+      <% end %>
+      <% styleguide "1.1.7" do %>
+        <div class="trailer-1">
+          <div class="row">
+            <div class="pre-1 column-10">
+              <div class="panel compact blue trailer-half">.pre-1.column-10</div>
+            </div>
+            <div class="pre-2 column-5 post-2">
+              <div class="panel compact blue trailer-half">.pre-2.post-2.column-5</div>
+            </div>
+            <div class="column-4">
+              <div class="panel compact blue trailer-half">.column-4</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="column-17 post-2">
+              <div class="panel compact blue trailer-half">.post-2.column-17</div>
+            </div>
+            <div class="column-5">
+              <div class="panel compact blue trailer-half">.column-5</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column-8 pre-2">
+              <div class="panel compact blue trailer-half">.pre-2.column-8</div>
+            </div>
+            <div class="column-8 post-2">
+              <div class="panel compact blue trailer-half">.post-2.column-8</div>
+            </div>
+            <div class="column-4">
+              <div class="panel compact blue trailer-half">.column-4</div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <% styleguide "1.1.8" do %>
+        <div class="column-12 pre-6 tablet-pre-2 phone-pre-1 panel blue compact"> ... </div>
+      <% end %>
+      <%# Block Groups %>
+      <% styleguide "1.2" do %>
+        <div class="block-group $modifier_class">
+          <div class="block content"> <div class="panel blue trailer-half">$modifier_class</div> </div>
+          <div class="block content"> <div class="panel blue trailer-half">$modifier_class</div> </div>
+          <div class="block content"> <div class="panel blue trailer-half">$modifier_class</div> </div>
+          <div class="block content"> <div class="panel blue trailer-half">$modifier_class</div> </div>
+          <div class="block content"> <div class="panel blue trailer-half">$modifier_class</div> </div>
+          <div class="block content"> <div class="panel blue trailer-half">$modifier_class</div> </div>
+        </div>
+      <% end %>
+      <% styleguide "1.2.1" %>
+
+      <%# Layout Helpers %>
+      <% styleguide "1.3.1" %>
+      <% styleguide "1.3.2" %>
+      <% styleguide "1.3.3" %>
+      <% styleguide "1.3.4" do %>
+        <div class="panel blue $modifier_class "> $modifier_class </div>
+      <% end %>
+      <% styleguide "1.3.5" %>
+      <% styleguide "1.3.6" do %>
+        <div class="panel blue $modifier_class"> $modifier_class </div>
+      <% end %>
+      <% styleguide "1.3.7" %>
+      <% styleguide "1.3.8" %>
+      <% styleguide "1.3.9" %>
+      <% styleguide "1.3.10" %>
+      <% styleguide "1.3.11" do %>
+        <div class="panel blue $modifier_class"> $modifier_class </div>
+      <% end %>
+      <% styleguide "1.3.12" %>
+      <% styleguide "1.3.13" %>
+      <% styleguide "1.3.14" do %>
+        <div class="panel blue $modifier_class"></div>
+      <% end %>
+    </section>
+  </div>
+</div>

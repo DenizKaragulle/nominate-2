@@ -1,0 +1,138 @@
+---
+title: Tailcoat | Type
+description: Typographic styles and elements for Tailcoat
+search_description: This page covers font families and common typographic elements, as well as their modifiers and implementation.
+section: 2
+---
+
+<div class="navigation-bar no-nav trailer-2">
+  <div class="container">
+    <header>
+        <h1>Typography</h1>
+    </header>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+
+    <aside class="column-5 tablet-column-24">
+        <nav class="sidebar-navigation">
+          <header>
+            <h4>Type Settings</h4>
+          </header>
+          <ul>
+            <li><a href="#section-2.1">Font Families</a></li>
+            <li><a href="#section-2.1.1">Font Sizes</a></li>
+          </ul>
+        </nav>
+        <nav class="sidebar-navigation">
+          <header>
+            <h4>Type Elements</h4>
+          </header>
+          <ul>
+            <li><a href="#section-2.2">Headers</a></li>
+            <li><a href="#section-2.3">Paragraphs</a></li>
+            <li><a href="#section-2.4">Block Quotes</a></li>
+            <li><a href="#section-2.5">Links</a></li>
+            <li><a href="#section-2.6">Lists</a></li>
+            <li><a href="#section-2.6.1">Ordered Lists</a></li>
+            <li><a href="#section-2.7">Mark</a></li>
+            <li><a href="#section-2.8">Code</a></li>
+            <li><a href="#section-2.9">Small</a></li>
+            <li><a href="#section-2.10">HR</a></li>
+          </ul>
+        </nav>
+        <nav class="sidebar-navigation">
+          <header>
+            <h4>Type Helpers</h4>
+          </header>
+          <ul>
+            <li><a href="#section-2.11">Font Family Classes</a></li>
+            <li><a href="#section-2.12">Modifier Classes</a></li>
+          </ul>
+        </nav>
+    </aside>
+
+    <section role="main" class="flow-content pre-1 column-18 tablet-column-24 tablet-pre-0">
+      <%# Typography %>
+      <div class="styleguide-example">
+        <h1>Typography</h1>
+
+        <p>Great care has been taken to ensure proper spacing, vertical rhythm, and typographic style throughout Tailcoat.</p>
+
+        <% styleguide "2.1" do %>
+        <p class="leader-1 large $modifier_class">
+            Amazingly few discotheques provide jukeboxes.
+        </p>
+        <% end %>
+
+        <% styleguide "2.1.1" %>
+
+        <% styleguide "2.2" do %>
+          <h3 class="$modifier_class">Header 3</h3>
+        <% end %>
+
+        <% styleguide "2.3" do %>
+          <p class="$modifier_class">Great care has been taken to ensure proper spacing, vertical rhythm, and typographic style throughout the style guide.</p>
+        <% end %>
+
+        <% styleguide "2.4" do %>
+          <blockquote>
+            Everything is designed.<br>
+            Few things are designed well.
+          </blockquote>
+        <% end %>
+
+        <% styleguide "2.5" do %>
+          <a href="#" class="$modifier_class">Link</a>
+        <% end %>
+
+        <% styleguide "2.6" do %>
+        <ul class="$modifier_class">
+          <li>One</li>
+          <li>Two</li>
+          <li>Three</li>
+        </ul>
+        <% end %>
+
+        <% styleguide "2.6.1" do %>
+        <ol class="$modifier_class">
+          <li>One</li>
+          <li>Two</li>
+          <li>Three</li>
+        </ol>
+        <% end %>
+
+        <% styleguide "2.7" do %>
+        <mark class="$modifier_class">Beta</mark>
+        <% end %>
+
+        <% styleguide "2.8" do %>
+          <p>Here is an example of the <code>alert</code> function</p>
+          <pre><code>alert("Hello World");</code></pre>
+        <% end %>
+
+        <% styleguide "2.9" do %>
+          <small>Copyright &copy; 2013</small>
+        <% end %>
+
+        <% styleguide "2.10" do %>
+          <hr />
+        <% end %>
+
+        <% styleguide "2.11" do %>
+        <p class="leader-1 large $modifier_class">
+            Amazingly few discotheques provide jukeboxes.
+        </p>
+        <% end %>
+
+        <% styleguide "2.12" do %>
+          <p class="$modifier_class leader-1 no-trailer">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <p class="$modifier_class no-trailer"><a href="/">Read More</a></p>
+        <% end %>
+
+      </div>
+
+    </section>
+  </div>
+</div>

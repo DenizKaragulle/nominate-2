@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!--[if lt IE 9]>  <html class="ie lt-ie9 ie8"> <![endif]-->
+<!--[if IE 9]>     <html class="ie ie9"> <![endif]-->
+<!--[if !IE]><!--> <html> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <%# Always force latest IE rendering engine or request Chrome Frame %>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <%# Use title if it's in the page YAML frontmatter %>
+    <title><%= data.page.title || "Tailcoat" %></title>
+    <%# Link to favicon %>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <%# Link to font stylesheet %>
+    <link type="text/css" rel="stylesheet" href="http://fast.fonts.net/cssapi/3706abc4-0756-424b-b07b-1748122f85d8.css">
+    <%= stylesheet_link_tag "all" %>
+    <%= javascript_include_tag  "libs/kss", "libs/highlight.pack" %>
+    <!--[if lt IE 9]>
+      <%= javascript_include_tag "libs/selectivizr-min.js" %>
+      <%= javascript_include_tag "libs/html5shiv.js" %>
+    <![endif]-->
+  </head>
+  <body class="<%= page_classes %>">
+
+    <!-- Mobile Nav Drawer -->
+    <div class="drawer">
+      <nav class="drawer-nav drawer-left">
+        <div class="drawer-header">
+          <h4 class="site-title">Tailcoat</h4>
+        </div>
+        <%= partial "mobile_nav" %>
+      </nav>
+      <nav class="drawer-nav drawer-right">
+        <div class="drawer-header">
+          <h4 class="site-title">Tailcoat</h4>
+        </div>
+        <%= partial "mobile_nav" %>
+      </nav>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="wrapper">
+      <div class="page sticky-footer">
+        <header class="header">
+          <div class="container">
+            <div class="row">
+              <div class="inner-header">
+                <div class="site-brand">
+                  <a class="drawer-toggle toggle-site-navigation icon-navigation tablet-show" data-direction="active-left" href="#"></a>
+                  <a href="<%= base_url %>" class="site-logo">Tailcoat</a>
+                </div>
+                <nav class="site-nav tablet-hide">
+                  <%= partial "nav_list" %>
+                </nav>
+                <div class="site-search right">
+                  <form class="site-search-form">
+                    <span class="site-search-toggle icon-search"></span>
+                    <input class="left site-search-input" type="search" placeholder="Search">
+                    <button type="submit" class="btn transparent site-search-button">Go</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <%= yield %>
+      </div>
+
+      <footer class="footer sticky-footer">
+        <div class="container">
+          <div class="row">
+            <nav class="column-6 tablet-column-24 leader-2">
+              <h4>Development Styleguides</h4>
+              <ul>
+                <li><%= link_to "CSS", base_url + "styleguides/css"%></li>
+                <li><%= link_to "HTML", base_url + "styleguides/html"%></li>
+                <li><%= link_to "Javascript", base_url + "styleguides/js"%></li>
+              </ul>
+            </nav>
+
+            <nav class="column-6 tablet-column-24 leader-2">
+              <h4>Sites Using This Framework</h4>
+              <ul>
+                <li><%= link_to "ArcGIS for Developers", "http://developers.arcgis.com"%></li>
+                <li><%= link_to "Esri Github", "http://esri.github.com/"%></li>
+              </ul>
+            </nav>
+
+            <nav class="column-6 tablet-column-24 right">
+              <%= link_to "Esri", "http://esri.com", class: "esri-logo-footer" %>
+              <section class="footer-social-nav">
+                <%= link_to "", "https://twitter.com/Esri/", class: "icon-twitter" %>
+                <%= link_to "", "https://www.facebook.com/esrigis/", class: "icon-facebook" %>
+                <%= link_to "", "http://esri.github.com/", class: "icon-github" %>
+                <%= link_to "", "http://www.esri.com/about-esri/contact/", class: "icon-email" %>
+              </section>
+            </nav>
+            <small class="footer-legal column-24 leader-2">© Copyright <%= Time.now.year %> Environmental Systems Research Institute, Inc. | <%= link_to "Privacy", "http://www.esri.com/legal/privacy" %> | <%= link_to "Legal", "http://www.esri.com/legal/software-license" %></small>
+          </div>
+
+        </div>
+      </footer>
+    </div>
+    <script>
+      hljs.tabReplace = '  '; //2 spaces
+      hljs.initHighlighting();
+    </script>
+
+    <!-- JS for Patterns -->
+    <%=  javascript_include_tag "all" %>
+    <%=  javascript_include_tag "tailcoat" %>
+    <% if current_page.data.js %>
+      <% current_page.data.js.each do |script| %>
+        <%=  javascript_include_tag script %>
+      <% end %>
+    <% end %>
+  </body>
+</html>

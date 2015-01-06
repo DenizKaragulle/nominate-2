@@ -1,0 +1,20 @@
+{
+  "results": [
+  <%# All Styleguide Sections %>
+<% guide.sections.keys.each do |k| %>
+<%= search_block "#{k}" %>
+<% end %>
+
+  <%# All the other Pages %>
+  <% pages = sitemap.resources.find_all{|p| p.source_file.match(/\.html/) } %>
+  <% pages.each_with_index do |p, i| %>
+    {
+      "section": "<%= p.data.section %>",
+      "title": "<%= p.data.title %>",
+      "page": "<%= p.url[1...-1] %>",
+      "description": "<%= p.data.search_description %>",
+      "link": "<%= base_url + p.url[1...-1] %>"
+    }<% if i != pages.size - 1 %>,<% end %>
+  <% end %>
+  ]
+}

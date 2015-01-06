@@ -1,0 +1,170 @@
+---
+title: Tailcoat | Javascript Components
+description: Components requiring Javascript in Tailcoat
+search_description: This page covers all interface components and patterns that require the tailcoat.js javascript library.
+section: 6
+---
+
+<div class="navigation-bar no-nav trailer-2">
+  <div class="container">
+    <header>
+        <h1>Javascript Components</h1>
+    </header>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+
+    <aside class="column-5 tablet-column-24">
+      <nav class="sidebar-navigation">
+        <header><h4>Brand Elements</h4></header>
+        <ul>
+          <li><a href="#section-6.1">Modals</a></li>
+          <li><a href="#section-6.2">Tabs</a></li>
+          <li><a href="#section-6.3">Accordions</a></li>
+          <li><a href="#section-6.4">Drawer</a></li>
+          <li><a href="#section-6.5">Click Dropdown</a></li>
+          <li><a href="#section-6.6">Site Dropdown</a></li>
+          <li><a href="#section-6.7">Responsive Navigation Bar</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <section role="main" class="flow-content pre-1 column-18 tablet-column-24 tablet-pre-0">
+      <h1>Javascript Components</h1>
+      <p>The following components rely on the tailcoat javascript library. You can find the library in <code>dist/js/tailcoat.js</code>.</p>
+
+      <div class="styleguide-example">
+        <% styleguide "6.1" do %>
+          <a class="modal-show btn orange" data-modal="question" href="#">Show Modal</a>
+          <div class="modal-overlay">
+            <div class="modal" data-modal="question">
+              <a class="modal-dismiss icon-close right" href="#"></a>
+              <h4>Question</h4>
+              <p>Do you want to dismiss this modal?</p>
+              <button class="btn blue modal-dismiss">Yes</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "6.2" do %>
+          <div class="tab-group $modifier_class">
+            <nav class="tab-nav">
+              <a class="tab active">Tab 1</a>
+              <a class="tab">Tab 2</a>
+              <a class="tab">Tab 3</a>
+            </nav>
+            <section class="tab-contents">
+              <article class="tab-content active">
+                <p>Tab 1 Content</p>
+              </article>
+              <article class="tab-content">
+                <p>Tab 2 Content</p>
+              </article>
+              <article class="tab-content">
+                <p>Tab 3 Content</p>
+              </article>
+            </section>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "6.3" do %>
+          <div class="accordion $modifier_class">
+            <section class="accordion-section active current">
+              <header>
+                <h5 class="section-title">Current Section</h5>
+              </header>
+              <ul class="section-content">
+                <li class="current"><a href="#">Current Page</a></li>
+                <li><a href="http://waggingtailspc.com/wp-content/uploads/2013/10/cats-animals-kittens-background-us.jpg">link</a></li>
+                <li><a href="http://waggingtailspc.com/wp-content/uploads/2013/10/cats-animals-kittens-background-us.jpg">link</a></li>
+              </ul>
+            </section>
+            <section class="accordion-section">
+              <header>
+                <h5 class="section-title">Section Title</h5>
+              </header>
+              <ul class="section-content">
+                <li><a href="http://static.squarespace.com/static/5068a99084ae5a723be3f171/t/52701d03e4b00e2f47e7474a/1383079207639/kitten-in-a-sweater-kittens-5890480-670-578.jpg">Link</a></li>
+                <li><a href="http://tyrannyoftradition.files.wordpress.com/2012/05/cutest-kitten-hat-ever-13727-1238540322-17.jpg">Link</a></li>
+                <li><a href="http://images2.fanpop.com/image/photos/10500000/Cute-Wallpapers-cute-kittens-10501750-1024-768.jpg">Link</a></li>
+              </ul>
+            </section>
+            <section class="accordion-section">
+              <header>
+                <h5 class="section-title">Another Section</h5>
+              </header>
+              <ul class="section-content">
+                <li><a href="http://dailynewsdig.com/wp-content/uploads/2013/05/cutest-kittens-in-the-world-2.jpg">Link</a></li>
+                <li><a href="http://www.deargrumpycat.com/wp-content/uploads/2013/02/Grumpy-Cat1.jpg">Link</a></li>
+                <li><a href="http://www.kimballstock.com/pix/PIG/01/PIG-01-RK0195-17P.JPG">Link</a></li>
+              </ul>
+            </section>
+          </div>
+        <% end %>
+
+        <%# Drawer %>
+        <% styleguide "6.4" do %>
+          <a class="drawer-toggle btn blue" data-direction="active-left" href="#">Toggle Left Drawer</a>
+          <a class="drawer-toggle btn orange" data-direction="active-right" href="#">Toggle Right Drawer</a>
+        <% end %>
+
+        <%# Click Dropdown %>
+        <% styleguide "6.5" do %>
+          <div class="click-dropdown $modifier_class">
+            <a href="#" class="click-dropdown-link">Click Me</a>
+            <nav class="click-dropdown-menu">
+              <a href="#" class="click-dropdown-item selected">Item 1</a>
+              <a href="#" class="click-dropdown-item">Item 2</a>
+            </nav>
+          </div>
+        <% end %>
+
+        <%# Site Dropdown %>
+        <% styleguide "6.6" do %>
+          <div class="site-brand">
+            <a href="#" class="site-logo">Arc<span>GIS</span> for Developers</a>
+            <span class="site-dropdown-toggle"></span>
+            <nav class="site-dropdown">
+              <a href="http://www.arcgis.com/about/">
+                <h4>ArcGIS</h4>
+                <p>Learn more about ArcGIS for Organizations</p>
+              </a>
+              <a href="http://developers.arcgis.com/" class="current selected">
+                <h4>ArcGIS for Developers</h4>
+                <p>Build location-aware apps with ArcGIS</p>
+              </a>
+            </nav>
+          </div>
+        <% end %>
+
+        <% styleguide "6.7" do %>
+          <div class="navigation-bar responsive $modifier_class">
+            <div class="container">
+              <header>
+                <h1>Section Title</h1>
+                <a class="btn secondary right leader-1" href="#"> Call to Action </a>
+              </header>
+              <nav class="navigation-bar-nav">
+                <a href="#" class="dropdown-toggle icon-navigation"></a>
+                <ul>
+                  <li class="current"> <a href="#"> Page 1 </a> </li>
+                  <li> <a href="#"> Page 2 </a> </li>
+                  <li> <a href="#"> Page 3 </a> </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </section>
+  </div>
+</div>

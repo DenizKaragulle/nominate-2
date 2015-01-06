@@ -1,0 +1,54 @@
+{
+  "name": "tailcoat",
+  "version": "1.2.0",
+  "description": "SASS & CSS Framework for ArcGIS websites",
+  "private": true,
+  "homepage": "https://github.com/ArcGIS/tailcoat",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ArcGIS/tailcoat.git"
+  },
+  "author": {
+    "name": "Esri Portland R&D Center",
+    "email": "<portland@esri.com>",
+    "url": "http://pdx.esri.com/"
+  },
+  "contributors": [
+    {
+      "name": "Paul C. Pederson",
+      "email": "ppederson@esri.com"
+    },
+    {
+      "name": "Patrick Arlt",
+      "email": "parlt@esri.com"
+    },
+    {
+      "name": "Nikolas Wise",
+      "email": "nwise@esri.com"
+    },
+    {
+      "name": "Nate Goldman",
+      "email": "ngoldman@esri.com"
+    }
+  ],
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/ArcGIS/tailcoat/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-gh-pages": "~0.9.0",
+    "grunt-middleman": "~0.1.1",
+    "grunt-contrib-compass": "~0.7.0",
+    "grunt-rename": "~0.1.3",
+    "matchdep": "~0.3.0",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-concat": "~0.4.0"
+  },
+  "dependencies": {}
+}

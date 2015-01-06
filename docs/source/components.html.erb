@@ -1,0 +1,346 @@
+---
+title: Tailcoat | Components
+description: UI Components for Tailcoat
+search_description: This page covers all the interface components for Tailcoat such as buttons, forms, tables, and tooltips.
+section: 3
+---
+
+<div class="navigation-bar no-nav trailer-2">
+  <div class="container">
+    <header>
+        <h1>Components</h1>
+    </header>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <aside class="column-5 tablet-column-24">
+      <nav class="sidebar-navigation">
+        <header><h4>Brand Elements</h4></header>
+        <ul>
+          <li><a href="#section-3.1">Colors</a></li>
+          <li><a href="#section-3.2">Icons</a></li>
+        </ul>
+      </nav>
+
+      <nav class="sidebar-navigation">
+        <header><h4>Basic Components</h4></header>
+        <ul>
+          <li><a href="#section-3.3">Buttons</a></li>
+          <li><a href="#section-3.4">Button Groups</a></li>
+          <li><a href="#section-3.5">Tooltips</a></li>
+          <li><a href="#section-3.6">Dropdowns</a></li>
+          <li><a href="#section-3.7">Alerts</a></li>
+          <li><a href="#section-3.8">Breadcrumbs</a></li>
+          <li><a href="#section-3.9">Pagination</a></li>
+          <li><a href="#section-3.10">Loader</a></li>
+        </ul>
+      </nav>
+
+      <nav class="sidebar-navigation">
+        <header><h4>Containers</h4></header>
+        <ul>
+          <li><a href="#section-3.11">Panels</a></li>
+        </ul>
+      </nav>
+
+
+      <nav class="sidebar-navigation">
+        <header><h4>Tables</h4></header>
+        <ul>
+          <li><a href="#section-3.12">Overview</a></li>
+          <li><a href="#section-3.12.1">Table Cells</a></li>
+        </ul>
+      </nav>
+
+      <nav class="sidebar-navigation">
+        <header><h4>Forms</h4></header>
+        <ul>
+          <li><a href="#section-3.13.1">Labels</a></li>
+          <li><a href="#section-3.13.2">Text Inputs</a></li>
+          <li><a href="#section-3.13.3">Textarea</a></li>
+          <li><a href="#section-3.13.4">Select</a></li>
+          <li><a href="#section-3.13.5">Checkboxes and Radio Buttons</a></li>
+          <li><a href="#section-3.13.6">Input List</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <section role="main" class="flow-content pre-1 column-18 tablet-column-24 tablet-pre-0">
+      <h1>Components</h1>
+      <p>There are many styles available for default styling of tables, buttons, and forms that you can use in your applications.</p>
+
+      <% styleguide "3.1" %>
+      <% styleguide "3.1.2" %>
+
+      <div class="styleguide-example">
+        <% styleguide "3.2" do %>
+          <h3 class="icon-globe $modifier_class"> $modifier_class </h3>
+        <% end %>
+        <div class="gridded-examples">
+          <% styleguide "3.2.1" do %>
+            <h3 class="$modifier_class"> $modifier_class </h3>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.3" do %>
+          <button href="#" class="btn $modifier_class">Button</button>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.4" do %>
+          <div class="btn-group $modifier_class column-24">
+            <a href="#" class="active column-8">Button 1</a>
+            <a href="#" class="column-8">Button 2</a>
+            <a href="#" class="column-8">Button 3</a>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.5" do %>
+          <div class="tooltip $modifier_class">
+            <span class="icon-help"></span>
+            <div class="tooltip-wrapper">
+              <p class="tooltip-content">Text to appear in the tooltip.</p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.6" do %>
+        <div class="dropdown-navigation dropdown-wrapper $modifier_class">
+          <a href="#" class="dropdown"> Button Text </a>
+          <div class="dropdown-content">
+            <div class="dropdown-menu">
+              <ul>
+                <li><a href="#">Option 1 this is a long title</a></li>
+                <li><a href="#">Option 2</a></li>
+                <li><a href="#">Option 3</a></li>
+              </ul>
+              <hr>
+              <ul>
+                <li><a href="#">Group 2 Option 1</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <% end %>
+
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.7" do %>
+          <div class="alert $modifier_class">
+            Something Happened <a>Link</a>
+            <a href="" class="icon-close"></a>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.8" do %>
+          <ul class="breadcrumbs $modifier_class">
+            <li><a href="#">Level One</a></li>
+            <li><a href="#">Level 2</a></li>
+            <li><a href="#">Current Level</a></li>
+          </ul>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.9" do %>
+        <ol class="pagination $modifier_class">
+
+          <a class="pagination-previous" href="#">
+            <span class="icon-left-arrow"></span>
+          </a>
+
+          <li class='pagination-page'>
+            <a href="#">1</a>
+          </li>
+          <li class='pagination-page'>
+            <a href="#">2</a>
+          </li>
+          <li class='pagination-page active'>
+            <a href="#">3</a>
+          </li>
+          <li class='pagination-page'>
+            <a href="#">4</a>
+          </li>
+          <li class="pagination-page">
+            <a href="#">5</a>
+          </li>
+
+          <a class="pagination-next" href="#">
+            <span class="icon-right-arrow"></span>
+          </a>
+
+
+        </ol>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.10" do %>
+        <div class="loader">
+          <span class="side side-left"><span class="fill"></span></span>
+          <span class="side side-right"><span class="fill"></span></span>
+          <p class="loading-word">Loading...</p>
+        </div>
+        <% end %>
+      </div>
+
+      <div class="style-guide-example">
+        <% styleguide "3.11" do %>
+          <div class="panel $modifier_class">
+            <h4>Lorem Ipsum</h4>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.</p>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <% styleguide "3.12" do %>
+          <table class="$modifier_class">
+            <thead>
+              <tr>
+                <td> td </td>
+                <th> th </th>
+                <th> th </th>
+              </tr>
+            </thead>
+            <tbody class="align-center">
+              <tr>
+                <td> 27 </td>
+                <td> 14 </td>
+                <td> 8  </td>
+              </tr>
+              <tr>
+                <td> 27 </td>
+                <td> 14 </td>
+                <td> 8  </td>
+              </tr>
+            </tbody>
+          </table>
+        <% end %>
+        <% styleguide "3.12.1" do %>
+          <table>
+            <thead>
+              <tr>
+                <td class="$modifier_class"> td </td>
+                <th class="$modifier_class"> th<br>th </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="$modifier_class"> 27 </td>
+                <td class="$modifier_class"> 14 </td>
+              </tr>
+              <tr>
+                <td class="$modifier_class"> 27 </td>
+                <td class="$modifier_class"> 14 </td>
+              </tr>
+            </tbody>
+          </table>
+        <% end %>
+      </div>
+
+      <div class="styleguide-example">
+        <h2>Forms</h2>
+        <p>The forms section provides basic styling of form elements in addition to a basic reset.</p>
+
+        <%# Labels %>
+        <% styleguide "3.13.1" do %>
+          <label>
+            Username
+            <input type="text" name="username" value="guest">
+          </label>
+        <% end %>
+
+        <%# Text Input %>
+        <% styleguide "3.13.2" do %>
+        <input type="text" name="username" value="" placeholder="placeholder" class="$modifier_class">
+        <% end %>
+
+        <%# Text Area %>
+        <% styleguide "3.13.3" do %>
+          <textarea rows="2" class="$modifier_class"></textarea>
+        <% end %>
+
+        <%# Select %>
+        <% styleguide "3.13.4" do %>
+            <label> Card Type
+              <select class="$modifier_class">
+                <option selected value="visa">Visa</option>
+                <option value="mastercard">MasterCard</option>
+                <option value="americanexpress">American Express</option>
+              </select>
+            </label>
+        <% end %>
+
+        <%# Checkboxes and Radio Buttons %>
+        <% styleguide "3.13.5" do %>
+          <ul class="input-list">
+            <li>
+              <label><input type="checkbox"> Checkbox 1</label>
+            </li>
+
+            <li>
+              <label><input type="checkbox" checked> Checkbox 2</label>
+            </li>
+          </ul>
+
+          <ul class="input-list">
+            <li>
+              <label><input type="radio"> Checkbox 1</label>
+            </li>
+
+            <li>
+              <label><input type="radio" checked> Checkbox 2</label>
+            </li>
+          </ul>
+        <% end %>
+
+        <%# Input Lists %>
+        <% styleguide "3.13.6" do %>
+          <ul class="input-list">
+            <li>
+              <label><input type="checkbox"> Checkbox 1</label>
+            </li>
+            <li>
+              <label><input type="checkbox"> Checkbox 2</label>
+            </li>
+          </ul>
+
+          <ul class="input-list">
+            <li>
+              <label> Card Type
+                <select>
+                  <option selected value="visa">Visa</option>
+                  <option value="mastercard">MasterCard</option>
+                  <option value="americanexpress">American Express</option>
+                </select>
+              </label>
+            </li>
+          </ul>
+
+          <ul class="input-list">
+            <li>
+              <label><input type="radio"> Checkbox 1</label>
+            </li>
+            <li>
+              <label><input type="radio" checked> Checkbox 2</label>
+            </li>
+          </ul>
+        <% end %>
+      </div>
+
+    </section>
+  </div>
+</div>

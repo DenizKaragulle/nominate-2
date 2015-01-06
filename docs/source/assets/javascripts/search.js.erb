@@ -1,0 +1,79 @@
+var app = angular.module('searchApp', [])
+
+.filter('capitalize', [function () {
+  return function(input, scope) {
+    if (input !== null) {
+      input = input.toLowerCase();
+      return input.substring(0,1).toUpperCase()+input.substring(1);
+    }
+    return input;
+  };
+}])
+
+.factory('searchService', ['$http', function ($http) {
+  return {
+    getData: function(callback) {
+      return $http.get('<%= base_url %>assets/data/search.json');
+    }
+  };
+}])
+
+.controller('searchCtrl', ['$scope', '$http', 'filterFilter', 'searchService',
+  function ($scope, $http, filterFilter, searchService) {
+
+  $scope.searchTerm = (function(){
+    if (location.search === '') {
+      return '';
+    }
+    var term = decodeURIComponent(location.search.substring(1).split('=')[1]);
+    var replaced = term.split('+').join(' ');
+    return replaced;
+  })();
+
+  $scope.pageFilters = [
+    { page: '', title: 'All Pages'},
+    { page: 'layout', title: 'Layout'},
+    { page: 'type', title: 'Type'},
+    { page: 'components', title: 'Components'},
+    { page: 'patterns', title: 'Patterns'},
+    { page: 'sass', title: 'Sass'},
+    { page: 'javascript', title: 'Javascript'},
+  ];
+
+  $scope.results = [];
+  $scope.filteredResults = filterFilter($scope.results, $scope.searchTerm);
+  $scope.currentPage = 1;
+  $scope.pageSize = 10;
+  $scope.pages = [];
+  $scope.pageFilter = '';
+  $scope.firstItemIndex = 0;
+  $scope.lastItemIndex = 0;
+
+  $scope.numberOfPages = function() {
+    return Math.ceil($scope.filteredResults.length / $scope.pageSize);
+  };
+
+  $scope.changeCurrentPage = function(number) {
+    $scope.currentPage = number;
+  };
+
+  $scope.$watchCollection('[results, searchTerm, pageFilter]', function() {
+    $scope.currentPage = 1;
+    $scope.filteredResults = filterFilter($scope.results, $scope.searchTerm);
+    $scope.filteredResults = filterFilter($scope.filteredResults, {page: $scope.pageFilter});
+    $scope.pages = [];
+    for (var i = 0; i < $scope.numberOfPages(); i++) {
+      $scope.pages.push(i + 1);
+    }
+  });
+
+  $scope.$watch('currentPage', function(){
+    $scope.firstItemIndex = ($scope.currentPage - 1) * $scope.pageSize + 1;
+    $scope.lastItemIndex = ($scope.currentPage - 1) * $scope.pageSize + $scope.pageSize;
+  });
+
+  searchService.getData().then(function(response) {
+    $scope.results = response.data.results;
+  });
+
+}]);

@@ -1,142 +1,179 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans:300,600,700">
-	<link rel="stylesheet" type="text/css" href="css/layout.css">
-	<link rel="stylesheet" type="text/css" href="css/styles.css">
-	<link rel="stylesheet" type="text/css" href="css/grid.css">
-	<link rel="stylesheet" type="text/css" href="css/editor.css">
+	<meta charset="utf-8">
+	<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<link rel="shortcut icon" href="/img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/tailcoat.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/layout.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/grid.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/editor.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/styles.css">
 	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/dijit/themes/nihilo/nihilo.css">
 	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css">
+	<link rel="stylesheet" type="text/css" href="http://fast.fonts.net/cssapi/3706abc4-0756-424b-b07b-1748122f85d8.css">
 
 	<style>
-		.content-container {
-			background-color: #ffffff;
-			width: 100%;
-			height: 750px;
-			top: 25px;
-			border: none;
-			margin-left: 5px;
-			overflow-y:scroll;
+		html, body {
+
 		}
 
-		#msg-overlay {
-			display: none;
-			width: 100px;
-			height: 100px;
-			border-radius: 4px;
-			opacity: 0.85;
-			background-color: #3c3c3c;
+		.test {
+			background-color: #005E95;
 			color: white;
-			position: absolute;
-			z-index: 1000;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			margin: auto;
+			height: 150px;
 		}
 
-		#msg-overlay-text {
-			text-align: center;
+		.sign-in {
+
+		}
+
+		.dropdown-item-filter {
+			display: none;
 		}
 	</style>
-
 </head>
 
 <body class="nihilo">
-	<div id="msg-overlay">
-		<div id="msg-overlay-text">saved</div>
-	</div>
-	<div class="page-container" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'sidebar', gutters:false">
-		<!-- HEADER -->
-		<div class="header-pane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
-			Living Atlas of the World: Nominate an app, web map, or layer
-		</div>
-
-		<div class="control-pane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
-			<!--<div id="anonymousPanel" style="display: none;">
-				<span id="sign-in" class="action">Sign In</span>
-			</div>
-			<div id="personalizedPanel" style="display: none;">
-				<span id="sign-out" class="action">Sign Out</span>
-			</div>-->
-			<div id="init-screen-msg"></div>
-
-			<div id="sign-in-container">
-				<a id="signIn" disabled='disabled'>NOMINATE YOUR MAPS AND APPS</a>
-			</div>
-
-			<!-- filtering and sorting -->
-			<div id="filter-container">
-				<!-- filtering header -->
-				<div class="filter-container-header">
-					<div class="filter-header">FILTER BY:</div>
-				</div>
-
-				<!-- filtering -->
-				<div class="filter-container">
-					<input id="filter-container-drop-down">
+<div class="wrapper">
+	<!-- HEADER -->
+	<header class="header">
+		<div class="container">
+			<div class="row">
+				<div class="inner-header">
+					<div class="site-brand">
+						<a href="#" class="site-logo">Arc<span>GIS</span></a>
+					</div>
+					<nav class="site-nav">
+						<ul>
+							<li><a href="/page-1">FEATURES</a></li>
+							<li><a href="/page-2">PLANS</a></li>
+							<li><a href="/page-3">GALLERY</a></li>
+							<li><a href="/page-4">MAP</a></li>
+							<li><a href="/page-4">HELP</a></li>
+						</ul>
+					</nav>
+					<div class="esri-logo">Esri</div>
 				</div>
 			</div>
 		</div>
+		<div class="row">
+			<div class="column-24 test">
+				<h3 class="icon-globe">Living Atlas of the World: Nominate an app, web map or layer</h3>
+			</div>
+		</div>
+	</header>
 
-		<!-- LEADING PANE -->
-		<div class="leading-pane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'">
-			<div id="grid"></div>
+	<!-- CONTENT -->
+	<div class="container">
+		<div class="row">
+			<div class="column-24">
+				<p class="leader-1 light intro"></p>
+			</div>
+
+			<div class="column-5 right dropdown-item-filter">
+				<div class="dropdown-navigation dropdown-wrapper right-align">
+					<a class="dropdown"> Filter Items </a>
+					<div class="dropdown-content">
+						<div class="dropdown-menu">
+							<ul>
+								<li><a data-value="all-times" class="filter-list">All Items</a></li>
+							</ul>
+							<hr>
+							<ul>
+								<li><a data-value="Web Map" class="filter-list">Web Map</a></li>
+								<li><a data-value="CityEngine Web Scene" class="filter-list">CityEngine Web Scene</a></li>
+								<li><a data-value="Web Scene" class="filter-list">Web Scene</a></li>
+								<li><a data-value="Pro Map" class="filter-list">Pro Map</a></li>
+								<li><a data-value="Feature Service" class="filter-list">Feature Service</a></li>
+								<li><a data-value="Map Service" class="filter-list">Map Service</a></li>
+								<li><a data-value="Image Service" class="filter-list">Image Service</a></li>
+								<li><a data-value="Web Mapping Application" class="filter-list">Web Mapping Application</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!--<ul class="input-list right-align">
+					<li>
+						<label>
+							<select>
+								<option selected value="">All Items</option>
+								<option value="webmap">Web Map</option>
+								<option value="cityEngine">CityEngine Web Scene</option>
+								<option value="webScene">Web Scene</option>
+								<option value="proMap">Pro Map</option>
+								<option value="featureService">Feature Service</option>
+								<option value="mapService">Map Service</option>
+								<option value="imageService">Image Service</option>
+								<option value="webMappingApplication">Web Mapping Application</option>
+							</select>
+						</label>
+					</li>
+				</ul>-->
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="column-24 center">
+				<div id="dgrid" class="dgrid-autoheight"></div>
+			</div>
+		</div>
+
+		<!-- SIGN-IN BUTTON-->
+		<div class="row sign-in-row">
+			<div class="column-8 center">
+				<button id="sign-in" class="btn small">NOMINATE YOUR MAPS AND APPS</button>
+			</div>
 		</div>
 	</div>
 
-<script type="text/javascript">
-	var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-	var dojoConfig = {
-		async:true,
-		// The locationPath logic below may look confusing but all its doing is
-		// enabling us to load the api from a CDN and load local modules from the correct location.
-		packages:[
-			{
-				name:"application",
-				location:package_path + '/js'
-			},
-			{
-				name:"config",
-				location:package_path + '/config'
-			},
-			{
-				name:"arcgis_templates",
-				location:package_path + '/..'
-			}
-		]
-	};
-</script>
+	<div class="page sticky-footer"></div>
+</div>
 
+<footer class="footer sticky-footer">
+	<div class="container">
+		<div class="row">
+			<nav class="column-6 tablet-column-24 leader-1">
+				<h4>Header 1</h4>
+				<ul>
+					<li><a href="http://doc.arcgis.com/en/living-atlas/item/?itemId=d5e02a0c1f2b4ec399823fdd3c2fdebd">Living
+						Atlas</a></li>
+					<li><a href="#">Link 2</a></li>
+				</ul>
+			</nav>
+			<nav class="column-6 tablet-column-24 leader-1">
+				<h4>Header 2</h4>
+				<ul>
+					<li><a href="#">Link 1</a></li>
+					<li><a href="#">Link 2</a></li>
+				</ul>
+			</nav>
+			<nav class="column-6 tablet-column-24 leader-1">
+				<h4>Header 3</h4>
+				<ul>
+					<li><a href="#">Link 1</a></li>
+					<li><a href="#">Link 2</a></li>
+				</ul>
+			</nav>
+			<nav class="column-6 tablet-column-24 leader-1">
+				<a class="esri-logo-footer" href="http://esri.com">Esri</a>
+				<section class="footer-social-nav">
+					<a class="icon-twitter" href="https://twitter.com/Esri/"></a>
+					<a class="icon-facebook" href="https://www.facebook.com/esrigis/"></a>
+					<a class="icon-github" href="http://esri.github.com/"></a>
+					<a class="icon-email" href="http://www.esri.com/about-esri/contact/"></a>
+				</section>
+			</nav>
+			<small class="footer-legal column-24 leader-1 trailer-1">© Copyright 2013 Environmental Systems Research
+				Institute, Inc. | <a href="http://www.esri.com/legal/privacy">Privacy</a> | <a
+						href="http://www.esri.com/legal/software-license">Legal</a></small>
+		</div>
+	</div>
+</footer>
+
+<script src="assets/javascripts/tailcoat.js"></script>
 <script src="//js.arcgis.com/3.11/"></script>
-
-<script type="text/javascript">
-	require([
-		"application/templateOptions",
-		"application/template",
-		"application/main",
-		"dijit/layout/BorderContainer",
-		"dijit/layout/ContentPane",
-		"dojo/parser"
-	], function (templateConfig, Template, Main, BorderContainer, ContentPane, parser) {
-		parser.parse();
-		// create the template. This will take care of all the logic required for template applications
-		var myTemplate = new Template(templateConfig);
-		// create my main application. Start placing your logic in the main.js file.
-		var myApp = new Main();
-		// start template
-		myTemplate.startup().then(function (config) {
-			// The config object contains the following properties: helper services, (optionally)
-			// i18n, appid, webmap and any custom values defined by the application.
-			// In this example we have one called theme.
-			myApp.startup(config);
-		}, function (error) {
-			// something went wrong. Let's report it.
-			myApp.reportError(error);
-		});
-	});
-</script>
+<script src="assets/javascripts/main.js"></script>
 </body>
 </html>

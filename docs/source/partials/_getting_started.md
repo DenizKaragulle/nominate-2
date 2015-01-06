@@ -1,30 +1,12 @@
-# Tailcoat
-A Compass plugin & CSS framework for use with building ArcGIS websites.
-
-[Read the docs](http://arcgis.github.com/tailcoat/)!
-
-## What's Included
-
-### Distribution (CSS, JS, images, fonts)
-* `dist/tailcoat/` - Drop-in ready folder containing all built dependencies for Tailcoat
-
-### Core files
-* `lib/stylesheets/` - SASS source (see "Using as a Compass plugin" to use these in a project)
-* `lib/javascripts/` - JavaScript source
-* `lib/tailcoat.rb` - Ruby file for including Tailcoat as a SASS plugin
-
-### Documentation
-* `docs/source/` - Documentation site source
-
-## Getting Started
+# Getting Started
 
 Tailcoat is a CSS framework and styleguide meant to empower front end developers to rapidly build web applications and websites for ArcGIS products and prototypes. The framework is built on top [SASS](http://sass-lang.com/) and [Compass](http://compass-style.org/), but can also be used as plain CSS. Tailcoat includes a comprehensive grid system, typographic standards, a large color pallette of Esri brand colors, and a complete set of components and patterns.
 
-### Using Tailcoat CSS
+<h2 id="precompiled-css">Using Tailcoat CSS</h2>
 
 The files in the `css` folder are ready to use in your projects as is. With the css files in your project, you can use any of the classes provided in your markup.
 
-#### Hosting Assets
+### Hosting Assets
 
 Tailcoat has some fonts, images, and scripts that are needed for everything to work just right. All of these are available in the [`dist`]((https://github.com/ArcGIS/tailcoat)) folder on Github. Ideally you can drop the entire `tailcoat` folder from there into your site's assets folder, then add the necessary `<link>` and `<script>` tags like so:
 
@@ -41,7 +23,7 @@ Tailcoat has some fonts, images, and scripts that are needed for everything to w
 </body>
 ```
 
-### Tailcoat with SASS and Compass
+<h2 id="sass-and-compass">Tailcoat with SASS and Compass</h2>
 
 Using the Tailcoat framework as a Compass plugin allows you to take advantage of configurable options, mixins for responsive design, and smaller final file sizes - along with conditional stylesheets for Internet Explorer.
 
@@ -67,7 +49,7 @@ You will now have access to the full gamut of mixins and classes to build your o
 
 Please note that Compass requires a configuration file and already has some default paths that may need to be overridden. See the [Compass Configuration Reference](http://compass-style.org/help/tutorials/configuration-reference/) to learn more.
 
-#### Hosting Assets
+### Hosting Assets
 
 You should host the images in a `tailcoat` folder in the Compass `images_dir` and the fonts in a `tailcoat` folder in the Compass `fonts_dir`, both defined in your compass config file. For this documentation site, it's structured like this:
 
@@ -90,7 +72,7 @@ set :images_dir, "assets/images"
 set :fonts_dir, "assets/fonts"
 ```
 
-### Browser Compatibility
+<h2 id="browsers">Browser Compatibility</h2>
 
 Because this framework makes use of the pseudo selectors and HTML 5 elements, IE8 requires the addition of [modernizr](http://modernizr.com/) or [html5 shiv](https://code.google.com/p/html5shiv/) to work properly. In addition to one of these, it is recommended you use [selectivizr](http://selectivizr.com/) in older browsers as well to ensure that pseudo selectors will work.
 
@@ -104,11 +86,3 @@ Adding these libraries for specific browsers is simple. Download the libraries a
 ```
 
 Tailcoat does not support versions of Internet Explorer lower than 8. Internet Explorer 7 and below don't support media queries or the `box-sizing: border-box;` css property, preventing them from displaying columns and responsive design correctly.
-
-## Documentation
-
-Please see the [documentation site](http://arcgis.github.com/tailcoat/) for more in-depth information on using Tailcoat.
-
-## Contributing
-
-See the guidelines in CONTRIBUTING.md.

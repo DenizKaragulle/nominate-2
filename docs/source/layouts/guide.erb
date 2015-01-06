@@ -1,0 +1,25 @@
+<% wrap_layout :layout do %>
+  <div class="navigation-bar responsive">
+  <div class="container">
+    <header>
+      <h1>Development Styleguides</h1>
+    </header>
+    <nav class="navigation-bar-nav">
+      <a href="#" class="dropdown-toggle icon-navigation"></a>
+      <ul>
+        <%= menu_item "CSS", base_url + "styleguides/css", "css.html" %>
+        <%= menu_item "HTML", base_url + "styleguides/html", "html.html" %>
+        <%= menu_item "JavaScript", base_url + "styleguides/js", "js.html" %>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <section role="main" class="content-area padding-trailer-0 column-18 tablet-column-24">
+      <%= yield %>
+    </section>
+  </div>
+</div>
+<% end %>

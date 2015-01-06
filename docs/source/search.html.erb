@@ -1,0 +1,75 @@
+---
+title: Tailcoat | Search
+description: Search Tailcoat
+search_description: Search tailcoat by keyword
+section: Search
+js:
+  - https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js
+  - search.js
+---
+<div ng-app="searchApp">
+  <div ng-controller="searchCtrl">
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <div class="container">
+        <div class="search-inputs">
+          <form>
+            <input class="left" type="search" ng-model="searchTerm" placeholder="Search Tailcoat">
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Filters -->
+    <div class="search-filters">
+      <div class="container">
+        <div class="click-dropdown checkmarks align-left">
+          <a ng-if="pageFilter == ''" href="#" class="click-dropdown-link">All Pages</a>
+          <a ng-if="pageFilter !== ''" href="#" class="click-dropdown-link">Page: {{ pageFilter | capitalize }}</a>
+          <nav class="click-dropdown-menu">
+            <a href="#"
+              ng-repeat="filter in pageFilters"
+              ng-click="$parent.pageFilter = filter.page"
+              class="click-dropdown-item"
+              ng-class="{ 'selected': filter.page === pageFilter } ">{{filter.title}}</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="container">
+      <div class="content-area show-visited-links">
+        <p class="leader-half">
+          <small ng-if="filteredResults.length > pageSize && lastItemIndex <= filteredResults.length">Showing {{ firstItemIndex }} - {{ lastItemIndex }} of {{ filteredResults.length }}</small>
+          <small ng-if="filteredResults.length > pageSize && lastItemIndex > filteredResults.length">Showing {{ firstItemIndex }} - {{ filteredResults.length }} of {{filteredResults.length}}</small>
+          <small ng-if="filteredResults.length <= pageSize">Showing {{ filteredResults.length }} of {{filteredResults.length}}</small>
+        </p>
+
+        <div ng-repeat="result in filteredResults
+                      | limitTo: currentPage * pageSize
+                      | limitTo: pageSize * -1 ">
+          <h4><a href="{{result.link}}">{{result.title}}</a></h4>
+          <p>{{result.description}}
+          <small class="clearfix"><a href="{{result.link}}">Section {{result.section}}</a></small>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <ol ng-if="filteredResults.length > pageSize" class="pagination">
+      <a class="pagination-previous" href="#" ng-click="changeCurrentPage(currentPage - 1)">
+        <span class="icon-left-arrow"></span>
+      </a>
+      <li ng-repeat="page in pages" class="pagination-page" ng-class="{ 'active': $index + 1 === currentPage }">
+        <a href="#" ng-click="changeCurrentPage($index + 1)">{{page}}</a>
+      </li>
+      <a class="pagination-next" href="#" ng-click="changeCurrentPage(currentPage + 1)">
+        <span class="icon-right-arrow"></span>
+      </a>
+    </ol>
+
+  </div>
+</div>
