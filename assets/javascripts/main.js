@@ -164,13 +164,13 @@ require([
 						'<div class="container content-area">' +
 						'	<div class="row">' +
 						'		<div class="column-5">' +
-						'			<div class="status-container"></div>' +
+						'			<h4 class="icon-checked icon-blue"></h4>' +
 						'		</div>' +
 						'		<div class="column-5">' +
-						'			<div class="status-container"></div>' +
+						'			<h4 class="icon-unchecked icon-blue"></h4>' +
 						'		</div>' +
 						'		<div class="column-5">' +
-						'			<div class="status-container"></div>' +
+						'			<h4 class="icon-unchecked icon-blue"></h4>' +
 						'		</div>' +
 						'	</div>' +
 						'</div>'
