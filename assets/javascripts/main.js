@@ -155,6 +155,16 @@ require([
 			var access = object.access;
 			var n = domConstruct.create("div", {
 				innerHTML:
+						'<div class="container content-area">' +
+						'	<div class="row">' +
+						'		<div class="column-20">' +
+						'			<div class="title-column-title">' + object.title + '</div>' +
+						'			<span style="position: relative; font-size:1.0em; color: #007AC2;">' + type + '</span> - <span style="position: relative; font-size:0.8em; color: #007AC2;">' + access + ' - Updated ' + modifiedDate + '</span>' +
+						'			<div class="title-column-snippet" style="position: relative; font-size:0.8em; color: #007AC2;">' + views + ' views</div>' +
+						'		</div>' +
+						'	</div>' +
+						'</div>'
+				/*innerHTML:
 						'<div class="title-column-container">' +
 						'	<div class="title-column-title">' + object.title + '</div>' +
 						'	<div class="title-column-modified" style="position: relative;">' +
@@ -162,7 +172,7 @@ require([
 						'		<span style="position: absolute; left: 110px; font-size:0.8em; color: #007AC2;"> ' + access + ' - Updated ' + modifiedDate + '</span>' +
 						'		<div class="title-column-snippet" style="position: relative; font-size:0.8em; color: #007AC2; top: 20px;">' + views + ' views</div>' +
 						'	</div>' +
-						'</div>'
+						'</div>'*/
 			});
 			cell.appendChild(n);
 		};
