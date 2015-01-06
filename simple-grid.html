@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/tailcoat.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/layout.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/grid.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/editor.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/styles.css">
+	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css">
+
+	<style>
+		.heading {
+			font-weight: bold;
+			padding-bottom: 0.25em;
+		}
+
+		.ui-widget {
+			margin: 10px;
+		}
+
+			/* add styles to size this grid appropriately */
+		#grid {
+			height: 20em;
+		}
+
+		#grid .field-order {
+			width: 10%;
+		}
+
+		#grid .field-name {
+			width: 90%;
+		}
+
+		#grid .field-description {
+			width: 70%;
+		}
+	</style>
+
+	<script src="assets/javascripts/tailcoat.js"></script>
+	<script src="//js.arcgis.com/3.11/"></script>
+
+	<script>
+		require([
+			"dojo/on",
+			"dojo/query",
+			"dojo/_base/declare",
+			"dgrid/OnDemandGrid",
+			"dojo/store/Observable",
+			"dojo/store/Memory",
+			"put-selector/put",
+			"dojo/_base/array",
+			"dojo/dom-construct",
+			"dojo/dom-style",
+			"dojo/domReady!"
+		], function (on, query, declare, OnDemandGrid, Observable, Memory, put, array, domConstruct, domStyle) {
+			var sampleData = [
+				{id:1, map:"true", order:124, name:"preheat", description:"Preheat your oven to 350F"},
+				{id:2, map:"true", order:2342, name:"mix dry", description:"In a medium bowl, combine flour, salt, and baking soda"},
+				{id:3, map:"true", order:34233, name:"mix butter", description:"In a large bowl, beat butter, then add the brown sugar and white sugar then mix"},
+				{id:4, map:"true", order:4324, name:"mix together", description:"Slowly add the dry ingredients from the medium bowl to the wet ingredients in the large bowl, mixing until the dry ingredients are totally combined"},
+				{id:5, map:"true", order:52455, name:"chocolate chips", description:"Add chocolate chips"},
+				{id:6, map:"true", order:654, name:"make balls", description:"Scoop up a golf ball size amount of dough with a spoon and drop in onto a cookie sheet"},
+				{id:7, map:"true", order:7453, name:"bake", description:"Put the cookies in the oven and bake for about 10-14 minutes"},
+				{id:8, map:"true", order:834, name:"remove", description:"Using a spatula, lift cookies off onto wax paper or a cooling rack"},
+				{id:9, map:"true", order:9553, name:"eat", description:"Eat and enjoy!"}
+			];
+
+			var titleRenderCell = function (object, data, cell) {
+				var n = domConstruct.create("div", {
+					innerHTML:'<div class="container content-area">' +
+							'	<div class="row">' +
+							'		<div class="column-20">' +
+							'			<div class="title-column-title">' + object.name + '<\/div>' +
+							'			<span style="position: relative; font-size:1.0em; color: #007AC2;">' + object.order + '<\/span>' +
+							'			<div style="position: relative; font-size:0.8em; color: #007AC2;">' + object.description + '<\/div>' +
+							'		<\/div>' +
+							'	<\/div>' +
+							'<\/div>'
+				});
+				cell.appendChild(n);
+			};
+
+			var dgridColumns = [
+				{
+					label:"Order",
+					field:"order"
+				},
+				{
+					label:"Name",
+					field:"name",
+					renderCell:titleRenderCell
+				}
+			];
+			var itemStore = new Observable(new Memory({
+				data:sampleData,
+				idProperty:"id"
+			}));
+			var dgrid = new (declare([OnDemandGrid]))({
+				store:itemStore,
+				columns:dgridColumns,
+				showHeader:true
+			}, "grid");
+			dgrid.startup();
+
+			dgrid.on('dgrid-refresh-complete', function (event) {
+				console.log("REFRESH COMPLETE");
+			});
+
+			var sortBtn = query(".sort-btn")[0];
+			on(sortBtn, "click", function (evt) {
+				/*itemStore.query({map:"true"}, {
+					// the results should be sorted by department
+					sort:[{
+						attribute:"name",
+						descending:false
+					}],
+					// starting at an offset of 0
+					start:0,
+					// with a limit of 10 objects
+					count:20
+				}).map(function (employee) {
+					// return just the name, mapping to an array of names
+					return employee.name;
+				}).forEach(function (employeeName) {
+					console.log(employeeName);
+				});
+				dgrid.refresh();*/
+				dgrid.set("sort", "description");
+			});
+		});
+
+	</script>
+</head>
+<body>
+
+<div class="container">
+	<div class="row">
+		<div class="column-24">
+			<div id="grid"></div>
+		</div>
+		<div class="column-4">
+			<button class="btn sort-btn"> Sort</button>
+		</div>
+	</div>
+</div>
+</body>
+</html>

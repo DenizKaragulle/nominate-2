@@ -164,15 +164,6 @@ require([
 						'		</div>' +
 						'	</div>' +
 						'</div>'
-				/*innerHTML:
-						'<div class="title-column-container">' +
-						'	<div class="title-column-title">' + object.title + '</div>' +
-						'	<div class="title-column-modified" style="position: relative;">' +
-						'		<span style="position: absolute; font-size:1.0em; color: #007AC2;">' + type + '</span>' +
-						'		<span style="position: absolute; left: 110px; font-size:0.8em; color: #007AC2;"> ' + access + ' - Updated ' + modifiedDate + '</span>' +
-						'		<div class="title-column-snippet" style="position: relative; font-size:0.8em; color: #007AC2; top: 20px;">' + views + ' views</div>' +
-						'	</div>' +
-						'</div>'*/
 			});
 			cell.appendChild(n);
 		};
@@ -290,6 +281,11 @@ require([
 					var target = domAttr.get(this, "data-value");
 					applyFilter(target);
 				});
+
+				on(query(".sort-items"), "click", function (event) {
+					var target = domAttr.get(this, "data-value");
+					applySort(target);
+				});
 			});
 		}
 
@@ -306,12 +302,15 @@ require([
 					num:1000
 				};
 				portal.queryItems(params).then(function (result) {
+					console.log(portalUser)
 					// total nuber of items
 					var numItems = result.total;
 					// update the ribbon header
-					// 	remove the globe icon from the ribbon header title
+					// remove the globe icon from the ribbon header title
 					domAttr.set(query(".ribbon-header-title").parent()[0], "class", "");
-					//	update the text and icon
+					var HEADER_BLOCK_PRIVATE_NAME = " (" + portalUser.fullName + " - " + owner + ")"
+					ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PRIVATE + HEADER_BLOCK_PRIVATE_NAME;
+					// update the text and icon
 					ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
 					domAttr.set(ribbonHeaderNumItemsNode, "class", "icon-stack");
 
@@ -1036,11 +1035,17 @@ require([
 		function createSaveButtonNode(_node) {
 			domConstruct.place(
 					'<div id="save-row" class="row">' +
-							'	<div class="column-8 center">' +
-							'		<button id="save-btn" class="btn small"> SAVE </button>' +
-							'		<button id="cancel-btn" class="btn small"> CANCEL </button>' +
-							'	</div>' +
-							'</div>', _node, "last");
+					'	<div class="column-8 center">' +
+					'		<button id="save-btn" class="btn small"> SAVE </button>' +
+					'		<button id="cancel-btn" class="btn small"> CANCEL </button>' +
+					'	</div>' +
+					'</div>', _node, "last");
+		}
+
+		function applySort(value) {
+			console.log(value);
+			console.log(itemStore.data);
+			dgrid.set("sort", value);
 		}
 
 		function applyFilter(value) {
@@ -1071,7 +1076,6 @@ require([
 		function updateHeader() {
 			// homepage header message
 			signInNode.innerHTML = "";
-			ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PRIVATE;
 			//var headerRow = query(".intro").closest(".column-24");
 			//domClass.replace(headerRow[0], "column-19", "column-24");
 			domStyle.set(searchInputNode, "display", "block");

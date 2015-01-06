@@ -7,13 +7,28 @@
 	<link rel="stylesheet" type="text/css" href="assets/stylesheets/editor.css">
 	<link rel="stylesheet" type="text/css" href="assets/stylesheets/styles.css">
 	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css">
-	<link rel="stylesheet" type="text/css" href="http://fast.fonts.net/cssapi/3706abc4-0756-424b-b07b-1748122f85d8.css">
 
 	<style>
-		.status-container {
-			width: 15px;
-			height: 15px;
-			border: 1px solid #565656;
+		.heading {
+			font-weight: bold;
+			padding-bottom: 0.25em;
+		}
+
+		.ui-widget {
+			margin: 10px;
+		}
+
+			/* add styles to size this grid appropriately */
+		#dgrid {
+			height: 20em;
+		}
+
+		#dgrid .field-order {
+			width: 7%;
+		}
+
+		#dgrid .field-name {
+			width: 18%;
 		}
 	</style>
 
@@ -21,6 +36,7 @@
 	<script src="//js.arcgis.com/3.11/"></script>
 
 	<script>
+
 		require([
 			"put-selector/put",
 			"dojo/store/Memory",
@@ -71,77 +87,6 @@
 				run();
 
 				function run() {
-					var detailsNode = query(".details")[0];
-					var creditsNode = query(".credits")[0];
-					var tagsNode = query(".tags")[0];
-					var performanceNode = query(".performance")[0];
-					var profileNode = query(".profile")[0];
-
-					var nodeList = [detailsNode, creditsNode, tagsNode, performanceNode, profileNode];
-
-					on(detailsNode, "click", function (event) {
-						array.forEach(nodeList, function (node) {
-							if (domClass.contains(node, "active")) {
-								domClass.replace(node, "column-4 details", "active column-4 details");
-								html.set(dom.byId("content"), "DETAILS");
-							}
-						});
-						domClass.replace(detailsNode, "active column-4 credits", "column-4 credits");
-					});
-
-					on(creditsNode, "click", function (event) {
-						array.forEach(nodeList, function (node) {
-							if (domClass.contains(node, "active")) {
-								domClass.replace(node, "column-4 details", "active column-4 details");
-							}
-						});
-						domClass.replace(creditsNode, "active column-4 credits", "column-4 credits");
-					});
-
-					on(tagsNode, "click", function (event) {
-						array.forEach(nodeList, function (node) {
-							if (domClass.contains(node, "active")) {
-								domClass.replace(node, "column-4 details", "active column-4 details");
-							}
-						});
-						domClass.replace(tagsNode, "active column-4 credits", "column-4 credits");
-					});
-
-					on(performanceNode, "click", function (event) {
-						array.forEach(nodeList, function (node) {
-							if (domClass.contains(node, "active")) {
-								domClass.replace(node, "column-4 details", "active column-4 details");
-							}
-						});
-						domClass.replace(performanceNode, "active column-4 credits", "column-4 credits");
-					});
-
-					on(profileNode, "click", function (event) {
-						array.forEach(nodeList, function (node) {
-							if (domClass.contains(node, "active")) {
-								domClass.replace(node, "column-4 details", "active column-4 details");
-							}
-						});
-						domClass.replace(profileNode, "active column-4 credits", "column-4 credits");
-					});
-
-					var TEST = "This is a test...";
-					var node = query(".content-container")[0];
-					domConstruct.place("<textarea id='myarea'>" + TEST + "<\/textarea>", node, "last");
-
-					on(query(".filter-list"), "click", function (event) {
-						var target = domAttr.get(this, "data-value");
-						console.log(target);
-					});
-
-					var detailsNodeClickHandler = function (extraParam, params, here, event) {
-						console.log(extraParam);
-						console.log(params);
-						console.log(here);
-						console.log(event);
-
-					};
-					on(query(".tooltip"), "click", lang.partial(detailsNodeClickHandler, "TEST", "HERE", "THERE"));
 
 				}
 			});
@@ -153,135 +98,54 @@
 <body>
 
 <div class="wrapper">
-	<div class="row" style="margin-top: 40px;">
-		<div class="btn-group column-24">
-			<a class="active column-4 details">DETAILS</a>
-			<a class="column-4 credits">USE/CREDITS</a>
-			<a class="column-4 tags">TAGS</a>
-			<a class="column-4 performance">PERFORMANCE</a>
-			<a class="column-4 profile">MY PROFILE</a>
-		</div>
-	</div>
 
-	<div class="row" style="margin-top: 10px;">
-		<div class="column-8 center">
-			<div class="content-container"></div>
-		</div>
-	</div>
-
-	<div class="row" style="margin-top: 10px;">
-		<div class="column-8 center">
-			<button class="btn small"> SAVE</button>
-			<button class="btn small"> CANCEL</button>
-		</div>
-	</div>
-
-	<div class="row" style="margin-top: 10px;">
-		<div class="column-8 center">
-			<div class="alert error icon-alert"> Error</div>
-		</div>
-		<div class="column-8 center">
-			<div class="alert success icon-check"> Saved</div>
-		</div>
-	</div>
-
-	<div class="tooltip" style="margin-left: 400px;">
-		<span class="icon-help icon-blue"></span>
-
-		<div class="tooltip-wrapper">
-			<p class="tooltip-content">Text to appear in the tooltip.</p>
-		</div>
-	</div>
-
-	<div class="container content-area">
-		<div class="row">
-			<div class="column-20">
-				<span>Web Map</span> - public - Updated January 19, 2001
-			</div>
-		</div>
-	</div>
-
-	<div class="container content-area">
-		<div class="row">
-			<div class="column-1">
-				<div class="status-container"></div>
-			</div>
-			<div class="column-1">
-				<div class="status-container"></div>
-			</div>
-			<div class="column-1">
-				<div class="status-container"></div>
-			</div>
-		</div>
-	</div>
-
-		<div class="panel white">
-			<h4>Lorem Ipsum</h4>
-			<mark>Beta</mark>
-			<p id="content">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-				mollit.</p>
-		</div>
-
-		<div class="container content-area">
+	<div class="page sticky-footer"></div>
+	<footer class="footer">
+		<div class="container">
 			<div class="row">
-				<div class="column-19">
-					<div class="leader-1 light intro">SHARING</div>
-					<div class="leader-1 light intro">POPUPS</div>
-				</div>
-
-				<div class="column-5 right">
-					<div class="leader-1 light intro">LAYERS</div>
-				</div>
+				<nav class="column-6 tablet-column-24 leader-1">
+					<h4>Header 1</h4>
+					<ul>
+						<li><a href="#">Link 1</a></li>
+						<li><a href="#">Link 2</a></li>
+						<li><a href="#">Link 3</a></li>
+					</ul>
+				</nav>
+				<nav class="column-6 tablet-column-24 leader-1">
+					<h4>Header 2</h4>
+					<ul>
+						<li><a href="#">Link 1</a></li>
+						<li><a href="#">Link 2</a></li>
+						<li><a href="#">Link 3</a></li>
+					</ul>
+				</nav>
+				<nav class="column-6 tablet-column-24 leader-1">
+					<h4>Header 3</h4>
+					<ul>
+						<li><a href="#">Link 1</a></li>
+						<li><a href="#">Link 2</a></li>
+						<li><a href="#">Link 3</a></li>
+						<li><a href="#">Link 4</a></li>
+						<li><a href="#">Link 5</a></li>
+					</ul>
+				</nav>
+				<nav class="column-6 tablet-column-24 leader-1">
+					<a class="esri-logo-footer" href="http://esri.com">Esri</a>
+					<section class="footer-social-nav">
+						<a class="icon-twitter" href="https://twitter.com/Esri/"></a>
+						<a class="icon-facebook" href="https://www.facebook.com/esrigis/"></a>
+						<a class="icon-github" href="http://esri.github.com/"></a>
+						<a class="icon-email" href="http://www.esri.com/about-esri/contact/"></a>
+					</section>
+				</nav>
+				<small class="footer-legal column-24 leader-1 trailer-1">© Copyright 2013 Environmental Systems
+					Research
+					Institute, Inc. | <a href="http://www.esri.com/legal/privacy">Privacy</a> | <a
+							href="http://www.esri.com/legal/software-license">Legal</a></small>
 			</div>
 		</div>
-
-		<div class="page sticky-footer"></div>
-		<footer class="footer">
-			<div class="container">
-				<div class="row">
-					<nav class="column-6 tablet-column-24 leader-1">
-						<h4>Header 1</h4>
-						<ul>
-							<li><a href="#">Link 1</a></li>
-							<li><a href="#">Link 2</a></li>
-							<li><a href="#">Link 3</a></li>
-						</ul>
-					</nav>
-					<nav class="column-6 tablet-column-24 leader-1">
-						<h4>Header 2</h4>
-						<ul>
-							<li><a href="#">Link 1</a></li>
-							<li><a href="#">Link 2</a></li>
-							<li><a href="#">Link 3</a></li>
-						</ul>
-					</nav>
-					<nav class="column-6 tablet-column-24 leader-1">
-						<h4>Header 3</h4>
-						<ul>
-							<li><a href="#">Link 1</a></li>
-							<li><a href="#">Link 2</a></li>
-							<li><a href="#">Link 3</a></li>
-							<li><a href="#">Link 4</a></li>
-							<li><a href="#">Link 5</a></li>
-						</ul>
-					</nav>
-					<nav class="column-6 tablet-column-24 leader-1">
-						<a class="esri-logo-footer" href="http://esri.com">Esri</a>
-						<section class="footer-social-nav">
-							<a class="icon-twitter" href="https://twitter.com/Esri/"></a>
-							<a class="icon-facebook" href="https://www.facebook.com/esrigis/"></a>
-							<a class="icon-github" href="http://esri.github.com/"></a>
-							<a class="icon-email" href="http://www.esri.com/about-esri/contact/"></a>
-						</section>
-					</nav>
-					<small class="footer-legal column-24 leader-1 trailer-1">© Copyright 2013 Environmental Systems
-						Research
-						Institute, Inc. | <a href="http://www.esri.com/legal/privacy">Privacy</a> | <a
-								href="http://www.esri.com/legal/software-license">Legal</a></small>
-				</div>
-			</div>
-		</footer>
-	</div>
+	</footer>
+</div>
 
 </body>
 </html>
