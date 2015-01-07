@@ -374,7 +374,7 @@ require([
 							// selected row ID
 							selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
 							// get row width
-							var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
+							var selectedNodeWidth = domStyle.get(selectedRow, "width") - 150;
 							// set row height
 							domStyle.set(selectedRow, "height", "600px");
 
@@ -417,9 +417,8 @@ require([
 
 								// create the map
 								portalUser.getItem(selectedRowID).then(function (item) {
-									console.log("selectedNodeWidth: " + selectedNodeWidth);
 									domConstruct.place(
-											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
+											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px; margin-left: 145px;'>" +
 											"	<div class='content-container'>" +
 											"		<div id='map'></div>" +
 											"		<div class='expanded-item-text'>" + SCORE_TEXT_1 + "</div>" +
