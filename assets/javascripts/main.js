@@ -417,6 +417,7 @@ require([
 
 								// create the map
 								portalUser.getItem(selectedRowID).then(function (item) {
+									console.log("selectedNodeWidth: " + selectedNodeWidth);
 									domConstruct.place(
 											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
 											"	<div class='content-container'>" +
@@ -525,66 +526,66 @@ require([
 				var node = query(".content-container")[0];
 				domConstruct.place(
 						'<div id="section-content">' +
-								'	<div class="row">' +
-								'		<div class="column-4">' +
-								'			<div class="section-header">THUMBNAIL' +
-								'				<div class="tooltip header-tooltip animate">' +
-								'					<span class="icon-help icon-blue"></span>' +
-								'					<div class="tooltip-wrapper">' +
-								'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'					</div>' +
-								'				</div>' +
-								'			</div>' +
-								'			<img src="' + thumbnailUrl + '" height="85px">' +
-								'		</div>' +
-								'		<div class="column-20">' +
-								'			<div class="row">' +
-								'				<div class="column-24">' +
-								'					<div class="section-header">TITLE' +
-								'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
-								'						<div class="tooltip header-tooltip animate before">' +
-								'							<span class="icon-help icon-blue"></span>' +
-								'							<div class="tooltip-wrapper">' +
-								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'							</div>' +
-								'						</div>' +
-								'					</div>' +
-								'					<div class="section-content">' +
-								'						<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
-								'					</div>' +
-								'				</div>' +
-								'				<div class="column-24">' +
-								'					<div class="section-header">SUMMARY' +
-								'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
-								'						<div class="tooltip header-tooltip animate before">' +
-								'							<span class="icon-help icon-blue"></span>' +
-								'							<div class="tooltip-wrapper">' +
-								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'							</div>' +
-								'						</div>' +
-								'					</div>' +
-								'					<div class="section-content">' +
-								'						<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
-								'					</div>' +
-								'				</div>' +
-								'				<div class="column-24">' +
-								'					<div class="section-header">DESCRIPTION' +
-								'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
-								'						<div class="tooltip header-tooltip animate before">' +
-								'							<span class="icon-help icon-blue"></span>' +
-								'							<div class="tooltip-wrapper">' +
-								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'							</div>' +
-								'						</div>' +
-								'					</div>' +
-								'					<div class="section-content">' +
-								'						<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
-								'					</div>' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
-								'	</div>' +
-								'</div>',
+						'	<div class="row">' +
+						'		<div class="column-4">' +
+						'			<div class="section-header">THUMBNAIL' +
+						'				<div class="tooltip header-tooltip animate">' +
+						'					<span class="icon-help icon-blue"></span>' +
+						'					<div class="tooltip-wrapper">' +
+						'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+						'					</div>' +
+						'				</div>' +
+						'			</div>' +
+						'			<img src="' + thumbnailUrl + '" height="85px">' +
+						'		</div>' +
+						'		<div class="column-20">' +
+						'			<div class="row">' +
+						'				<div class="column-24">' +
+						'					<div class="section-header">TITLE' +
+						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+						'						<div class="tooltip header-tooltip animate before">' +
+						'							<span class="icon-help icon-blue"></span>' +
+						'							<div class="tooltip-wrapper">' +
+						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+						'							</div>' +
+						'						</div>' +
+						'					</div>' +
+						'					<div class="section-content">' +
+						'						<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
+						'					</div>' +
+						'				</div>' +
+						'				<div class="column-24">' +
+						'					<div class="section-header">SUMMARY' +
+						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+						'						<div class="tooltip header-tooltip animate before">' +
+						'							<span class="icon-help icon-blue"></span>' +
+						'							<div class="tooltip-wrapper">' +
+						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+						'							</div>' +
+						'						</div>' +
+						'					</div>' +
+						'					<div class="section-content">' +
+						'						<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
+						'					</div>' +
+						'				</div>' +
+						'				<div class="column-24">' +
+						'					<div class="section-header">DESCRIPTION' +
+						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+						'						<div class="tooltip header-tooltip animate before">' +
+						'							<span class="icon-help icon-blue"></span>' +
+						'							<div class="tooltip-wrapper">' +
+						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+						'							</div>' +
+						'						</div>' +
+						'					</div>' +
+						'					<div class="section-content">' +
+						'						<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
+						'					</div>' +
+						'				</div>' +
+						'			</div>' +
+						'		</div>' +
+						'	</div>' +
+						'</div>',
 						node, "last");
 
 				// create the SAVE/CANCEL buttons
@@ -1110,6 +1111,9 @@ require([
 		}
 
 		function destroyNodes(categoryNodes) {
+			if (dijit.byId("overall-score-graphic")) {
+				dijit.byId("overall-score-graphic").destroy();
+			}
 			if (dijit.byId(TAB_CONTAINER_LICENSE + previousSelectedRowID))
 				dijit.byId(TAB_CONTAINER_LICENSE + previousSelectedRowID).destroy();
 			if (dijit.byId(TAB_CONTAINER_DESC + previousSelectedRowID))
