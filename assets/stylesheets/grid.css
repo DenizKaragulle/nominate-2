@@ -71,7 +71,13 @@
 
 .title-column-title {
 	color: #007AC2;
-	font-size: 1.4em;
+	/*font-size: 1.4em;*/
+
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 1.6em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+
 }
 
 .title-column-title:hover {
@@ -80,12 +86,37 @@
 }
 
 .title-column-snippet {
-	color: #696969;
-	margin-top: 3px;
+	font-size: 0.8em;
+	color: #007AC2;
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+.title-column-views {
+	font-size: 9.5pt;
+	color: #007AC2;
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
 
 .title-column-type {
-	color: #696969;
+	position: relative;
+	font-size: 1.0em;
+	color: #007AC2;
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+.title-column-access {
+	position: relative;
+	color: #007AC2;
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 1.0em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
 
 .title-column-modified {

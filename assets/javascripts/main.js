@@ -160,8 +160,8 @@ require([
 						'	<div class="row">' +
 						'		<div class="column-20">' +
 						'			<div class="title-column-title">' + object.title + '</div>' +
-						'			<span style="position: relative; font-size:1.0em; color: #007AC2;">' + type + '</span> - <span style="position: relative; font-size:0.8em; color: #007AC2;">' + access + ' - Updated ' + modifiedDate + '</span>' +
-						'			<div class="title-column-snippet" style="position: relative; font-size:0.8em; color: #007AC2;">' + views + ' views</div>' +
+						'			<span class="title-column-type">' + type + '</span> - <span class="title-column-access">' + access + ' - Updated ' + modifiedDate + '</span>' +
+						'			<div class="title-column-snippet">' + views + ' views</div>' +
 						'		</div>' +
 						'	</div>' +
 						'</div>'
@@ -304,7 +304,6 @@ require([
 					num:1000
 				};
 				portal.queryItems(params).then(function (result) {
-					console.log(portalUser)
 					// total nuber of items
 					var numItems = result.total;
 					// update the ribbon header
