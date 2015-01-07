@@ -87,7 +87,16 @@
 				run();
 
 				function run() {
+					on(query(".sort-items"), "click", function (event) {
+						var shit = query(".icon-check");
+						domAttr.set(shit, "class", "sort-items");
+						domClass.remove(shit[0], "icon-check");
+						domStyle.set(shit, "margin-left", "20px");
 
+						query(".sort-items").style("margin-left", "20px");
+						domAttr.set(this, "class", "sort-items icon-check checked");
+						domStyle.set(this, "margin-left", "2px");
+					});
 				}
 			});
 		});
@@ -98,8 +107,20 @@
 <body>
 
 <div class="wrapper">
+	<div class="dropdown-navigation dropdown-wrapper">
+		<a href="#" class="dropdown"> Sort By </a>
+		<div class="dropdown-content">
+			<div class="dropdown-menu">
+				<ul>
+					<li><a style="margin-left: 20px;" class="sort-items"> Title</a></li>
+					<li><a style="margin-left: 2px;" class="sort-items icon-check checked"> Type</a></li>
+					<li><a style="margin-left: 20px;" class="sort-items"> Number of Views</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
-	<div class="page sticky-footer"></div>
+	<!--<div class="page sticky-footer"></div>
 	<footer class="footer">
 		<div class="container">
 			<div class="row">
@@ -144,7 +165,7 @@
 							href="http://www.esri.com/legal/software-license">Legal</a></small>
 			</div>
 		</div>
-	</footer>
+	</footer>-->
 </div>
 
 </body>

@@ -86,3 +86,37 @@ table tr {
 	height: 15px;
 	border: 1px solid #565656;
 }
+
+/* When item is expanded */
+.expanded-item-text {
+	line-height: 1.0em;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: #166FA3;
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 1.0em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+
+}
+
+/* Current Score header text */
+.current-score-header {
+	font-size: 1.5em;
+	color: #166FA3;
+	letter-spacing: 2px;
+	margin-top: 10px;
+	margin-bottom: 5px;
+	-webkit-font-smoothing: antialiased;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+
+}
+
+/* Progress bar */
+.current-score-graphic-container {
+	height: 30px;
+}
+
+.nihilo .dijitProgressBarEmpty {
+	border-color: white !important;
+}

@@ -102,7 +102,7 @@ require([
 	var MAXIMUM_CHAR = "A maximum of xxx characters are available";
 	var SCORE_TEXT_1 = "Some practical characteristics of your item must be present in order to nominate it for the Living Atlas.  A score of at least 80 is required before the map can be nominated.";
 	var SCORE_TEXT_2 = "Here is your item's current score. Click on the 'i' buttons for details on how to improve your score.";
-	var OVERALL_HEADER = "OVERALL";
+	var OVERALL_HEADER = "Current Score";
 	var OVERALL_TXT = "In the sections below, if the check box is green you have full-filled criteria,<br />" +
 			"If the check box is red, please select that section and look for the items underlined to improve your score.";
 	//
@@ -160,7 +160,7 @@ require([
 						'	<div class="row">' +
 						'		<div class="column-20">' +
 						'			<div class="item-title">' + object.title + '</div>' +
-						'			<span class="item-type">' + type + '</span> - <span class="item-access">' + access + ' - Updated ' + modifiedDate + '</span>' +
+						'			<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
 						'			<div class="item-number-views">' + views + ' views</div>' +
 						'		</div>' +
 						'	</div>' +
@@ -280,11 +280,27 @@ require([
 				on(dom.byId(SIGNIN_BUTTON_ID), "click", signIn);
 
 				on(query(".filter-list"), "click", function (event) {
+					var checkedListItem = query(".filter-check");
+					domAttr.set(checkedListItem, "class", "filter-list");
+					domClass.remove(checkedListItem[0], "icon-check filter-check");
+					domStyle.set(checkedListItem, "margin-left", "20px");
+					query(".filter-list").style("margin-left", "20px");
+					domAttr.set(this, "class", "filter-list icon-check filter-check");
+					domStyle.set(this, "margin-left", "2px");
+
 					var target = domAttr.get(this, "data-value");
 					applyFilter(target);
 				});
 
 				on(query(".sort-items"), "click", function (event) {
+					var checkedListItem = query(".icon-check");
+					domAttr.set(checkedListItem, "class", "sort-items");
+					domClass.remove(checkedListItem[0], "icon-check");
+					domStyle.set(checkedListItem, "margin-left", "20px");
+					query(".sort-items").style("margin-left", "20px");
+					domAttr.set(this, "class", "sort-items icon-check");
+					domStyle.set(this, "margin-left", "2px");
+
 					var target = domAttr.get(this, "data-value");
 					applySort(target);
 				});
@@ -405,23 +421,28 @@ require([
 											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
 											"	<div class='content-container'>" +
 											"		<div id='map'></div>" +
-											"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_1 + "</div>" +
-											"		<div style='margin-bottom: 5px; font-size: 0.9em;'>" + SCORE_TEXT_2 + "</div>" +
+											"		<div class='expanded-item-text'>" + SCORE_TEXT_1 + "</div>" +
+											"		<div class='expanded-item-text'>" + SCORE_TEXT_2 + "</div>" +
 											"		<div class='row'>" +
-											"			<div class='column-3 section-header'>" + OVERALL_HEADER + "</div>" +
-											"			<div class='column-9 overall-score-graphic-container'></div>" +
-											"			<div class='column-3'>" +
+											"			<div class='column-18'>" +
+											"				<div class='current-score-header'>" + OVERALL_HEADER + "</div>" +
+											"				<div class='current-score-graphic-container'></div>" +
+											"			</div>" +
+											"			<div class='column-2'>" +
+											"				<div style='font-size: 1.3em;'>78</div>" +
+											"			</div>" +
+											"			<div class='column-4'>" +
 											"				<button id='nominate-btn' class='btn small disabled'> NOMINATE </button>" +
 											"			</div>" +
 											"		</div>" +
-											"		<div class='overall-msg'>" + OVERALL_TXT + "</div>" +
+											"		<div class='expanded-item-text'>" + OVERALL_TXT + "</div>" +
 											"		<div id='" + tcID + "'></div>" +
 											"	</div>" +
 											"</div>" +
 											"<div id='" + btnID + "'></div>",
 											selectedRow.firstElementChild, "last");
 
-									progressBarAnchorNode = query(".overall-score-graphic-container")[0];
+									progressBarAnchorNode = query(".current-score-graphic-container")[0];
 
 									createContentButtonGroup(tcID);
 
@@ -464,7 +485,10 @@ require([
 									// overall score graphic
 									overallScoreGraphic = new ProgressBar({
 										id:"overall-score-graphic",
-										style:"width: 300px",
+										style: {
+											"width" : "100%",
+											"height": "5px"
+										},
 										value:score
 									}).placeAt(progressBarAnchorNode).startup();
 								});
