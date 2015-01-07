@@ -425,11 +425,18 @@ require([
 											"		<div class='expanded-item-text'>" + SCORE_TEXT_2 + "</div>" +
 											"		<div class='row'>" +
 											"			<div class='column-18'>" +
-											"				<div class='current-score-header'>" + OVERALL_HEADER + "</div>" +
-											"				<div class='current-score-graphic-container'></div>" +
+											"				<div class='row'>" +
+											"					<div class='column-24'>" +
+											"						<div class='current-score-header'>" + OVERALL_HEADER + "</div>" +
+											"						<span class='current-score-graphic-container'></span>" +
+											"					</div>" +
+											"				</div>" +
 											"			</div>" +
 											"			<div class='column-2'>" +
-											"				<div style='font-size: 1.3em;'>78</div>" +
+											"				<div class='row'>" +
+											"					<div class='score-spacer'>spacer</div>" +
+											"					<div class='current-score-number'>78</div>" +
+											"				</div>" +
 											"			</div>" +
 											"			<div class='column-4'>" +
 											"				<button id='nominate-btn' class='btn small disabled'> NOMINATE </button>" +

@@ -109,7 +109,18 @@ table tr {
 	margin-bottom: 5px;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
 
+.current-score-number {
+	font-size: 2.7em;
+	color: #166FA3;
+	letter-spacing: 2px;
+	-webkit-font-smoothing: antialiased;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+.score-spacer {
+	font-size: 0.0em;
 }
 
 /* Progress bar */
