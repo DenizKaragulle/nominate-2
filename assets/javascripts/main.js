@@ -159,9 +159,9 @@ require([
 						'<div class="container content-area">' +
 						'	<div class="row">' +
 						'		<div class="column-20">' +
-						'			<div class="title-column-title">' + object.title + '</div>' +
-						'			<span class="title-column-type">' + type + '</span> - <span class="title-column-access">' + access + ' - Updated ' + modifiedDate + '</span>' +
-						'			<div class="title-column-snippet">' + views + ' views</div>' +
+						'			<div class="item-title">' + object.title + '</div>' +
+						'			<span class="item-type">' + type + '</span> - <span class="item-access">' + access + ' - Updated ' + modifiedDate + '</span>' +
+						'			<div class="item-number-views">' + views + ' views</div>' +
 						'		</div>' +
 						'	</div>' +
 						'</div>'
@@ -352,7 +352,7 @@ require([
 						dgrid.startup();
 
 						// item title click handler
-						on(dgrid.domNode, ".title-column-title:click", function (event) {
+						on(dgrid.domNode, ".item-title:click", function (event) {
 							// selected row
 							selectedRow = dgrid.row(event).element;
 							// selected row ID
@@ -1045,9 +1045,25 @@ require([
 		}
 
 		function applySort(value) {
-			console.log(value);
-			console.log(itemStore.data);
-			dgrid.set("sort", value);
+			if (value === "title") {
+				dgrid.set("sort", value, false);
+			} else if (value === "type") {
+				dgrid.set("sort", value, false);
+				dgrid.set('sort', [
+					{ attribute: value, descending:false },
+					{ attribute: "title", descending:false }
+				]);
+			} else if (value === "numViews") {
+				dgrid.set("sort", value, true);
+			} else if (value === "modified") {
+				dgrid.set("sort", value, true);
+			} else if (value === "status") {
+				//dgrid.set("sort", value, true);
+			} else if (value === "access") {
+				dgrid.set("sort", value, false);
+			} else {
+				dgrid.set("sort", value);
+			}
 		}
 
 		function applyFilter(value) {
@@ -1057,7 +1073,6 @@ require([
 			};
 
 			portal.queryItems(params).then(function (result) {
-				console.log(result);
 				itemStore.data = result.results;
 				dgrid.refresh();
 			});

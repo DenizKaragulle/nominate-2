@@ -69,10 +69,9 @@
 
 }
 
-.title-column-title {
+/* item title */
+.item-title {
 	color: #007AC2;
-	/*font-size: 1.4em;*/
-
 	letter-spacing: 1px;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.6em;
@@ -80,12 +79,33 @@
 
 }
 
-.title-column-title:hover {
+.item-title:hover {
 	color: #0658c2;
 	cursor: pointer;
 }
 
-.title-column-snippet {
+/* item type */
+.item-type {
+	position: relative;
+	font-size: 1.0em;
+	color: #007AC2;
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+/* item access */
+.item-access {
+	position: relative;
+	color: #007AC2;
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 1.0em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+/* item number of views */
+.item-number-views {
 	font-size: 0.8em;
 	color: #007AC2;
 	letter-spacing: 1px;
@@ -101,23 +121,6 @@
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
 
-.title-column-type {
-	position: relative;
-	font-size: 1.0em;
-	color: #007AC2;
-	letter-spacing: 1px;
-	-webkit-font-smoothing: antialiased;
-	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
-}
-
-.title-column-access {
-	position: relative;
-	color: #007AC2;
-	letter-spacing: 1px;
-	-webkit-font-smoothing: antialiased;
-	font-size: 1.0em;
-	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
-}
 
 .title-column-modified {
 	color: #696969;
