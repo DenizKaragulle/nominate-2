@@ -1098,10 +1098,18 @@ require([
 		}
 
 		function applyFilter(value) {
-			var params = {
-				q:"owner:" + owner + " type: " + value,
-				num:1000
-			};
+			var params = {};
+			if (value === "all-items") {
+				params = {
+					q:"owner:" + owner,
+					num:1000
+				};
+			} else {
+				params = {
+					q:"owner:" + owner + " type: " + value,
+					num:1000
+				};
+			}
 
 			portal.queryItems(params).then(function (result) {
 				itemStore.data = result.results;
