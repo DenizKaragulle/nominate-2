@@ -531,11 +531,11 @@ require([
 						'				<div class="tooltip header-tooltip animate">' +
 						'					<span class="icon-help icon-blue"></span>' +
 						'					<div class="tooltip-wrapper">' +
-						'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+						'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
 						'					</div>' +
 						'				</div>' +
 						'			</div>' +
-						'			<img src="' + thumbnailUrl + '" height="85px">' +
+						'			<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
 						'		</div>' +
 						'		<div class="column-20">' +
 						'			<div class="row">' +
@@ -545,7 +545,7 @@ require([
 						'						<div class="tooltip header-tooltip animate before">' +
 						'							<span class="icon-help icon-blue"></span>' +
 						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+						'								<p class="tooltip-content">A title should be short, simple, clear. Three words is ideal. Avoid acronyms, ALL CAPS, underscores, \“copy\”, \“test\”, \“demo\”, \“eval\” in the title. Answers the basic question \“What is this?\"</p>' +
 						'							</div>' +
 						'						</div>' +
 						'					</div>' +
@@ -559,7 +559,7 @@ require([
 						'						<div class="tooltip header-tooltip animate before">' +
 						'							<span class="icon-help icon-blue"></span>' +
 						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+						'								<p class="tooltip-content">A good summary briefly explains what this map is, in 1-2 sentences, about 10 words per sentence. Avoid acronyms, ALL CAPS, underscores, \“copy\”, \“test\”, \“demo\”, \“eval\” in the summary. Answers the basic question \“What does this show?\"</p>' +
 						'							</div>' +
 						'						</div>' +
 						'					</div>' +
@@ -573,7 +573,7 @@ require([
 						'						<div class="tooltip header-tooltip animate before">' +
 						'							<span class="icon-help icon-blue"></span>' +
 						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
+						'								<p class="tooltip-content">A good description further clarifies what this item is and what it shows. It explains more about the data and its sources, but does not go into pages of explanation. Scoring is primarily based on length of content. About 2-3 paragraphs is ideal, with 4-5 sentences per paragraph, and about 12 or so words per sentence. Bonus points if hyperlinks whisk the reader away to more fully developed explanations and other supporting material.</p>' +
 						'							</div>' +
 						'						</div>' +
 						'					</div>' +
