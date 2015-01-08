@@ -229,13 +229,13 @@ table tr {
 }
 
 #dijit__editor_plugins__FontNameDropDown_0, #dijit__editor_plugins__FontSizeDropDown_0 {
-	width: 180px;
+	width: 150px;
 	-webkit-font-smoothing: antialiased;
 	font-size: 0.85em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
 
 #widget_dijit__editor_plugins__FontNameDropDown_0_select, #widget_dijit__editor_plugins__FontSizeDropDown_0_select {
-	width: 130px;
+	width: 100px;
 	height: 25px;
 }
