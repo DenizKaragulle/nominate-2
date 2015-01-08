@@ -1148,11 +1148,11 @@ require([
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
 					'	<div class="btn-group column-24">' +
-					'		<a class="active column-4 details">DETAILS</a>' +
-					'		<a class="column-4 credits">USE/CREDITS</a>' +
-					'		<a class="column-4 tags">TAGS</a>' +
-					'		<a class="column-4 performance">PERFORMANCE</a>' +
-					'		<a class="column-4 profile">MY PROFILE</a>' +
+					'		<a class="active column-4 details icon-edit"> DETAILS</a>' +
+					'		<a class="column-4 credits icon-edit"> USE/CREDITS</a>' +
+					'		<a class="column-4 tags icon-edit"> TAGS</a>' +
+					'		<a class="column-4 performance icon-edit"> PERFORMANCE</a>' +
+					'		<a class="column-4 profile icon-edit"> MY PROFILE</a>' +
 					'	</div>' +
 					'</div>', id, "last");
 
