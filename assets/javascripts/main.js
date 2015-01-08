@@ -207,9 +207,9 @@ require([
 			//overallScoreGraphic.update({
 			//	progress: score
 			//});
-			dijit.byId("overall-score-graphic").update({
-				'progress':score
-			});
+		//	dijit.byId("overall-score-graphic").update({
+		//		'progress':score
+		//	});
 			//overallScoreGraphic.set("value", score);
 		};
 
@@ -592,6 +592,7 @@ require([
 
 
 				var myDialog = new Dialog({
+					id:"update-thumbnail-dialog",
 					title:"Upload Thumbnail",
 					content:"<div class='container thumbnail-dialog'>" +
 							"	<div class='row thumbnail-dialog-row'>" +
@@ -1230,6 +1231,10 @@ require([
 		}
 
 		function destroyNodes(categoryNodes) {
+			if (dijit.byId("update-thumbnail-dialog")) {
+				dijit.byId("update-thumbnail-dialog").destroy();
+			}
+
 			if (dijit.byId("overall-score-graphic")) {
 				dijit.byId("overall-score-graphic").destroy();
 			}
