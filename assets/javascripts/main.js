@@ -5,6 +5,7 @@ require([
 	"dgrid/OnDemandGrid",
 	"dgrid/Keyboard",
 	"dgrid/Selection",
+	"dijit/Dialog",
 	"dijit/Editor",
 	"dijit/_editor/plugins/LinkDialog",
 	"dijit/_editor/plugins/TextColor",
@@ -42,7 +43,7 @@ require([
 	"dojo/parser",
 	"dojo/ready",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ComboBox, BorderContainer, ContentPane, TabContainer, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
+], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ComboBox, BorderContainer, ContentPane, TabContainer, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
 
 	parser.parse();
 
@@ -588,6 +589,52 @@ require([
 						'	</div>' +
 						'</div>',
 						node, "last");
+
+
+				var myDialog = new Dialog({
+					title:"Upload Thumbnail",
+					content:"<div class='container thumbnail-dialog'>" +
+							"	<div class='row thumbnail-dialog-row'>" +
+							"		<div class='column-24'>" +
+							"			<div>Specify the image to use as the thumbnail.<\/div>" +
+							"		<\/div>" +
+							"	<\/div>" +
+							"	<div class='row thumbnail-dialog-row'>" +
+							"		<div class='column-4'>" +
+							"			<div>Image: <\/div>" +
+							"		<\/div>" +
+							"		<div class='column-20'>" +
+							"			<button class='btn'> Choose File <\/button>" +
+							"		<\/div>" +
+							"	<\/div>" +
+							"	<div class='row thumbnail-dialog-row'>" +
+							"		<div class='column-24'>" +
+							"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
+							"		<\/div>" +
+							"	<\/div>" +
+							"	<div class='row thumbnail-dialog-row'>" +
+							"		<div class='column-6 right'>" +
+							"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
+							"		<\/div>" +
+							"		<div class='column-4 right'>" +
+							"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
+							"		<\/div>" +
+							"	<\/div>" +
+							"<\/div>",
+					style:"width: 450px"
+				});
+				myDialog.hide();
+				on(query(".expanded-item-thumbnail"), "click", function(event) {
+					myDialog.show();
+				});
+
+				on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
+					myDialog.hide();
+				});
+
+				on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
+					//
+				});
 
 				// create the SAVE/CANCEL buttons
 				createSaveButtonNode(node);

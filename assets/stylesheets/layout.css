@@ -97,7 +97,6 @@ table tr {
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.0em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
-
 }
 
 .expanded-item-thumbnail {
@@ -238,4 +237,15 @@ table tr {
 #widget_dijit__editor_plugins__FontNameDropDown_0_select, #widget_dijit__editor_plugins__FontSizeDropDown_0_select {
 	width: 100px;
 	height: 25px;
+}
+
+/* */
+.thumbnail-dialog {
+	-webkit-font-smoothing: antialiased;
+	font-size: 0.85em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+.thumbnail-dialog-row {
+	margin-bottom: 5px;
 }

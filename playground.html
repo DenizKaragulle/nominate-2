@@ -6,6 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="assets/stylesheets/grid.css">
 	<link rel="stylesheet" type="text/css" href="assets/stylesheets/editor.css">
 	<link rel="stylesheet" type="text/css" href="assets/stylesheets/styles.css">
+	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/dijit/themes/nihilo/nihilo.css">
 	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css">
 
 	<style>
@@ -30,6 +31,38 @@
 		#dgrid .field-name {
 			width: 18%;
 		}
+
+		.section-content {
+			margin-bottom: 15px;
+		}
+
+		.score-graphic {
+			width: 40px;
+			height: 20px;
+			border: 1px solid red;
+			border-radius: 3px;
+			color: red;
+			text-align: center;
+			letter-spacing: 1px;
+			-webkit-font-smoothing: antialiased;
+			font-size: 1.0em;
+			font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+		}
+
+		.score-graphic-text {
+			transform: translateY(30%);
+		}
+
+		.thumbnail-dialog {
+			-webkit-font-smoothing: antialiased;
+			font-size: 0.85em;
+			font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+		}
+
+		.thumbnail-dialog-row {
+			margin-bottom: 5px;
+		}
+
 	</style>
 
 	<script src="assets/javascripts/tailcoat.js"></script>
@@ -49,9 +82,7 @@
 			"dijit/form/CheckBox",
 			"dijit/form/ComboBox",
 			"dijit/form/SimpleTextarea",
-			"dijit/layout/BorderContainer",
-			"dijit/layout/ContentPane",
-			"dijit/layout/TabContainer",
+			"dijit/Dialog",
 			"dojo/_base/array",
 			"dojo/_base/declare",
 			"dojo/_base/fx",
@@ -78,7 +109,7 @@
 			"dojo/parser",
 			"dojo/ready",
 			"dojo/NodeList-traverse"
-		], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, BorderContainer, ContentPane, TabContainer, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
+		], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
 
 			parser.parse();
 
@@ -87,7 +118,51 @@
 				run();
 
 				function run() {
+					var myDialog = new Dialog({
+						title:"Upload Thumbnail",
+						content:"<div class='container thumbnail-dialog'>" +
+								"	<div class='row thumbnail-dialog-row'>" +
+								"		<div class='column-24'>" +
+								"			<div>Specify the image to use as the thumbnail.<\/div>" +
+								"		<\/div>" +
+								"	<\/div>" +
+								"	<div class='row thumbnail-dialog-row'>" +
+								"		<div class='column-4'>" +
+								"			<div>Image: <\/div>" +
+								"		<\/div>" +
+								"		<div class='column-20'>" +
+								"			<button class='btn'> Choose File <\/button>" +
+								"		<\/div>" +
+								"	<\/div>" +
+								"	<div class='row thumbnail-dialog-row'>" +
+								"		<div class='column-24'>" +
+								"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
+								"		<\/div>" +
+								"	<\/div>" +
+								"	<div class='row thumbnail-dialog-row'>" +
+								"		<div class='column-6 right'>" +
+								"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
+								"		<\/div>" +
+								"		<div class='column-4 right'>" +
+								"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
+								"		<\/div>" +
+								"	<\/div>" +
+								"<\/div>",
+						style:"width: 450px"
+					});
+					myDialog.hide();
 
+					on(query(".thumbnail-content")[0], "click", function (event) {
+						myDialog.show();
+					});
+
+					on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
+						myDialog.hide();
+					});
+
+					on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
+						//
+					});
 				}
 			});
 		});
@@ -95,46 +170,92 @@
 	</script>
 </head>
 
-<body>
+<body class="nihilo">
 
 <div class="wrapper">
 
 	<div class="container">
-		<div class="row">
+
+		<div class="row section-content">
 			<div class="column-2">
-				<h3 class="icon-help"></h3>
+				<div class="row">
+					<div class="column-12 score-graphic-text">
+						<div class="score-graphic"> 4/5</div>
+					</div>
+					<div class="column-12">
+						<h3 class="icon-help"></h3>
+					</div>
+				</div>
 			</div>
 
-			<div class="column-10">
+			<div class="column-22">
 				<div>THUMBNAIL</div>
-				<div>THUMBNAIL CONTENT</div>
+				<div class="thumbnail-content">THUMBNAIL CONTENT</div>
 			</div>
+		</div>
+
+		<div class="row section-content">
+			<div class="column-2">
+				<div class="row">
+					<div class="column-12 score-graphic-text">
+						<div class="score-graphic"> 4/5</div>
+					</div>
+					<div class="column-12">
+						<h3 class="icon-help"></h3>
+					</div>
+				</div>
+			</div>
+
 			<div class="column-12">
 				<div>TITLE</div>
 				<div>Admiral Sir Cloudesley Shovell</div>
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row section-content">
 			<div class="column-2">
-				<h3 class="icon-help"></h3>
+				<div class="row">
+					<div class="column-12 score-graphic-text">
+						<div class="score-graphic"> 4/5</div>
+					</div>
+					<div class="column-12">
+						<h3 class="icon-help"></h3>
+					</div>
+				</div>
 			</div>
 
 			<div class="column-22">
 				<div>SUMMARY</div>
-				<div>In 1714, the British Government offered a prize for a solution to 'The Longitude Problem'. This followed a tragic series of events involving this Royal Navy Admiral.</div>
+				<div>In 1714, the British Government offered a prize for a solution to 'The Longitude Problem'. This
+					followed a tragic series of events involving this Royal Navy Admiral.
+				</div>
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row section-content">
 			<div class="column-2">
-				<h3 class="icon-help"></h3>
+				<div class="row">
+					<div class="column-12 score-graphic-text">
+						<div class="score-graphic"> 4/5</div>
+					</div>
+					<div class="column-12">
+						<h3 class="icon-help"></h3>
+					</div>
+				</div>
 			</div>
 
 			<div class="column-22">
 				<div>DESCRIPTION</div>
-				<div>In 1707 Admiral Sir Cloudesley Shovell was returning from Gibraltar with a Royal Navy fleet after successful engagements against the French in the Mediterranean. The voyage was beset by bad weather, and navigation was difficult. After 12 days, a consensus of the Fleet’s navigators placed them just west of the Brittany Peninsula. In fact they were well to the West, and heading directly towards the Isles of Scilly. Four ships ran aground, with the loss of almost all of their crews, including the Admiral.
-It shocked the Royal Navy and the British people, but navigation was difficult in all weathers at the time, because of the lack of an accurate method of determining Longitude. It was this disaster which led to Parliament establishing the prize.</div>
+				<div>In 1707 Admiral Sir Cloudesley Shovell was returning from Gibraltar with a Royal Navy fleet after
+					successful engagements against the French in the Mediterranean. The voyage was beset by bad weather,
+					and navigation was difficult. After 12 days, a consensus of the Fleet’s navigators placed them just
+					west of the Brittany Peninsula. In fact they were well to the West, and heading directly towards the
+					Isles of Scilly. Four ships ran aground, with the loss of almost all of their crews, including the
+					Admiral.
+					It shocked the Royal Navy and the British people, but navigation was difficult in all weathers at
+					the time, because of the lack of an accurate method of determining Longitude. It was this disaster
+					which led to Parliament establishing the prize.
+				</div>
 			</div>
 		</div>
 	</div>
