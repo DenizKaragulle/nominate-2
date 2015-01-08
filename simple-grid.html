@@ -6,6 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="assets/stylesheets/grid.css">
 	<link rel="stylesheet" type="text/css" href="assets/stylesheets/editor.css">
 	<link rel="stylesheet" type="text/css" href="assets/stylesheets/styles.css">
+	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/dijit/themes/nihilo/nihilo.css">
 	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css">
 
 	<style>
@@ -34,6 +35,37 @@
 		#grid .field-description {
 			width: 70%;
 		}
+
+			/* */
+		#dijit__editor_plugins__FontNameDropDown_0 > label {
+			margin: 0 !important;
+		}
+
+		#dijit__editor_plugins__FontSizeDropDown_0 > label {
+			margin: 0 !important;
+		}
+
+		#dijit__editor_plugins__FontNameDropDown_0_select_popup, #dijit__editor_plugins__FontSizeDropDown_0_select_popup {
+			-webkit-font-smoothing: antialiased;
+			font-size: 0.85em;
+			font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+		}
+
+		#dijit__editor_plugins__FontNameDropDown_0, #dijit__editor_plugins__FontSizeDropDown_0 {
+			width: 250px;
+			-webkit-font-smoothing: antialiased;
+			font-size: 0.85em;
+			font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+		}
+
+		#widget_dijit__editor_plugins__FontNameDropDown_0_select, #widget_dijit__editor_plugins__FontSizeDropDown_0_select {
+			width: 200px;
+			height: 20px;
+			-webkit-font-smoothing: antialiased;
+			font-size: 0.85em;
+			font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+		}
+
 	</style>
 
 	<script src="assets/javascripts/tailcoat.js"></script>
@@ -41,6 +73,12 @@
 
 	<script>
 		require([
+			"dijit/Editor",
+			"dijit/_editor/plugins/LinkDialog",
+			"dijit/_editor/plugins/TextColor",
+			"dijit/_editor/plugins/ViewSource",
+			"dijit/_editor/plugins/FontChoice",
+			"dojo/dom",
 			"dojo/on",
 			"dojo/query",
 			"dojo/_base/declare",
@@ -52,7 +90,7 @@
 			"dojo/dom-construct",
 			"dojo/dom-style",
 			"dojo/domReady!"
-		], function (on, query, declare, OnDemandGrid, Observable, Memory, put, array, domConstruct, domStyle) {
+		], function (Editor, LinkDialog, TextColor, ViewSource, FontChoice, dom, on, query, declare, OnDemandGrid, Observable, Memory, put, array, domConstruct, domStyle) {
 			var sampleData = [
 				{id:1, map:"true", order:124, name:"preheat", description:"Preheat your oven to 350F"},
 				{id:2, map:"true", order:2342, name:"mix dry", description:"In a medium bowl, combine flour, salt, and baking soda"},
@@ -108,32 +146,58 @@
 
 			var sortBtn = query(".sort-btn")[0];
 			on(sortBtn, "click", function (evt) {
-				/*itemStore.query({map:"true"}, {
-					// the results should be sorted by department
-					sort:[{
-						attribute:"name",
-						descending:false
-					}],
-					// starting at an offset of 0
-					start:0,
-					// with a limit of 10 objects
-					count:20
-				}).map(function (employee) {
-					// return just the name, mapping to an array of names
-					return employee.name;
-				}).forEach(function (employeeName) {
-					console.log(employeeName);
-				});
-				dgrid.refresh();*/
 				dgrid.set("sort", "description", false);
 			});
+
+			var descriptionEditor = new Editor({
+				height:"50px",
+				plugins:[
+					'bold',
+					'italic',
+					'underline',
+					'foreColor',
+					'hiliteColor',
+					'|',
+					'justifyLeft',
+					'justifyCenter',
+					'justifyRight',
+					'justifyFull',
+					'|',
+					'insertOrderedList',
+					'insertUnorderedList',
+					'|',
+					'indent',
+					'outdent',
+					'|',
+					'createLink',
+					'unlink',
+					'removeFormat',
+					'|',
+					'undo',
+					'redo',
+					'|',
+					'viewSource',
+					'fontName',
+					'fontSize'
+				]
+			}, dom.byId("myEditor"));
+			descriptionEditor.startup();
 		});
 
 	</script>
 </head>
-<body>
+
+<body class="nihilo">
 
 <div class="container">
+	<div class="row">
+		<div class="column-24">
+			<div data-dojo-type="dijit/Editor" id="myEditor">
+				<p>This is the initial content.</p>
+			</div>
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="column-24">
 			<div id="grid"></div>

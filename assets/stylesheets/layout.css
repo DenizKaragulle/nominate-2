@@ -155,3 +155,87 @@ table tr {
 	height: 200px;
 	text-align: left;
 }
+
+.test {
+	background-color: #005E95;
+	color: white;
+	height: 150px;
+}
+
+.sign-in {
+
+}
+
+.search-items, .dropdown-item-sort, .dropdown-item-filter, .help-button {
+	display: none;
+}
+
+.ribbon-header-title {
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 1.1em;
+	font-weight: 600;
+	line-height: 1.0em;
+	font-family: 'Avenir LT W01 65 Heavy', Arial, Helvetica, sans-serif;
+}
+
+.ribbon-header-user {
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 0.85em;
+	line-height: 1.0em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+#ribbon-header-num-items {
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	line-height: 1.0em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+::-webkit-input-placeholder {
+	color: white;
+}
+
+:-moz-placeholder {
+	/* Firefox 18- */
+	color: white;
+}
+
+::-moz-placeholder {
+	/* Firefox 19+ */
+	color: white;
+}
+
+:-ms-input-placeholder {
+	color: white;
+}
+
+/* Dojo Editor Style over-rides that are conflicting with Tailcoat */
+/* */
+#dijit__editor_plugins__FontNameDropDown_0 > label {
+	margin: 0 !important;
+}
+
+#dijit__editor_plugins__FontSizeDropDown_0 > label {
+	margin: 0 !important;
+}
+
+#dijit__editor_plugins__FontNameDropDown_0_select_popup, #dijit__editor_plugins__FontSizeDropDown_0_select_popup {
+	-webkit-font-smoothing: antialiased;
+	font-size: 0.85em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+#dijit__editor_plugins__FontNameDropDown_0, #dijit__editor_plugins__FontSizeDropDown_0 {
+	width: 180px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 0.85em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+#widget_dijit__editor_plugins__FontNameDropDown_0_select, #widget_dijit__editor_plugins__FontSizeDropDown_0_select {
+	width: 130px;
+	height: 25px;
+}

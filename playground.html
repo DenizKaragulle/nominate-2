@@ -87,16 +87,7 @@
 				run();
 
 				function run() {
-					on(query(".sort-items"), "click", function (event) {
-						var shit = query(".icon-check");
-						domAttr.set(shit, "class", "sort-items");
-						domClass.remove(shit[0], "icon-check");
-						domStyle.set(shit, "margin-left", "20px");
 
-						query(".sort-items").style("margin-left", "20px");
-						domAttr.set(this, "class", "sort-items icon-check checked");
-						domStyle.set(this, "margin-left", "2px");
-					});
 				}
 			});
 		});
@@ -107,19 +98,46 @@
 <body>
 
 <div class="wrapper">
-	<div class="dropdown-navigation dropdown-wrapper">
-		<a href="#" class="dropdown"> Sort By </a>
-		<div class="dropdown-content">
-			<div class="dropdown-menu">
-				<ul>
-					<li><a style="margin-left: 20px;" class="sort-items"> Title</a></li>
-					<li><a style="margin-left: 2px;" class="sort-items icon-check checked"> Type</a></li>
-					<li><a style="margin-left: 20px;" class="sort-items"> Number of Views</a></li>
-				</ul>
+
+	<div class="container">
+		<div class="row">
+			<div class="column-2">
+				<h3 class="icon-help"></h3>
+			</div>
+
+			<div class="column-10">
+				<div>THUMBNAIL</div>
+				<div>THUMBNAIL CONTENT</div>
+			</div>
+			<div class="column-12">
+				<div>TITLE</div>
+				<div>Admiral Sir Cloudesley Shovell</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="column-2">
+				<h3 class="icon-help"></h3>
+			</div>
+
+			<div class="column-22">
+				<div>SUMMARY</div>
+				<div>In 1714, the British Government offered a prize for a solution to 'The Longitude Problem'. This followed a tragic series of events involving this Royal Navy Admiral.</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="column-2">
+				<h3 class="icon-help"></h3>
+			</div>
+
+			<div class="column-22">
+				<div>DESCRIPTION</div>
+				<div>In 1707 Admiral Sir Cloudesley Shovell was returning from Gibraltar with a Royal Navy fleet after successful engagements against the French in the Mediterranean. The voyage was beset by bad weather, and navigation was difficult. After 12 days, a consensus of the Fleet’s navigators placed them just west of the Brittany Peninsula. In fact they were well to the West, and heading directly towards the Isles of Scilly. Four ships ran aground, with the loss of almost all of their crews, including the Admiral.
+It shocked the Royal Navy and the British people, but navigation was difficult in all weathers at the time, because of the lack of an accurate method of determining Longitude. It was this disaster which led to Parliament establishing the prize.</div>
 			</div>
 		</div>
 	</div>
-
 	<!--<div class="page sticky-footer"></div>
 	<footer class="footer">
 		<div class="container">

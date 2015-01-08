@@ -6,6 +6,10 @@ require([
 	"dgrid/Keyboard",
 	"dgrid/Selection",
 	"dijit/Editor",
+	"dijit/_editor/plugins/LinkDialog",
+	"dijit/_editor/plugins/TextColor",
+	"dijit/_editor/plugins/ViewSource",
+	"dijit/_editor/plugins/FontChoice",
 	"dijit/form/Button",
 	"dijit/form/CheckBox",
 	"dijit/form/ComboBox",
@@ -38,7 +42,7 @@ require([
 	"dojo/parser",
 	"dojo/ready",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, BorderContainer, ContentPane, TabContainer, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
+], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ComboBox, BorderContainer, ContentPane, TabContainer, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
 
 	parser.parse();
 
@@ -421,8 +425,6 @@ require([
 											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px; margin-left: 145px;'>" +
 											"	<div class='content-container'>" +
 											"		<div id='map'></div>" +
-											"		<div class='expanded-item-text'>" + SCORE_TEXT_1 + "</div>" +
-											"		<div class='expanded-item-text'>" + SCORE_TEXT_2 + "</div>" +
 											"		<div class='row'>" +
 											"			<div class='column-18'>" +
 											"				<div class='row'>" +
@@ -591,7 +593,36 @@ require([
 				createSaveButtonNode(node);
 
 				descriptionEditor = new Editor({
-					height:"50px"
+					height:"50px",
+					plugins:[
+						'bold',
+						'italic',
+						'underline',
+						'foreColor',
+						'hiliteColor',
+						'|',
+						'justifyLeft',
+						'justifyCenter',
+						'justifyRight',
+						'justifyFull',
+						'|',
+						'insertOrderedList',
+						'insertUnorderedList',
+						'|',
+						'indent',
+						'outdent',
+						'|',
+						'createLink',
+						'unlink',
+						'removeFormat',
+						'|',
+						'undo',
+						'redo',
+						'|',
+						'viewSource',
+						'fontName',
+						'fontSize'
+					]
 				}, dom.byId(descID));
 				descriptionEditor.startup();
 
@@ -701,7 +732,36 @@ require([
 				createSaveButtonNode(node);
 
 				accessUseConstraintsEditor = new Editor({
-					height:"50px"
+					height:"50px",
+					plugins:[
+						'bold',
+						'italic',
+						'underline',
+						'foreColor',
+						'hiliteColor',
+						'|',
+						'justifyLeft',
+						'justifyCenter',
+						'justifyRight',
+						'justifyFull',
+						'|',
+						'insertOrderedList',
+						'insertUnorderedList',
+						'|',
+						'indent',
+						'outdent',
+						'|',
+						'createLink',
+						'unlink',
+						'removeFormat',
+						'|',
+						'undo',
+						'redo',
+						'|',
+						'viewSource',
+						'fontName',
+						'fontSize'
+					]
 				}, dom.byId(accessID));
 				accessUseConstraintsEditor.startup();
 
@@ -1102,6 +1162,11 @@ require([
 			if (value === "all-items") {
 				params = {
 					q:"owner:" + owner,
+					num:1000
+				};
+			} else if (value === "Web Map") {
+				params = {
+					q:'Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
 					num:1000
 				};
 			} else {
