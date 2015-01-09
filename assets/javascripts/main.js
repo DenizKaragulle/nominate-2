@@ -164,8 +164,10 @@ require([
 						'	<div class="row">' +
 						'		<div class="column-20">' +
 						'			<div class="item-title">' + object.title + '</div>' +
-						'			<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
-						'			<div class="item-number-views">' + views + ' views</div>' +
+						'				<div class="shit">' +
+						'					<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
+						'				</div>' +
+						'				<div class="item-number-views">' + views + ' views</div>' +
 						'		</div>' +
 						'	</div>' +
 						'</div>'

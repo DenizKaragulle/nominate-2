@@ -69,8 +69,13 @@
 
 }
 
+.shit {
+margin-bottom: -3px;
+}
+
 /* item title */
 .item-title {
+	margin-bottom: 13px;
 	color: #007AC2;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.6em;
