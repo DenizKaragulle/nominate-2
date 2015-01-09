@@ -300,3 +300,8 @@ table tr {
 	height: 230px;
 	width: 250px;
 }
+
+.icon-edit {
+	margin-left: 10px !important;
+	border: 1px solid #CCC !important;
+}
