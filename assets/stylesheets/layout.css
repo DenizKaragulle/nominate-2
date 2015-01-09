@@ -281,5 +281,8 @@ table tr {
 }
 
 #nominate-btn {
-	margin-top: 15px !important;
+	margin-top: 15px;
+	color: red;
+border: 1px solid red;
+	background-color: white;
 }

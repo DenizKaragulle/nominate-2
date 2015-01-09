@@ -446,7 +446,7 @@ require([
 											"				</div>" +
 											"			</div>" +
 											"			<div class='column-4'>" +
-											"				<button id='nominate-btn' class='btn red right'> NOMINATE </button>" +
+											"				<button id='nominate-btn' class='btn right icon-email'> NOMINATE </button>" +
 											"			</div>" +
 											"		</div>" +
 
