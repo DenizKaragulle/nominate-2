@@ -122,60 +122,8 @@
 				run();
 
 				function run() {
-					var myDialog = new Dialog({
-						title:"Upload Thumbnail",
-						content:"<div class='container thumbnail-dialog'>" +
-								"	<div class='row thumbnail-dialog-row'>" +
-								"		<div class='column-24'>" +
-								"			<div>Specify the image to use as the thumbnail.<\/div>" +
-								"		<\/div>" +
-								"	<\/div>" +
-								"	<div class='row thumbnail-dialog-row'>" +
-								"		<div class='column-4'>" +
-								"			<div>Image: <\/div>" +
-								"		<\/div>" +
-								"		<div class='column-20'>" +
-								"			<button class='btn'> Choose File <\/button>" +
-								"		<\/div>" +
-								"	<\/div>" +
-								"	<div class='row thumbnail-dialog-row'>" +
-								"		<div class='column-24'>" +
-								"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
-								"		<\/div>" +
-								"	<\/div>" +
-								"	<div class='row thumbnail-dialog-row'>" +
-								"		<div class='column-6 right'>" +
-								"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
-								"		<\/div>" +
-								"		<div class='column-4 right'>" +
-								"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
-								"		<\/div>" +
-								"	<\/div>" +
-								"<\/div>",
-						style:"width: 450px"
-					});
-					myDialog.hide();
-
-					on(query(".thumbnail-content")[0], "click", function (event) {
-						myDialog.show();
-					});
-
-					on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
-						myDialog.hide();
-					});
-
-					on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
-						//
-					});
-
-					var targetNode = query(".mytooltip")[0];
-					var tooltip = new Tooltip({
-						connectId:[targetNode],
-						style: {
-							width: "10px"
-						},
-						label:"<div style='word-break: break-all'>asdfafasdf lkjas dflkjaslkfj alskfj laskfj laskdfj<\/div>"
-					});
+					var contentNode = query(".html-content")[0];
+					domConstruct.create("div", { innerHTML: "<p>hi<\/p>" }, contentNode, "last");
 				}
 			});
 		});
@@ -187,9 +135,9 @@
 
 <div class="wrapper">
 
+	<div class="html-content"></div>
 
-
-		<div class="row section-content">
+	<div class="row section-content">
 			<div class="column-2">
 				<div class="row">
 					<div class="column-12 score-graphic-text">
@@ -212,8 +160,7 @@
 				<div class="thumbnail-content">THUMBNAIL CONTENT</div>
 			</div>
 		</div>
-
-		<div class="row section-content">
+	<div class="row section-content">
 			<div class="column-2">
 				<div class="row">
 					<div class="column-12 score-graphic-text">
@@ -236,8 +183,7 @@
 				<div class="section-content">Admiral Sir Cloudesley Shovell</div>
 			</div>
 		</div>
-
-		<div class="row section-content">
+	<div class="row section-content">
 			<div class="column-2">
 				<div class="row">
 					<div class="column-12 score-graphic-text">
@@ -263,8 +209,7 @@
 				</div>
 			</div>
 		</div>
-
-		<div class="row section-content">
+	<div class="row section-content">
 			<div class="column-2">
 				<div class="row">
 					<div class="column-12 score-graphic-text">
@@ -297,54 +242,6 @@
 				</div>
 			</div>
 		</div>
-
-		This is a <span class="mytooltip">test</span>
-	<!--<div class="page sticky-footer"></div>
-	<footer class="footer">
-		<div class="container">
-			<div class="row">
-				<nav class="column-6 tablet-column-24 leader-1">
-					<h4>Header 1</h4>
-					<ul>
-						<li><a href="#">Link 1</a></li>
-						<li><a href="#">Link 2</a></li>
-						<li><a href="#">Link 3</a></li>
-					</ul>
-				</nav>
-				<nav class="column-6 tablet-column-24 leader-1">
-					<h4>Header 2</h4>
-					<ul>
-						<li><a href="#">Link 1</a></li>
-						<li><a href="#">Link 2</a></li>
-						<li><a href="#">Link 3</a></li>
-					</ul>
-				</nav>
-				<nav class="column-6 tablet-column-24 leader-1">
-					<h4>Header 3</h4>
-					<ul>
-						<li><a href="#">Link 1</a></li>
-						<li><a href="#">Link 2</a></li>
-						<li><a href="#">Link 3</a></li>
-						<li><a href="#">Link 4</a></li>
-						<li><a href="#">Link 5</a></li>
-					</ul>
-				</nav>
-				<nav class="column-6 tablet-column-24 leader-1">
-					<a class="esri-logo-footer" href="http://esri.com">Esri</a>
-					<section class="footer-social-nav">
-						<a class="icon-twitter" href="https://twitter.com/Esri/"></a>
-						<a class="icon-facebook" href="https://www.facebook.com/esrigis/"></a>
-						<a class="icon-github" href="http://esri.github.com/"></a>
-						<a class="icon-email" href="http://www.esri.com/about-esri/contact/"></a>
-					</section>
-				</nav>
-				<small class="footer-legal column-24 leader-1 trailer-1">© Copyright 2013 Environmental Systems
-					Research
-					Institute, Inc. | <a href="http://www.esri.com/legal/privacy">Privacy</a> | <a
-							href="http://www.esri.com/legal/software-license">Legal</a></small>
-			</div>
-		</div>
-	</footer>-->
 </div>
 
 </body>

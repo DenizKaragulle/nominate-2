@@ -1090,7 +1090,6 @@ require([
 				domConstruct.destroy("section-content");
 				domConstruct.destroy("save-row");
 
-				array.forEach()
 				var node = query(".content-container")[0];
 				domConstruct.place(
 						/*"<div id='section-content'>" +
@@ -1150,6 +1149,7 @@ require([
 								'			</div>' +
 								'			<div class="column-12">' +
 								'				<div class="section-header">Add custom tags</div>' +
+								'				<div class="tag-container">' + itemTags + '</div>' +
 								'			</div>' +
 								'		</div>' +
 
