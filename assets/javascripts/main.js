@@ -775,7 +775,8 @@ require([
 				createSaveButtonNode(node);
 
 				descriptionEditor = new Editor({
-					height:"50px",
+					id:"description-editor",
+					height:"30px",
 					plugins:[
 						'bold',
 						'italic',
@@ -801,9 +802,9 @@ require([
 						'undo',
 						'redo',
 						'|',
-						'viewSource',
+						'viewSource'/*,
 						'fontName',
-						'fontSize'
+						'fontSize'*/
 					]
 				}, dom.byId(descID));
 				descriptionEditor.startup();
@@ -1363,6 +1364,10 @@ require([
 		}
 
 		function destroyNodes(categoryNodes) {
+			if (dijit.byId("description-editor")) {
+				dijit.byId("description-editor").destroy();
+			}
+
 			if (dijit.byId("update-thumbnail-dialog")) {
 				dijit.byId("update-thumbnail-dialog").destroy();
 			}
