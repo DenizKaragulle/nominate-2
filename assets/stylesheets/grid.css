@@ -72,7 +72,6 @@
 /* item title */
 .item-title {
 	color: #007AC2;
-	letter-spacing: 1px;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.6em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -89,7 +88,6 @@
 	position: relative;
 	font-size: 1.0em;
 	color: #007AC2;
-	letter-spacing: 1px;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
@@ -98,7 +96,6 @@
 .item-access {
 	position: relative;
 	color: #007AC2;
-	letter-spacing: 1px;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.0em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -106,9 +103,8 @@
 
 /* item number of views */
 .item-number-views {
-	font-size: 0.8em;
+	font-size: 0.85em;
 	color: #007AC2;
-	letter-spacing: 1px;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
