@@ -1525,7 +1525,7 @@ require([
 		function createContentButtonGroup(id) {
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
-					'	<div class="btn-group column-24">' +
+					'	<div class="btn-group column-24 icon-edit-btn-group">' +
 					'		<a class="active column-4 details icon-edit"> ' + DETAILS + '</a>' +
 					'		<a class="column-4 credits icon-edit"> ' + USE_CREDITS + '</a>' +
 					'		<a class="column-4 tags icon-edit"> ' + TAGS + '</a>' +

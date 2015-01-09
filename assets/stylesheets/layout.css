@@ -301,7 +301,12 @@ table tr {
 	width: 250px;
 }
 
+.icon-edit-btn-group {
+	margin-left: -10px;
+}
+
 .icon-edit {
 	margin-left: 10px !important;
 	border: 1px solid #CCC !important;
+	border-radius: 3px !important;
 }
