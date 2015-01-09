@@ -107,7 +107,7 @@ require([
 	var MAXIMUM_CHAR = "A maximum of xxx characters are available";
 	var SCORE_TEXT_1 = "Some practical characteristics of your item must be present in order to nominate it for the Living Atlas.  A score of at least 80 is required before the map can be nominated.";
 	var SCORE_TEXT_2 = "Here is your item's current score. Click on the 'i' buttons for details on how to improve your score.";
-	var OVERALL_HEADER = "Current Score";
+	var CURRENT_SCORE_HEADER_TEXT = "Current Score";
 	var OVERALL_TXT = "In the sections below, if the check box is green you have full-filled criteria,<br />" +
 			"If the check box is red, please select that section and look for the items underlined to improve your score.";
 	//
@@ -424,14 +424,19 @@ require([
 									domConstruct.place(
 											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
 											"	<div class='content-container'>" +
-											"		<div id='map'></div>" +
 											"		<div class='row'>" +
-											"			<div class='column-18'>" +
+											"			<div class='column-2' style='color: white'>spacer</div>" +
+											"			<div class='column-20 content-section'>" +
+											"				<div id='map'></div>" +
+											"			</div>" +
+											"		</div>" +
+
+											"		<div class='row'>" +
+											"			<div class='column-2' style='color: white'>spacer</div>" +
+											"			<div class='column-16 content-section'>" +
 											"				<div class='row'>" +
-											"					<div class='column-24'>" +
-											"						<div class='current-score-header'>" + OVERALL_HEADER + "</div>" +
-											"						<span class='current-score-graphic-container'></span>" +
-											"					</div>" +
+											"					<div class='current-score-header'>" + CURRENT_SCORE_HEADER_TEXT + "</div>" +
+											"					<span class='current-score-graphic-container'></span>" +
 											"				</div>" +
 											"			</div>" +
 											"			<div class='column-2'>" +
@@ -444,8 +449,20 @@ require([
 											"				<button id='nominate-btn' class='btn small disabled'> NOMINATE </button>" +
 											"			</div>" +
 											"		</div>" +
-											"		<div class='expanded-item-text'>" + OVERALL_TXT + "</div>" +
-											"		<div id='" + tcID + "'></div>" +
+
+											"		<div class='row'>" +
+											"			<div class='column-2' style='color: white'>spacer</div>" +
+											"			<div class='column-20 content-section'>" +
+											"				<div class='expanded-item-text'>" + OVERALL_TXT + "</div>" +
+											"			</div>" +
+											"		</div>" +
+
+											"		<div class='row'>" +
+											"			<div class='column-2' style='color: white'>spacer</div>" +
+											"			<div class='column-20 content-section'>" +
+											"				<div id='" + tcID + "'></div>" +
+											"			</div>" +
+											"		</div>" +
 											"	</div>" +
 											"</div>" +
 											"<div id='" + btnID + "'></div>",
@@ -526,7 +543,7 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-								/*'<div class="row section-content">' +
+								'<div class="row section-content">' +
 								'	<div class="column-2">' +
 								'		<div class="row">' +
 								'			<div class="column-12 score-graphic-text">' +
@@ -543,8 +560,8 @@ require([
 								'		</div>' +
 								'	</div>' +
 
-								'	<div class="column-22">' +
-								'		<div class="section-header">THUMBNAIL</div>' +
+								'	<div class="column-20 content-section">' +
+								'		<div class="section-header">Thumbnail</div>' +
 								'		<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
 								'	</div>' +
 								'</div>' +
@@ -566,8 +583,8 @@ require([
 								'		</div>' +
 								'	</div>' +
 
-								'	<div class="column-12">' +
-								'		<div class="section-header">TITLE</div>' +
+								'	<div class="column-12 content-section">' +
+								'		<div class="section-header">Title</div>' +
 								'		<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
 								'	</div>' +
 								'</div>' +
@@ -589,8 +606,8 @@ require([
 								'		</div>' +
 								'	</div>' +
 
-								'	<div class="column-22">' +
-								'		<div class="section-header">SUMMARY</div>' +
+								'	<div class="column-20 content-section">' +
+								'		<div class="section-header">Summary</div>' +
 								'			<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
 								'		</div>' +
 								'	</div>' +
@@ -613,17 +630,17 @@ require([
 								'		</div>' +
 								'	</div>' +
 
-								'	<div class="column-22">' +
-								'		<div class="section-header">DESCRIPTION</div>' +
+								'	<div class="column-20 content-section">' +
+								'		<div class="section-header">Description</div>' +
 								'			<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
 								'	</div>' +
 								'</div>',
-						node, "last");*/
+						node, "last");
 
-						'<div id="section-content">' +
+						/*'<div id="section-content">' +
 						'	<div class="row">' +
 						'		<div class="column-4">' +
-						'			<div class="section-header">THUMBNAIL' +
+						'			<div class="section-header">Thumbnail' +
 						'				<div class="tooltip header-tooltip animate">' +
 						'					<span class="icon-help icon-blue"></span>' +
 						'					<div class="tooltip-wrapper">' +
@@ -636,8 +653,7 @@ require([
 						'		<div class="column-20">' +
 						'			<div class="row">' +
 						'				<div class="column-24">' +
-						'					<div class="section-header">TITLE' +
-						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+						'					<div class="section-header">Title' +
 						'						<div class="tooltip header-tooltip animate before">' +
 						'							<span class="icon-help icon-blue"></span>' +
 						'							<div class="tooltip-wrapper">' +
@@ -650,8 +666,7 @@ require([
 						'					</div>' +
 						'				</div>' +
 						'				<div class="column-24">' +
-						'					<div class="section-header">SUMMARY' +
-						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+						'					<div class="section-header">Summary' +
 						'						<div class="tooltip header-tooltip animate before">' +
 						'							<span class="icon-help icon-blue"></span>' +
 						'							<div class="tooltip-wrapper">' +
@@ -664,8 +679,7 @@ require([
 						'					</div>' +
 						'				</div>' +
 						'				<div class="column-24">' +
-						'					<div class="section-header">DESCRIPTION' +
-						'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
+						'					<div class="section-header">Description' +
 						'						<div class="tooltip header-tooltip animate before">' +
 						'							<span class="icon-help icon-blue"></span>' +
 						'							<div class="tooltip-wrapper">' +
@@ -681,7 +695,7 @@ require([
 						'		</div>' +
 						'	</div>' +
 						'</div>',
-						node, "last");
+						node, "last");*/
 
 
 				var myDialog = new Dialog({
@@ -1204,7 +1218,6 @@ require([
 								'			<div class="row">' +
 								'				<div class="column-24">' +
 								'					<div class="section-header">NAME ' +
-								'						<span class="section-header-message">' + MAXIMUM_CHAR + '<\/span>' +
 								'						<div class="tooltip header-tooltip animate">' +
 								'							<span class="icon-help icon-blue"></span>' +
 								'							<div class="tooltip-wrapper">' +
@@ -1220,7 +1233,6 @@ require([
 								'			<div class="row">' +
 								'				<div class="column-24">' +
 								'					<div class="section-header">DESCRIPTION ' +
-								'						<span class="section-header-message">' + MAXIMUM_CHAR + '</span>' +
 								'						<div class="tooltip header-tooltip animate">' +
 								'							<span class="icon-help icon-blue"></span>' +
 								'							<div class="tooltip-wrapper">' +

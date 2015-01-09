@@ -103,7 +103,7 @@
 
 /* item number of views */
 .item-number-views {
-	font-size: 0.85em;
+	font-size: 0.95em;
 	color: #007AC2;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -152,4 +152,8 @@
 .summary {
 	margin-left: 5px;
 	color: #454545;
+}
+
+.content-section {
+	margin-left: 50px;
 }
