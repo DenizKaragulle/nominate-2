@@ -13,14 +13,10 @@ require([
 	"dijit/_editor/plugins/FontChoice",
 	"dijit/form/Button",
 	"dijit/form/CheckBox",
-	"dijit/form/ComboBox",
-	"dijit/layout/BorderContainer",
-	"dijit/layout/ContentPane",
-	"dijit/layout/TabContainer",
 	"dijit/ProgressBar",
+	"dijit/Tooltip",
 	"dojo/_base/array",
 	"dojo/_base/declare",
-	"dojo/_base/fx",
 	"dojo/_base/lang",
 	"dojo/aspect",
 	"dojo/date",
@@ -43,7 +39,7 @@ require([
 	"dojo/parser",
 	"dojo/ready",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ComboBox, BorderContainer, ContentPane, TabContainer, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
+], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
 
 	parser.parse();
 
@@ -553,12 +549,7 @@ require([
 								'					<div class="score-graphic"> 4/5</div>' +
 								'				</div>' +
 								'				<div class="column-12">' +
-								'					<div class="tooltip header-tooltip animate">' +
-								'						<span class="icon-help icon-blue"></span>' +
-								'						<div class="tooltip-wrapper">' +
-								'							<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
-								'						</div>' +
-								'					</div>' +
+								'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
 								'				</div>' +
 								'			</div>' +
 								'		</div>' +
@@ -580,12 +571,7 @@ require([
 								'					<div class="score-graphic"> 4/5</div>' +
 								'				</div>' +
 								'				<div class="column-12">' +
-								'					<div class="tooltip header-tooltip animate">' +
-								'						<span class="icon-help icon-blue"></span>' +
-								'						<div class="tooltip-wrapper">' +
-								'							<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
-								'						</div>' +
-								'					</div>' +
+								'					<img src="assets/images/info.png" class="title-tooltip info-graphic">' +
 								'				</div>' +
 								'			</div>' +
 								'		</div>' +
@@ -603,12 +589,7 @@ require([
 								'					<div class="score-graphic"> 4/5</div>' +
 								'				</div>' +
 								'				<div class="column-12">' +
-								'					<div class="tooltip header-tooltip">' +
-								'						<span class="icon-help icon-blue"></span>' +
-								'						<div class="tooltip-wrapper">' +
-								'							<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
-								'						</div>' +
-								'					</div>' +
+								'					<img src="assets/images/info.png" class="summary-tooltip info-graphic">' +
 								'				</div>' +
 								'			</div>' +
 								'		</div>' +
@@ -626,12 +607,7 @@ require([
 								'					<div class="score-graphic"> 4/5</div>' +
 								'				</div>' +
 								'				<div class="column-12">' +
-								'					<div class="tooltip header-tooltip animate">' +
-								'						<span class="icon-help icon-blue"></span>' +
-								'						<div class="tooltip-wrapper">' +
-								'							<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
-								'						</div>' +
-								'					</div>' +
+								'					<img src="assets/images/info.png" class="description-tooltip info-graphic">' +
 								'				</div>' +
 								'			</div>' +
 								'		</div>' +
@@ -704,6 +680,64 @@ require([
 						'</div>',
 						node, "last");*/
 
+				var thumbnailTooltip = new Tooltip({
+					connectId:[query(".thumbnail-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>" +
+							"Full points for using a custom thumbnail <br/>" +
+							"that you create and upload in the required<br/>" +
+							" dimensions (200 x 133 pixels)." +
+							"<\/div>"
+				});
+				var titleTooltip = new Tooltip({
+					connectId:[query(".title-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>" +
+									"A title should be short, simple, clear. <br/>" +
+									"Three words is ideal. Avoid acronyms, <br/>" +
+									"ALL CAPS, underscores, “copy”, “test”, <br/>" +
+									"“demo”, “eval” in the title. Answers <br/>" +
+									"the basic question “What is this?\"" +
+							"<\/div>"
+				});
+				var summaryTooltip = new Tooltip({
+					connectId:[query(".summary-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>" +
+									"A good summary briefly explains what this map is, <br />" +
+									"in 1-2 sentences, about 10 words per sentence. <br />" +
+									"Avoid acronyms, ALL CAPS, underscores, “copy”, <br />" +
+									"“test”, “demo”, “eval” in the summary. Answers <br />" +
+									"the basic question “What does this show?\"" +
+							"<\/div>"
+				});
+				var descriptionTooltip = new Tooltip({
+					connectId:[query(".description-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>" +
+									"A good description further clarifies what this item</br >" +
+									"is and what it shows. It explains more about the </br >" +
+									"data and its sources, but does not go into pages</br >" +
+									"of explanation. Scoring is primarily based on </br >" +
+									"length of content. About 2-3 paragraphs is ideal, </br >" +
+									"with 4-5 sentences per paragraph, and about 12 or </br >" +
+									"so words per sentence. Bonus points if hyperlinks </br >" +
+									"whisk the reader away to more fully developed </br >" +
+									"explanations and other supporting material." +
+							"<\/div>"
+				});
 
 				var myDialog = new Dialog({
 					id:"update-thumbnail-dialog",

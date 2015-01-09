@@ -74,6 +74,7 @@
 	<script>
 
 		require([
+			"dijit/Tooltip",
 			"put-selector/put",
 			"dojo/store/Memory",
 			"dgrid/extensions/Pagination",
@@ -112,7 +113,7 @@
 			"dojo/parser",
 			"dojo/ready",
 			"dojo/NodeList-traverse"
-		], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
+		], function (Tooltip, put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
 
 			parser.parse();
 
@@ -165,6 +166,15 @@
 
 					on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
 						//
+					});
+
+					var targetNode = query(".mytooltip")[0];
+					var tooltip = new Tooltip({
+						connectId:[targetNode],
+						style: {
+							width: "10px"
+						},
+						label:"<div style='word-break: break-all'>asdfafasdf lkjas dflkjaslkfj alskfj laskfj laskdfj<\/div>"
 					});
 				}
 			});
@@ -287,6 +297,8 @@
 				</div>
 			</div>
 		</div>
+
+		This is a <span class="mytooltip">test</span>
 	<!--<div class="page sticky-footer"></div>
 	<footer class="footer">
 		<div class="container">
