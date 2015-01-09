@@ -6,7 +6,7 @@
 
 .dgrid-header {
 	background-color: #ffffff !important;
-	color: #007AC2;
+	color: #0079C1;
 	border: none;
 }
 
@@ -76,7 +76,7 @@ margin-bottom: -3px;
 /* item title */
 .item-title {
 	margin-bottom: 13px;
-	color: #007AC2;
+	color: #005E95;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.6em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -92,7 +92,7 @@ margin-bottom: -3px;
 .item-type {
 	position: relative;
 	font-size: 1.2em;
-	color: #007AC2;
+	color: #0079C1;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
@@ -100,7 +100,7 @@ margin-bottom: -3px;
 /* item access */
 .item-access {
 	position: relative;
-	color: #007AC2;
+	color: #0079C1;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.0em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -109,14 +109,14 @@ margin-bottom: -3px;
 /* item number of views */
 .item-number-views {
 	font-size: 0.95em;
-	color: #007AC2;
+	color: #0079C1;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
 
 .title-column-views {
 	font-size: 9.5pt;
-	color: #007AC2;
+	color: #0079C1;
 	letter-spacing: 1px;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -151,7 +151,7 @@ margin-bottom: -3px;
 .thumbnail img {
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: 1px solid #007AC2;
+	border: 1px solid #0079C1;
 }
 
 .summary {

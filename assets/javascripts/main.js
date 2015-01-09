@@ -442,7 +442,7 @@ require([
 											"			<div class='column-2'>" +
 											"				<div class='row'>" +
 											"					<div class='score-spacer'>spacer</div>" +
-											"					<div class='current-score-number' style='color: red;'>78</div>" +
+											"					<div class='current-score-number'>78</div>" +
 											"				</div>" +
 											"			</div>" +
 											"			<div class='column-4 right'>" +
