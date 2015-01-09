@@ -114,6 +114,8 @@ require([
 	//
 	var MONTHS = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 	var CATEGORIES = ["basemapsCB", "lifestylesCB", "urbanSystemsCB", "historicalMapsCB", "imageryCB", "landscapeCB", "transportationCB", "storyMapsCB", "demographgicsCB", "earthObservationsCB", "boundariesAndPlacesCB"];
+	var CATEGORIES_LABELS = ["Basemaps", "Lifestyle", "Urban Systems", "Historical maps", "Imagery", "Landscape", "Transportation", "Story Maps", "Demographics", "Earth Observations", "Boundaries and Places"];
+
 	// Tab Container Labels
 	var DETAILS = "DETAILS";
 	var USE_CREDITS = "USE/CREDITS";
@@ -559,7 +561,7 @@ require([
 								'			<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
 								'		</div>' +
 
-								'		<div class="column-4 content-section">' +
+								'		<div class="column-3 content-section">' +
 								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
 								'		</div>' +
 								'	</div>' +
@@ -739,6 +741,7 @@ require([
 							"<\/div>"
 				});
 
+				// update thumbnail dialog
 				var myDialog = new Dialog({
 					id:"update-thumbnail-dialog",
 					title:"Upload Thumbnail",
@@ -773,6 +776,7 @@ require([
 					style:"width: 450px"
 				});
 				myDialog.hide();
+
 				on(query(".expanded-item-thumbnail"), "click", function(event) {
 					myDialog.show();
 				});
@@ -789,17 +793,18 @@ require([
 					portalUser.getItem(selectedRowID).then(function (results) {
 						var _userItemUrl = results.userItemUrl;
 						console.log(_userItemUrl);
+						console.log(dom.byId("thumbnail-file-updload-btn").files[0]);
 						// http://www.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312
 						// http://jsapi.maps.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312/update
 						esriRequest({
 							url:_userItemUrl + "/update",
 							content:{
 								f:"json",
-								filename:"Opera-thumbnail.jpg",
-								multipart:true
-							}
+								thubmnail:dom.byId("thumbnail-file-updload-btn").files[0]
+							},
+							multipart:true
 						}, {
-							usePost:true
+							usePost:true,
 						}).then(function (response) {
 							if (response.success) {
 								console.log("SUCCESS");
@@ -922,35 +927,70 @@ require([
 				var node = query(".content-container")[0];
 				domConstruct.place(
 						'<div id="section-content">' +
-								'	<div class="row">' +
-								'		<div class="column-24">' +
-								'			<div class="section-header">ACCESS AND USE CONSTRAINTS' +
-								'				<div class="tooltip header-tooltip animate">' +
-								'					<span class="icon-help icon-blue"></span>' +
-								'					<div class="tooltip-wrapper">' +
-								'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'					</div>' +
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
+								'			<div class="row">' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
 								'				</div>' +
-								'			</div>' +
-								'			<div class="section-content">' +
-								'				<div id="' + accessID + '" data-dojo-type="dijit/Editor" name="editorContent" rows="3">' + licenseInfo + '</div>' +
+								'				<div class="column-12">' +
+								'					<img src="assets/images/info.png" class="access-constraints-tooltip info-graphic">' +
+								'				</div>' +
 								'			</div>' +
 								'		</div>' +
-								'		<div class="column-24">' +
-								'			<div class="section-header">CREDITS' +
-								'				<div class="tooltip header-tooltip animate">' +
-								'					<span class="icon-help icon-blue"></span>' +
-								'					<div class="tooltip-wrapper">' +
-								'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'					</div>' +
+
+								'		<div class="column-16 content-section">' +
+								'			<div class="section-header">Access and Use Constraints</div>' +
+								'			<div id="' + accessID + '" data-dojo-type="dijit/Editor" name="editorContent" rows="3">' + licenseInfo + '</div>' +
+								'		</div>' +
+
+								'		<div class="column-3 content-section">' +
+								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
+								'		</div>' +
+								'	</div>' +
+
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
+								'			<div class="row">' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
+								'				</div>' +
+								'				<div class="column-12">' +
+								'					<img src="assets/images/info.png" class="credits-tooltip info-graphic">' +
 								'				</div>' +
 								'			</div>' +
-								'			<div class="section-content">' +
-								'				<textarea id="' + creditID + '" rows="2" style="width:95%;">' + credit + '</textarea>',
+								'		</div>' +
+
+								'		<div class="column-12 content-section">' +
+								'			<div class="section-header">Credits</div>' +
+								'				<textarea id="' + creditID + '" rows="2" style="width:95%;">' + credit + '</textarea>' +
+								'		</div>' +
+								'	</div>',
 						node, "last");
 
-				// create the SAVE/CANCEL buttons
-				createSaveButtonNode(node);
+				var userFullNameTooltip = new Tooltip({
+					connectId:[query(".access-constraints-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>" +
+									"Determines if other users can search for this <br/>" +
+									"user by name. Setting this to private hides the <br/>" +
+									"user from user searches and invites. If org, only <br/>" +
+									"members of your organization can search for this <br/>" +
+									"user. Setting this to public makes the user searchable. <br/>" +
+									"public is the default." +
+							"<\/div>"
+				});
+				var userDescriptionTooltip = new Tooltip({
+					connectId:[query(".credits-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>Credits the source of the item.<\/div>"
+				});
 
 				accessUseConstraintsEditor = new Editor({
 					id: "access-constraints-editor",
@@ -1050,9 +1090,10 @@ require([
 				domConstruct.destroy("section-content");
 				domConstruct.destroy("save-row");
 
+				array.forEach()
 				var node = query(".content-container")[0];
 				domConstruct.place(
-						"<div id='section-content'>" +
+						/*"<div id='section-content'>" +
 								"	<div class='row'>" +
 								"		<div class='column-24'>" +
 								"			<div class='section-header'>Select at least one of the following categories" +
@@ -1087,61 +1128,46 @@ require([
 								"	<div class='column-24'>" +
 								"		<div class='section-header additional-tags'>Add additional tags" +
 								"			<div class='row'>" +
-								"				<textarea id='" + tagsID + "' data-dojo-type='dijit/form/SimpleTextarea' rows='5' cols='50' style='width:95%;'>" + itemTags,
+								"				<textarea id='" + tagsID + "' data-dojo-type='dijit/form/SimpleTextarea' rows='5' cols='50' style='width:95%;'>" + itemTags,*/
+
+								'<div id="section-content">' +
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
+								'			<div class="row">' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
+								'				</div>' +
+								'				<div class="column-12">' +
+								'					<img src="assets/images/info.png" class="profile-thumbnail-tooltip info-graphic">' +
+								'				</div>' +
+								'			</div>' +
+								'		</div>' +
+
+								'		<div class="column-16 content-section">' +
+								'			<div class="column-12">' +
+								'				<div class="section-header">Select at least one of the following categories</div>' +
+								'				<div id="tagCategories"></div>' +
+								'			</div>' +
+								'			<div class="column-12">' +
+								'				<div class="section-header">Add custom tags</div>' +
+								'			</div>' +
+								'		</div>' +
+
+								'		<div class="column-3 content-section">' +
+								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
+								'		</div>' +
+								'	</div>' +
+								'</div>',
 						node, "last");
+
+				array.forEach(CATEGORIES, function (id, i) {
+					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
+				});
 
 				array.forEach(CATEGORIES, function (id) {
 					addCheckbox(id + selectedRowID);
 				});
-
-				// create the SAVE/CANCEL buttons
-				createSaveButtonNode(node);
-
 			});
-			// TAGS CONTAINER
-			/*var tagsContainer = new BorderContainer({
-			 title:tabTitle,
-			 selected:false
-			 });*/
-			//var topPane = addContentPane("top", "tab-container-top-pane", "<div class='selected-tab-ribbon'>" + TAGS + "</div>");
-			//tagsContainer.addChild(topPane);
-			/*topPane.addChild(new ContentPane({
-			 region:"center",
-			 className:"tab-container-description-pane",
-			 content:"<div class='section-header'>Select at least one of the following categories<img class='info-icon' src='" + INFO_ICON_URL +"'><\/div>" +
-			 "<div class='section-content'>" +
-			 "<table style='width: 100%;'>" +
-			 "<tr>" +
-			 "<td><input id='basemapsCB" + selectedRowID + "' /><label for='checkBox'>Basemaps</label></td>" +
-			 "<td><input id='lifestylesCB" + selectedRowID + "' /><label for='checkBox'>Lifestyles</label></td>" +
-			 "<td><input id='urbanSystemsCB" + selectedRowID + "' /><label for='checkBox'>Urban Systems</label></td>" +
-			 "<td><input id='historicalMapsCB" + selectedRowID + "' /><label for='checkBox'>Historical Maps</label></td>" +
-			 "</tr>" +
-			 "<tr>" +
-			 "<td><input id='imageryCB" + selectedRowID + "' /><label for='checkBox'>Imagery</label></td>" +
-			 "<td><input id='landscapeCB" + selectedRowID + "' /><label for='checkBox'>Landscape</label></td>" +
-			 "<td><input id='transportationCB" + selectedRowID + "' /><label for='checkBox'>Transportation</label></td>" +
-			 "<td><input id='storyMapsCB" + selectedRowID + "' /><label for='checkBox'>Story Maps</label></td>" +
-			 "</tr>" +
-			 "<tr>" +
-			 "<td><input id='demographgicsCB" + selectedRowID + "' /><label for='checkBox'>Demographics</label></td>" +
-			 "<td><input id='earthObservationsCB" + selectedRowID + "' /><label for='checkBox'>Earth Observations</label></td>" +
-			 "<td><input id='boundariesAndPlacesCB" + selectedRowID + "' /><label for='checkBox'>Boundaries and Places</label></td>" +
-			 "</tr>" +
-			 "</table>" +
-			 "<\/div>" +
-			 "<\/div>"
-			 }));
-			 topPane.addChild(new ContentPane({
-			 region:"center",
-			 className:"tab-container-description-pane",
-			 content:"<div class='section-header'>Add additional tags" +
-			 "<\/div>" +
-			 "<div class='section-content'>" +
-			 "<textarea id='" + tagsID + "' data-dojo-type='dijit/form/SimpleTextarea' rows='5' cols='50' style='width:95%;'>" + itemTags
-			 }));
-			 tagsContainer.startup();
-			 tabContainer.addChild(tagsContainer);*/
 		}
 
 		function performanceContentPane(item, popUps, mapDrawTime, layers) {
@@ -1232,7 +1258,6 @@ require([
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
-				console.log(item.portal.getPortalUser());
 				var _userThumbnailUrl = item.portal.getPortalUser().thumbnailUrl;
 				var _userFullName = validateStr(item.portal.getPortalUser().fullName);
 				var _userDescription = validateStr(item.portal.getPortalUser().description);
@@ -1242,51 +1267,99 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-						'<div id="section-content">' +
-								'	<div class="row">' +
-								'		<div class="column-4">' +
-								'			<div class="section-header">THUMBNAIL' +
-								'				<div class="tooltip header-tooltip animate">' +
-								'					<span class="icon-help icon-blue"></span>' +
-								'					<div class="tooltip-wrapper">' +
-								'						<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'					</div>' +
+								'<div id="section-content">' +
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
+								'			<div class="row">' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
 								'				</div>' +
-								'				<img src="' + _userThumbnailUrl + '" height="85px">' +
+								'				<div class="column-12">' +
+								'					<img src="assets/images/info.png" class="profile-thumbnail-tooltip info-graphic">' +
+								'				</div>' +
 								'			</div>' +
 								'		</div>' +
-								'		<div class="column-20">' +
+
+								'		<div class="column-16 content-section">' +
+								'			<div class="section-header">Thumbnail</div>' +
+								'			<img class="expanded-item-thumbnail" src="' + _userThumbnailUrl + '">' +
+								'		</div>' +
+
+								'		<div class="column-3 content-section">' +
+								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
+								'		</div>' +
+								'	</div>' +
+
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
 								'			<div class="row">' +
-								'				<div class="column-24">' +
-								'					<div class="section-header">NAME ' +
-								'						<div class="tooltip header-tooltip animate">' +
-								'							<span class="icon-help icon-blue"></span>' +
-								'							<div class="tooltip-wrapper">' +
-								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'							</div>' +
-								'						</div>' +
-								'					</div>' +
-								'					<div class="section-content">' +
-								'						<input type="text" name="title-textbox" value="' + _userFullName + '" data-dojo-type="dijit/form/TextBox" id="' + _userNameID + '" />' +
-								'					</div>' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
+								'				</div>' +
+								'				<div class="column-12">' +
+								'					<img src="assets/images/info.png" class="user-full-name-tooltip info-graphic">' +
 								'				</div>' +
 								'			</div>' +
+								'		</div>' +
+
+								'		<div class="column-12 content-section">' +
+								'			<div class="section-header">Name</div>' +
+								'				<input type="text" name="title-textbox" value="' + _userFullName + '" data-dojo-type="dijit/form/TextBox" id="' + _userNameID + '" />' +
+								'		</div>' +
+								'	</div>' +
+
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
 								'			<div class="row">' +
-								'				<div class="column-24">' +
-								'					<div class="section-header">DESCRIPTION ' +
-								'						<div class="tooltip header-tooltip animate">' +
-								'							<span class="icon-help icon-blue"></span>' +
-								'							<div class="tooltip-wrapper">' +
-								'								<p class="tooltip-content">Text to appear in the tooltip.</p>' +
-								'							</div>' +
-								'						</div>' +
-								'					</div>' +
-								'					<div class="section-content">' +
-								'						<textarea id="' + _userDescriptionID + '" rows="4" cols="50" style="width:66%;">' + _userDescription,
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
+								'				</div>' +
+								'				<div class="column-12">' +
+								'					<img src="assets/images/info.png" class="user-description-tooltip info-graphic">' +
+								'				</div>' +
+								'			</div>' +
+								'		</div>' +
+
+								'		<div class="column-20 content-section">' +
+								'			<div class="section-header">Description</div>' +
+								'				<textarea id="' + _userDescriptionID + '" rows="4" cols="50" style="width:66%;">' + _userDescription +
+								'		</div>' +
+								'	</div>' +
+								'</div>',
 						node, "last");
 
-				// create the SAVE/CANCEL buttons
-				createSaveButtonNode(node);
+				var profileThumbnailTooltip = new Tooltip({
+					connectId:[query(".profile-thumbnail-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>" +
+							"Enter the pathname to the thumbnail image to be <br/>" +
+							"used for the user. The recommended image size is 200 <br/>" +
+							"pixels wide by 133 pixels high. Acceptable image <br/>" +
+							"formats are PNG, GIF, and JPEG. The maximum file size <br/>" +
+							"for an image is 1 MB. This is not a reference to the <br/>" +
+							"file but the file itself, which will be stored on the <br/>" +
+							"sharing servers." +
+							"<\/div>"
+				});
+				var userFullNameTooltip = new Tooltip({
+					connectId:[query(".user-full-name-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>The full name of the user. Only applicable for the arcgis identity provider.<\/div>"
+				});
+				var userDescriptionTooltip = new Tooltip({
+					connectId:[query(".user-description-tooltip")[0]],
+					style:{
+						width:"10px"
+					},
+					label:
+							"<div>A description of the user.<\/div>"
+				});
 
 				var saveBtn = dom.byId("save-btn");
 				on(saveBtn, "click", function () {
@@ -1403,6 +1476,10 @@ require([
 		}
 
 		function destroyNodes(categoryNodes) {
+			//
+			if (dijit.byId("access-constraints-editor")) {
+				dijit.byId("access-constraints-editor").destroy();
+			}
 			if (dijit.byId("description-editor")) {
 				dijit.byId("description-editor").destroy();
 			}

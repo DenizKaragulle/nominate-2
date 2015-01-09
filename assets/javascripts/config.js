@@ -11,7 +11,6 @@ define({
 					"					</div>" +
 					"				</div>" +
 					"			</div>" +
-					"			<div class='performance-content'>" + processSharing(item) + "</div>" +
 					"		</div>" +
 					"		<div class='column-8'>" +
 					"			<div class='section-header'>MAP DRAW TIME " +
@@ -22,7 +21,6 @@ define({
 					"					</div>" +
 					"				</div>" +
 					"			</div>" +
-					"			<div class='performance-content'>" + processMapDrawTime(mapDrawTime) + "</div>" +
 					"		</div>" +
 					"		<div class='column-8'>" +
 					"			<div class='section-header'>LAYER COUNT " +
@@ -48,7 +46,7 @@ define({
 					"					</div>" +
 					"				</div>" +
 					"			</div>" +
-					"			<div class='performance-content'>" + popUps + "</div>" +
+					"			<div class='performance-content'></div>" +
 					"		</div>" +
 					"	</div>" +
 					"</div>",
