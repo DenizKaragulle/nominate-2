@@ -445,8 +445,8 @@ require([
 											"					<div class='current-score-number' style='color: red;'>78</div>" +
 											"				</div>" +
 											"			</div>" +
-											"			<div class='column-4'>" +
-											"				<button id='nominate-btn' class='btn right icon-email'> NOMINATE </button>" +
+											"			<div class='column-4 right'>" +
+											"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
 											"			</div>" +
 											"		</div>" +
 
@@ -561,9 +561,13 @@ require([
 								'			</div>' +
 								'		</div>' +
 
-								'		<div class="column-20 content-section">' +
+								'		<div class="column-16 content-section">' +
 								'			<div class="section-header">Thumbnail</div>' +
 								'			<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
+								'		</div>' +
+
+								'		<div class="column-4 content-section">' +
+								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
 								'		</div>' +
 								'	</div>' +
 
@@ -772,11 +776,9 @@ require([
 				});
 
 				// create the SAVE/CANCEL buttons
-				createSaveButtonNode(node);
+				//createSaveButtonNode(node);
 
 				descriptionEditor = new Editor({
-					id:"description-editor",
-					height:"30px",
 					plugins:[
 						'bold',
 						'italic',

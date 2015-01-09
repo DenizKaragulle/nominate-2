@@ -76,8 +76,12 @@ table tr {
 }
 
 /* Dijit Editor */
+.dijitEditor {
+	height: 100px !important;
+}
+
 .dijitEditorIFrameContainer iframe {
-	height: 100% !important;
+	height: 100px !important;
 }
 
 /* STATUS */
@@ -90,8 +94,8 @@ table tr {
 /* When item is expanded */
 .expanded-item-text {
 	line-height: 1.0em;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	color: #166FA3;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.0em;
@@ -283,6 +287,10 @@ table tr {
 #nominate-btn {
 	margin-top: 15px;
 	color: red;
-border: 1px solid red;
+	border: 1px solid red;
 	background-color: white;
+}
+
+.custom-btn {
+	width: 120px;
 }
