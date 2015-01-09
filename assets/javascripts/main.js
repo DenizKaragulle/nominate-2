@@ -543,96 +543,97 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-								'<div class="row section-content">' +
-								'	<div class="column-2">' +
-								'		<div class="row">' +
-								'			<div class="column-12 score-graphic-text">' +
-								'				<div class="score-graphic"> 4/5</div>' +
-								'			</div>' +
-								'			<div class="column-12">' +
-								'				<div class="tooltip header-tooltip animate">' +
-								'					<span class="icon-help icon-blue"></span>' +
-								'					<div class="tooltip-wrapper">' +
-								'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'<div id="section-content">' +
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
+								'			<div class="row">' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
+								'				</div>' +
+								'				<div class="column-12">' +
+								'					<div class="tooltip header-tooltip animate">' +
+								'						<span class="icon-help icon-blue"></span>' +
+								'						<div class="tooltip-wrapper">' +
+								'							<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'						</div>' +
 								'					</div>' +
 								'				</div>' +
 								'			</div>' +
 								'		</div>' +
+
+								'		<div class="column-20 content-section">' +
+								'			<div class="section-header">Thumbnail</div>' +
+								'			<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
+								'		</div>' +
 								'	</div>' +
 
-								'	<div class="column-20 content-section">' +
-								'		<div class="section-header">Thumbnail</div>' +
-								'		<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
-								'	</div>' +
-								'</div>' +
-
-								'<div class="row section-content">' +
-								'	<div class="column-2">' +
-								'		<div class="row">' +
-								'			<div class="column-12 score-graphic-text">' +
-								'				<div class="score-graphic"> 4/5</div>' +
-								'			</div>' +
-								'			<div class="column-12">' +
-								'				<div class="tooltip header-tooltip animate">' +
-								'					<span class="icon-help icon-blue"></span>' +
-								'					<div class="tooltip-wrapper">' +
-								'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
+								'			<div class="row">' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
+								'				</div>' +
+								'				<div class="column-12">' +
+								'					<div class="tooltip header-tooltip animate">' +
+								'						<span class="icon-help icon-blue"></span>' +
+								'						<div class="tooltip-wrapper">' +
+								'							<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'						</div>' +
 								'					</div>' +
 								'				</div>' +
 								'			</div>' +
 								'		</div>' +
+
+								'		<div class="column-12 content-section">' +
+								'			<div class="section-header">Title</div>' +
+								'			<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
+								'		</div>' +
 								'	</div>' +
 
-								'	<div class="column-12 content-section">' +
-								'		<div class="section-header">Title</div>' +
-								'		<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
-								'	</div>' +
-								'</div>' +
-
-								'<div class="row section-content">' +
-								'	<div class="column-2">' +
-								'		<div class="row">' +
-								'			<div class="column-12 score-graphic-text">' +
-								'				<div class="score-graphic"> 4/5</div>' +
-								'			</div>' +
-								'			<div class="column-12">' +
-								'				<div class="tooltip header-tooltip">' +
-								'					<span class="icon-help icon-blue"></span>' +
-								'					<div class="tooltip-wrapper">' +
-								'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
+								'			<div class="row">' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
+								'				</div>' +
+								'				<div class="column-12">' +
+								'					<div class="tooltip header-tooltip">' +
+								'						<span class="icon-help icon-blue"></span>' +
+								'						<div class="tooltip-wrapper">' +
+								'							<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'						</div>' +
 								'					</div>' +
 								'				</div>' +
 								'			</div>' +
 								'		</div>' +
-								'	</div>' +
 
-								'	<div class="column-20 content-section">' +
-								'		<div class="section-header">Summary</div>' +
+								'		<div class="column-20 content-section">' +
+								'			<div class="section-header">Summary</div>' +
 								'			<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
 								'		</div>' +
 								'	</div>' +
-								'</div>' +
 
-								'<div class="row section-content">' +
-								'	<div class="column-2">' +
-								'		<div class="row">' +
-								'			<div class="column-12 score-graphic-text">' +
-								'				<div class="score-graphic"> 4/5</div>' +
-								'			</div>' +
-								'			<div class="column-12">' +
-								'				<div class="tooltip header-tooltip animate">' +
-								'					<span class="icon-help icon-blue"></span>' +
-								'					<div class="tooltip-wrapper">' +
-								'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'	<div class="row section-content">' +
+								'		<div class="column-2">' +
+								'			<div class="row">' +
+								'				<div class="column-12 score-graphic-text">' +
+								'					<div class="score-graphic"> 4/5</div>' +
+								'				</div>' +
+								'				<div class="column-12">' +
+								'					<div class="tooltip header-tooltip animate">' +
+								'						<span class="icon-help icon-blue"></span>' +
+								'						<div class="tooltip-wrapper">' +
+								'							<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'						</div>' +
 								'					</div>' +
 								'				</div>' +
 								'			</div>' +
 								'		</div>' +
-								'	</div>' +
 
-								'	<div class="column-20 content-section">' +
-								'		<div class="section-header">Description</div>' +
+								'		<div class="column-20 content-section">' +
+								'			<div class="section-header">Description</div>' +
 								'			<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
+								'		</div>' +
 								'	</div>' +
 								'</div>',
 						node, "last");
