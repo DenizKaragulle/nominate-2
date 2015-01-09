@@ -433,7 +433,7 @@ require([
 
 											"		<div class='row'>" +
 											"			<div class='column-2' style='color: white'>spacer</div>" +
-											"			<div class='column-16 content-section'>" +
+											"			<div class='column-14 content-section'>" +
 											"				<div class='row'>" +
 											"					<div class='current-score-header'>" + CURRENT_SCORE_HEADER_TEXT + "</div>" +
 											"					<span class='current-score-graphic-container'></span>" +
@@ -442,11 +442,11 @@ require([
 											"			<div class='column-2'>" +
 											"				<div class='row'>" +
 											"					<div class='score-spacer'>spacer</div>" +
-											"					<div class='current-score-number'>78</div>" +
+											"					<div class='current-score-number' style='color: red;'>78</div>" +
 											"				</div>" +
 											"			</div>" +
 											"			<div class='column-4'>" +
-											"				<button id='nominate-btn' class='btn small disabled'> NOMINATE </button>" +
+											"				<button id='nominate-btn' class='btn red right'> NOMINATE </button>" +
 											"			</div>" +
 											"		</div>" +
 
@@ -915,6 +915,7 @@ require([
 				createSaveButtonNode(node);
 
 				accessUseConstraintsEditor = new Editor({
+					id: "access-constraints-editor",
 					height:"50px",
 					plugins:[
 						'bold',
@@ -941,9 +942,9 @@ require([
 						'undo',
 						'redo',
 						'|',
-						'viewSource',
+						'viewSource'/*,
 						'fontName',
-						'fontSize'
+						'fontSize'*/
 					]
 				}, dom.byId(accessID));
 				accessUseConstraintsEditor.startup();

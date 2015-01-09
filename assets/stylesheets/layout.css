@@ -246,6 +246,10 @@ table tr {
 	height: 100px !important;
 }
 
+#access-constraints-editor {
+	height: 100px !important;
+}
+
 /* */
 .score-graphic {
 	width: 40px;
@@ -274,4 +278,8 @@ table tr {
 
 .thumbnail-dialog-row {
 	margin-bottom: 5px;
+}
+
+#nominate-btn {
+	margin-top: 15px !important;
 }
