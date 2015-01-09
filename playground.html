@@ -53,6 +53,10 @@
 			transform: translateY(30%);
 		}
 
+		.header-tooltip {
+			transform: translateY(30%);
+		}
+
 		.thumbnail-dialog {
 			-webkit-font-smoothing: antialiased;
 			font-size: 0.85em;
@@ -174,7 +178,7 @@
 
 <div class="wrapper">
 
-	<div class="container">
+
 
 		<div class="row section-content">
 			<div class="column-2">
@@ -183,13 +187,19 @@
 						<div class="score-graphic"> 4/5</div>
 					</div>
 					<div class="column-12">
-						<h3 class="icon-help"></h3>
+						<div class="tooltip header-tooltip animate">
+							<span class="icon-help icon-blue"></span>
+							<div class="tooltip-wrapper">
+								<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail
+									that you create and upload in the required dimensions (200 x 133 pixels).</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="column-22">
-				<div>THUMBNAIL</div>
+				<div class="section-header">THUMBNAIL</div>
 				<div class="thumbnail-content">THUMBNAIL CONTENT</div>
 			</div>
 		</div>
@@ -201,14 +211,20 @@
 						<div class="score-graphic"> 4/5</div>
 					</div>
 					<div class="column-12">
-						<h3 class="icon-help"></h3>
+						<div class="tooltip header-tooltip animate">
+							<span class="icon-help icon-blue"></span>
+							<div class="tooltip-wrapper">
+								<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail
+									that you create and upload in the required dimensions (200 x 133 pixels).</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="column-12">
-				<div>TITLE</div>
-				<div>Admiral Sir Cloudesley Shovell</div>
+				<div class="section-header">TITLE</div>
+				<div class="section-content">Admiral Sir Cloudesley Shovell</div>
 			</div>
 		</div>
 
@@ -219,14 +235,21 @@
 						<div class="score-graphic"> 4/5</div>
 					</div>
 					<div class="column-12">
-						<h3 class="icon-help"></h3>
+						<div class="tooltip header-tooltip">
+							<span class="icon-help icon-blue"></span>
+							<div class="tooltip-wrapper">
+								<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail
+									that you create and upload in the required dimensions (200 x 133 pixels).</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="column-22">
-				<div>SUMMARY</div>
-				<div>In 1714, the British Government offered a prize for a solution to 'The Longitude Problem'. This
+				<div class="section-header">SUMMARY</div>
+				<div class="section-content">In 1714, the British Government offered a prize for a solution to 'The
+					Longitude Problem'. This
 					followed a tragic series of events involving this Royal Navy Admiral.
 				</div>
 			</div>
@@ -239,14 +262,21 @@
 						<div class="score-graphic"> 4/5</div>
 					</div>
 					<div class="column-12">
-						<h3 class="icon-help"></h3>
+						<div class="tooltip header-tooltip animate">
+							<span class="icon-help icon-blue"></span>
+							<div class="tooltip-wrapper">
+								<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail
+									that you create and upload in the required dimensions (200 x 133 pixels).</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="column-22">
-				<div>DESCRIPTION</div>
-				<div>In 1707 Admiral Sir Cloudesley Shovell was returning from Gibraltar with a Royal Navy fleet after
+				<div class="section-header">DESCRIPTION</div>
+				<div class="section-content">In 1707 Admiral Sir Cloudesley Shovell was returning from Gibraltar with a
+					Royal Navy fleet after
 					successful engagements against the French in the Mediterranean. The voyage was beset by bad weather,
 					and navigation was difficult. After 12 days, a consensus of the Fleet’s navigators placed them just
 					west of the Brittany Peninsula. In fact they were well to the West, and heading directly towards the
@@ -258,7 +288,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
 	<!--<div class="page sticky-footer"></div>
 	<footer class="footer">
 		<div class="container">

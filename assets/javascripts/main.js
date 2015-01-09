@@ -124,8 +124,7 @@ require([
 	var TAGS = "TAGS";
 	var PERFORMANCE = "PERFORMANCE";
 	var MY_PROFILE = "MY PROFILE";
-	//
-	var INFO_ICON_URL = "assets/images/info.png";
+
 	// Dijit Editor for the description section
 	var descriptionEditor;
 	// Dijit Editor for the access and user constraints editor
@@ -379,7 +378,7 @@ require([
 							// selected row ID
 							selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
 							// get row width
-							var selectedNodeWidth = domStyle.get(selectedRow, "width") - 150;
+							var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
 							// set row height
 							domStyle.set(selectedRow, "height", "600px");
 
@@ -423,7 +422,7 @@ require([
 								// create the map
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
-											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px; margin-left: 145px;'>" +
+											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
 											"	<div class='content-container'>" +
 											"		<div id='map'></div>" +
 											"		<div class='row'>" +
@@ -527,6 +526,100 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
+								/*'<div class="row section-content">' +
+								'	<div class="column-2">' +
+								'		<div class="row">' +
+								'			<div class="column-12 score-graphic-text">' +
+								'				<div class="score-graphic"> 4/5</div>' +
+								'			</div>' +
+								'			<div class="column-12">' +
+								'				<div class="tooltip header-tooltip animate">' +
+								'					<span class="icon-help icon-blue"></span>' +
+								'					<div class="tooltip-wrapper">' +
+								'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'					</div>' +
+								'				</div>' +
+								'			</div>' +
+								'		</div>' +
+								'	</div>' +
+
+								'	<div class="column-22">' +
+								'		<div class="section-header">THUMBNAIL</div>' +
+								'		<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
+								'	</div>' +
+								'</div>' +
+
+								'<div class="row section-content">' +
+								'	<div class="column-2">' +
+								'		<div class="row">' +
+								'			<div class="column-12 score-graphic-text">' +
+								'				<div class="score-graphic"> 4/5</div>' +
+								'			</div>' +
+								'			<div class="column-12">' +
+								'				<div class="tooltip header-tooltip animate">' +
+								'					<span class="icon-help icon-blue"></span>' +
+								'					<div class="tooltip-wrapper">' +
+								'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'					</div>' +
+								'				</div>' +
+								'			</div>' +
+								'		</div>' +
+								'	</div>' +
+
+								'	<div class="column-12">' +
+								'		<div class="section-header">TITLE</div>' +
+								'		<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
+								'	</div>' +
+								'</div>' +
+
+								'<div class="row section-content">' +
+								'	<div class="column-2">' +
+								'		<div class="row">' +
+								'			<div class="column-12 score-graphic-text">' +
+								'				<div class="score-graphic"> 4/5</div>' +
+								'			</div>' +
+								'			<div class="column-12">' +
+								'				<div class="tooltip header-tooltip">' +
+								'					<span class="icon-help icon-blue"></span>' +
+								'					<div class="tooltip-wrapper">' +
+								'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'					</div>' +
+								'				</div>' +
+								'			</div>' +
+								'		</div>' +
+								'	</div>' +
+
+								'	<div class="column-22">' +
+								'		<div class="section-header">SUMMARY</div>' +
+								'			<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
+								'		</div>' +
+								'	</div>' +
+								'</div>' +
+
+								'<div class="row section-content">' +
+								'	<div class="column-2">' +
+								'		<div class="row">' +
+								'			<div class="column-12 score-graphic-text">' +
+								'				<div class="score-graphic"> 4/5</div>' +
+								'			</div>' +
+								'			<div class="column-12">' +
+								'				<div class="tooltip header-tooltip animate">' +
+								'					<span class="icon-help icon-blue"></span>' +
+								'					<div class="tooltip-wrapper">' +
+								'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+								'					</div>' +
+								'				</div>' +
+								'			</div>' +
+								'		</div>' +
+								'	</div>' +
+
+								'	<div class="column-22">' +
+								'		<div class="section-header">DESCRIPTION</div>' +
+								'			<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
+								'	</div>' +
+								'</div>',
+						node, "last");*/
+
 						'<div id="section-content">' +
 						'	<div class="row">' +
 						'		<div class="column-4">' +
@@ -605,7 +698,7 @@ require([
 							"			<div>Image: <\/div>" +
 							"		<\/div>" +
 							"		<div class='column-20'>" +
-							"			<button class='btn'> Choose File <\/button>" +
+							"			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
 							"		<\/div>" +
 							"	<\/div>" +
 							"	<div class='row thumbnail-dialog-row'>" +
@@ -635,6 +728,32 @@ require([
 
 				on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
 					//
+				});
+
+				on(dom.byId("thumbnail-file-updload-btn"), "change", function () {
+					portalUser.getItem(selectedRowID).then(function (results) {
+						var _userItemUrl = results.userItemUrl;
+						console.log(_userItemUrl);
+						// http://www.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312
+						// http://jsapi.maps.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312/update
+						esriRequest({
+							url:_userItemUrl + "/update",
+							content:{
+								f:"json",
+								filename:"Opera-thumbnail.jpg",
+								multipart:true
+							}
+						}, {
+							usePost:true
+						}).then(function (response) {
+							if (response.success) {
+								console.log("SUCCESS");
+								myDialog.hide();
+							} else {
+								console.log("FAILURE");
+							}
+						});
+					});
 				});
 
 				// create the SAVE/CANCEL buttons
@@ -1214,7 +1333,7 @@ require([
 				};
 			} else if (value === "Web Map") {
 				params = {
-					q:'Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
+					q:"owner:" + owner + ' Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
 					num:1000
 				};
 			} else {
@@ -1273,11 +1392,11 @@ require([
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
 					'	<div class="btn-group column-24">' +
-					'		<a class="active column-4 details icon-edit"> DETAILS</a>' +
-					'		<a class="column-4 credits icon-edit"> USE/CREDITS</a>' +
-					'		<a class="column-4 tags icon-edit"> TAGS</a>' +
-					'		<a class="column-4 performance icon-edit"> PERFORMANCE</a>' +
-					'		<a class="column-4 profile icon-edit"> MY PROFILE</a>' +
+					'		<a class="active column-4 details icon-edit"> ' + DETAILS + '</a>' +
+					'		<a class="column-4 credits icon-edit"> ' + USE_CREDITS + '</a>' +
+					'		<a class="column-4 tags icon-edit"> ' + TAGS + '</a>' +
+					'		<a class="column-4 performance icon-edit"> ' + PERFORMANCE + '</a>' +
+					'		<a class="column-4 profile icon-edit"> ' + MY_PROFILE + '</a>' +
 					'	</div>' +
 					'</div>', id, "last");
 

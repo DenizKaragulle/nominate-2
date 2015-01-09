@@ -1,6 +1,7 @@
 #map {
 	width: 100%;
 	height: 260px;
+	margin-left: 145px;
 }
 
 .btn-group-container {
@@ -103,7 +104,11 @@ table tr {
 	border-radius: 5px !important;
 	-webkit-border-radius: 5px !important;
 	border: 1px solid #007AC2 !important;
-	max-width: 80% !important;
+	max-width: 120px;
+}
+
+.expanded-item-thumbnail:hover {
+	cursor: pointer;
 }
 
 /* Current Score header text */
@@ -240,6 +245,27 @@ table tr {
 }
 
 /* */
+.score-graphic {
+	width: 40px;
+	height: 20px;
+	border: 1px solid red;
+	border-radius: 3px;
+	color: red;
+	text-align: center;
+	letter-spacing: 1px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 1.0em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+.score-graphic-text {
+	transform: translateY(30%);
+}
+
+.header-tooltip {
+	transform: translateY(30%);
+}
+
 .thumbnail-dialog {
 	-webkit-font-smoothing: antialiased;
 	font-size: 0.85em;
