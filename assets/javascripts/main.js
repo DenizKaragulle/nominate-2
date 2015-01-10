@@ -144,7 +144,7 @@ require([
 		thumbnailRenderCell = function (object, data, cell) {
 			var thumbnailUrl = formatThumbnailUrl(object);
 			var n = domConstruct.create("div", {
-				innerHTML:'<div class="thumbnail"><img src="' + thumbnailUrl + '" />'
+				innerHTML: '<div class="thumbnail"><img src="' + thumbnailUrl + '" />'
 			});
 			cell.appendChild(n);
 		};
@@ -157,8 +157,7 @@ require([
 			var views = validateStr(object.numViews);
 			var access = object.access;
 			var n = domConstruct.create("div", {
-				innerHTML:
-						'<div class="container content-area">' +
+				innerHTML: '<div class="container content-area">' +
 						'	<div class="row">' +
 						'		<div class="column-20">' +
 						'			<div class="item-title">' + object.title + '</div>' +
@@ -175,8 +174,7 @@ require([
 
 		statusRenderCell = function (object, data, cell) {
 			var n = domConstruct.create("div", {
-				innerHTML:
-						'<div class="container content-area">' +
+				innerHTML: '<div class="container content-area">' +
 						'	<div class="row">' +
 						'		<div class="column-5">' +
 						'			<h4 class="icon-checked icon-blue"></h4>' +
@@ -206,9 +204,9 @@ require([
 			//overallScoreGraphic.update({
 			//	progress: score
 			//});
-		//	dijit.byId("overall-score-graphic").update({
-		//		'progress':score
-		//	});
+			//	dijit.byId("overall-score-graphic").update({
+			//		'progress':score
+			//	});
 			//overallScoreGraphic.set("value", score);
 		};
 
@@ -320,8 +318,8 @@ require([
 				owner = portalUser.username;
 
 				var params = {
-					q:"owner:" + owner,
-					num:1000
+					q: "owner:" + owner,
+					num: 1000
 				};
 				portal.queryItems(params).then(function (result) {
 					// total nuber of items
@@ -340,34 +338,34 @@ require([
 						// dgrid columns
 						var dgridColumns = [
 							{
-								label:"",
-								field:"thumbnailUrl",
-								renderCell:thumbnailRenderCell
+								label: "",
+								field: "thumbnailUrl",
+								renderCell: thumbnailRenderCell
 							},
 							{
-								label:"TITLE",
-								field:"title",
-								renderCell:titleRenderCell
+								label: "TITLE",
+								field: "title",
+								renderCell: titleRenderCell
 							},
 							{
-								label:"STATUS",
-								field:"status",
-								renderCell:statusRenderCell
+								label: "STATUS",
+								field: "status",
+								renderCell: statusRenderCell
 							}
 						];
 						// dgrid memory store
 						itemStore = new Memory({
-							data:result.results
+							data: result.results
 						});
 						// dgrid
 						dgrid = new (declare([OnDemandGrid, Pagination]))({
-							store:itemStore,
-							rowsPerPage:6,
-							pagingLinks:true,
-							pagingTextBox:false,
-							firstLastArrows:true,
-							columns:dgridColumns,
-							showHeader:false
+							store: itemStore,
+							rowsPerPage: 6,
+							pagingLinks: true,
+							pagingTextBox: false,
+							firstLastArrows: true,
+							columns: dgridColumns,
+							showHeader: false
 						}, "dgrid");
 						dgrid.startup();
 
@@ -423,49 +421,49 @@ require([
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
 											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
-											"	<div class='content-container'>" +
-											"		<div class='row'>" +
-											"			<div class='column-2' style='color: white'>spacer</div>" +
-											"			<div class='column-20 content-section'>" +
-											"				<div id='map'></div>" +
-											"			</div>" +
-											"		</div>" +
+													"	<div class='content-container'>" +
+													"		<div class='row'>" +
+													"			<div class='column-2 score-spacer'>spacer</div>" +
+													"			<div class='column-20 content-section'>" +
+													"				<div id='map'></div>" +
+													"			</div>" +
+													"		</div>" +
 
-											"		<div class='row'>" +
-											"			<div class='column-2' style='color: white'>spacer</div>" +
-											"			<div class='column-14 content-section'>" +
-											"				<div class='row'>" +
-											"					<div class='current-score-header'>" + CURRENT_SCORE_HEADER_TEXT + "</div>" +
-											"					<span class='current-score-graphic-container'></span>" +
-											"				</div>" +
-											"			</div>" +
-											"			<div class='column-2'>" +
-											"				<div class='row'>" +
-											"					<div class='score-spacer'>spacer</div>" +
-											"					<div class='current-score-number'>78</div>" +
-											"				</div>" +
-											"			</div>" +
-											"			<div class='column-4 right'>" +
-											"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
-											"			</div>" +
-											"		</div>" +
+													"		<div class='row'>" +
+													"			<div class='column-2 score-spacer'>spacer</div>" +
+													"			<div class='column-14 content-section'>" +
+													"				<div class='row'>" +
+													"					<div class='current-score-header'>" + CURRENT_SCORE_HEADER_TEXT + "</div>" +
+													"					<span class='current-score-graphic-container'></span>" +
+													"				</div>" +
+													"			</div>" +
+													"			<div class='column-2'>" +
+													"				<div class='row'>" +
+													"					<div class='score-spacer'>spacer</div>" +
+													"					<div class='current-score-number'>78</div>" +
+													"				</div>" +
+													"			</div>" +
+													"			<div class='column-4 right'>" +
+													"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
+													"			</div>" +
+													"		</div>" +
 
-											"		<div class='row'>" +
-											"			<div class='column-2' style='color: white'>spacer</div>" +
-											"			<div class='column-20 content-section'>" +
-											"				<div class='expanded-item-text'>" + OVERALL_TXT + "</div>" +
-											"			</div>" +
-											"		</div>" +
+													"		<div class='row'>" +
+													"			<div class='column-2 score-spacer'>spacer</div>" +
+													"			<div class='column-20 content-section'>" +
+													"				<div class='expanded-item-text'>" + OVERALL_TXT + "</div>" +
+													"			</div>" +
+													"		</div>" +
 
-											"		<div class='row'>" +
-											"			<div class='column-2' style='color: white'>spacer</div>" +
-											"			<div class='column-20 content-section'>" +
-											"				<div id='" + tcID + "'></div>" +
-											"			</div>" +
-											"		</div>" +
-											"	</div>" +
-											"</div>" +
-											"<div id='" + btnID + "'></div>",
+													"		<div class='row'>" +
+													"			<div class='column-2 score-spacer'>spacer</div>" +
+													"			<div class='column-20 content-section'>" +
+													"				<div id='" + tcID + "'></div>" +
+													"			</div>" +
+													"		</div>" +
+													"	</div>" +
+													"</div>" +
+													"<div id='" + btnID + "'></div>",
 											selectedRow.firstElementChild, "last");
 
 									progressBarAnchorNode = query(".current-score-graphic-container")[0];
@@ -510,12 +508,12 @@ require([
 
 									// overall score graphic
 									overallScoreGraphic = new ProgressBar({
-										id:"overall-score-graphic",
+										id: "overall-score-graphic",
 										style: {
-											"width" : "100%",
+											"width": "100%",
 											"height": "5px"
 										},
-										value:score
+										value: score
 									}).placeAt(progressBarAnchorNode).startup();
 								});
 							}
@@ -543,7 +541,7 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-								'<div id="section-content">' +
+						'<div id="section-content">' +
 								'	<div class="row section-content">' +
 								'		<div class="column-2">' +
 								'			<div class="row">' +
@@ -622,130 +620,126 @@ require([
 								'</div>',
 						node, "last");
 
-						/*'<div id="section-content">' +
-						'	<div class="row">' +
-						'		<div class="column-4">' +
-						'			<div class="section-header">Thumbnail' +
-						'				<div class="tooltip header-tooltip animate">' +
-						'					<span class="icon-help icon-blue"></span>' +
-						'					<div class="tooltip-wrapper">' +
-						'						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
-						'					</div>' +
-						'				</div>' +
-						'			</div>' +
-						'			<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
-						'		</div>' +
-						'		<div class="column-20">' +
-						'			<div class="row">' +
-						'				<div class="column-24">' +
-						'					<div class="section-header">Title' +
-						'						<div class="tooltip header-tooltip animate before">' +
-						'							<span class="icon-help icon-blue"></span>' +
-						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">A title should be short, simple, clear. Three words is ideal. Avoid acronyms, ALL CAPS, underscores, \“copy\”, \“test\”, \“demo\”, \“eval\” in the title. Answers the basic question \“What is this?\"</p>' +
-						'							</div>' +
-						'						</div>' +
-						'					</div>' +
-						'					<div class="section-content">' +
-						'						<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
-						'					</div>' +
-						'				</div>' +
-						'				<div class="column-24">' +
-						'					<div class="section-header">Summary' +
-						'						<div class="tooltip header-tooltip animate before">' +
-						'							<span class="icon-help icon-blue"></span>' +
-						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">A good summary briefly explains what this map is, in 1-2 sentences, about 10 words per sentence. Avoid acronyms, ALL CAPS, underscores, \“copy\”, \“test\”, \“demo\”, \“eval\” in the summary. Answers the basic question \“What does this show?\"</p>' +
-						'							</div>' +
-						'						</div>' +
-						'					</div>' +
-						'					<div class="section-content">' +
-						'						<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
-						'					</div>' +
-						'				</div>' +
-						'				<div class="column-24">' +
-						'					<div class="section-header">Description' +
-						'						<div class="tooltip header-tooltip animate before">' +
-						'							<span class="icon-help icon-blue"></span>' +
-						'							<div class="tooltip-wrapper">' +
-						'								<p class="tooltip-content">A good description further clarifies what this item is and what it shows. It explains more about the data and its sources, but does not go into pages of explanation. Scoring is primarily based on length of content. About 2-3 paragraphs is ideal, with 4-5 sentences per paragraph, and about 12 or so words per sentence. Bonus points if hyperlinks whisk the reader away to more fully developed explanations and other supporting material.</p>' +
-						'							</div>' +
-						'						</div>' +
-						'					</div>' +
-						'					<div class="section-content">' +
-						'						<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
-						'					</div>' +
-						'				</div>' +
-						'			</div>' +
-						'		</div>' +
-						'	</div>' +
-						'</div>',
-						node, "last");*/
+				/*'<div id="section-content">' +
+				 '	<div class="row">' +
+				 '		<div class="column-4">' +
+				 '			<div class="section-header">Thumbnail' +
+				 '				<div class="tooltip header-tooltip animate">' +
+				 '					<span class="icon-help icon-blue"></span>' +
+				 '					<div class="tooltip-wrapper">' +
+				 '						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
+				 '					</div>' +
+				 '				</div>' +
+				 '			</div>' +
+				 '			<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
+				 '		</div>' +
+				 '		<div class="column-20">' +
+				 '			<div class="row">' +
+				 '				<div class="column-24">' +
+				 '					<div class="section-header">Title' +
+				 '						<div class="tooltip header-tooltip animate before">' +
+				 '							<span class="icon-help icon-blue"></span>' +
+				 '							<div class="tooltip-wrapper">' +
+				 '								<p class="tooltip-content">A title should be short, simple, clear. Three words is ideal. Avoid acronyms, ALL CAPS, underscores, \“copy\”, \“test\”, \“demo\”, \“eval\” in the title. Answers the basic question \“What is this?\"</p>' +
+				 '							</div>' +
+				 '						</div>' +
+				 '					</div>' +
+				 '					<div class="section-content">' +
+				 '						<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
+				 '					</div>' +
+				 '				</div>' +
+				 '				<div class="column-24">' +
+				 '					<div class="section-header">Summary' +
+				 '						<div class="tooltip header-tooltip animate before">' +
+				 '							<span class="icon-help icon-blue"></span>' +
+				 '							<div class="tooltip-wrapper">' +
+				 '								<p class="tooltip-content">A good summary briefly explains what this map is, in 1-2 sentences, about 10 words per sentence. Avoid acronyms, ALL CAPS, underscores, \“copy\”, \“test\”, \“demo\”, \“eval\” in the summary. Answers the basic question \“What does this show?\"</p>' +
+				 '							</div>' +
+				 '						</div>' +
+				 '					</div>' +
+				 '					<div class="section-content">' +
+				 '						<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
+				 '					</div>' +
+				 '				</div>' +
+				 '				<div class="column-24">' +
+				 '					<div class="section-header">Description' +
+				 '						<div class="tooltip header-tooltip animate before">' +
+				 '							<span class="icon-help icon-blue"></span>' +
+				 '							<div class="tooltip-wrapper">' +
+				 '								<p class="tooltip-content">A good description further clarifies what this item is and what it shows. It explains more about the data and its sources, but does not go into pages of explanation. Scoring is primarily based on length of content. About 2-3 paragraphs is ideal, with 4-5 sentences per paragraph, and about 12 or so words per sentence. Bonus points if hyperlinks whisk the reader away to more fully developed explanations and other supporting material.</p>' +
+				 '							</div>' +
+				 '						</div>' +
+				 '					</div>' +
+				 '					<div class="section-content">' +
+				 '						<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
+				 '					</div>' +
+				 '				</div>' +
+				 '			</div>' +
+				 '		</div>' +
+				 '	</div>' +
+				 '</div>',
+				 node, "last");*/
 
 				var thumbnailTooltip = new Tooltip({
-					connectId:[query(".thumbnail-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".thumbnail-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>" +
+					label: "<div>" +
 							"Full points for using a custom thumbnail <br/>" +
 							"that you create and upload in the required<br/>" +
 							" dimensions (200 x 133 pixels)." +
 							"<\/div>"
 				});
 				var titleTooltip = new Tooltip({
-					connectId:[query(".title-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".title-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>" +
-									"A title should be short, simple, clear. <br/>" +
-									"Three words is ideal. Avoid acronyms, <br/>" +
-									"ALL CAPS, underscores, “copy”, “test”, <br/>" +
-									"“demo”, “eval” in the title. Answers <br/>" +
-									"the basic question “What is this?\"" +
+					label: "<div>" +
+							"A title should be short, simple, clear. <br/>" +
+							"Three words is ideal. Avoid acronyms, <br/>" +
+							"ALL CAPS, underscores, “copy”, “test”, <br/>" +
+							"“demo”, “eval” in the title. Answers <br/>" +
+							"the basic question “What is this?\"" +
 							"<\/div>"
 				});
 				var summaryTooltip = new Tooltip({
-					connectId:[query(".summary-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".summary-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>" +
-									"A good summary briefly explains what this map is, <br />" +
-									"in 1-2 sentences, about 10 words per sentence. <br />" +
-									"Avoid acronyms, ALL CAPS, underscores, “copy”, <br />" +
-									"“test”, “demo”, “eval” in the summary. Answers <br />" +
-									"the basic question “What does this show?\"" +
+					label: "<div>" +
+							"A good summary briefly explains what this map is, <br />" +
+							"in 1-2 sentences, about 10 words per sentence. <br />" +
+							"Avoid acronyms, ALL CAPS, underscores, “copy”, <br />" +
+							"“test”, “demo”, “eval” in the summary. Answers <br />" +
+							"the basic question “What does this show?\"" +
 							"<\/div>"
 				});
 				var descriptionTooltip = new Tooltip({
-					connectId:[query(".description-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".description-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>" +
-									"A good description further clarifies what this item</br >" +
-									"is and what it shows. It explains more about the </br >" +
-									"data and its sources, but does not go into pages</br >" +
-									"of explanation. Scoring is primarily based on </br >" +
-									"length of content. About 2-3 paragraphs is ideal, </br >" +
-									"with 4-5 sentences per paragraph, and about 12 or </br >" +
-									"so words per sentence. Bonus points if hyperlinks </br >" +
-									"whisk the reader away to more fully developed </br >" +
-									"explanations and other supporting material." +
+					label: "<div>" +
+							"A good description further clarifies what this item</br >" +
+							"is and what it shows. It explains more about the </br >" +
+							"data and its sources, but does not go into pages</br >" +
+							"of explanation. Scoring is primarily based on </br >" +
+							"length of content. About 2-3 paragraphs is ideal, </br >" +
+							"with 4-5 sentences per paragraph, and about 12 or </br >" +
+							"so words per sentence. Bonus points if hyperlinks </br >" +
+							"whisk the reader away to more fully developed </br >" +
+							"explanations and other supporting material." +
 							"<\/div>"
 				});
 
 				// update thumbnail dialog
 				var myDialog = new Dialog({
-					id:"update-thumbnail-dialog",
-					title:"Upload Thumbnail",
-					content:"<div class='container thumbnail-dialog'>" +
+					id: "update-thumbnail-dialog",
+					title: "Upload Thumbnail",
+					content: "<div class='container thumbnail-dialog'>" +
 							"	<div class='row thumbnail-dialog-row'>" +
 							"		<div class='column-24'>" +
 							"			<div>Specify the image to use as the thumbnail.<\/div>" +
@@ -773,11 +767,11 @@ require([
 							"		<\/div>" +
 							"	<\/div>" +
 							"<\/div>",
-					style:"width: 450px"
+					style: "width: 450px"
 				});
 				myDialog.hide();
 
-				on(query(".expanded-item-thumbnail"), "click", function(event) {
+				on(query(".expanded-item-thumbnail"), "click", function (event) {
 					myDialog.show();
 				});
 
@@ -797,22 +791,22 @@ require([
 						// http://www.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312
 						// http://jsapi.maps.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312/update
 						esriRequest({
-							url:_userItemUrl + "/update",
-							content:{
-								f:"json",
-								thubmnail:dom.byId("thumbnail-file-updload-btn").files[0]
+							url: _userItemUrl + "/update",
+							content: {
+								f: "json",
+								thubmnail: dom.byId("thumbnail-file-updload-btn").files[0]
 							},
-							multipart:true
+							multipart: true
 						}, {
-							usePost:true,
+							usePost: true,
 						}).then(function (response) {
-							if (response.success) {
-								console.log("SUCCESS");
-								myDialog.hide();
-							} else {
-								console.log("FAILURE");
-							}
-						});
+									if (response.success) {
+										console.log("SUCCESS");
+										myDialog.hide();
+									} else {
+										console.log("FAILURE");
+									}
+								});
 					});
 				});
 
@@ -820,7 +814,7 @@ require([
 				//createSaveButtonNode(node);
 
 				descriptionEditor = new Editor({
-					plugins:[
+					plugins: [
 						'bold',
 						'italic',
 						'underline',
@@ -846,8 +840,8 @@ require([
 						'redo',
 						'|',
 						'viewSource'/*,
-						'fontName',
-						'fontSize'*/
+						 'fontName',
+						 'fontSize'*/
 					]
 				}, dom.byId(descID));
 				descriptionEditor.startup();
@@ -857,14 +851,14 @@ require([
 					var alertAnchorNode = query(".section-content")[0];
 					domConstruct.place(
 							'<div class="loader alert-loader save-btn">' +
-							'	<span class="side side-left">' +
-							'		<span class="fill"></span>' +
-							'	</span>' +
-							'	<span class="side side-right">' +
-							'		<span class="fill"></span>' +
-							'	</span>' +
-							'	<p class="loading-word">Loading...</p>' +
-							'</div>', alertAnchorNode, "last");
+									'	<span class="side side-left">' +
+									'		<span class="fill"></span>' +
+									'	</span>' +
+									'	<span class="side side-right">' +
+									'		<span class="fill"></span>' +
+									'	</span>' +
+									'	<p class="loading-word">Loading...</p>' +
+									'</div>', alertAnchorNode, "last");
 					// DETAILS
 					// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
 					// The title of the item. This is the name that's displayed to users and by
@@ -878,35 +872,35 @@ require([
 					portalUser.getItem(selectedRowID).then(function (results) {
 						var _userItemUrl = results.userItemUrl;
 						esriRequest({
-							url:_userItemUrl + "/update",
-							content:{
-								f:"json",
-								title:_title,
-								snippet:_snippet,
-								description:_description
+							url: _userItemUrl + "/update",
+							content: {
+								f: "json",
+								title: _title,
+								snippet: _snippet,
+								description: _description
 							}
 						}, {
-							usePost:true
+							usePost: true
 						}).then(function (response) {
 									domConstruct.destroy(query(".alert-loader")[0]);
 
 									if (response.success) {
 										domConstruct.place(
 												'<div class="row alert-success alert-loader-success">' +
-												'	<div class="column-24 center">' +
-												'		<div class="alert success icon-check"> Saved </div>' +
-												'	</div>' +
-												'</div>', alertAnchorNode, "last");
+														'	<div class="column-24 center">' +
+														'		<div class="alert success icon-check"> Saved </div>' +
+														'	</div>' +
+														'</div>', alertAnchorNode, "last");
 										setTimeout(function () {
 											domConstruct.destroy(query(".alert-success")[0]);
 										}, 1500);
 									} else {
 										domConstruct.place(
 												'<div class="row alert-loader-error">' +
-												'	<div class="column-24 center">' +
-												'		<div class="alert error icon-alert"> Error </div>' +
-												'	</div>' +
-												'</div>', alertAnchorNode, "last");
+														'	<div class="column-24 center">' +
+														'		<div class="alert error icon-alert"> Error </div>' +
+														'	</div>' +
+														'</div>', alertAnchorNode, "last");
 									}
 								});
 					});
@@ -969,33 +963,31 @@ require([
 						node, "last");
 
 				var userFullNameTooltip = new Tooltip({
-					connectId:[query(".access-constraints-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".access-constraints-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>" +
-									"Determines if other users can search for this <br/>" +
-									"user by name. Setting this to private hides the <br/>" +
-									"user from user searches and invites. If org, only <br/>" +
-									"members of your organization can search for this <br/>" +
-									"user. Setting this to public makes the user searchable. <br/>" +
-									"public is the default." +
+					label: "<div>" +
+							"Determines if other users can search for this <br/>" +
+							"user by name. Setting this to private hides the <br/>" +
+							"user from user searches and invites. If org, only <br/>" +
+							"members of your organization can search for this <br/>" +
+							"user. Setting this to public makes the user searchable. <br/>" +
+							"public is the default." +
 							"<\/div>"
 				});
 				var userDescriptionTooltip = new Tooltip({
-					connectId:[query(".credits-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".credits-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>Credits the source of the item.<\/div>"
+					label: "<div>Credits the source of the item.<\/div>"
 				});
 
 				accessUseConstraintsEditor = new Editor({
 					id: "access-constraints-editor",
-					height:"50px",
-					plugins:[
+					height: "50px",
+					plugins: [
 						'bold',
 						'italic',
 						'underline',
@@ -1021,8 +1013,8 @@ require([
 						'redo',
 						'|',
 						'viewSource'/*,
-						'fontName',
-						'fontSize'*/
+						 'fontName',
+						 'fontSize'*/
 					]
 				}, dom.byId(accessID));
 				accessUseConstraintsEditor.startup();
@@ -1047,14 +1039,14 @@ require([
 					portalUser.getItem(selectedRowID).then(function (results) {
 						var _userItemUrl = results.userItemUrl;
 						esriRequest({
-							url:_userItemUrl + "/update",
-							content:{
-								f:"json",
-								licenseInfo:_license,
-								accessInformation:_credits
+							url: _userItemUrl + "/update",
+							content: {
+								f: "json",
+								licenseInfo: _license,
+								accessInformation: _credits
 							}
 						}, {
-							usePost:true
+							usePost: true
 						}).then(function (response) {
 									domConstruct.destroy(query(".alert-loader")[0]);
 
@@ -1092,7 +1084,7 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-								'<div id="section-content">' +
+						'<div id="section-content">' +
 								'	<div class="row section-content">' +
 								'		<div class="column-2">' +
 								'			<div class="row">' +
@@ -1140,187 +1132,188 @@ require([
 			var node = query(".content-container")[0];
 			domConstruct.place(
 					/*"<div id='section-content'>" +
-							"	<div class='row'>" +
-							"		<div class='column-8'>" +
-							"			<div class='section-header'>SHARING " +
-							"				<div class='tooltip header-tooltip animate'>" +
-							"					<span class='icon-help icon-blue'></span>" +
-							"					<div class='tooltip-wrapper'>" +
-							"						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-							"					</div>" +
-							"				</div>" +
-							"			</div>" +
-							"			<div class='performance-content'>" + processSharing(item) + "</div>" +
-							"		</div>" +
-							"		<div class='column-8'>" +
-							"			<div class='section-header'>MAP DRAW TIME " +
-							"				<div class='tooltip header-tooltip animate'>" +
-							"					<span class='icon-help icon-blue'></span>" +
-							"					<div class='tooltip-wrapper'>" +
-							"						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-							"					</div>" +
-							"				</div>" +
-							"			</div>" +
-							"			<div class='performance-content'>" + processMapDrawTime(mapDrawTime) + "</div>" +
-							"		</div>" +
-							"		<div class='column-8'>" +
-							"			<div class='section-header'>LAYER COUNT " +
-							"				<div class='tooltip header-tooltip animate'>" +
-							"					<span class='icon-help icon-blue'></span>" +
-							"					<div class='tooltip-wrapper'>" +
-							"						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-							"					</div>" +
-							"				</div>" +
-							"			</div>" +
-							"			<div class='performance-content'>" +
-							"				<div id='layers-list'></div>" +
-							"			</div>" +
-							"		</div>" +
-							"	</div>" +
-							"	<div class='row'>" +
-							"		<div class='column-8'>" +
-							"			<div class='section-header'>POP UPS " +
-							"				<div class='tooltip header-tooltip animate'>" +
-							"					<span class='icon-help icon-blue'></span>" +
-							"					<div class='tooltip-wrapper'>" +
-							"						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-							"					</div>" +
-							"				</div>" +
-							"			</div>" +
-							"			<div class='performance-content'>" + popUps + "</div>" +
-							"		</div>" +
-							"	</div>" +
-							"</div>",*/
+					 "	<div class='row'>" +
+					 "		<div class='column-8'>" +
+					 "			<div class='section-header'>SHARING " +
+					 "				<div class='tooltip header-tooltip animate'>" +
+					 "					<span class='icon-help icon-blue'></span>" +
+					 "					<div class='tooltip-wrapper'>" +
+					 "						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
+					 "					</div>" +
+					 "				</div>" +
+					 "			</div>" +
+					 "			<div class='performance-content'>" + processSharing(item) + "</div>" +
+					 "		</div>" +
+					 "		<div class='column-8'>" +
+					 "			<div class='section-header'>MAP DRAW TIME " +
+					 "				<div class='tooltip header-tooltip animate'>" +
+					 "					<span class='icon-help icon-blue'></span>" +
+					 "					<div class='tooltip-wrapper'>" +
+					 "						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
+					 "					</div>" +
+					 "				</div>" +
+					 "			</div>" +
+					 "			<div class='performance-content'>" + processMapDrawTime(mapDrawTime) + "</div>" +
+					 "		</div>" +
+					 "		<div class='column-8'>" +
+					 "			<div class='section-header'>LAYER COUNT " +
+					 "				<div class='tooltip header-tooltip animate'>" +
+					 "					<span class='icon-help icon-blue'></span>" +
+					 "					<div class='tooltip-wrapper'>" +
+					 "						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
+					 "					</div>" +
+					 "				</div>" +
+					 "			</div>" +
+					 "			<div class='performance-content'>" +
+					 "				<div id='layers-list'></div>" +
+					 "			</div>" +
+					 "		</div>" +
+					 "	</div>" +
+					 "	<div class='row'>" +
+					 "		<div class='column-8'>" +
+					 "			<div class='section-header'>POP UPS " +
+					 "				<div class='tooltip header-tooltip animate'>" +
+					 "					<span class='icon-help icon-blue'></span>" +
+					 "					<div class='tooltip-wrapper'>" +
+					 "						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
+					 "					</div>" +
+					 "				</div>" +
+					 "			</div>" +
+					 "			<div class='performance-content'>" + popUps + "</div>" +
+					 "		</div>" +
+					 "	</div>" +
+					 "</div>",*/
 
-						'<div id="section-content">' +
-						'	<div class="row section-content">' +
+							'<div id="section-content">' +
+							'	<div class="row section-content">' +
 
-						'		<div class="column-2">' +
-						'			<div class="row">' +
-						'				<div class="column-12 score-graphic-text">' +
-						'					<div class="score-graphic"> 4/5</div>' +
-						'				</div>' +
-						'				<div class="column-12">' +
-						'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-						'				</div>' +
-						'			</div>' +
-						'		</div>' +
-						'		<div class="row">' +
-						'			<div class="column-4 content-section">' +
-						'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em; color: #4997D2;">number of map layers</span></h2>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">more than 10</div>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">2 - 10</div>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">1</div>' +
-						'			</div>' +
-						'		</div>' +
+							'		<div class="column-2">' +
+							'			<div class="row">' +
+							'				<div class="column-12 score-graphic-text">' +
+							'					<div class="score-graphic"> 4/5</div>' +
+							'				</div>' +
+							'				<div class="column-12">' +
+							'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
+							'				</div>' +
+							'			</div>' +
+							'		</div>' +
+							'		<div class="row">' +
+							'			<div class="column-4 content-section">' +
+							'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em; color: #4997D2;">number of map layers</span></h2>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">more than 10</div>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">2 - 10</div>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">1</div>' +
+							'			</div>' +
+							'		</div>' +
 
-						'		<div class="column-2">' +
-						'			<div class="row">' +
-						'				<div class="column-12 score-graphic-text">' +
-						'					<div class="score-graphic"> 4/5</div>' +
-						'				</div>' +
-						'				<div class="column-12">' +
-						'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-						'				</div>' +
-						'			</div>' +
-						'		</div>' +
-						'		<div class="row">' +
-						'			<div class="column-4 content-section">' +
-						'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em; color: #4997D2;">sharing</span></h2>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">not shared</div>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">organization account</div>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">public</div>' +
-						'			</div>' +
-						'		</div>' +
+							'		<div class="column-2">' +
+							'			<div class="row">' +
+							'				<div class="column-12 score-graphic-text">' +
+							'					<div class="score-graphic"> 4/5</div>' +
+							'				</div>' +
+							'				<div class="column-12">' +
+							'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
+							'				</div>' +
+							'			</div>' +
+							'		</div>' +
+							'		<div class="row">' +
+							'			<div class="column-4 content-section">' +
+							'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em; color: #4997D2;">sharing</span></h2>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">not shared</div>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">organization account</div>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">public</div>' +
+							'			</div>' +
+							'		</div>' +
 
-						'		<div class="column-2">' +
-						'			<div class="row">' +
-						'				<div class="column-12 score-graphic-text">' +
-						'					<div class="score-graphic"> 4/5</div>' +
-						'				</div>' +
-						'				<div class="column-12">' +
-						'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-						'				</div>' +
-						'			</div>' +
-						'		</div>' +
-						'		<div class="row">' +
-						'			<div class="column-4 content-section">' +
-						'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em; color: #4997D2;">draw time</span></h2>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">very slow</div>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">slow</div>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">good</div>' +
-						'			</div>' +
-						'		</div>' +
+							'		<div class="column-2">' +
+							'			<div class="row">' +
+							'				<div class="column-12 score-graphic-text">' +
+							'					<div class="score-graphic"> 4/5</div>' +
+							'				</div>' +
+							'				<div class="column-12">' +
+							'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
+							'				</div>' +
+							'			</div>' +
+							'		</div>' +
+							'		<div class="row">' +
+							'			<div class="column-4 content-section">' +
+							'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em; color: #4997D2;">draw time</span></h2>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">very slow</div>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">slow</div>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">good</div>' +
+							'			</div>' +
+							'		</div>' +
 
-						'		<div class="column-2">' +
-						'			<div class="row">' +
-						'				<div class="column-12 score-graphic-text">' +
-						'					<div class="score-graphic"> 4/5</div>' +
-						'				</div>' +
-						'				<div class="column-12">' +
-						'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-						'				</div>' +
-						'			</div>' +
-						'		</div>' +
-						'		<div class="row">' +
-						'			<div class="column-4 content-section">' +
-						'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em; color: #4997D2;">pop ups</span></h2>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">no popups</div>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">default only</div>' +
-						'			</div>' +
-						'			<div class="column-2 content-section">' +
-						'				<div class="section-header">custom</div>' +
-						'			</div>' +
-						'		</div>' +
-						'	</div>',
+							'		<div class="column-2">' +
+							'			<div class="row">' +
+							'				<div class="column-12 score-graphic-text">' +
+							'					<div class="score-graphic"> 4/5</div>' +
+							'				</div>' +
+							'				<div class="column-12">' +
+							'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
+							'				</div>' +
+							'			</div>' +
+							'		</div>' +
+							'		<div class="row">' +
+							'			<div class="column-4 content-section">' +
+							'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em; color: #4997D2;">pop ups</span></h2>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">no popups</div>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">default only</div>' +
+							'			</div>' +
+							'			<div class="column-2 content-section">' +
+							'				<div class="section-header">custom</div>' +
+							'			</div>' +
+							'		</div>' +
+							'	</div>' +
+							'</div>',
 					node, "last");
 
-			if (layers !== undefined && layers.length < 1) {
+			/*if (layers !== undefined && layers.length < 1) {
 				domConstruct.create("div", {
-					innerHTML:"No available layers",
-					style:{
-						"margin-left":"5px",
-						"paddingLeft":"0px"
+					innerHTML: "No available layers",
+					style: {
+						"margin-left": "5px",
+						"paddingLeft": "0px"
 					}
 				}, "layers-list", "first");
 			} else {
 				var ul = domConstruct.create("ul", {
-					style:{
-						"margin-left":"5px",
-						"paddingLeft":"0px"
+					style: {
+						"margin-left": "5px",
+						"paddingLeft": "0px"
 					}
 				}, "layers-list", "first");
 				array.forEach(layers, function (layer) {
 					domConstruct.create("li", {
-						innerHTML:layer.title,
-						style:{
-							"list-style-type":"none"
+						innerHTML: layer.title,
+						style: {
+							"list-style-type": "none"
 						}
 					}, ul);
 				});
-			}
+			}*/
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
@@ -1334,7 +1327,7 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-								'<div id="section-content">' +
+						'<div id="section-content">' +
 								'	<div class="row section-content">' +
 								'		<div class="column-2">' +
 								'			<div class="row">' +
@@ -1396,12 +1389,11 @@ require([
 						node, "last");
 
 				var profileThumbnailTooltip = new Tooltip({
-					connectId:[query(".profile-thumbnail-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".profile-thumbnail-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>" +
+					label: "<div>" +
 							"Enter the pathname to the thumbnail image to be <br/>" +
 							"used for the user. The recommended image size is 200 <br/>" +
 							"pixels wide by 133 pixels high. Acceptable image <br/>" +
@@ -1412,20 +1404,18 @@ require([
 							"<\/div>"
 				});
 				var userFullNameTooltip = new Tooltip({
-					connectId:[query(".user-full-name-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".user-full-name-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>The full name of the user. Only applicable for the arcgis identity provider.<\/div>"
+					label: "<div>The full name of the user. Only applicable for the arcgis identity provider.<\/div>"
 				});
 				var userDescriptionTooltip = new Tooltip({
-					connectId:[query(".user-description-tooltip")[0]],
-					style:{
-						width:"10px"
+					connectId: [query(".user-description-tooltip")[0]],
+					style: {
+						width: "10px"
 					},
-					label:
-							"<div>A description of the user.<\/div>"
+					label: "<div>A description of the user.<\/div>"
 				});
 
 				var saveBtn = dom.byId("save-btn");
@@ -1450,14 +1440,14 @@ require([
 						//var _community = "community/users/";
 						//var _portalUser = results.owner;
 						esriRequest({
-							url:"https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
-							content:{
-								f:"json",
-								fullname:_userFullName,
-								description:_userDescription
+							url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
+							content: {
+								f: "json",
+								fullname: _userFullName,
+								description: _userDescription
 							}
 						}, {
-							usePost:true
+							usePost: true
 						}).then(function (response) {
 									domConstruct.destroy(query(".alert-loader")[0]);
 									if (response.success) {
@@ -1488,11 +1478,11 @@ require([
 		function createSaveButtonNode(_node) {
 			domConstruct.place(
 					'<div id="save-row" class="row">' +
-					'	<div class="column-8 center">' +
-					'		<button id="save-btn" class="btn small"> SAVE </button>' +
-					'		<button id="cancel-btn" class="btn small"> CANCEL </button>' +
-					'	</div>' +
-					'</div>', _node, "last");
+							'	<div class="column-8 center">' +
+							'		<button id="save-btn" class="btn small"> SAVE </button>' +
+							'		<button id="cancel-btn" class="btn small"> CANCEL </button>' +
+							'	</div>' +
+							'</div>', _node, "last");
 		}
 
 		function applySort(value) {
@@ -1501,8 +1491,8 @@ require([
 			} else if (value === "type") {
 				dgrid.set("sort", value, false);
 				dgrid.set('sort', [
-					{ attribute: value, descending:false },
-					{ attribute: "title", descending:false }
+					{ attribute: value, descending: false },
+					{ attribute: "title", descending: false }
 				]);
 			} else if (value === "numViews") {
 				dgrid.set("sort", value, true);
@@ -1521,18 +1511,18 @@ require([
 			var params = {};
 			if (value === "all-items") {
 				params = {
-					q:"owner:" + owner,
-					num:1000
+					q: "owner:" + owner,
+					num: 1000
 				};
 			} else if (value === "Web Map") {
 				params = {
-					q:"owner:" + owner + ' Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
-					num:1000
+					q: "owner:" + owner + ' Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
+					num: 1000
 				};
 			} else {
 				params = {
-					q:"owner:" + owner + " type: " + value,
-					num:1000
+					q: "owner:" + owner + " type: " + value,
+					num: 1000
 				};
 			}
 
@@ -1592,14 +1582,14 @@ require([
 		function createContentButtonGroup(id) {
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
-					'	<div class="btn-group column-24 icon-edit-btn-group">' +
-					'		<a class="active column-4 details icon-edit"> ' + DETAILS + '</a>' +
-					'		<a class="column-4 credits icon-edit"> ' + USE_CREDITS + '</a>' +
-					'		<a class="column-4 tags icon-edit"> ' + TAGS + '</a>' +
-					'		<a class="column-4 performance icon-edit"> ' + PERFORMANCE + '</a>' +
-					'		<a class="column-4 profile icon-edit"> ' + MY_PROFILE + '</a>' +
-					'	</div>' +
-					'</div>', id, "last");
+							'	<div class="btn-group column-24 icon-edit-btn-group">' +
+							'		<a class="active column-4 details icon-edit"> ' + DETAILS + '</a>' +
+							'		<a class="column-4 credits icon-edit"> ' + USE_CREDITS + '</a>' +
+							'		<a class="column-4 tags icon-edit"> ' + TAGS + '</a>' +
+							'		<a class="column-4 performance icon-edit"> ' + PERFORMANCE + '</a>' +
+							'		<a class="column-4 profile icon-edit"> ' + MY_PROFILE + '</a>' +
+							'	</div>' +
+							'</div>', id, "last");
 
 			detailsNode = query(".details")[0];
 			creditsNode = query(".credits")[0];
@@ -1611,10 +1601,10 @@ require([
 
 		function addCheckbox(id) {
 			var checkBox = new CheckBox({
-				name:"checkBox",
-				value:"",
-				checked:false,
-				onChange:function (b) {
+				name: "checkBox",
+				value: "",
+				checked: false,
+				onChange: function (b) {
 					alert('onChange called with parameter = ' + b + ', and widget value = ' + this.get('value'));
 				}
 			}, id).startup();
@@ -1667,7 +1657,7 @@ require([
 		function processMapDrawTime(val) {
 			var temp = (val / 1000) % 60;
 			var seconds = number.format(temp, {
-				places:5
+				places: 5
 			});
 			if (seconds) {
 				return seconds + " seconds";
