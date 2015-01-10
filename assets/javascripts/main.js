@@ -1092,43 +1092,6 @@ require([
 
 				var node = query(".content-container")[0];
 				domConstruct.place(
-						/*"<div id='section-content'>" +
-								"	<div class='row'>" +
-								"		<div class='column-24'>" +
-								"			<div class='section-header'>Select at least one of the following categories" +
-								"				<div class='tooltip header-tooltip animate'>" +
-								"					<span class='icon-help icon-blue'></span>" +
-								"					<div class='tooltip-wrapper'>" +
-								"						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-								"					</div>" +
-								"				</div>" +
-								"			</div>" +
-								"			<div class='row'>" +
-								"				<div class='column-6'><input id='basemapsCB" + selectedRowID + "' /> Basemaps</div>" +
-								"				<div class='column-6'><input id='lifestylesCB" + selectedRowID + "' /> Lifestyles</div>" +
-								"				<div class='column-6'><input id='urbanSystemsCB" + selectedRowID + "' /> Urban Systems</div>" +
-								"				<div class='column-6'><input id='historicalMapsCB" + selectedRowID + "' /> Historical Maps</div>" +
-								"			</div>" +
-								"			<div class='row'>" +
-								"				<div class='column-6'><input id='imageryCB" + selectedRowID + "' /> Imagery</div>" +
-								"				<div class='column-6'><input id='landscapeCB" + selectedRowID + "' /> Landscape</div>" +
-								"				<div class='column-6'><input id='transportationCB" + selectedRowID + "' /> Transportation</div>" +
-								"				<div class='column-6'><input id='storyMapsCB" + selectedRowID + "' /> Story Maps</div>" +
-								"			</div>" +
-								"			<div class='row'>" +
-								"				<div class='column-6'><input id='demographgicsCB" + selectedRowID + "' /> Demographics</div>" +
-								"				<div class='column-6'><input id='earthObservationsCB" + selectedRowID + "' /> Earth Observations</div>" +
-								"				<div class='column-6'><input id='boundariesAndPlacesCB" + selectedRowID + "' /> Boundaries and Places</div>" +
-								"			</div>" +
-								"		</div>" +
-								"	</div>" +
-								"</div>" +
-								"<div class='row'>" +
-								"	<div class='column-24'>" +
-								"		<div class='section-header additional-tags'>Add additional tags" +
-								"			<div class='row'>" +
-								"				<textarea id='" + tagsID + "' data-dojo-type='dijit/form/SimpleTextarea' rows='5' cols='50' style='width:95%;'>" + itemTags,*/
-
 								'<div id="section-content">' +
 								'	<div class="row section-content">' +
 								'		<div class="column-2">' +
@@ -1176,7 +1139,7 @@ require([
 
 			var node = query(".content-container")[0];
 			domConstruct.place(
-					"<div id='section-content'>" +
+					/*"<div id='section-content'>" +
 							"	<div class='row'>" +
 							"		<div class='column-8'>" +
 							"			<div class='section-header'>SHARING " +
@@ -1227,7 +1190,111 @@ require([
 							"			<div class='performance-content'>" + popUps + "</div>" +
 							"		</div>" +
 							"	</div>" +
-							"</div>",
+							"</div>",*/
+
+						'<div id="section-content">' +
+						'	<div class="row section-content">' +
+
+						'		<div class="column-2">' +
+						'			<div class="row">' +
+						'				<div class="column-12 score-graphic-text">' +
+						'					<div class="score-graphic"> 4/5</div>' +
+						'				</div>' +
+						'				<div class="column-12">' +
+						'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
+						'				</div>' +
+						'			</div>' +
+						'		</div>' +
+						'		<div class="row">' +
+						'			<div class="column-4 content-section">' +
+						'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em; color: #4997D2;">number of map layers</span></h2>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">more than 10</div>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">2 - 10</div>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">1</div>' +
+						'			</div>' +
+						'		</div>' +
+
+						'		<div class="column-2">' +
+						'			<div class="row">' +
+						'				<div class="column-12 score-graphic-text">' +
+						'					<div class="score-graphic"> 4/5</div>' +
+						'				</div>' +
+						'				<div class="column-12">' +
+						'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
+						'				</div>' +
+						'			</div>' +
+						'		</div>' +
+						'		<div class="row">' +
+						'			<div class="column-4 content-section">' +
+						'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em; color: #4997D2;">sharing</span></h2>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">not shared</div>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">organization account</div>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">public</div>' +
+						'			</div>' +
+						'		</div>' +
+
+						'		<div class="column-2">' +
+						'			<div class="row">' +
+						'				<div class="column-12 score-graphic-text">' +
+						'					<div class="score-graphic"> 4/5</div>' +
+						'				</div>' +
+						'				<div class="column-12">' +
+						'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
+						'				</div>' +
+						'			</div>' +
+						'		</div>' +
+						'		<div class="row">' +
+						'			<div class="column-4 content-section">' +
+						'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em; color: #4997D2;">draw time</span></h2>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">very slow</div>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">slow</div>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">good</div>' +
+						'			</div>' +
+						'		</div>' +
+
+						'		<div class="column-2">' +
+						'			<div class="row">' +
+						'				<div class="column-12 score-graphic-text">' +
+						'					<div class="score-graphic"> 4/5</div>' +
+						'				</div>' +
+						'				<div class="column-12">' +
+						'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
+						'				</div>' +
+						'			</div>' +
+						'		</div>' +
+						'		<div class="row">' +
+						'			<div class="column-4 content-section">' +
+						'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em; color: #4997D2;">pop ups</span></h2>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">no popups</div>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">default only</div>' +
+						'			</div>' +
+						'			<div class="column-2 content-section">' +
+						'				<div class="section-header">custom</div>' +
+						'			</div>' +
+						'		</div>' +
+						'	</div>',
 					node, "last");
 
 			if (layers !== undefined && layers.length < 1) {
