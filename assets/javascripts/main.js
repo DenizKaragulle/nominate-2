@@ -800,7 +800,10 @@ require([
 						// empty the contents
 						domConstruct.empty(itemTitleNode);
 						// create the input tag and set the value
-						domConstruct.create("input", { value:itemTitle }, itemTitleNode, "first");
+						domConstruct.create("input", {
+							class: "edit-title",
+							value:itemTitle
+						}, itemTitleNode, "first");
 						// create the type of input
 						domAttr.set(itemTitleNode, "data-dojo-type", "dijit/form/TextBox");
 						// give it and ID
@@ -810,7 +813,10 @@ require([
 						// empty the contents
 						domConstruct.empty(itemSummaryNode);
 						// create the input tag and set the value
-						domConstruct.create("input", { value:itemSummary }, itemSummaryNode, "first");
+						domConstruct.create("input", {
+							class: "edit-summary",
+							value:itemSummary
+						}, itemSummaryNode, "first");
 						// create the type of input
 						domAttr.set(itemSummaryNode, "data-dojo-type", "dijit/form/TextBox");
 						// give it and ID
@@ -929,19 +935,15 @@ require([
 							});
 						});*/
 					} else {
-
-
-
-
 						// DETAILS
 						// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
 						// The title of the item. This is the name that's displayed to users and by
 						// which they refer to the item. Every item must have a title.
-						var _title = dom.byId(TAB_CONTAINER_TITLE + selectedRowID).value;
+						itemTitle = query(".edit-title")[0].value;
 						// A short summary description of the item.
-						var _snippet = dom.byId(TAB_CONTAINER_SNIPPET + selectedRowID).value;
+						itemSummary = query(".edit-summary")[0].value;
 						// Item description.
-						var _description = dijit.byId("description-editor-widget").value;
+						itemDescription = dijit.byId("description-editor-widget").value;
 
 						portalUser.getItem(selectedRowID).then(function (results) {
 							var _userItemUrl = results.userItemUrl;
@@ -949,9 +951,9 @@ require([
 								url:_userItemUrl + "/update",
 								content:{
 									f:"json",
-									title:_title,
-									snippet:_snippet,
-									description:_description
+									title: itemTitle,
+									snippet: itemSummary,
+									description: itemDescription
 								}
 							}, {
 								usePost:true
@@ -959,29 +961,11 @@ require([
 								domConstruct.destroy(query(".alert-loader")[0]);
 								if (response.success) {
 									console.log("SUCCESS");
-									/*domConstruct.place(
-										'<div class="row alert-success alert-loader-success">' +
-										'	<div class="column-24 center">' +
-										'		<div class="alert success icon-check"> Saved </div>' +
-										'	</div>' +
-										'</div>', alertAnchorNode, "last");
-									setTimeout(function () {
-										domConstruct.destroy(query(".alert-success")[0]);
-									}, 1500);*/
 								} else {
 									console.log("ERROR");
-									/*domConstruct.place(
-										'<div class="row alert-loader-error">' +
-										'	<div class="column-24 center">' +
-										'		<div class="alert error icon-alert"> Error </div>' +
-										'	</div>' +
-										'</div>', alertAnchorNode, "last");*/
 								}
 							});
 						});
-
-
-
 
 						// NON-EDITING MODE
 						// update button label " EDIT "
@@ -991,7 +975,9 @@ require([
 						// empty the contents
 						domConstruct.empty(itemTitleNode);
 						// create the input tag and set the value
-						domConstruct.create("div", { innerHTML: itemTitle }, itemTitleNode, "first");
+						domConstruct.create("div", {
+							innerHTML: itemTitle
+						}, itemTitleNode, "first");
 						// remove attr
 						domAttr.remove(itemTitleNode, "data-dojo-type");
 						// give it and ID
@@ -1001,7 +987,9 @@ require([
 						// empty the contents
 						domConstruct.empty(itemSummaryNode);
 						// create the input tag and set the value
-						domConstruct.create("div", { innerHTML: itemSummary }, itemSummaryNode, "first");
+						domConstruct.create("div", {
+							innerHTML: itemSummary
+						}, itemSummaryNode, "first");
 						// remove attr
 						domAttr.remove(itemSummaryNode, "data-dojo-type");
 						// give it and ID
@@ -1012,11 +1000,17 @@ require([
 						if (dijit.byId("description-editor-widget")) {
 							dijit.byId("description-editor-widget").destroy();
 						}
+
 						domAttr.remove(itemDescriptionNode, "id");
 						domConstruct.create("div", {
-							id:"description-editor-widget",
-							innerHTML : itemDescription
+							id:"description-editor-widget"
 						}, itemDescriptionNode, "first");
+
+						if (itemDescription === "") {
+							domConstruct.place("<span></span>", "description-editor-widget", "first");
+						} else {
+							domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
+						}
 					}
 				});
 			});
