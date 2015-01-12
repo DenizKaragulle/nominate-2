@@ -498,11 +498,15 @@ require([
 				var node = query(".content-container")[0];
 				domConstruct.place(details.DETAILS_CONTENT, node, "last");
 
+				// set the title
 				domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
 				domAttr.set(query(".title-textbox")[0], "id", titleID);
-				domAttr.set(query(".title-textbox")[0], "value", itemTitle);
+				domConstruct.create("div", { innerHTML: itemTitle }, query(".title-textbox")[0], "first");
+				// set the summary
 				domAttr.set(query(".summary-textbox")[0], "id", snippetID);
 				domAttr.set(query(".summary-textbox")[0], "value", itemSummary);
+				domConstruct.create("div", { innerHTML: itemSummary }, query(".summary-textbox")[0], "first");
+				// set the description
 				domAttr.set(query(".description-editor")[0], "id", descID);
 				domConstruct.create("div", { innerHTML: itemDescription }, query(".description-editor")[0], "first");
 
@@ -636,7 +640,7 @@ require([
 					});
 				});
 
-				descriptionEditor = new Editor({
+				/*descriptionEditor = new Editor({
 					plugins: [
 						'bold',
 						'italic',
@@ -662,12 +666,12 @@ require([
 						'undo',
 						'redo',
 						'|',
-						'viewSource'/*,
+						'viewSource',
 						 'fontName',
-						 'fontSize'*/
+						 'fontSize'
 					]
 				}, dom.byId(descID));
-				descriptionEditor.startup();
+				descriptionEditor.startup();*/
 
 				var saveBtn = dom.byId("save-btn");
 				on(saveBtn, "click", function () {
