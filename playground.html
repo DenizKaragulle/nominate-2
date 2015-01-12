@@ -224,13 +224,13 @@ html.has-mozilla .dgrid-focus {
 <script type="text/javascript">
 	var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
 	var dojoConfig = {
-		async: true,
+		async:true,
 		// The locationPath logic below may look confusing but all its doing is
 		// enabling us to load the api from a CDN and load local modules from the correct location.
-		packages: [
+		packages:[
 			{
-				name: "config",
-				location: package_path + '/config'
+				name:"config",
+				location:package_path + '/config'
 			}
 		]
 	};
@@ -293,18 +293,17 @@ html.has-mozilla .dgrid-focus {
 
 			function run() {
 				var data = [
-					{ id: '2434', first: 'Bob', last: 'Barker', age: 89 }
+					{ id:'2434', first:'Bob', last:'Barker', age:89 }
 				];
 
 				var itemStore = new Memory({
-					data: data
+					data:data
 				});
 
 				var thumbnailRenderCell = function (object, data, cell) {
 					console.log(object);
 					var n = domConstruct.create("div", {
-						innerHTML:
-								'<div class="container">' +
+						innerHTML:'<div class="container">' +
 								'	<div class="row item">' +
 								'		<div class="column-8">COLUMN-8</div>' +
 								'		<div class="column-8">COLUMN-8</div>' +
@@ -318,20 +317,20 @@ html.has-mozilla .dgrid-focus {
 
 				var dgridColumns = [
 					{
-						label: "",
-						field: "thumbnailUrl",
-						renderCell: thumbnailRenderCell
+						label:"",
+						field:"thumbnailUrl",
+						renderCell:thumbnailRenderCell
 					}
 				];
 
 				var dgrid = new (declare([OnDemandGrid, Pagination]))({
-					store: itemStore,
-					rowsPerPage: 6,
-					pagingLinks: true,
-					pagingTextBox: false,
-					firstLastArrows: true,
-					columns: dgridColumns,
-					showHeader: false
+					store:itemStore,
+					rowsPerPage:6,
+					pagingLinks:true,
+					pagingTextBox:false,
+					firstLastArrows:true,
+					columns:dgridColumns,
+					showHeader:false
 				}, "dgrid");
 
 				var portalUrl = document.location.protocol + '//www.arcgis.com';
@@ -345,8 +344,7 @@ html.has-mozilla .dgrid-focus {
 						portalUser.getItem("c058dbdc48024bd1ade0c9fdbc1ee441").then(function (item) {
 							console.log(item);
 							domConstruct.create("div", {
-								innerHTML:
-										'<div class="row item">' +
+								innerHTML:'<div class="row item">' +
 										'	<div class="column-8">' + item.access + '</div>' +
 										'	<div class="column-8">' + item.owner + '</div>' +
 										'	<div class="column-8">' + item.numViews + '</div>' +
@@ -354,6 +352,18 @@ html.has-mozilla .dgrid-focus {
 							}, dom.byId("item-content"), "last");
 						});
 					});
+				});
+
+				var itemDescriptionNode = query(".description-editor")[0];
+				on(query(".edit-save-btn")[0], "click", function () {
+					if (query(".edit-save-btn")[0].innerHTML === " EDIT ") {
+						domAttr.set(query(".edit-save-btn")[0], "innerHTML", " SAVE ");
+						domAttr.set(itemDescriptionNode, "id", "SHIT");
+						domAttr.set(itemDescriptionNode, "data-dojo-type", "dijit/Editor");
+						domAttr.set(itemDescriptionNode, "data-dojo-props", "plugins:['bold', 'italic', 'underline']");
+					} else {
+						domAttr.set(query(".edit-save-btn")[0], "innerHTML", " EDIT ");
+					}
 				});
 			}
 		});
@@ -365,27 +375,17 @@ html.has-mozilla .dgrid-focus {
 <body class="nihilo">
 
 <div class="wrapper">
-	<div class="row">
-		<div class="column-20 pre-1">
-			<div class="panel blue">8 Columns</div>
-		</div>
-	</div>
 
-	<div class="row">
-		<div class="column-24 pre-1">
-			<div class="panel blue">8 Columns</div>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="column-24 pre-2">
-			<div class="panel blue">8 Columns</div>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="column-24 pre-3">
-			<div class="panel blue">8 Columns</div>
+	<div class="container">
+		<div class="row">
+			<aside class="column-6">column-6</aside>
+			<main class="column-14">
+				<button class="btn edit-save-btn"> EDIT</button>
+				<div class='description-editor'>
+					<p>HELP</p>
+				</div>
+			</main>
+			<aside class="column-4">column-6</aside>
 		</div>
 	</div>
 

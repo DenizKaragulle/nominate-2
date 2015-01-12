@@ -498,8 +498,9 @@ require([
 				var node = query(".content-container")[0];
 				domConstruct.place(details.DETAILS_CONTENT, node, "last");
 
-				// set the title
+				// set the thumbnail
 				domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
+				// set the title
 				domAttr.set(query(".title-textbox")[0], "id", titleID);
 				domConstruct.create("div", { innerHTML: itemTitle }, query(".title-textbox")[0], "first");
 				// set the summary
@@ -508,7 +509,7 @@ require([
 				domConstruct.create("div", { innerHTML: itemSummary }, query(".summary-textbox")[0], "first");
 				// set the description
 				domAttr.set(query(".description-editor")[0], "id", descID);
-				domConstruct.create("div", { innerHTML: itemDescription }, query(".description-editor")[0], "first");
+				domConstruct.place(itemDescription, dom.byId("description-editor-widget"), "first");
 
 				var thumbnailTooltip = new Tooltip({
 					connectId: [query(".thumbnail-tooltip")[0]],
@@ -565,81 +566,6 @@ require([
 							"<\/div>"
 				});
 
-				// update thumbnail dialog
-				var myDialog = new Dialog({
-					id: "update-thumbnail-dialog",
-					title: "Upload Thumbnail",
-					content: "<div class='container thumbnail-dialog'>" +
-							"	<div class='row thumbnail-dialog-row'>" +
-							"		<div class='column-24'>" +
-							"			<div>Specify the image to use as the thumbnail.<\/div>" +
-							"		<\/div>" +
-							"	<\/div>" +
-							"	<div class='row thumbnail-dialog-row'>" +
-							"		<div class='column-4'>" +
-							"			<div>Image: <\/div>" +
-							"		<\/div>" +
-							"		<div class='column-20'>" +
-							"			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
-							"		<\/div>" +
-							"	<\/div>" +
-							"	<div class='row thumbnail-dialog-row'>" +
-							"		<div class='column-24'>" +
-							"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
-							"		<\/div>" +
-							"	<\/div>" +
-							"	<div class='row thumbnail-dialog-row'>" +
-							"		<div class='column-6 right'>" +
-							"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
-							"		<\/div>" +
-							"		<div class='column-4 right'>" +
-							"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
-							"		<\/div>" +
-							"	<\/div>" +
-							"<\/div>",
-					style: "width: 450px"
-				});
-				myDialog.hide();
-
-				on(query(".expanded-item-thumbnail"), "click", function (event) {
-					myDialog.show();
-				});
-
-				on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
-					myDialog.hide();
-				});
-
-				on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
-					//
-				});
-
-				on(dom.byId("thumbnail-file-updload-btn"), "change", function () {
-					portalUser.getItem(selectedRowID).then(function (results) {
-						var _userItemUrl = results.userItemUrl;
-						console.log(_userItemUrl);
-						console.log(dom.byId("thumbnail-file-updload-btn").files[0]);
-						// http://www.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312
-						// http://jsapi.maps.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312/update
-						esriRequest({
-							url: _userItemUrl + "/update",
-							content: {
-								f: "json",
-								thubmnail: dom.byId("thumbnail-file-updload-btn").files[0]
-							},
-							multipart: true
-						}, {
-							usePost: true,
-						}).then(function (response) {
-									if (response.success) {
-										console.log("SUCCESS");
-										myDialog.hide();
-									} else {
-										console.log("FAILURE");
-									}
-								});
-					});
-				});
-
 				/*descriptionEditor = new Editor({
 					plugins: [
 						'bold',
@@ -666,26 +592,148 @@ require([
 						'undo',
 						'redo',
 						'|',
-						'viewSource',
-						 'fontName',
-						 'fontSize'
+						'viewSource'
 					]
 				}, dom.byId(descID));
 				descriptionEditor.startup();*/
+
+				/*var editBtn = dom.byId("edit-btn");
+				on(editBtn, "click", function () {
+					domConstruct.destroy("section-content");
+
+					var node = query(".content-container")[0];
+					domConstruct.place(details.DETAILS_CONTENT_EDIT, node, "last");
+					// set the title
+					domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
+					domAttr.set(query(".title-textbox")[0], "id", titleID);
+					domConstruct.create("div", { innerHTML:itemTitle }, query(".title-textbox")[0], "first");
+					// set the summary
+					domAttr.set(query(".summary-textbox")[0], "id", snippetID);
+					domAttr.set(query(".summary-textbox")[0], "value", itemSummary);
+					domConstruct.create("div", { innerHTML:itemSummary }, query(".summary-textbox")[0], "first");
+					// set the description
+					domAttr.set(query(".description-editor")[0], "id", descID);
+					domConstruct.create("div", { innerHTML:itemDescription }, query(".description-editor")[0], "first");
+					descriptionEditor = new Editor({
+						plugins:[
+							'bold',
+							'italic',
+							'underline',
+							'foreColor',
+							'hiliteColor',
+							'|',
+							'justifyLeft',
+							'justifyCenter',
+							'justifyRight',
+							'justifyFull',
+							'|',
+							'insertOrderedList',
+							'insertUnorderedList',
+							'|',
+							'indent',
+							'outdent',
+							'|',
+							'createLink',
+							'unlink',
+							'removeFormat',
+							'|',
+							'undo',
+							'redo',
+							'|',
+							'viewSource'
+						]
+					}, dom.byId(descID));
+					descriptionEditor.startup();
+
+					// update thumbnail dialog
+					var myDialog = new Dialog({
+						id:"update-thumbnail-dialog",
+						title:"Upload Thumbnail",
+						content:"<div class='container thumbnail-dialog'>" +
+								"	<div class='row thumbnail-dialog-row'>" +
+								"		<div class='column-24'>" +
+								"			<div>Specify the image to use as the thumbnail.<\/div>" +
+								"		<\/div>" +
+								"	<\/div>" +
+								"	<div class='row thumbnail-dialog-row'>" +
+								"		<div class='column-4'>" +
+								"			<div>Image: <\/div>" +
+								"		<\/div>" +
+								"		<div class='column-20'>" +
+								"			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
+								"		<\/div>" +
+								"	<\/div>" +
+								"	<div class='row thumbnail-dialog-row'>" +
+								"		<div class='column-24'>" +
+								"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
+								"		<\/div>" +
+								"	<\/div>" +
+								"	<div class='row thumbnail-dialog-row'>" +
+								"		<div class='column-6 right'>" +
+								"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
+								"		<\/div>" +
+								"		<div class='column-4 right'>" +
+								"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
+								"		<\/div>" +
+								"	<\/div>" +
+								"<\/div>",
+						style:"width: 450px"
+					});
+					myDialog.hide();
+
+					on(query(".expanded-item-thumbnail"), "click", function (event) {
+						myDialog.show();
+					});
+
+					on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
+						myDialog.hide();
+					});
+
+					on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
+						//
+					});
+
+					on(dom.byId("thumbnail-file-updload-btn"), "change", function () {
+						portalUser.getItem(selectedRowID).then(function (results) {
+							var _userItemUrl = results.userItemUrl;
+							console.log(_userItemUrl);
+							console.log(dom.byId("thumbnail-file-updload-btn").files[0]);
+							// http://www.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312
+							// http://jsapi.maps.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312/update
+							esriRequest({
+								url:_userItemUrl + "/update",
+								content:{
+									f:"json",
+									thubmnail:dom.byId("thumbnail-file-updload-btn").files[0]
+								},
+								multipart:true
+							}, {
+								usePost:true,
+							}).then(function (response) {
+										if (response.success) {
+											console.log("SUCCESS");
+											myDialog.hide();
+										} else {
+											console.log("FAILURE");
+										}
+									});
+						});
+					});
+				});
 
 				var saveBtn = dom.byId("save-btn");
 				on(saveBtn, "click", function () {
 					var alertAnchorNode = query(".section-content")[0];
 					domConstruct.place(
-							'<div class="loader alert-loader save-btn">' +
-									'	<span class="side side-left">' +
-									'		<span class="fill"></span>' +
-									'	</span>' +
-									'	<span class="side side-right">' +
-									'		<span class="fill"></span>' +
-									'	</span>' +
-									'	<p class="loading-word">Loading...</p>' +
-									'</div>', alertAnchorNode, "last");
+						'<div class="loader alert-loader save-btn">' +
+						'	<span class="side side-left">' +
+						'		<span class="fill"></span>' +
+						'	</span>' +
+						'	<span class="side side-right">' +
+						'		<span class="fill"></span>' +
+						'	</span>' +
+						'	<p class="loading-word">Loading...</p>' +
+						'</div>', alertAnchorNode, "last");
 					// DETAILS
 					// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
 					// The title of the item. This is the name that's displayed to users and by
@@ -709,28 +757,217 @@ require([
 						}, {
 							usePost: true
 						}).then(function (response) {
-									domConstruct.destroy(query(".alert-loader")[0]);
-
-									if (response.success) {
-										domConstruct.place(
-												'<div class="row alert-success alert-loader-success">' +
-														'	<div class="column-24 center">' +
-														'		<div class="alert success icon-check"> Saved </div>' +
-														'	</div>' +
-														'</div>', alertAnchorNode, "last");
-										setTimeout(function () {
-											domConstruct.destroy(query(".alert-success")[0]);
-										}, 1500);
-									} else {
-										domConstruct.place(
-												'<div class="row alert-loader-error">' +
-														'	<div class="column-24 center">' +
-														'		<div class="alert error icon-alert"> Error </div>' +
-														'	</div>' +
-														'</div>', alertAnchorNode, "last");
-									}
-								});
+							domConstruct.destroy(query(".alert-loader")[0]);
+							if (response.success) {
+								domConstruct.place(
+									'<div class="row alert-success alert-loader-success">' +
+									'	<div class="column-24 center">' +
+									'		<div class="alert success icon-check"> Saved </div>' +
+									'	</div>' +
+									'</div>', alertAnchorNode, "last");
+								setTimeout(function () {
+									domConstruct.destroy(query(".alert-success")[0]);
+								}, 1500);
+							} else {
+								domConstruct.place(
+									'<div class="row alert-loader-error">' +
+									'	<div class="column-24 center">' +
+									'		<div class="alert error icon-alert"> Error </div>' +
+									'	</div>' +
+									'</div>', alertAnchorNode, "last");
+							}
+						});
 					});
+				});*/
+
+				var editSaveBtnNode = query(".edit-save-btn")[0];
+				on(editSaveBtnNode, "click", function () {
+					var itemThumbnailNode = query(".thumbnailUrl")[0],
+						itemTitleNode = query(".title-textbox")[0],
+						itemSummaryNode = query(".summary-textbox")[0],
+						itemDescriptionNode = query(".description-editor")[0];
+
+					if (editSaveBtnNode.innerHTML === " EDIT ") {
+						// EDITING MODE
+						// update button label " SAVE "
+						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
+
+						// update title section
+						// empty the contents
+						domConstruct.empty(itemTitleNode);
+						// create the input tag and set the value
+						domConstruct.create("input", { value:itemTitle }, itemTitleNode, "first");
+						// create the type of input
+						domAttr.set(itemTitleNode, "data-dojo-type", "dijit/form/TextBox");
+						// give it and ID
+						domAttr.set(itemTitleNode, "id", titleID);
+
+						// update summary section
+						// empty the contents
+						domConstruct.empty(itemSummaryNode);
+						// create the input tag and set the value
+						domConstruct.create("input", { value:itemSummary }, itemSummaryNode, "first");
+						// create the type of input
+						domAttr.set(itemSummaryNode, "data-dojo-type", "dijit/form/TextBox");
+						// give it and ID
+						domAttr.set(itemSummaryNode, "id", snippetID);
+
+						// update the description section
+						//domAttr.set(itemDescriptionNode, "id", descID);
+						//domConstruct.create("div", { innerHTML:itemDescription }, itemDescriptionNode, "first");
+						//domAttr.set(itemDescriptionNode, "data-dojo-type", "dijit/Editor");
+
+						// create the Editor for the description
+						descriptionEditor = new Editor({
+							plugins:[
+								'bold',
+								'italic',
+								'underline',
+								'foreColor',
+								'hiliteColor',
+								'|',
+								'justifyLeft',
+								'justifyCenter',
+								'justifyRight',
+								'justifyFull',
+								'|',
+								'insertOrderedList',
+								'insertUnorderedList',
+								'|',
+								'indent',
+								'outdent',
+								'|',
+								'createLink',
+								'unlink',
+								'removeFormat',
+								'|',
+								'undo',
+								'redo',
+								'|',
+								'viewSource'
+							],
+							innerHTML: itemDescription
+						}, dom.byId("description-editor-widget"));
+						descriptionEditor.startup();
+
+						// update thumbnail dialog
+						/*var myDialog = new Dialog({
+							id:"update-thumbnail-dialog",
+							title:"Upload Thumbnail",
+							content:"<div class='container thumbnail-dialog'>" +
+									"	<div class='row thumbnail-dialog-row'>" +
+									"		<div class='column-24'>" +
+									"			<div>Specify the image to use as the thumbnail.<\/div>" +
+									"		<\/div>" +
+									"	<\/div>" +
+									"	<div class='row thumbnail-dialog-row'>" +
+									"		<div class='column-4'>" +
+									"			<div>Image: <\/div>" +
+									"		<\/div>" +
+									"		<div class='column-20'>" +
+									"			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
+									"		<\/div>" +
+									"	<\/div>" +
+									"	<div class='row thumbnail-dialog-row'>" +
+									"		<div class='column-24'>" +
+									"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
+									"		<\/div>" +
+									"	<\/div>" +
+									"	<div class='row thumbnail-dialog-row'>" +
+									"		<div class='column-6 right'>" +
+									"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
+									"		<\/div>" +
+									"		<div class='column-4 right'>" +
+									"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
+									"		<\/div>" +
+									"	<\/div>" +
+									"<\/div>",
+							style:"width: 450px"
+						});
+						myDialog.hide();
+
+						on(query(".expanded-item-thumbnail"), "click", function (event) {
+							myDialog.show();
+						});
+						on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
+							myDialog.hide();
+						});
+						on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
+							//
+						});
+						on(dom.byId("thumbnail-file-updload-btn"), "change", function () {
+							portalUser.getItem(selectedRowID).then(function (results) {
+								var _userItemUrl = results.userItemUrl;
+								console.log(_userItemUrl);
+								console.log(dom.byId("thumbnail-file-updload-btn").files[0]);
+								// http://www.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312
+								// http://jsapi.maps.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312/update
+								esriRequest({
+									url:_userItemUrl + "/update",
+									content:{
+										f:"json",
+										thubmnail:dom.byId("thumbnail-file-updload-btn").files[0]
+									},
+									multipart:true
+								}, {
+									usePost:true,
+								}).then(function (response) {
+											if (response.success) {
+												console.log("SUCCESS");
+												myDialog.hide();
+											} else {
+												console.log("FAILURE");
+											}
+										});
+							});
+						});*/
+					} else {
+						// NON-EDITING MODE
+						// update button label " EDIT "
+						domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+
+						// update the title
+						// empty the contents
+						domConstruct.empty(itemTitleNode);
+						// create the input tag and set the value
+						domConstruct.create("div", { innerHTML: itemTitle }, itemTitleNode, "first");
+						// remove attr
+						domAttr.remove(itemTitleNode, "data-dojo-type");
+						// give it and ID
+						domAttr.set(itemTitleNode, "id", titleID);
+
+						// update the summary
+						// empty the contents
+						domConstruct.empty(itemSummaryNode);
+						// create the input tag and set the value
+						domConstruct.create("div", { innerHTML: itemSummary }, itemSummaryNode, "first");
+						// remove attr
+						domAttr.remove(itemSummaryNode, "data-dojo-type");
+						// give it and ID
+						domAttr.set(itemSummaryNode, "id", snippetID);
+
+						// update the description
+						// empty the contents
+						if (dijit.byId("description-editor-widget")) {
+							dijit.byId("description-editor-widget").destroy();
+						}
+						domAttr.remove(itemDescriptionNode, "id");
+						domConstruct.create("div", {
+							id:"description-editor-widget",
+							innerHTML : itemDescription
+						}, itemDescriptionNode, "first");
+
+						//domAttr.set(itemDescriptionNode, "id", "description-editor-widget");
+						//domConstruct.create("div", { innerHTML: itemDescription }, itemDescriptionNode, "first");
+						//domConstruct.place(itemDescription, dom.byId("description-editor-widget"), "first");
+						//domConstruct.empty(itemDescriptionNode);
+						// create the input tag and set the value
+						//domConstruct.create("div", { innerHTML: itemDescription }, itemDescriptionNode, "first");
+						// remove attr
+						//domAttr.remove(itemDescriptionNode, "data-dojo-type");
+						// give it and ID
+						//domAttr.set(itemDescriptionNode, "id", descID);
+					}
 				});
 			});
 		}

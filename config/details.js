@@ -34,7 +34,7 @@ define({
 			"			<img class='expanded-item-thumbnail thumbnailUrl' src=''>" +
 			"		</div>" +
 			"		<div class='column-3'>" +
-			"			<button id='save-btn' class='btn custom-btn'> SAVE </button>" +
+			"			<button class='btn custom-btn edit-save-btn'> EDIT </button>" +
 			"		</div>" +
 			"	</div>" +
 
@@ -88,10 +88,12 @@ define({
 
 			"		<div class='column-17'>" +
 			"			<div class='section-header'>Description</div>" +
-			"			<div class='description-editor' style='height: 150px; overflow: scroll;'></div>" +
+			"			<div class='description-editor' style='height: 150px; overflow: scroll;'>" +
+			"				<div id='description-editor-widget'></div>" +
+			"			</div>" +
 			"		</div>" +
 			"	</div>" +
-			"</div>",
+			"</div>"/*,
 
 	"DETAILS_CONTENT_EDIT":
 			"<div id='section-content'>" +
@@ -113,7 +115,7 @@ define({
 			"			<img class='expanded-item-thumbnail thumbnailUrl' src=''>" +
 			"		</div>" +
 			"		<div class='column-3'>" +
-			"			<button id='save-btn' class='btn custom-btn'> SAVE </button>" +
+			"			<button class='btn custom-btn edit-save-btn'> SAVE </button>" +
 			"		</div>" +
 			"	</div>" +
 
@@ -149,7 +151,7 @@ define({
 			"		</div>" +
 			"		<div class='column-12'>" +
 			"			<div class='section-header'>Summary</div>" +
-			"			<input class='summary-textbox' type='text' name='title-textbox' value='' data-dojo-type='dijit/form/TextBox' id='' />" +
+			"			<input class='summary-textbox' type='text' name='summary-textbox' value='' data-dojo-type='dijit/form/TextBox' id='' />" +
 			"		</div>" +
 			"	</div>" +
 
@@ -170,5 +172,5 @@ define({
 			"			<div class='description-editor' id='' data-dojo-type='dijit/Editor' name='editorContent'></div>" +
 			"		</div>" +
 			"	</div>" +
-			"</div>"
+			"</div>"*/
 });
