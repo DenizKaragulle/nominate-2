@@ -510,12 +510,9 @@ require([
 				// set the description
 				domAttr.set(query(".description-editor")[0], "id", descID);
 				if (itemDescription === "") {
-					console.log(itemDescription);
-					itemDescription = " ";
-					domConstruct.place("<span>TEST</span>", "description-editor-widget", "first");
+					domConstruct.place("<span></span>", "description-editor-widget", "first");
 				} else {
-					console.log(itemDescription);
-					domConstruct.place(itemDescription, "description-editor-widget", "first");
+					domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
 				}
 
 				var thumbnailTooltip = new Tooltip({
