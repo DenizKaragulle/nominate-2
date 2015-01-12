@@ -38,8 +38,14 @@ require([
 	"esri/request",
 	"dojo/parser",
 	"dojo/ready",
+	"config/defaults",
+	"config/details",
+	"config/credits",
+	"config/tags",
+	"config/performance",
+	"config/profile",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready) {
+], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig) {
 
 	parser.parse();
 
@@ -92,36 +98,11 @@ require([
 	var TAB_CONTAINER_TAGS = "tags-";
 	var TAB_CONTAINER_USERNAME = "username-";
 	var TAB_CONTAINER_USERDESCRIPTION = "userdesc-";
-	// Messages
-	var HEADER_BLOCK_PUBLIC = "Living Atlas of the World: Nominate an app, web map or layer";
-	var HEADER_BLOCK_PRIVATE = "My Items";
-	var INTRO_TEXT_1 = "ArcGIS includes a Living Atlas of the World with beautiful and " +
-			"authoritative maps on hundreds of topics. It combines reference and thematic maps with many topics " +
-			"relating to people, earth, and life.  Explore maps from Esri and thousands or organizations and " +
-			"enrich them with your own data to create new maps and map layers.";
-	var INTRO_TEXT_2 = "Select an item to prepare for nomination.";
-	var MAXIMUM_CHAR = "A maximum of xxx characters are available";
-	var SCORE_TEXT_1 = "Some practical characteristics of your item must be present in order to nominate it for the Living Atlas.  A score of at least 80 is required before the map can be nominated.";
-	var SCORE_TEXT_2 = "Here is your item's current score. Click on the 'i' buttons for details on how to improve your score.";
-	var CURRENT_SCORE_HEADER_TEXT = "Current Score";
-	var OVERALL_TXT = "In the sections below, if the check box is green you have full-filled criteria,<br />" +
-			"If the check box is red, please select that section and look for the items underlined to improve your score.";
-	//
+
 	var portalUrl;
 	var portal;
 	var portalUser;
 	var owner;
-	//
-	var MONTHS = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-	var CATEGORIES = ["basemapsCB", "lifestylesCB", "urbanSystemsCB", "historicalMapsCB", "imageryCB", "landscapeCB", "transportationCB", "storyMapsCB", "demographgicsCB", "earthObservationsCB", "boundariesAndPlacesCB"];
-	var CATEGORIES_LABELS = ["Basemaps", "Lifestyle", "Urban Systems", "Historical maps", "Imagery", "Landscape", "Transportation", "Story Maps", "Demographics", "Earth Observations", "Boundaries and Places"];
-
-	// Tab Container Labels
-	var DETAILS = "DETAILS";
-	var USE_CREDITS = "USE/CREDITS";
-	var TAGS = "TAGS";
-	var PERFORMANCE = "PERFORMANCE";
-	var MY_PROFILE = "MY PROFILE";
 
 	// Dijit Editor for the description section
 	var descriptionEditor;
@@ -143,48 +124,35 @@ require([
 
 		thumbnailRenderCell = function (object, data, cell) {
 			var thumbnailUrl = formatThumbnailUrl(object);
-			var n = domConstruct.create("div", {
-				innerHTML: '<div class="thumbnail"><img src="' + thumbnailUrl + '" />'
-			});
-			cell.appendChild(n);
-		};
-
-		titleRenderCell = function (object, data, cell) {
-			console.log(object);
-			var snippet = validateStr(object.snippet);
 			var type = validateStr(object.type);
 			var modifiedDate = formatDate(object.modified);
 			var views = validateStr(object.numViews);
 			var access = object.access;
 			var n = domConstruct.create("div", {
-				innerHTML: '<div class="container content-area">' +
-						'	<div class="row">' +
-						'		<div class="column-20">' +
-						'			<div class="item-title">' + object.title + '</div>' +
-						'				<div class="shit">' +
-						'					<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
-						'				</div>' +
-						'				<div class="item-number-views">' + views + ' views</div>' +
+				innerHTML:
+						'<div class="row">' +
+						'	<div class="column-3">' +
+						'		<div class="thumbnail">' +
+						'			<img src="' + thumbnailUrl + '" />' +
 						'		</div>' +
 						'	</div>' +
-						'</div>'
-			});
-			cell.appendChild(n);
-		};
 
-		statusRenderCell = function (object, data, cell) {
-			var n = domConstruct.create("div", {
-				innerHTML: '<div class="container content-area">' +
-						'	<div class="row">' +
-						'		<div class="column-5">' +
-						'			<h4 class="icon-checked icon-blue"></h4>' +
+						'	<div class="column-18">' +
+						'		<div class="item-title">' + object.title + '</div>' +
+						'		<div class="shit">' +
+						'			<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
 						'		</div>' +
-						'		<div class="column-5">' +
-						'			<h4 class="icon-unchecked icon-blue"></h4>' +
-						'		</div>' +
-						'		<div class="column-5">' +
-						'			<h4 class="icon-unchecked icon-blue"></h4>' +
-						'		</div>' +
+						'		<div class="item-number-views">' + views + ' views</div>' +
+						'	</div>' +
+
+						'	<div class="column-1">' +
+						'		<h4 class="icon-checked icon-blue"></h4>' +
+						'	</div>' +
+						'	<div class="column-1">' +
+						'		<h4 class="icon-unchecked icon-blue"></h4>' +
+						'	</div>' +
+						'	<div class="column-1">' +
+						'		<h4 class="icon-unchecked icon-blue"></h4>' +
 						'	</div>' +
 						'</div>'
 			});
@@ -224,7 +192,7 @@ require([
 		tagsNodeClickHandler = function (_selectedRowID, _categoryNodes, _nodeList, _categoryID, _tagsID, _tagsNode) {
 			destroyNodes(categoryNodes);
 			categoryNodes = [];
-			array.forEach(CATEGORIES, function (category) {
+			array.forEach(defaults.CATEGORIES, function (category) {
 				categoryNodes.push(category + previousSelectedRowID);
 			});
 
@@ -263,12 +231,12 @@ require([
 			// sign in node
 			signInNode = query(".intro")[0];
 			// homepage header message
-			signInNode.innerHTML = INTRO_TEXT_1;
+			signInNode.innerHTML = defaults.INTRO_TEXT_1;
 			// ribbon header
 			ribbonHeaderTitle = query(".ribbon-header-title")[0];
 			ribbonHeaderUser = query(".ribbon-header-user")[0];
 			ribbonHeaderNumItemsNode = dom.byId("ribbon-header-num-items");
-			ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PUBLIC;
+			ribbonHeaderTitle.innerHTML = defaults.HEADER_TEXT_PUBLIC;
 
 			searchInputNode = query(".search-items")[0];
 			dropdownSortNode = query(".dropdown-item-sort")[0];
@@ -328,7 +296,7 @@ require([
 					// remove the globe icon from the ribbon header title
 					domAttr.set(query(".ribbon-header-title").parent()[0], "class", "");
 					var HEADER_BLOCK_PRIVATE_NAME = " (" + portalUser.fullName + " - " + owner + ")"
-					ribbonHeaderTitle.innerHTML = HEADER_BLOCK_PRIVATE;
+					ribbonHeaderTitle.innerHTML = defaults.HEADER_BLOCK_PRIVATE;
 					ribbonHeaderUser.innerHTML = HEADER_BLOCK_PRIVATE_NAME;
 					// update the text and icon
 					ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
@@ -341,16 +309,6 @@ require([
 								label: "",
 								field: "thumbnailUrl",
 								renderCell: thumbnailRenderCell
-							},
-							{
-								label: "TITLE",
-								field: "title",
-								renderCell: titleRenderCell
-							},
-							{
-								label: "STATUS",
-								field: "status",
-								renderCell: statusRenderCell
 							}
 						];
 						// dgrid memory store
@@ -384,7 +342,7 @@ require([
 								// collapse the previously selected row height
 								updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
 								var categoryNodes = [];
-								array.forEach(CATEGORIES, function (category) {
+								array.forEach(defaults.CATEGORIES, function (category) {
 									categoryNodes.push(category + previousSelectedRowID);
 								});
 								domConstruct.destroy(EXPANDED_ROW_NAME + previousSelectedRowID);
@@ -420,44 +378,42 @@ require([
 								// create the map
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
-											"<div id='" + rowID + "' style='width: " + selectedNodeWidth + "px;'>" +
+											"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
 													"	<div class='content-container'>" +
 													"		<div class='row'>" +
-													"			<div class='column-2 score-spacer'>spacer</div>" +
-													"			<div class='column-20 content-section'>" +
+													"			<div class='column-24 pre-3'>" +
 													"				<div id='map'></div>" +
 													"			</div>" +
 													"		</div>" +
 
 													"		<div class='row'>" +
-													"			<div class='column-2 score-spacer'>spacer</div>" +
-													"			<div class='column-14 content-section'>" +
+													"			<div class='column-24 pre-3'>" +
 													"				<div class='row'>" +
-													"					<div class='current-score-header'>" + CURRENT_SCORE_HEADER_TEXT + "</div>" +
-													"					<span class='current-score-graphic-container'></span>" +
+													"					<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
 													"				</div>" +
+													"			</div>" +
+													"		</div>" +
+
+													"		<div class='row'>" +
+													"			<div class='column-15 pre-3'>" +
+													"				<div class='current-score-graphic-container'></div>" +
 													"			</div>" +
 													"			<div class='column-2'>" +
-													"				<div class='row'>" +
-													"					<div class='score-spacer'>spacer</div>" +
-													"					<div class='current-score-number'>78</div>" +
-													"				</div>" +
+													"				<div class='current-score-number'>78</div>" +
 													"			</div>" +
-													"			<div class='column-4 right'>" +
+													"			<div class='column-4 right' style='margin-top: -15px !important;'>" +
 													"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
 													"			</div>" +
 													"		</div>" +
 
 													"		<div class='row'>" +
-													"			<div class='column-2 score-spacer'>spacer</div>" +
-													"			<div class='column-20 content-section'>" +
-													"				<div class='expanded-item-text'>" + OVERALL_TXT + "</div>" +
+													"			<div class='column-24 pre-3'>" +
+													"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
 													"			</div>" +
 													"		</div>" +
 
 													"		<div class='row'>" +
-													"			<div class='column-2 score-spacer'>spacer</div>" +
-													"			<div class='column-20 content-section'>" +
+													"			<div class='column-24 pre-3'>" +
 													"				<div id='" + tcID + "'></div>" +
 													"			</div>" +
 													"		</div>" +
@@ -540,145 +496,15 @@ require([
 				domConstruct.destroy("save-row");
 
 				var node = query(".content-container")[0];
-				domConstruct.place(
-						'<div id="section-content">' +
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
+				domConstruct.place(details.DETAILS_CONTENT, node, "last");
 
-								'		<div class="column-16 content-section">' +
-								'			<div class="section-header">Thumbnail</div>' +
-								'			<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
-								'		</div>' +
-
-								'		<div class="column-3 content-section">' +
-								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
-								'		</div>' +
-								'	</div>' +
-
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="title-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
-
-								'		<div class="column-12 content-section">' +
-								'			<div class="section-header">Title</div>' +
-								'			<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
-								'		</div>' +
-								'	</div>' +
-
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="summary-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
-
-								'		<div class="column-20 content-section">' +
-								'			<div class="section-header">Summary</div>' +
-								'			<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
-								'		</div>' +
-								'	</div>' +
-
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="description-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
-
-								'		<div class="column-20 content-section">' +
-								'			<div class="section-header">Description</div>' +
-								'			<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
-								'		</div>' +
-								'	</div>' +
-								'</div>',
-						node, "last");
-
-				/*'<div id="section-content">' +
-				 '	<div class="row">' +
-				 '		<div class="column-4">' +
-				 '			<div class="section-header">Thumbnail' +
-				 '				<div class="tooltip header-tooltip animate">' +
-				 '					<span class="icon-help icon-blue"></span>' +
-				 '					<div class="tooltip-wrapper">' +
-				 '						<p class="tooltip-content tooltip-content-text">Full points for using a custom thumbnail that you create and upload in the required dimensions (200 x 133 pixels).</p>' +
-				 '					</div>' +
-				 '				</div>' +
-				 '			</div>' +
-				 '			<img class="expanded-item-thumbnail" src="' + thumbnailUrl + '">' +
-				 '		</div>' +
-				 '		<div class="column-20">' +
-				 '			<div class="row">' +
-				 '				<div class="column-24">' +
-				 '					<div class="section-header">Title' +
-				 '						<div class="tooltip header-tooltip animate before">' +
-				 '							<span class="icon-help icon-blue"></span>' +
-				 '							<div class="tooltip-wrapper">' +
-				 '								<p class="tooltip-content">A title should be short, simple, clear. Three words is ideal. Avoid acronyms, ALL CAPS, underscores, \“copy\”, \“test\”, \“demo\”, \“eval\” in the title. Answers the basic question \“What is this?\"</p>' +
-				 '							</div>' +
-				 '						</div>' +
-				 '					</div>' +
-				 '					<div class="section-content">' +
-				 '						<input type="text" name="title-textbox" value="' + itemTitle + '" data-dojo-type="dijit/form/TextBox" id="' + titleID + '" />' +
-				 '					</div>' +
-				 '				</div>' +
-				 '				<div class="column-24">' +
-				 '					<div class="section-header">Summary' +
-				 '						<div class="tooltip header-tooltip animate before">' +
-				 '							<span class="icon-help icon-blue"></span>' +
-				 '							<div class="tooltip-wrapper">' +
-				 '								<p class="tooltip-content">A good summary briefly explains what this map is, in 1-2 sentences, about 10 words per sentence. Avoid acronyms, ALL CAPS, underscores, \“copy\”, \“test\”, \“demo\”, \“eval\” in the summary. Answers the basic question \“What does this show?\"</p>' +
-				 '							</div>' +
-				 '						</div>' +
-				 '					</div>' +
-				 '					<div class="section-content">' +
-				 '						<input type="text" name="title-textbox" value="' + itemSummary + '" data-dojo-type="dijit/form/TextBox" id="' + snippetID + '" />' +
-				 '					</div>' +
-				 '				</div>' +
-				 '				<div class="column-24">' +
-				 '					<div class="section-header">Description' +
-				 '						<div class="tooltip header-tooltip animate before">' +
-				 '							<span class="icon-help icon-blue"></span>' +
-				 '							<div class="tooltip-wrapper">' +
-				 '								<p class="tooltip-content">A good description further clarifies what this item is and what it shows. It explains more about the data and its sources, but does not go into pages of explanation. Scoring is primarily based on length of content. About 2-3 paragraphs is ideal, with 4-5 sentences per paragraph, and about 12 or so words per sentence. Bonus points if hyperlinks whisk the reader away to more fully developed explanations and other supporting material.</p>' +
-				 '							</div>' +
-				 '						</div>' +
-				 '					</div>' +
-				 '					<div class="section-content">' +
-				 '						<div id="' + descID + '" data-dojo-type="dijit/Editor" name="editorContent">' + itemDescription + '</div>' +
-				 '					</div>' +
-				 '				</div>' +
-				 '			</div>' +
-				 '		</div>' +
-				 '	</div>' +
-				 '</div>',
-				 node, "last");*/
+				domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
+				domAttr.set(query(".title-textbox")[0], "id", titleID);
+				domAttr.set(query(".title-textbox")[0], "value", itemTitle);
+				domAttr.set(query(".summary-textbox")[0], "id", snippetID);
+				domAttr.set(query(".summary-textbox")[0], "value", itemSummary);
+				domAttr.set(query(".description-editor")[0], "id", descID);
+				domConstruct.create("div", { innerHTML: itemDescription }, query(".description-editor")[0], "first");
 
 				var thumbnailTooltip = new Tooltip({
 					connectId: [query(".thumbnail-tooltip")[0]],
@@ -810,9 +636,6 @@ require([
 					});
 				});
 
-				// create the SAVE/CANCEL buttons
-				//createSaveButtonNode(node);
-
 				descriptionEditor = new Editor({
 					plugins: [
 						'bold',
@@ -919,48 +742,12 @@ require([
 				domConstruct.destroy("save-row");
 
 				var node = query(".content-container")[0];
-				domConstruct.place(
-						'<div id="section-content">' +
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="access-constraints-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
+				domConstruct.place(credits.ACCESS_CREDITS_CONTENT, node, "last");
 
-								'		<div class="column-16 content-section">' +
-								'			<div class="section-header">Access and Use Constraints</div>' +
-								'			<div id="' + accessID + '" data-dojo-type="dijit/Editor" name="editorContent" rows="3">' + licenseInfo + '</div>' +
-								'		</div>' +
-
-								'		<div class="column-3 content-section">' +
-								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
-								'		</div>' +
-								'	</div>' +
-
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="credits-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
-
-								'		<div class="column-12 content-section">' +
-								'			<div class="section-header">Credits</div>' +
-								'				<textarea id="' + creditID + '" rows="2" style="width:95%;">' + credit + '</textarea>' +
-								'		</div>' +
-								'	</div>',
-						node, "last");
+				domAttr.set(query(".accessID")[0], "id", accessID);
+				domConstruct.create("div", { innerHTML: licenseInfo }, query(".accessID")[0], "first");
+				domAttr.set(query(".creditID")[0], "id", creditID);
+				query(".creditID")[0].value = credit;
 
 				var userFullNameTooltip = new Tooltip({
 					connectId: [query(".access-constraints-tooltip")[0]],
@@ -1083,43 +870,14 @@ require([
 				domConstruct.destroy("save-row");
 
 				var node = query(".content-container")[0];
-				domConstruct.place(
-						'<div id="section-content">' +
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="profile-thumbnail-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
+				domConstruct.place(tags.TAGS_CONTENT, node, "last");
+				domConstruct.create("div", { innerHTML: itemTags }, query(".tag-container")[0], "first");
 
-								'		<div class="column-16 content-section">' +
-								'			<div class="column-12">' +
-								'				<div class="section-header">Select at least one of the following categories</div>' +
-								'				<div id="tagCategories"></div>' +
-								'			</div>' +
-								'			<div class="column-12">' +
-								'				<div class="section-header">Add custom tags</div>' +
-								'				<div class="tag-container">' + itemTags + '</div>' +
-								'			</div>' +
-								'		</div>' +
-
-								'		<div class="column-3 content-section">' +
-								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
-								'		</div>' +
-								'	</div>' +
-								'</div>',
-						node, "last");
-
-				array.forEach(CATEGORIES, function (id, i) {
-					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
+				array.forEach(defaults.CATEGORIES, function (id, i) {
+					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + defaults.CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
 				});
 
-				array.forEach(CATEGORIES, function (id) {
+				array.forEach(defaults.CATEGORIES, function (id) {
 					addCheckbox(id + selectedRowID);
 				});
 			});
@@ -1130,165 +888,7 @@ require([
 			domConstruct.destroy("save-row");
 
 			var node = query(".content-container")[0];
-			domConstruct.place(
-					/*"<div id='section-content'>" +
-					 "	<div class='row'>" +
-					 "		<div class='column-8'>" +
-					 "			<div class='section-header'>SHARING " +
-					 "				<div class='tooltip header-tooltip animate'>" +
-					 "					<span class='icon-help icon-blue'></span>" +
-					 "					<div class='tooltip-wrapper'>" +
-					 "						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-					 "					</div>" +
-					 "				</div>" +
-					 "			</div>" +
-					 "			<div class='performance-content'>" + processSharing(item) + "</div>" +
-					 "		</div>" +
-					 "		<div class='column-8'>" +
-					 "			<div class='section-header'>MAP DRAW TIME " +
-					 "				<div class='tooltip header-tooltip animate'>" +
-					 "					<span class='icon-help icon-blue'></span>" +
-					 "					<div class='tooltip-wrapper'>" +
-					 "						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-					 "					</div>" +
-					 "				</div>" +
-					 "			</div>" +
-					 "			<div class='performance-content'>" + processMapDrawTime(mapDrawTime) + "</div>" +
-					 "		</div>" +
-					 "		<div class='column-8'>" +
-					 "			<div class='section-header'>LAYER COUNT " +
-					 "				<div class='tooltip header-tooltip animate'>" +
-					 "					<span class='icon-help icon-blue'></span>" +
-					 "					<div class='tooltip-wrapper'>" +
-					 "						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-					 "					</div>" +
-					 "				</div>" +
-					 "			</div>" +
-					 "			<div class='performance-content'>" +
-					 "				<div id='layers-list'></div>" +
-					 "			</div>" +
-					 "		</div>" +
-					 "	</div>" +
-					 "	<div class='row'>" +
-					 "		<div class='column-8'>" +
-					 "			<div class='section-header'>POP UPS " +
-					 "				<div class='tooltip header-tooltip animate'>" +
-					 "					<span class='icon-help icon-blue'></span>" +
-					 "					<div class='tooltip-wrapper'>" +
-					 "						<p class='tooltip-content'>Text to appear in the tooltip.</p>" +
-					 "					</div>" +
-					 "				</div>" +
-					 "			</div>" +
-					 "			<div class='performance-content'>" + popUps + "</div>" +
-					 "		</div>" +
-					 "	</div>" +
-					 "</div>",*/
-
-							'<div id="section-content">' +
-							'	<div class="row section-content">' +
-
-							'		<div class="column-2">' +
-							'			<div class="row">' +
-							'				<div class="column-12 score-graphic-text">' +
-							'					<div class="score-graphic"> 4/5</div>' +
-							'				</div>' +
-							'				<div class="column-12">' +
-							'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-							'				</div>' +
-							'			</div>' +
-							'		</div>' +
-							'		<div class="row">' +
-							'			<div class="column-4 content-section">' +
-							'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em; color: #4997D2;">number of map layers</span></h2>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">more than 10</div>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">2 - 10</div>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">1</div>' +
-							'			</div>' +
-							'		</div>' +
-
-							'		<div class="column-2">' +
-							'			<div class="row">' +
-							'				<div class="column-12 score-graphic-text">' +
-							'					<div class="score-graphic"> 4/5</div>' +
-							'				</div>' +
-							'				<div class="column-12">' +
-							'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-							'				</div>' +
-							'			</div>' +
-							'		</div>' +
-							'		<div class="row">' +
-							'			<div class="column-4 content-section">' +
-							'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em; color: #4997D2;">sharing</span></h2>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">not shared</div>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">organization account</div>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">public</div>' +
-							'			</div>' +
-							'		</div>' +
-
-							'		<div class="column-2">' +
-							'			<div class="row">' +
-							'				<div class="column-12 score-graphic-text">' +
-							'					<div class="score-graphic"> 4/5</div>' +
-							'				</div>' +
-							'				<div class="column-12">' +
-							'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-							'				</div>' +
-							'			</div>' +
-							'		</div>' +
-							'		<div class="row">' +
-							'			<div class="column-4 content-section">' +
-							'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em; color: #4997D2;">draw time</span></h2>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">very slow</div>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">slow</div>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">good</div>' +
-							'			</div>' +
-							'		</div>' +
-
-							'		<div class="column-2">' +
-							'			<div class="row">' +
-							'				<div class="column-12 score-graphic-text">' +
-							'					<div class="score-graphic"> 4/5</div>' +
-							'				</div>' +
-							'				<div class="column-12">' +
-							'					<img src="assets/images/info.png" class="thumbnail-tooltip info-graphic">' +
-							'				</div>' +
-							'			</div>' +
-							'		</div>' +
-							'		<div class="row">' +
-							'			<div class="column-4 content-section">' +
-							'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em; color: #4997D2;">pop ups</span></h2>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">no popups</div>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">default only</div>' +
-							'			</div>' +
-							'			<div class="column-2 content-section">' +
-							'				<div class="section-header">custom</div>' +
-							'			</div>' +
-							'		</div>' +
-							'	</div>' +
-							'</div>',
-					node, "last");
+			domConstruct.place(performanceConfig.PERFORMANCE_CONTENT, node, "last");
 
 			/*if (layers !== undefined && layers.length < 1) {
 				domConstruct.create("div", {
@@ -1326,67 +926,13 @@ require([
 				domConstruct.destroy("save-row");
 
 				var node = query(".content-container")[0];
-				domConstruct.place(
-						'<div id="section-content">' +
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="profile-thumbnail-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
+				domConstruct.place(profileConfig.PROFILE_CONTENT, node, "last");
 
-								'		<div class="column-16 content-section">' +
-								'			<div class="section-header">Thumbnail</div>' +
-								'			<img class="expanded-item-thumbnail" src="' + _userThumbnailUrl + '">' +
-								'		</div>' +
-
-								'		<div class="column-3 content-section">' +
-								'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
-								'		</div>' +
-								'	</div>' +
-
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="user-full-name-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
-
-								'		<div class="column-12 content-section">' +
-								'			<div class="section-header">Name</div>' +
-								'				<input type="text" name="title-textbox" value="' + _userFullName + '" data-dojo-type="dijit/form/TextBox" id="' + _userNameID + '" />' +
-								'		</div>' +
-								'	</div>' +
-
-								'	<div class="row section-content">' +
-								'		<div class="column-2">' +
-								'			<div class="row">' +
-								'				<div class="column-12 score-graphic-text">' +
-								'					<div class="score-graphic"> 4/5</div>' +
-								'				</div>' +
-								'				<div class="column-12">' +
-								'					<img src="assets/images/info.png" class="user-description-tooltip info-graphic">' +
-								'				</div>' +
-								'			</div>' +
-								'		</div>' +
-
-								'		<div class="column-20 content-section">' +
-								'			<div class="section-header">Description</div>' +
-								'				<textarea id="' + _userDescriptionID + '" rows="4" cols="50" style="width:66%;">' + _userDescription +
-								'		</div>' +
-								'	</div>' +
-								'</div>',
-						node, "last");
+				domAttr.set(query(".profileThumbnailUrl")[0], "src", _userThumbnailUrl);
+				domAttr.set(query(".name-textbox")[0], "id", _userNameID);
+				domAttr.set(query(".name-textbox")[0], "value", _userFullName);
+				domAttr.set(query(".userDescriptionID")[0], "id", _userDescriptionID);
+				query(".userDescriptionID")[0].value = _userDescription;
 
 				var profileThumbnailTooltip = new Tooltip({
 					connectId: [query(".profile-thumbnail-tooltip")[0]],
@@ -1474,16 +1020,6 @@ require([
 			});
 		}
 
-
-		function createSaveButtonNode(_node) {
-			domConstruct.place(
-					'<div id="save-row" class="row">' +
-							'	<div class="column-8 center">' +
-							'		<button id="save-btn" class="btn small"> SAVE </button>' +
-							'		<button id="cancel-btn" class="btn small"> CANCEL </button>' +
-							'	</div>' +
-							'</div>', _node, "last");
-		}
 
 		function applySort(value) {
 			if (value === "title") {
@@ -1583,11 +1119,11 @@ require([
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
 							'	<div class="btn-group column-24 icon-edit-btn-group">' +
-							'		<a class="active column-4 details icon-edit"> ' + DETAILS + '</a>' +
-							'		<a class="column-4 credits icon-edit"> ' + USE_CREDITS + '</a>' +
-							'		<a class="column-4 tags icon-edit"> ' + TAGS + '</a>' +
-							'		<a class="column-4 performance icon-edit"> ' + PERFORMANCE + '</a>' +
-							'		<a class="column-4 profile icon-edit"> ' + MY_PROFILE + '</a>' +
+							'		<a class="active column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
+							'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
+							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
+							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
+							'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
 							'	</div>' +
 							'</div>', id, "last");
 
@@ -1630,7 +1166,7 @@ require([
 
 		function formatDate(date) {
 			var d = new Date(date);
-			var month = MONTHS[d.getMonth()];
+			var month = defaults.MONTHS[d.getMonth()];
 			if (d.isNaN) {
 				return "";
 			} else {

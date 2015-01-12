@@ -52,7 +52,7 @@
 /* Thumbnail */
 .field-thumbnailUrl {
 	/*width: 190px;*/
-	width: 130px;
+	/*width: 130px;*/
 }
 
 .field-thumbnailUrl img {
@@ -70,7 +70,7 @@
 }
 
 .shit {
-margin-bottom: -3px;
+	margin-bottom: -3px;
 }
 
 /* item title */
@@ -160,7 +160,7 @@ margin-bottom: -3px;
 }
 
 .content-section {
-	margin-left: 50px;
+	/*margin-left: 50px;*/
 }
 
 .info-graphic {
