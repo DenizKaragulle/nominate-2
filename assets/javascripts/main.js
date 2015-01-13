@@ -486,12 +486,16 @@ require([
 			portalUser.getItem(selectedRowID).then(function (item) {
 				// item title
 				var itemTitle = validateItemTitle(item.title);
+				var itemTitle_clean = itemTitle;
 				// item summary
 				var itemSummary = validateStr(item.snippet);
+				var itemSummary_clean = itemSummary;
 				// item description
 				var itemDescription = validateStr(item.description);
+				var itemDescription_clean = itemDescription;
 				// thumbnail url
 				var thumbnailUrl = formatThumbnailUrl(item);
+				var thumbnailUrl_clean = thumbnailUrl;
 
 				domConstruct.destroy("section-content");
 				var node = query(".content-container")[0];
@@ -965,13 +969,13 @@ require([
 				on(cancelBtnNode, "click", function () {
 					// update the title
 					domConstruct.empty(itemTitleNode);
-					domConstruct.create("div", { innerHTML: item.title }, itemTitleNode, "first");
+					domConstruct.create("div", { innerHTML: itemTitle_clean }, itemTitleNode, "first");
 					domAttr.remove(itemTitleNode, "data-dojo-type");
 					domAttr.set(itemTitleNode, "id", titleID);
 
 					// update the summary
 					domConstruct.empty(itemSummaryNode);
-					domConstruct.create("div", { innerHTML: item.summary }, itemSummaryNode, "first");
+					domConstruct.create("div", { innerHTML: itemSummary_clean }, itemSummaryNode, "first");
 					domAttr.remove(itemSummaryNode, "data-dojo-type");
 					domAttr.set(itemSummaryNode, "id", snippetID);
 
@@ -989,8 +993,11 @@ require([
 					if (itemDescription === "") {
 						domConstruct.place("<span></span>", "description-editor-widget", "first");
 					} else {
-						domConstruct.place("<span>" + item.description + "</span>", "description-editor-widget", "first");
+						domConstruct.place("<span>" + itemDescription_clean + "</span>", "description-editor-widget", "first");
 					}
+
+					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+					domStyle.set(cancelBtnNode, "display", "none");
 				});
 			});
 		}
@@ -998,7 +1005,9 @@ require([
 		function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
 				var itemCredits = validateStr(item.accessInformation);
+				var itemCredits_clean = itemCredits;
 				var accessAndUseConstraints = validateStr(item.licenseInfo);
+				var accessAndUseConstraints_clean = accessAndUseConstraints;
 
 				domConstruct.destroy("section-content");
 				domConstruct.destroy("save-row");
@@ -1038,17 +1047,22 @@ require([
 				});
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
+				var cancelBtnNode = query(".cancel-btn")[0];
+				var itemCreditsNode = query(".creditsID-textbox")[0];
+				var accessAndUseConstraintsEditorNode = query(".accessAndUseConstraintsEditor")[0];
+
 				on(editSaveBtnNode, "click", function () {
-					var itemCreditsNode = query(".creditsID-textbox")[0];
-					var accessAndUseConstraintsEditorNode = query(".accessAndUseConstraintsEditor")[0];
+					//var itemCreditsNode = query(".creditsID-textbox")[0];
+					//var accessAndUseConstraintsEditorNode = query(".accessAndUseConstraintsEditor")[0];
 
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
+						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
+						domStyle.set(cancelBtnNode, "display", "block");
 						// credits
 						domConstruct.empty(itemCreditsNode);
 						domConstruct.create("input", { class: "edit-credits", value: itemCredits }, itemCreditsNode, "first");
 						domAttr.set(itemCreditsNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemCreditsNode, "id", creditID);
-						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
 
 						// access and user constraints
 						if (dijit.byId("access-editor-widget")) {
@@ -1114,6 +1128,7 @@ require([
 							}).then(function (response) {
 								if (response.success) {
 									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+									domStyle.set(cancelBtnNode, "display", "none");
 								} else {
 									console.log("ERROR");
 								}
@@ -1136,11 +1151,35 @@ require([
 						}
 					}
 				});
+
+				on(cancelBtnNode, "click", function () {
+					domConstruct.empty(itemCreditsNode);
+					domConstruct.create("div", { innerHTML: accessAndUseConstraints_clean }, itemCreditsNode, "first");
+					domAttr.remove(itemCreditsNode, "data-dojo-type");
+					domAttr.set(itemCreditsNode, "id", creditID);
+
+					if (dijit.byId("access-editor-widget")) {
+						dijit.byId("access-editor-widget").destroy();
+					}
+
+					domAttr.remove(accessAndUseConstraintsEditorNode, "id");
+					domConstruct.create("div", {
+						id:"access-editor-widget"
+					}, accessAndUseConstraintsEditorNode, "first");
+
+					if (accessAndUseConstraints === "") {
+						domConstruct.place("<span></span>", "access-editor-widget", "first");
+					} else {
+						domConstruct.place("<span>" + itemCredits_clean + "</span>", "access-editor-widget", "first");
+					}
+
+					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+					domStyle.set(cancelBtnNode, "display", "none");
+				});
 			});
 		}
 
 		function tagsContentPane(_selectedRowID, categoryID, tagsID) {
-
 			var tagsDijit;
 			var tagStore;
 
@@ -1151,6 +1190,7 @@ require([
 
 				// tags
 				var itemTags = item.tags;
+				var itemTags_clean = itemTags;
 				domConstruct.create("div", {
 					class: "existing-tags",
 					innerHTML: itemTags
@@ -1165,43 +1205,16 @@ require([
 				});
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
+				var cancelBtnNode = query(".cancel-btn")[0];
 				on(editSaveBtnNode, "click", function () {
 					tagStore = new Memory({
 						idProperty:'tag',
 						data:[].concat(itemTags)
 					});
-					if (editSaveBtnNode.innerHTML === " SAVE ") {
+					if (editSaveBtnNode.innerHTML === " EDIT ") {
+						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
+						domStyle.set(cancelBtnNode, "display", "block");
 						// save to AGOL
-						console.log("TAGS: " + tagsDijit.values);
-						var _userItemUrl = item.userItemUrl;
-						esriRequest({
-							url:_userItemUrl + "/update",
-							content:{
-								f:"json",
-								tags: "" + tagsDijit.values
-							}
-						}, {
-							usePost:true
-						}).then(function (response) {
-									if (response.success) {
-										if (dijit.byId("tag-widget")) {
-											domConstruct.create("div", {
-												class:"existing-tags",
-												innerHTML:tagsDijit.values
-											}, query(".tag-container")[0], "first");
-
-											dijit.byId("tag-widget").destroy();
-											domConstruct.create("div", {
-												id:"tag-widget"
-											}, query(".tag-container")[0], "first");
-										}
-										domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
-										console.log("SUCCESS");
-									} else {
-										console.log("ERROR");
-									}
-								});
-					} else {
 						// edit mode
 						domConstruct.empty(query(".existing-tags")[0]);
 						if (dijit.byId("tag-widget")) {
@@ -1223,8 +1236,53 @@ require([
 						}, "tag-widget");
 						// prepopulate the widget with values from the list
 						tagsDijit.prepopulate(tagStore.data);
-						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
+					} else {
+						var _userItemUrl = item.userItemUrl;
+						esriRequest({
+							url:_userItemUrl + "/update",
+							content:{
+								f:"json",
+								tags:"" + tagsDijit.values
+							}
+						}, {
+							usePost:true
+						}).then(function (response) {
+							if (response.success) {
+								if (dijit.byId("tag-widget")) {
+									domConstruct.create("div", {
+										class:"existing-tags",
+										innerHTML:tagsDijit.values
+									}, query(".tag-container")[0], "first");
+
+									dijit.byId("tag-widget").destroy();
+									domConstruct.create("div", {
+										id:"tag-widget"
+									}, query(".tag-container")[0], "first");
+								}
+								domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+								domStyle.set(cancelBtnNode, "display", "none");
+								console.log("SUCCESS");
+							} else {
+								console.log("ERROR");
+							}
+						});
 					}
+				});
+
+				on(cancelBtnNode, "click", function () {
+					if (dijit.byId("tag-widget")) {
+						domConstruct.create("div", {
+							class:"existing-tags",
+							innerHTML: itemTags_clean
+						}, query(".tag-container")[0], "first");
+
+						dijit.byId("tag-widget").destroy();
+						domConstruct.create("div", {
+							id:"tag-widget"
+						}, query(".tag-container")[0], "first");
+					}
+					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+					domStyle.set(cancelBtnNode, "display", "none");
 				});
 			});
 		}
@@ -1265,10 +1323,11 @@ require([
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
 				var _userThumbnailUrl = item.portal.getPortalUser().thumbnailUrl;
+				var _userThumbnailUrl_clean = _userThumbnailUrl;
 				var _userFullName = validateStr(item.portal.getPortalUser().fullName);
+				var _userFullName_clean = _userFullName;
 				var _userDescription = validateStr(item.portal.getPortalUser().description);
-
-				console.log(item.portal.getPortalUser());
+				var _userDescription_clean = _userDescription;
 
 				domConstruct.destroy("section-content");
 				var node = query(".content-container")[0];
@@ -1311,13 +1370,20 @@ require([
 				});
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
+				var cancelBtnNode = query(".cancel-btn")[0];
+				var itemThumbnailNode = query(".profileThumbnailUrl")[0];
+				var itemUserNameNode = query(".name-textbox")[0];
+				var itemUserDescriptionNode = query(".user-description-textbox")[0];
+
 				on(editSaveBtnNode, "click", function () {
-					var itemThumbnailNode = query(".profileThumbnailUrl")[0];
-					var itemUserNameNode = query(".name-textbox")[0];
-					var itemUserDescriptionNode = query(".user-description-textbox")[0];
+					//var itemThumbnailNode = query(".profileThumbnailUrl")[0];
+					//var itemUserNameNode = query(".name-textbox")[0];
+					//var itemUserDescriptionNode = query(".user-description-textbox")[0];
 
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
+						domStyle.set(cancelBtnNode, "display", "block");
+
 						domConstruct.empty(itemUserNameNode);
 						domConstruct.create("input", { class: "edit-user-full-name", value:_userFullName }, itemUserNameNode, "first");
 						domAttr.set(itemUserNameNode, "data-dojo-type", "dijit/form/TextBox");
@@ -1347,22 +1413,37 @@ require([
 							}).then(function (response) {
 								if (response.success) {
 									domConstruct.empty(itemUserNameNode);
-									domConstruct.create("div", { innerHTML: _userFullName }, itemUserNameNode, "first");
+									domConstruct.create("div", { innerHTML: item.portal.getPortalUser().fullName }, itemUserNameNode, "first");
 									domAttr.remove(itemUserNameNode, "data-dojo-type");
 									domAttr.set(itemUserNameNode, "id", _userNameID);
 
 									domConstruct.empty(itemUserDescriptionNode);
-									domConstruct.create("div", { innerHTML: _userDescription }, itemUserDescriptionNode, "first");
+									domConstruct.create("div", { innerHTML: item.portal.getPortalUser().description }, itemUserDescriptionNode, "first");
 									domAttr.remove(itemUserDescriptionNode, "data-dojo-type");
 									domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
 
 									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+									domStyle.set(cancelBtnNode, "display", "none");
 								} else {
 
 								}
 							});
 						});
 					}
+				});
+
+				on(cancelBtnNode, "click", function () {
+					domConstruct.empty(itemUserNameNode);
+					domConstruct.create("div", { innerHTML: _userFullName_clean }, itemUserNameNode, "first");
+					domAttr.remove(itemUserNameNode, "data-dojo-type");
+					domAttr.set(itemUserNameNode, "id", _userNameID);
+
+					domConstruct.empty(itemUserDescriptionNode);
+					domConstruct.create("div", { innerHTML: _userDescription_clean }, itemUserDescriptionNode, "first");
+					domAttr.remove(itemUserDescriptionNode, "data-dojo-type");
+					domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
+					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+					domStyle.set(cancelBtnNode, "display", "none");
 				});
 			});
 		}
