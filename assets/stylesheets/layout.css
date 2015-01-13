@@ -282,9 +282,6 @@ table tr {
 	color: #D94C1D;
 }
 
-
-
-
 .header-tooltip {
 	/*transform: translateY(30%);*/
 }
@@ -297,16 +294,6 @@ table tr {
 
 .thumbnail-dialog-row {
 	margin-bottom: 5px;
-}
-
-#nominate-btn {
-	color: #D94C1D;
-	border: 1px solid #D94C1D;
-	background-color: white;
-}
-
-.custom-btn {
-	width: 120px;
 }
 
 .tag-container {
@@ -325,7 +312,6 @@ table tr {
 	border-radius: 3px !important;
 }
 
-
 .performance-text {
 	text-align: center;
 	margin-top: 10px;
@@ -337,4 +323,25 @@ table tr {
 
 .performance-fade-in {
 	color: rgba(0, 122, 194, 1.0);
+}
+
+
+
+
+#nominate-btn {
+	color: #D94C1D;
+	border: 1px solid #D94C1D;
+	background-color: white;
+}
+
+.custom-btn {
+	width: 120px;
+}
+
+.cancel-btn {
+	display: none;
+	margin-top: 10px;
+	background-color: white;
+	color: #5daddd;
+	border: 1px solid #5daddd;
 }

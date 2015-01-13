@@ -37,6 +37,7 @@ define({
 			"		</div>" +
 			"		<div class='column-3'>" +
 			"			<button class='btn custom-btn edit-save-btn'> EDIT </button>" +
+			"			<button class='btn custom-btn cancel-btn'> CANCEL </button>" +
 			"		</div>" +
 			"	</div>" +
 

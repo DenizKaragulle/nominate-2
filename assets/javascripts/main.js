@@ -381,46 +381,46 @@ require([
 									domConstruct.place(
 											"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
 											"	<div class='content-container'>" +
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div id='map'></div>" +
-													"			</div>" +
-													"		</div>" +
+											"		<div class='row'>" +
+											"			<div class='column-21 pre-3'>" +
+											"				<div id='map'></div>" +
+											"			</div>" +
+											"		</div>" +
 
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div class='row'>" +
-													"					<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-													"				</div>" +
-													"			</div>" +
-													"		</div>" +
+											"		<div class='row'>" +
+											"			<div class='column-21 pre-3'>" +
+											"				<div class='row'>" +
+											"					<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+											"				</div>" +
+											"			</div>" +
+											"		</div>" +
 
-													"		<div class='row'>" +
-													"			<div class='column-15 pre-3'>" +
-													"				<div class='current-score-graphic-container'></div>" +
-													"			</div>" +
-													"			<div class='column-2'>" +
-													"				<div class='current-score-number'>78</div>" +
-													"			</div>" +
-													"			<div class='column-4 right' style='margin-top: -15px !important;'>" +
-													"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
-													"			</div>" +
-													"		</div>" +
+											"		<div class='row'>" +
+											"			<div class='column-15 pre-3'>" +
+											"				<div class='current-score-graphic-container'></div>" +
+											"			</div>" +
+											"			<div class='column-2'>" +
+											"				<div class='current-score-number'>78</div>" +
+											"			</div>" +
+											"			<div class='column-4 right' style='margin-top: -15px !important;'>" +
+											"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
+											"			</div>" +
+											"		</div>" +
 
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-													"			</div>" +
-													"		</div>" +
+											"		<div class='row'>" +
+											"			<div class='column-21 pre-3'>" +
+											"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+											"			</div>" +
+											"		</div>" +
 
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div id='" + tcID + "'></div>" +
-													"			</div>" +
-													"		</div>" +
-													"	</div>" +
-													"</div>" +
-													"<div id='" + btnID + "'></div>",
+											"		<div class='row'>" +
+											"			<div class='column-21 pre-3'>" +
+											"				<div id='" + tcID + "'></div>" +
+											"			</div>" +
+											"		</div>" +
+											"	</div>" +
+											"</div>" +
+											"<div id='" + btnID + "'></div>",
 											selectedRow.firstElementChild, "last");
 
 									progressBarAnchorNode = query(".current-score-graphic-container")[0];
@@ -567,37 +567,6 @@ require([
 							"explanations and other supporting material." +
 							"<\/div>"
 				});
-
-				/*descriptionEditor = new Editor({
-					plugins: [
-						'bold',
-						'italic',
-						'underline',
-						'foreColor',
-						'hiliteColor',
-						'|',
-						'justifyLeft',
-						'justifyCenter',
-						'justifyRight',
-						'justifyFull',
-						'|',
-						'insertOrderedList',
-						'insertUnorderedList',
-						'|',
-						'indent',
-						'outdent',
-						'|',
-						'createLink',
-						'unlink',
-						'removeFormat',
-						'|',
-						'undo',
-						'redo',
-						'|',
-						'viewSource'
-					]
-				}, dom.byId(descID));
-				descriptionEditor.startup();*/
 
 				/*var editBtn = dom.byId("edit-btn");
 				on(editBtn, "click", function () {
@@ -783,16 +752,17 @@ require([
 				});*/
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
+				var cancelBtnNode = query(".cancel-btn")[0];
+				var itemThumbnailNode = query(".thumbnailUrl")[0];
+				var itemTitleNode = query(".title-textbox")[0];
+				var itemSummaryNode = query(".summary-textbox")[0];
+				var itemDescriptionNode = query(".description-editor")[0];
 				on(editSaveBtnNode, "click", function () {
-					var itemThumbnailNode = query(".thumbnailUrl")[0];
-					var itemTitleNode = query(".title-textbox")[0];
-					var itemSummaryNode = query(".summary-textbox")[0];
-					var itemDescriptionNode = query(".description-editor")[0];
-
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// EDITING MODE
 						// update button label " SAVE "
 						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
+						domStyle.set(cancelBtnNode, "display", "block");
 
 						// update title section
 						// empty the contents
@@ -856,7 +826,7 @@ require([
 						descriptionEditor.startup();
 
 						// update thumbnail dialog
-						/*var myDialog = new Dialog({
+						var myDialog = new Dialog({
 							id:"update-thumbnail-dialog",
 							title:"Upload Thumbnail",
 							content:"<div class='container thumbnail-dialog'>" +
@@ -925,7 +895,7 @@ require([
 											}
 										});
 							});
-						});*/
+						});
 					} else {
 						// DETAILS
 						// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
@@ -953,6 +923,7 @@ require([
 									// NON-EDITING MODE
 									// update button label " EDIT "
 									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+									domStyle.set(cancelBtnNode, "display", "none");
 									console.log("SUCCESS");
 								} else {
 									console.log("ERROR");
@@ -988,6 +959,37 @@ require([
 						} else {
 							domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
 						}
+					}
+				});
+
+				on(cancelBtnNode, "click", function () {
+					// update the title
+					domConstruct.empty(itemTitleNode);
+					domConstruct.create("div", { innerHTML: item.title }, itemTitleNode, "first");
+					domAttr.remove(itemTitleNode, "data-dojo-type");
+					domAttr.set(itemTitleNode, "id", titleID);
+
+					// update the summary
+					domConstruct.empty(itemSummaryNode);
+					domConstruct.create("div", { innerHTML: item.summary }, itemSummaryNode, "first");
+					domAttr.remove(itemSummaryNode, "data-dojo-type");
+					domAttr.set(itemSummaryNode, "id", snippetID);
+
+					// update the description
+					// empty the contents
+					if (dijit.byId("description-editor-widget")) {
+						dijit.byId("description-editor-widget").destroy();
+					}
+
+					domAttr.remove(itemDescriptionNode, "id");
+					domConstruct.create("div", {
+						id:"description-editor-widget"
+					}, itemDescriptionNode, "first");
+
+					if (itemDescription === "") {
+						domConstruct.place("<span></span>", "description-editor-widget", "first");
+					} else {
+						domConstruct.place("<span>" + item.description + "</span>", "description-editor-widget", "first");
 					}
 				});
 			});
