@@ -26,6 +26,7 @@ require([
 	"dojo/dom-class",
 	"dojo/dom-construct",
 	"dojo/dom-style",
+	"dojo/html",
 	"dojo/number",
 	"dojo/on",
 	"dojo/query",
@@ -46,7 +47,7 @@ require([
 	"config/profile",
 	"esri/dijit/Tags",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, Tags) {
+], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, Tags) {
 
 	parser.parse();
 
@@ -140,7 +141,7 @@ require([
 						'	</div>' +
 
 						'	<div class="column-18">' +
-						'		<div class="item-title">' + itemTitle + '</div>' +
+						'		<div class="item-title ' + object.id + '">' + itemTitle + '</div>' +
 						'		<div class="item-meta-data">' +
 						'			<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
 						'		</div>' +
@@ -925,10 +926,12 @@ require([
 							}).then(function (response) {
 								domConstruct.destroy(query(".alert-loader")[0]);
 								if (response.success) {
-									console.log(itemStore.data);
-									console.log(selectedRowID);
-									var targetItem = itemStore.get(selectedRowID);
-									targetItem.title = itemTitle;
+									//var targetItem = itemStore.get(selectedRowID);
+									//targetItem.title = itemTitle;
+									var qTitle = query("." + selectedRowID);
+									console.log(qTitle);
+									console.log(qTitle.innerHTML);
+									html.set(query("." + selectedRowID)[0], itemTitle);
 									// NON-EDITING MODE
 									// update button label " EDIT "
 									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
