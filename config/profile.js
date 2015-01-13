@@ -34,7 +34,7 @@ define({
 			'		</div>' +
 
 			'		<div class="column-3">' +
-			'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
+			'			<button class="btn custom-btn edit-save-btn"> EDIT </button>' +
 			'		</div>' +
 			'	</div>' +
 
@@ -51,7 +51,7 @@ define({
 			'		</div>' +
 			'		<div class="column-12">' +
 			'			<div class="section-header">Name</div>' +
-			'				<input class="name-textbox" type="text" name="title-textbox" value="" data-dojo-type="dijit/form/TextBox" id="" />' +
+			'			<div class="name-textbox"></div>' +
 			'		</div>' +
 			'	</div>' +
 
@@ -69,7 +69,7 @@ define({
 
 			'		<div class="column-20">' +
 			'			<div class="section-header">Description</div>' +
-			'			<textarea id="" rows="4" class="userDescriptionID" cols="50" style="width:85%;"></textarea>' +
+			'			<div class="user-description-textbox"></div>' +
 			'		</div>' +
 			'	</div>' +
 			'</div>'

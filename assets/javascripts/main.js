@@ -493,13 +493,11 @@ require([
 				var thumbnailUrl = formatThumbnailUrl(item);
 
 				domConstruct.destroy("section-content");
-				domConstruct.destroy("save-row");
 				var node = query(".content-container")[0];
 				domConstruct.place(details.DETAILS_CONTENT, node, "last");
 
 				// set the thumbnail
 				domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
-				// set the title
 				domAttr.set(query(".title-textbox")[0], "id", titleID);
 				domConstruct.create("div", { innerHTML: itemTitle }, query(".title-textbox")[0], "first");
 				// set the summary
@@ -1232,17 +1230,17 @@ require([
 				var _userFullName = validateStr(item.portal.getPortalUser().fullName);
 				var _userDescription = validateStr(item.portal.getPortalUser().description);
 
-				domConstruct.destroy("section-content");
-				domConstruct.destroy("save-row");
+				console.log(item.portal.getPortalUser());
 
+				domConstruct.destroy("section-content");
 				var node = query(".content-container")[0];
 				domConstruct.place(profileConfig.PROFILE_CONTENT, node, "last");
 
 				domAttr.set(query(".profileThumbnailUrl")[0], "src", _userThumbnailUrl);
 				domAttr.set(query(".name-textbox")[0], "id", _userNameID);
-				domAttr.set(query(".name-textbox")[0], "value", _userFullName);
-				domAttr.set(query(".userDescriptionID")[0], "id", _userDescriptionID);
-				query(".userDescriptionID")[0].value = _userDescription;
+				domConstruct.create("div", { innerHTML: _userFullName }, query(".name-textbox")[0], "first");
+				domAttr.set(query(".user-description-textbox")[0], "id", _userDescriptionID);
+				domConstruct.create("div", { innerHTML: _userDescription }, query(".user-description-textbox")[0], "first");
 
 				var profileThumbnailTooltip = new Tooltip({
 					connectId: [query(".profile-thumbnail-tooltip")[0]],
@@ -1274,58 +1272,59 @@ require([
 					label: "<div>A description of the user.<\/div>"
 				});
 
-				var saveBtn = dom.byId("save-btn");
-				on(saveBtn, "click", function () {
-					var alertAnchorNode = query(".section-content")[0];
-					domConstruct.place(
-							'<div class="loader alert-loader save-btn">' +
-									'	<span class="side side-left">' +
-									'		<span class="fill"></span>' +
-									'	</span>' +
-									'	<span class="side side-right">' +
-									'		<span class="fill"></span>' +
-									'	</span>' +
-									'	<p class="loading-word">Loading...</p>' +
-									'</div>', alertAnchorNode, "last");
-					var _userFullName = dom.byId(_userNameID).value;
-					var _userDescription = dom.byId(_userDescriptionID).value;
+				var editSaveBtnNode = query(".edit-save-btn")[0];
+				on(editSaveBtnNode, "click", function () {
+					var itemThumbnailNode = query(".profileThumbnailUrl")[0];
+					var itemUserNameNode = query(".name-textbox")[0];
+					var itemUserDescriptionNode = query(".user-description-textbox")[0];
 
-					portalUser.getItem(selectedRowID).then(function (results) {
-						console.log("_userDescription: " + _userDescription);
-						//var _portalUrl = results.portal.portalUrl;
-						//var _community = "community/users/";
-						//var _portalUser = results.owner;
-						esriRequest({
-							url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
-							content: {
-								f: "json",
-								fullname: _userFullName,
-								description: _userDescription
-							}
-						}, {
-							usePost: true
-						}).then(function (response) {
-									domConstruct.destroy(query(".alert-loader")[0]);
-									if (response.success) {
-										domConstruct.place(
-												'<div class="row alert-success alert-loader-success">' +
-														'	<div class="column-24 center">' +
-														'		<div class="alert success icon-check"> Saved </div>' +
-														'	</div>' +
-														'</div>', alertAnchorNode, "last");
-										setTimeout(function () {
-											domConstruct.destroy(query(".alert-success")[0]);
-										}, 1500);
-									} else {
-										domConstruct.place(
-												'<div class="row alert-loader-error">' +
-														'	<div class="column-24 center">' +
-														'		<div class="alert error icon-alert"> Error </div>' +
-														'	</div>' +
-														'</div>', alertAnchorNode, "last");
-									}
-								});
-					});
+					if (editSaveBtnNode.innerHTML === " EDIT ") {
+						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
+						domConstruct.empty(itemUserNameNode);
+						domConstruct.create("input", { class: "edit-user-full-name", value:_userFullName }, itemUserNameNode, "first");
+						domAttr.set(itemUserNameNode, "data-dojo-type", "dijit/form/TextBox");
+						domAttr.set(itemUserNameNode, "id", _userNameID);
+
+						domConstruct.empty(itemUserDescriptionNode);
+						domConstruct.create("input", { class: "edit-user-description", value:_userDescription }, itemUserDescriptionNode, "first");
+						domAttr.set(itemUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
+						domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
+					} else {
+						_userFullName = query(".edit-user-full-name")[0].value;
+						_userDescription = query(".edit-user-description")[0].value;
+
+						portalUser.getItem(selectedRowID).then(function (results) {
+							//var _portalUrl = results.portal.portalUrl;
+							//var _community = "community/users/";
+							//var _portalUser = results.owner;
+							esriRequest({
+								url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
+								content: {
+									f: "json",
+									fullname: _userFullName,
+									description: _userDescription
+								}
+							}, {
+								usePost: true
+							}).then(function (response) {
+								if (response.success) {
+									domConstruct.empty(itemUserNameNode);
+									domConstruct.create("div", { innerHTML: _userFullName }, itemUserNameNode, "first");
+									domAttr.remove(itemUserNameNode, "data-dojo-type");
+									domAttr.set(itemUserNameNode, "id", _userNameID);
+
+									domConstruct.empty(itemUserDescriptionNode);
+									domConstruct.create("div", { innerHTML: _userDescription }, itemUserDescriptionNode, "first");
+									domAttr.remove(itemUserDescriptionNode, "data-dojo-type");
+									domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
+
+									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+								} else {
+
+								}
+							});
+						});
+					}
 				});
 			});
 		}
