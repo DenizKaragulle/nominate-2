@@ -5,8 +5,8 @@
 <link rel="stylesheet" type="text/css" href="assets/stylesheets/layout.css">
 <link rel="stylesheet" type="text/css" href="assets/stylesheets/editor.css">
 <link rel="stylesheet" type="text/css" href="assets/stylesheets/styles.css">
-<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/dijit/themes/nihilo/nihilo.css">
-<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.11/esri/css/esri.css">
+<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.12/dijit/themes/nihilo/nihilo.css">
+<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.12/esri/css/esri.css">
 
 <style>
 	/* This stylesheet provides the structural CSS for the dgrid */
@@ -224,19 +224,19 @@ html.has-mozilla .dgrid-focus {
 <script type="text/javascript">
 	var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
 	var dojoConfig = {
-		async:true,
+		async: true,
 		// The locationPath logic below may look confusing but all its doing is
 		// enabling us to load the api from a CDN and load local modules from the correct location.
-		packages:[
+		packages: [
 			{
-				name:"config",
-				location:package_path + '/config'
+				name: "config",
+				location: package_path + '/config'
 			}
 		]
 	};
 </script>
 <script src="assets/javascripts/tailcoat.js"></script>
-<script src="//js.arcgis.com/3.11/"></script>
+<script src="//js.arcgis.com/3.12/"></script>
 
 <script>
 
@@ -282,8 +282,9 @@ html.has-mozilla .dgrid-focus {
 		"dojo/ready",
 		"config/defaults",
 		"config/details",
+		"esri/dijit/Tags",
 		"dojo/NodeList-traverse"
-	], function (Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details) {
+	], function (Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, Tags) {
 
 		parser.parse();
 
@@ -293,17 +294,17 @@ html.has-mozilla .dgrid-focus {
 
 			function run() {
 				var data = [
-					{ id:'2434', first:'Bob', last:'Barker', age:89 }
+					{ id: '2434', first: 'Bob', last: 'Barker', age: 89 }
 				];
 
 				var itemStore = new Memory({
-					data:data
+					data: data
 				});
 
 				var thumbnailRenderCell = function (object, data, cell) {
 					console.log(object);
 					var n = domConstruct.create("div", {
-						innerHTML:'<div class="container">' +
+						innerHTML: '<div class="container">' +
 								'	<div class="row item">' +
 								'		<div class="column-8">COLUMN-8</div>' +
 								'		<div class="column-8">COLUMN-8</div>' +
@@ -317,20 +318,20 @@ html.has-mozilla .dgrid-focus {
 
 				var dgridColumns = [
 					{
-						label:"",
-						field:"thumbnailUrl",
-						renderCell:thumbnailRenderCell
+						label: "",
+						field: "thumbnailUrl",
+						renderCell: thumbnailRenderCell
 					}
 				];
 
 				var dgrid = new (declare([OnDemandGrid, Pagination]))({
-					store:itemStore,
-					rowsPerPage:6,
-					pagingLinks:true,
-					pagingTextBox:false,
-					firstLastArrows:true,
-					columns:dgridColumns,
-					showHeader:false
+					store: itemStore,
+					rowsPerPage: 6,
+					pagingLinks: true,
+					pagingTextBox: false,
+					firstLastArrows: true,
+					columns: dgridColumns,
+					showHeader: false
 				}, "dgrid");
 
 				var portalUrl = document.location.protocol + '//www.arcgis.com';
@@ -344,7 +345,7 @@ html.has-mozilla .dgrid-focus {
 						portalUser.getItem("c058dbdc48024bd1ade0c9fdbc1ee441").then(function (item) {
 							console.log(item);
 							domConstruct.create("div", {
-								innerHTML:'<div class="row item">' +
+								innerHTML: '<div class="row item">' +
 										'	<div class="column-8">' + item.access + '</div>' +
 										'	<div class="column-8">' + item.owner + '</div>' +
 										'	<div class="column-8">' + item.numViews + '</div>' +
@@ -365,6 +366,32 @@ html.has-mozilla .dgrid-focus {
 						domAttr.set(query(".edit-save-btn")[0], "innerHTML", " EDIT ");
 					}
 				});
+
+				var def = dojo.xhrGet({
+            		url: 'data.json',
+            		handleAs: 'json'
+          		}).then(function (tags) {
+                	var tagStore1 = new Memory({
+                  		idProperty: 'tag',
+                  		data: [].concat(tags)
+                	});
+                	// Widget (widget can be used more than once on a single page)
+                	//
+                	// first instance of widget (matches are set to match the first char of an item in the list)
+                	var ac1 = new Tags({
+                 	 	placeholder: 'Add tag(s)',
+                  		noDataMsg: 'No results found.',
+                  		matchParam: 'first',
+                  		idProperty: 'tag',
+                  		gridId: 'grid1',
+                  		filterId: 'filter1',
+                  		minWidth: '400px',
+                  		maxWidth: '400px',
+                  		store: tagStore1
+                	}, 'userTags');
+                	// prepopulate the widget with values from the list
+                	ac1.prepopulate(["Hammer,Hammerin' Hank,Bad Henry", "The Duke Of Tralee"]);
+				});
 			}
 		});
 	});
@@ -377,6 +404,12 @@ html.has-mozilla .dgrid-focus {
 <div class="wrapper">
 
 	<div class="container">
+		<div class="row">
+			<div class="column-24">
+				<div id="userTags"></div>
+			</div>
+		</div>
+
 		<div class="row">
 			<aside class="column-6">column-6</aside>
 			<main class="column-14">

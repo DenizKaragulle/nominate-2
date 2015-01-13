@@ -379,7 +379,7 @@ require([
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
 											"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
-													"	<div class='content-container'>" +
+											"	<div class='content-container'>" +
 													"		<div class='row'>" +
 													"			<div class='column-24 pre-3'>" +
 													"				<div id='map'></div>" +
