@@ -44,8 +44,9 @@ require([
 	"config/tags",
 	"config/performance",
 	"config/profile",
+	"esri/dijit/Tags",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig) {
+], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, Tags) {
 
 	parser.parse();
 
@@ -1034,39 +1035,6 @@ require([
 					label: "<div>Credits the source of the item.<\/div>"
 				});
 
-				/*accessUseConstraintsEditor = new Editor({
-					id: "access-constraints-editor",
-					height: "50px",
-					plugins: [
-						'bold',
-						'italic',
-						'underline',
-						'foreColor',
-						'hiliteColor',
-						'|',
-						'justifyLeft',
-						'justifyCenter',
-						'justifyRight',
-						'justifyFull',
-						'|',
-						'insertOrderedList',
-						'insertUnorderedList',
-						'|',
-						'indent',
-						'outdent',
-						'|',
-						'createLink',
-						'unlink',
-						'removeFormat',
-						'|',
-						'undo',
-						'redo',
-						'|',
-						'viewSource'
-					]
-				}, dom.byId(accessID));
-				accessUseConstraintsEditor.startup();*/
-
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				on(editSaveBtnNode, "click", function () {
 					var itemCreditsNode = query(".creditsID-textbox")[0];
@@ -1170,16 +1138,18 @@ require([
 		}
 
 		function tagsContentPane(_selectedRowID, categoryID, tagsID) {
+
+			var tagsDijit;
+
 			portalUser.getItem(_selectedRowID).then(function (item) {
-				// existing tags
-				var itemTags = item.tags;
 
 				domConstruct.destroy("section-content");
-				domConstruct.destroy("save-row");
-
 				var node = query(".content-container")[0];
 				domConstruct.place(tags.TAGS_CONTENT, node, "last");
-				domConstruct.create("div", { innerHTML: itemTags }, query(".tag-container")[0], "first");
+				//domConstruct.create("div", { innerHTML: itemTags }, query(".tag-container")[0], "first");
+
+				// tags
+				var itemTags = item.tags;
 
 				array.forEach(defaults.CATEGORIES, function (id, i) {
 					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + defaults.CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
@@ -1187,6 +1157,60 @@ require([
 
 				array.forEach(defaults.CATEGORIES, function (id) {
 					addCheckbox(id + selectedRowID);
+				});
+
+				if (dijit.byId("tag-widget")) {
+					dijit.byId("tag-widget").destroy();
+					//domAttr.remove(itemDescriptionNode, "id");
+					domConstruct.create("div", {
+						id:"tag-widget"
+					}, query(".tag-container")[0], "first");
+				}
+				
+				var tagStore = new Memory({
+					idProperty:'tag',
+					data:[].concat(itemTags)
+				});
+				tagsDijit = new Tags({
+					placeholder:'Add tag(s)',
+					noDataMsg:'No results found.',
+					matchParam:'first',
+					idProperty:'tag',
+					gridId:'grid1',
+					filterId:'filter1',
+					minWidth:'200px',
+					maxWidth:'400px',
+					store:tagStore
+				}, "tag-widget");
+				// prepopulate the widget with values from the list
+				tagsDijit.prepopulate(tagStore.data);
+
+				var editSaveBtnNode = query(".edit-save-btn")[0];
+				on(editSaveBtnNode, "click", function () {
+					if (editSaveBtnNode.innerHTML === " SAVE ") {
+						console.log(tagsDijit.values);
+						portalUser.getItem(selectedRowID).then(function (results) {
+							var _userItemUrl = results.userItemUrl;
+							esriRequest({
+								url:_userItemUrl + "/update",
+								content:{
+									f:"json",
+									tags: tagsDijit.values
+								}
+							}, {
+								usePost:true
+							}).then(function (response) {
+								if (response.success) {
+									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+									console.log("SUCCESS");
+								} else {
+									console.log("ERROR");
+								}
+							});
+						});
+					} else {
+						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
+					}
 				});
 			});
 		}

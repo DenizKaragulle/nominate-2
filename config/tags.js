@@ -35,12 +35,14 @@ define({
 			'			</div>' +
 			'			<div class="column-12">' +
 			'				<div class="section-header">Add custom tags</div>' +
-			'				<div class="tag-container"></div>' +
+			'				<div class="tag-container">' +
+			'					<div id="tag-widget"></div>' +
+			'				</div>' +
 			'			</div>' +
 			'		</div>' +
 
 			'		<div class="column-3">' +
-			'			<button id="save-btn" class="btn custom-btn"> SAVE </button>' +
+			'			<button class="btn custom-btn edit-save-btn"> EDIT </button>' +
 			'		</div>' +
 			'	</div>' +
 			'</div>'
