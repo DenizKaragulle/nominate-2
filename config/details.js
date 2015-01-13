@@ -33,7 +33,7 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='section-header'>Thumbnail</div>" +
 			"		</div>" +
-			"		<div class='column-13'>" +
+			"		<div class='column-14'>" +
 			"			<img class='expanded-item-thumbnail thumbnailUrl' src=''>" +
 			"		</div>" +
 			"		<div class='column-3'>" +
