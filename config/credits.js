@@ -28,12 +28,9 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-
 			"		<div class='column-17'>" +
-			"			<div class='section-header'>Access and Use Constraints</div>" +
-			"			<div class='accessAndUseConstraintsEditor' style='height: 150px; overflow: scroll;'>" +
-			"				<div id='access-editor-widget'></div>" +
-			"			</div>" +
+			"			<div class='section-header'>Credits</div>" +
+			"			<div class='creditsID-textbox'></div>" +
 			"		</div>" +
 
 			"		<div class='column-3'>" +
@@ -52,10 +49,11 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-
 			"		<div class='column-17'>" +
-			"			<div class='section-header'>Credits</div>" +
-			"			<div class='creditsID-textbox'></div>" +
+			"			<div class='section-header'>Access and Use Constraints</div>" +
+			"			<div class='accessAndUseConstraintsEditor' style='height: 200px; overflow: auto;'>" +
+			"				<div id='access-editor-widget'></div>" +
+			"			</div>" +
 			"		</div>" +
 			"	</div>" +
 			"</div>"

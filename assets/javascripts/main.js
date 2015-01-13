@@ -1143,7 +1143,6 @@ require([
 			var tagStore;
 
 			portalUser.getItem(_selectedRowID).then(function (item) {
-
 				domConstruct.destroy("section-content");
 				var node = query(".content-container")[0];
 				domConstruct.place(tags.TAGS_CONTENT, node, "last");
@@ -1151,6 +1150,7 @@ require([
 				// tags
 				var itemTags = item.tags;
 				domConstruct.create("div", {
+					class: "existing-tags",
 					innerHTML: itemTags
 				}, query(".tag-container")[0], "first");
 
@@ -1169,26 +1169,39 @@ require([
 						data:[].concat(itemTags)
 					});
 					if (editSaveBtnNode.innerHTML === " SAVE ") {
-						portalUser.getItem(selectedRowID).then(function (results) {
-							var _userItemUrl = results.userItemUrl;
-							esriRequest({
-								url:_userItemUrl + "/update",
-								content:{
-									f:"json",
-									tags: tagsDijit.values
-								}
-							}, {
-								usePost:true
-							}).then(function (response) {
-								if (response.success) {
-									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
-									console.log("SUCCESS");
-								} else {
-									console.log("ERROR");
-								}
-							});
-						});
+						// save to AGOL
+						console.log("TAGS: " + tagsDijit.values);
+						var _userItemUrl = item.userItemUrl;
+						esriRequest({
+							url:_userItemUrl + "/update",
+							content:{
+								f:"json",
+								tags: "" + tagsDijit.values
+							}
+						}, {
+							usePost:true
+						}).then(function (response) {
+									if (response.success) {
+										if (dijit.byId("tag-widget")) {
+											domConstruct.create("div", {
+												class:"existing-tags",
+												innerHTML:tagsDijit.values
+											}, query(".tag-container")[0], "first");
+
+											dijit.byId("tag-widget").destroy();
+											domConstruct.create("div", {
+												id:"tag-widget"
+											}, query(".tag-container")[0], "first");
+										}
+										domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+										console.log("SUCCESS");
+									} else {
+										console.log("ERROR");
+									}
+								});
 					} else {
+						// edit mode
+						domConstruct.empty(query(".existing-tags")[0]);
 						if (dijit.byId("tag-widget")) {
 							dijit.byId("tag-widget").destroy();
 							domConstruct.create("div", {
@@ -1198,11 +1211,11 @@ require([
 						tagsDijit = new Tags({
 							placeholder:'Add tag(s)',
 							noDataMsg:'No results found.',
-							matchParam:'first',
+							matchParam:'all',
 							idProperty:'tag',
 							gridId:'grid1',
 							filterId:'filter1',
-							minWidth:'200px',
+							minWidth:'300px',
 							maxWidth:'400px',
 							store:tagStore
 						}, "tag-widget");
