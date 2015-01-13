@@ -494,7 +494,6 @@ require([
 
 				domConstruct.destroy("section-content");
 				domConstruct.destroy("save-row");
-
 				var node = query(".content-container")[0];
 				domConstruct.place(details.DETAILS_CONTENT, node, "last");
 
@@ -786,10 +785,10 @@ require([
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				on(editSaveBtnNode, "click", function () {
-					var itemThumbnailNode = query(".thumbnailUrl")[0],
-						itemTitleNode = query(".title-textbox")[0],
-						itemSummaryNode = query(".summary-textbox")[0],
-						itemDescriptionNode = query(".description-editor")[0];
+					var itemThumbnailNode = query(".thumbnailUrl")[0];
+					var itemTitleNode = query(".title-textbox")[0];
+					var itemSummaryNode = query(".summary-textbox")[0];
+					var itemDescriptionNode = query(".description-editor")[0];
 
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// EDITING MODE
@@ -800,10 +799,7 @@ require([
 						// empty the contents
 						domConstruct.empty(itemTitleNode);
 						// create the input tag and set the value
-						domConstruct.create("input", {
-							class: "edit-title",
-							value:itemTitle
-						}, itemTitleNode, "first");
+						domConstruct.create("input", { class: "edit-title", value:itemTitle }, itemTitleNode, "first");
 						// create the type of input
 						domAttr.set(itemTitleNode, "data-dojo-type", "dijit/form/TextBox");
 						// give it and ID
@@ -813,10 +809,7 @@ require([
 						// empty the contents
 						domConstruct.empty(itemSummaryNode);
 						// create the input tag and set the value
-						domConstruct.create("input", {
-							class: "edit-summary",
-							value:itemSummary
-						}, itemSummaryNode, "first");
+						domConstruct.create("input", { class: "edit-summary", value:itemSummary }, itemSummaryNode, "first");
 						// create the type of input
 						domAttr.set(itemSummaryNode, "data-dojo-type", "dijit/form/TextBox");
 						// give it and ID
@@ -940,9 +933,7 @@ require([
 						// The title of the item. This is the name that's displayed to users and by
 						// which they refer to the item. Every item must have a title.
 						itemTitle = query(".edit-title")[0].value;
-						// A short summary description of the item.
 						itemSummary = query(".edit-summary")[0].value;
-						// Item description.
 						itemDescription = dijit.byId("description-editor-widget").value;
 
 						portalUser.getItem(selectedRowID).then(function (results) {
@@ -960,6 +951,9 @@ require([
 							}).then(function (response) {
 								domConstruct.destroy(query(".alert-loader")[0]);
 								if (response.success) {
+									// NON-EDITING MODE
+									// update button label " EDIT "
+									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 									console.log("SUCCESS");
 								} else {
 									console.log("ERROR");
@@ -967,32 +961,16 @@ require([
 							});
 						});
 
-						// NON-EDITING MODE
-						// update button label " EDIT "
-						domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
-
 						// update the title
-						// empty the contents
 						domConstruct.empty(itemTitleNode);
-						// create the input tag and set the value
-						domConstruct.create("div", {
-							innerHTML: itemTitle
-						}, itemTitleNode, "first");
-						// remove attr
+						domConstruct.create("div", { innerHTML: itemTitle }, itemTitleNode, "first");
 						domAttr.remove(itemTitleNode, "data-dojo-type");
-						// give it and ID
 						domAttr.set(itemTitleNode, "id", titleID);
 
 						// update the summary
-						// empty the contents
 						domConstruct.empty(itemSummaryNode);
-						// create the input tag and set the value
-						domConstruct.create("div", {
-							innerHTML: itemSummary
-						}, itemSummaryNode, "first");
-						// remove attr
+						domConstruct.create("div", { innerHTML: itemSummary }, itemSummaryNode, "first");
 						domAttr.remove(itemSummaryNode, "data-dojo-type");
-						// give it and ID
 						domAttr.set(itemSummaryNode, "id", snippetID);
 
 						// update the description
@@ -1016,23 +994,25 @@ require([
 			});
 		}
 
-		function useCreditsContentPane(selectedRowID, accessID, creditID) {
+		function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
-				// license information
-				var licenseInfo = validateStr(item.licenseInfo);
-				// credit
-				var credit = validateStr(item.accessInformation);
+				var itemCredits = validateStr(item.accessInformation);
+				var accessAndUseConstraints = validateStr(item.licenseInfo);
 
 				domConstruct.destroy("section-content");
 				domConstruct.destroy("save-row");
-
 				var node = query(".content-container")[0];
 				domConstruct.place(credits.ACCESS_CREDITS_CONTENT, node, "last");
 
-				domAttr.set(query(".accessID")[0], "id", accessID);
-				domConstruct.create("div", { innerHTML: licenseInfo }, query(".accessID")[0], "first");
-				domAttr.set(query(".creditID")[0], "id", creditID);
-				query(".creditID")[0].value = credit;
+				domAttr.set(query(".creditsID-textbox")[0], "id", creditID);
+				domConstruct.create("div", { innerHTML: itemCredits }, query(".creditsID-textbox")[0], "first");
+
+				domAttr.set(query(".accessAndUseConstraintsEditor")[0], "id", accessAndUseConstraintsID);
+				if (accessAndUseConstraints === "") {
+					domConstruct.place("<span></span>", "access-editor-widget", "first");
+				} else {
+					domConstruct.place("<span>" + accessAndUseConstraints + "</span>", "access-editor-widget", "first");
+				}
 
 				var userFullNameTooltip = new Tooltip({
 					connectId: [query(".access-constraints-tooltip")[0]],
@@ -1056,7 +1036,7 @@ require([
 					label: "<div>Credits the source of the item.<\/div>"
 				});
 
-				accessUseConstraintsEditor = new Editor({
+				/*accessUseConstraintsEditor = new Editor({
 					id: "access-constraints-editor",
 					height: "50px",
 					plugins: [
@@ -1084,64 +1064,109 @@ require([
 						'undo',
 						'redo',
 						'|',
-						'viewSource'/*,
-						 'fontName',
-						 'fontSize'*/
+						'viewSource'
 					]
 				}, dom.byId(accessID));
-				accessUseConstraintsEditor.startup();
+				accessUseConstraintsEditor.startup();*/
 
-				var saveBtn = dom.byId("save-btn");
-				on(saveBtn, "click", function () {
-					var alertAnchorNode = query(".section-content")[0];
-					domConstruct.place(
-							'<div class="loader alert-loader save-btn">' +
-									'	<span class="side side-left">' +
-									'		<span class="fill"></span>' +
-									'	</span>' +
-									'	<span class="side side-right">' +
-									'		<span class="fill"></span>' +
-									'	</span>' +
-									'	<p class="loading-word">Loading...</p>' +
-									'</div>', alertAnchorNode, "last");
+				var editSaveBtnNode = query(".edit-save-btn")[0];
+				on(editSaveBtnNode, "click", function () {
+					var itemCreditsNode = query(".creditsID-textbox")[0];
+					var accessAndUseConstraintsEditorNode = query(".accessAndUseConstraintsEditor")[0];
 
-					var _license = dom.byId(TAB_CONTAINER_LICENSE + selectedRowID).value;
-					var _credits = dom.byId(TAB_CONTAINER_CREDITS + selectedRowID).value;
+					if (editSaveBtnNode.innerHTML === " EDIT ") {
+						// credits
+						domConstruct.empty(itemCreditsNode);
+						domConstruct.create("input", { class: "edit-credits", value: itemCredits }, itemCreditsNode, "first");
+						domAttr.set(itemCreditsNode, "data-dojo-type", "dijit/form/TextBox");
+						domAttr.set(itemCreditsNode, "id", creditID);
+						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
 
-					portalUser.getItem(selectedRowID).then(function (results) {
-						var _userItemUrl = results.userItemUrl;
-						esriRequest({
-							url: _userItemUrl + "/update",
-							content: {
-								f: "json",
-								licenseInfo: _license,
-								accessInformation: _credits
-							}
-						}, {
-							usePost: true
-						}).then(function (response) {
-									domConstruct.destroy(query(".alert-loader")[0]);
+						// access and user constraints
+						if (dijit.byId("access-editor-widget")) {
+							dijit.byId("access-editor-widget").destroy();
+							domAttr.remove(accessAndUseConstraintsEditorNode, "id");
+							domConstruct.create("div", {
+								id:"access-editor-widget",
+								innerHTML:accessAndUseConstraints
+							}, accessAndUseConstraintsEditorNode, "first");
+						}
+						accessUseConstraintsEditor = new Editor({
+							plugins:[
+								'bold',
+								'italic',
+								'underline',
+								'foreColor',
+								'hiliteColor',
+								'|',
+								'justifyLeft',
+								'justifyCenter',
+								'justifyRight',
+								'justifyFull',
+								'|',
+								'insertOrderedList',
+								'insertUnorderedList',
+								'|',
+								'indent',
+								'outdent',
+								'|',
+								'createLink',
+								'unlink',
+								'removeFormat',
+								'|',
+								'undo',
+								'redo',
+								'|',
+								'viewSource'
+							],
+							innerHTML: accessAndUseConstraints
+						}, dom.byId("access-editor-widget"));
+						accessUseConstraintsEditor.startup();
+					} else {
+						// credits
+						itemCredits = query(".edit-credits")[0].value;
+						accessAndUseConstraints = dijit.byId("access-editor-widget").value;
 
-									if (response.success) {
-										domConstruct.place(
-												'<div class="row alert-success alert-loader-success">' +
-														'	<div class="column-24 center">' +
-														'		<div class="alert success icon-check"> Saved </div>' +
-														'	</div>' +
-														'</div>', alertAnchorNode, "last");
-										setTimeout(function () {
-											domConstruct.destroy(query(".alert-success")[0]);
-										}, 1500);
-									} else {
-										domConstruct.place(
-												'<div class="row alert-loader-error">' +
-														'	<div class="column-24 center">' +
-														'		<div class="alert error icon-alert"> Error </div>' +
-														'	</div>' +
-														'</div>', alertAnchorNode, "last");
-									}
-								});
-					});
+						domConstruct.empty(itemCreditsNode);
+						domConstruct.create("div", { innerHTML: itemCredits }, itemCreditsNode, "first");
+						domAttr.remove(itemCreditsNode, "data-dojo-type");
+						domAttr.set(itemCreditsNode, "id", creditID);
+
+						portalUser.getItem(selectedRowID).then(function (results) {
+							var _userItemUrl = results.userItemUrl;
+							esriRequest({
+								url: _userItemUrl + "/update",
+								content: {
+									f: "json",
+									licenseInfo: accessAndUseConstraints,
+									accessInformation: itemCredits
+								}
+							}, {
+								usePost: true
+							}).then(function (response) {
+								if (response.success) {
+									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+								} else {
+									console.log("ERROR");
+								}
+							});
+						});
+
+						if (dijit.byId("access-editor-widget")) {
+							dijit.byId("access-editor-widget").destroy();
+						}
+
+						domAttr.remove(accessAndUseConstraintsEditorNode, "id");
+						domConstruct.create("div", {
+							id:"access-editor-widget"
+						}, accessAndUseConstraintsEditorNode, "first");
+
+						if (accessAndUseConstraints === "") {
+							domConstruct.place("<span></span>", "access-editor-widget", "first");
+						} else {
+							domConstruct.place("<span>" + accessAndUseConstraints + "</span>", "access-editor-widget", "first");
+						}
+					}
 				});
 			});
 		}

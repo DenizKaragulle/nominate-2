@@ -31,11 +31,13 @@ define({
 
 			"		<div class='column-17'>" +
 			"			<div class='section-header'>Access and Use Constraints</div>" +
-			"			<div class='accessID' id='' data-dojo-type='dijit/Editor' name='editorContent' rows='3'></div>" +
+			"			<div class='accessAndUseConstraintsEditor' style='height: 150px; overflow: scroll;'>" +
+			"				<div id='access-editor-widget'></div>" +
+			"			</div>" +
 			"		</div>" +
 
 			"		<div class='column-3'>" +
-			"			<button id='save-btn' class='btn custom-btn'> SAVE </button>" +
+			"			<button class='btn custom-btn edit-save-btn'> EDIT </button>" +
 			"		</div>" +
 			"	</div>" +
 
@@ -53,7 +55,7 @@ define({
 
 			"		<div class='column-17'>" +
 			"			<div class='section-header'>Credits</div>" +
-			"			<textarea id='' class='creditID' rows='2' cols='50' style='width:95%;'></textarea>" +
+			"			<div class='creditsID-textbox'></div>" +
 			"		</div>" +
 			"	</div>" +
 			"</div>"
