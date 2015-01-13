@@ -224,13 +224,13 @@ html.has-mozilla .dgrid-focus {
 <script type="text/javascript">
 	var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
 	var dojoConfig = {
-		async: true,
+		async:true,
 		// The locationPath logic below may look confusing but all its doing is
 		// enabling us to load the api from a CDN and load local modules from the correct location.
-		packages: [
+		packages:[
 			{
-				name: "config",
-				location: package_path + '/config'
+				name:"config",
+				location:package_path + '/config'
 			}
 		]
 	};
@@ -293,18 +293,50 @@ html.has-mozilla .dgrid-focus {
 			run();
 
 			function run() {
+				var someData = [
+					{id:100, name:"One"},
+					{id:2, name:"Two"}
+				];
+				var store = new Memory({data:someData});
+
+				var anItem = store.get(100);
+				console.log(anItem);
+				anItem.name = "Chris";
+				console.log(anItem);
+
+				var _query = store.query({name:"One"});
+				console.log(_query);
+
+				store.query(function (object) {
+					return object.id > 50;
+				});
+
+				store.query({
+					name:"One"
+				}, {
+					sort:[{
+						attribute:"id"
+					}]
+				});
+				store.put({
+					id:3,
+					name:"Three"
+				});
+				store.remove(3);
+
+
 				var data = [
-					{ id: '2434', first: 'Bob', last: 'Barker', age: 89 }
+					{ id:'2434', first:'Bob', last:'Barker', age:89 }
 				];
 
 				var itemStore = new Memory({
-					data: data
+					data:data
 				});
 
 				var thumbnailRenderCell = function (object, data, cell) {
 					console.log(object);
 					var n = domConstruct.create("div", {
-						innerHTML: '<div class="container">' +
+						innerHTML:'<div class="container">' +
 								'	<div class="row item">' +
 								'		<div class="column-8">COLUMN-8</div>' +
 								'		<div class="column-8">COLUMN-8</div>' +
@@ -318,20 +350,20 @@ html.has-mozilla .dgrid-focus {
 
 				var dgridColumns = [
 					{
-						label: "",
-						field: "thumbnailUrl",
-						renderCell: thumbnailRenderCell
+						label:"",
+						field:"thumbnailUrl",
+						renderCell:thumbnailRenderCell
 					}
 				];
 
 				var dgrid = new (declare([OnDemandGrid, Pagination]))({
-					store: itemStore,
-					rowsPerPage: 6,
-					pagingLinks: true,
-					pagingTextBox: false,
-					firstLastArrows: true,
-					columns: dgridColumns,
-					showHeader: false
+					store:itemStore,
+					rowsPerPage:6,
+					pagingLinks:true,
+					pagingTextBox:false,
+					firstLastArrows:true,
+					columns:dgridColumns,
+					showHeader:false
 				}, "dgrid");
 
 				var portalUrl = document.location.protocol + '//www.arcgis.com';
@@ -345,7 +377,7 @@ html.has-mozilla .dgrid-focus {
 						portalUser.getItem("c058dbdc48024bd1ade0c9fdbc1ee441").then(function (item) {
 							console.log(item);
 							domConstruct.create("div", {
-								innerHTML: '<div class="row item">' +
+								innerHTML:'<div class="row item">' +
 										'	<div class="column-8">' + item.access + '</div>' +
 										'	<div class="column-8">' + item.owner + '</div>' +
 										'	<div class="column-8">' + item.numViews + '</div>' +
@@ -368,30 +400,30 @@ html.has-mozilla .dgrid-focus {
 				});
 
 				var def = dojo.xhrGet({
-            		url: 'data.json',
-            		handleAs: 'json'
-          		}).then(function (tags) {
-                	var tagStore1 = new Memory({
-                  		idProperty: 'tag',
-                  		data: [].concat(tags)
-                	});
-                	// Widget (widget can be used more than once on a single page)
-                	//
-                	// first instance of widget (matches are set to match the first char of an item in the list)
-                	var ac1 = new Tags({
-                 	 	placeholder: 'Add tag(s)',
-                  		noDataMsg: 'No results found.',
-                  		matchParam: 'first',
-                  		idProperty: 'tag',
-                  		gridId: 'grid1',
-                  		filterId: 'filter1',
-                  		minWidth: '400px',
-                  		maxWidth: '400px',
-                  		store: tagStore1
-                	}, 'userTags');
-                	// prepopulate the widget with values from the list
-                	ac1.prepopulate(["Hammer,Hammerin' Hank,Bad Henry", "The Duke Of Tralee"]);
-				});
+					url:'data.json',
+					handleAs:'json'
+				}).then(function (tags) {
+							var tagStore1 = new Memory({
+								idProperty:'tag',
+								data:[].concat(tags)
+							});
+							// Widget (widget can be used more than once on a single page)
+							//
+							// first instance of widget (matches are set to match the first char of an item in the list)
+							var ac1 = new Tags({
+								placeholder:'Add tag(s)',
+								noDataMsg:'No results found.',
+								matchParam:'first',
+								idProperty:'tag',
+								gridId:'grid1',
+								filterId:'filter1',
+								minWidth:'400px',
+								maxWidth:'400px',
+								store:tagStore1
+							}, 'userTags');
+							// prepopulate the widget with values from the list
+							ac1.prepopulate(["Hammer,Hammerin' Hank,Bad Henry", "The Duke Of Tralee"]);
+						});
 			}
 		});
 	});

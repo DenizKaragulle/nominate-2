@@ -124,6 +124,7 @@ require([
 		run();
 
 		thumbnailRenderCell = function (object, data, cell) {
+			var itemTitle = object.title;
 			var thumbnailUrl = formatThumbnailUrl(object);
 			var type = validateStr(object.type);
 			var modifiedDate = formatDate(object.modified);
@@ -139,8 +140,8 @@ require([
 						'	</div>' +
 
 						'	<div class="column-18">' +
-						'		<div class="item-title">' + object.title + '</div>' +
-						'		<div class="shit">' +
+						'		<div class="item-title">' + itemTitle + '</div>' +
+						'		<div class="item-meta-data">' +
 						'			<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
 						'		</div>' +
 						'		<div class="item-number-views">' + views + ' views</div>' +
@@ -924,6 +925,10 @@ require([
 							}).then(function (response) {
 								domConstruct.destroy(query(".alert-loader")[0]);
 								if (response.success) {
+									console.log(itemStore.data);
+									console.log(selectedRowID);
+									var targetItem = itemStore.get(selectedRowID);
+									targetItem.title = itemTitle;
 									// NON-EDITING MODE
 									// update button label " EDIT "
 									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");

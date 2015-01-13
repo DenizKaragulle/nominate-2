@@ -103,6 +103,7 @@ table tr {
 }
 
 .expanded-item-thumbnail {
+	margin-bottom: 10px;
 	border-radius: 5px !important;
 	-webkit-border-radius: 5px !important;
 	border: 1px solid #0079C1 !important;
