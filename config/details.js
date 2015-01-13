@@ -24,7 +24,7 @@ define({
 			"					<div class='score-graphic'> 4/5</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
-			"					<img src='assets/images/info.png' class='thumbnail-tooltip info-graphic'>" +
+			"					<img src='assets/images/info_32.png' class='thumbnail-tooltip info-graphic'>" +
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
@@ -46,7 +46,7 @@ define({
 			"					<div class='score-graphic'> 4/5</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
-			"					<img src='assets/images/info.png' class='title-tooltip info-graphic'>" +
+			"					<img src='assets/images/info_32.png' class='title-tooltip info-graphic'>" +
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
@@ -64,7 +64,7 @@ define({
 			"					<div class='score-graphic'> 4/5</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
-			"					<img src='assets/images/info.png' class='summary-tooltip info-graphic'>" +
+			"					<img src='assets/images/info_32.png' class='summary-tooltip info-graphic'>" +
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
@@ -81,7 +81,7 @@ define({
 			"					<div class='score-graphic'> 4/5</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
-			"					<img src='assets/images/info.png' class='description-tooltip info-graphic'>" +
+			"					<img src='assets/images/info_32.png' class='description-tooltip info-graphic'>" +
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +

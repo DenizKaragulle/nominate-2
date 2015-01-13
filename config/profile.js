@@ -23,7 +23,7 @@ define({
 			'					<div class="score-graphic"> 4/5</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
-			'					<img src="assets/images/info.png" class="profile-thumbnail-tooltip info-graphic">' +
+			'					<img src="assets/images/info_32.png" class="profile-thumbnail-tooltip info-graphic">' +
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
@@ -45,7 +45,7 @@ define({
 			'					<div class="score-graphic"> 4/5</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
-			'					<img src="assets/images/info.png" class="user-full-name-tooltip info-graphic">' +
+			'					<img src="assets/images/info_32.png" class="user-full-name-tooltip info-graphic">' +
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
@@ -62,7 +62,7 @@ define({
 			'					<div class="score-graphic"> 4/5</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
-			'					<img src="assets/images/info.png" class="user-description-tooltip info-graphic">' +
+			'					<img src="assets/images/info_32.png" class="user-description-tooltip info-graphic">' +
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
