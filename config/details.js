@@ -17,6 +17,7 @@ define({
 	"DETAILS_CONTENT":
 			"<div id='section-content'>" +
 
+			// THUMBNAIL
 			"	<div class='row'>" +
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
@@ -29,8 +30,10 @@ define({
 			"			</div>" +
 			"		</div>" +
 
-			"		<div class='column-17'>" +
+			"		<div class='column-3'>" +
 			"			<div class='section-header'>Thumbnail</div>" +
+			"		</div>" +
+			"		<div class='column-13'>" +
 			"			<img class='expanded-item-thumbnail thumbnailUrl' src=''>" +
 			"		</div>" +
 			"		<div class='column-3'>" +
@@ -38,7 +41,7 @@ define({
 			"		</div>" +
 			"	</div>" +
 
-
+			// TITLE
 			"	<div class='row'>" +
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
@@ -50,13 +53,15 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-			"		<div class='column-12'>" +
+			"		<div class='column-3'>" +
 			"			<div class='section-header'>Title</div>" +
+			"		</div>" +
+			"		<div class='column-9'>" +
 			"			<div class='title-textbox'></div>" +
 			"		</div>" +
 			"	</div>" +
 
-
+			// SUMMARY
 			"	<div class='row'>" +
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
@@ -68,12 +73,15 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-			"		<div class='column-12'>" +
+			"		<div class='column-3'>" +
 			"			<div class='section-header'>Summary</div>" +
+			"		</div>" +
+			"		<div class='column-9'>" +
 			"			<div class='summary-textbox'></div>" +
 			"		</div>" +
 			"	</div>" +
 
+			// DESCRIPTION
 			"	<div class='row'>" +
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
@@ -86,9 +94,9 @@ define({
 			"			</div>" +
 			"		</div>" +
 
-			"		<div class='column-17'>" +
+			"		<div class='column-21'>" +
 			"			<div class='section-header'>Description</div>" +
-			"			<div class='description-editor' style='height: 150px; overflow: scroll;'>" +
+			"			<div class='description-editor' style='height: 200px; overflow: auto;'>" +
 			"				<div id='description-editor-widget'></div>" +
 			"			</div>" +
 			"		</div>" +

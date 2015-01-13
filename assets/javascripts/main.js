@@ -1140,16 +1140,19 @@ require([
 		function tagsContentPane(_selectedRowID, categoryID, tagsID) {
 
 			var tagsDijit;
+			var tagStore;
 
 			portalUser.getItem(_selectedRowID).then(function (item) {
 
 				domConstruct.destroy("section-content");
 				var node = query(".content-container")[0];
 				domConstruct.place(tags.TAGS_CONTENT, node, "last");
-				//domConstruct.create("div", { innerHTML: itemTags }, query(".tag-container")[0], "first");
 
 				// tags
 				var itemTags = item.tags;
+				domConstruct.create("div", {
+					innerHTML: itemTags
+				}, query(".tag-container")[0], "first");
 
 				array.forEach(defaults.CATEGORIES, function (id, i) {
 					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + defaults.CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
@@ -1159,36 +1162,13 @@ require([
 					addCheckbox(id + selectedRowID);
 				});
 
-				if (dijit.byId("tag-widget")) {
-					dijit.byId("tag-widget").destroy();
-					//domAttr.remove(itemDescriptionNode, "id");
-					domConstruct.create("div", {
-						id:"tag-widget"
-					}, query(".tag-container")[0], "first");
-				}
-				
-				var tagStore = new Memory({
-					idProperty:'tag',
-					data:[].concat(itemTags)
-				});
-				tagsDijit = new Tags({
-					placeholder:'Add tag(s)',
-					noDataMsg:'No results found.',
-					matchParam:'first',
-					idProperty:'tag',
-					gridId:'grid1',
-					filterId:'filter1',
-					minWidth:'200px',
-					maxWidth:'400px',
-					store:tagStore
-				}, "tag-widget");
-				// prepopulate the widget with values from the list
-				tagsDijit.prepopulate(tagStore.data);
-
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				on(editSaveBtnNode, "click", function () {
+					tagStore = new Memory({
+						idProperty:'tag',
+						data:[].concat(itemTags)
+					});
 					if (editSaveBtnNode.innerHTML === " SAVE ") {
-						console.log(tagsDijit.values);
 						portalUser.getItem(selectedRowID).then(function (results) {
 							var _userItemUrl = results.userItemUrl;
 							esriRequest({
@@ -1209,6 +1189,25 @@ require([
 							});
 						});
 					} else {
+						if (dijit.byId("tag-widget")) {
+							dijit.byId("tag-widget").destroy();
+							domConstruct.create("div", {
+								id:"tag-widget"
+							}, query(".tag-container")[0], "first");
+						}
+						tagsDijit = new Tags({
+							placeholder:'Add tag(s)',
+							noDataMsg:'No results found.',
+							matchParam:'first',
+							idProperty:'tag',
+							gridId:'grid1',
+							filterId:'filter1',
+							minWidth:'200px',
+							maxWidth:'400px',
+							store:tagStore
+						}, "tag-widget");
+						// prepopulate the widget with values from the list
+						tagsDijit.prepopulate(tagStore.data);
 						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
 					}
 				});

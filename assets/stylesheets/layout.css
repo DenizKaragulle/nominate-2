@@ -77,11 +77,11 @@ table tr {
 
 /* Dijit Editor */
 .dijitEditor {
-	height: 100px !important;
+	height: 99% !important;
 }
 
 .dijitEditorIFrameContainer iframe {
-	height: 100px !important;
+	height: 100% !important;
 }
 
 /* STATUS */
@@ -249,7 +249,7 @@ table tr {
 }
 
 #description-editor {
-	height: 100px !important;
+	/*height: 100px !important;*/
 }
 
 #access-constraints-editor {
