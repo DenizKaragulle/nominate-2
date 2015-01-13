@@ -382,13 +382,13 @@ require([
 											"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
 											"	<div class='content-container'>" +
 													"		<div class='row'>" +
-													"			<div class='column-24 pre-3'>" +
+													"			<div class='column-21 pre-3'>" +
 													"				<div id='map'></div>" +
 													"			</div>" +
 													"		</div>" +
 
 													"		<div class='row'>" +
-													"			<div class='column-24 pre-3'>" +
+													"			<div class='column-21 pre-3'>" +
 													"				<div class='row'>" +
 													"					<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
 													"				</div>" +
@@ -408,13 +408,13 @@ require([
 													"		</div>" +
 
 													"		<div class='row'>" +
-													"			<div class='column-24 pre-3'>" +
+													"			<div class='column-21 pre-3'>" +
 													"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
 													"			</div>" +
 													"		</div>" +
 
 													"		<div class='row'>" +
-													"			<div class='column-24 pre-3'>" +
+													"			<div class='column-21 pre-3'>" +
 													"				<div id='" + tcID + "'></div>" +
 													"			</div>" +
 													"		</div>" +

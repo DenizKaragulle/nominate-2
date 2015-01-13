@@ -22,14 +22,13 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic'> 4/5</div>" +
+			"					<div class='score-graphic score-graphic-fail'> 5/10</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='thumbnail-tooltip info-graphic'>" +
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-
 			"		<div class='column-3'>" +
 			"			<div class='section-header'>Thumbnail</div>" +
 			"		</div>" +
@@ -46,7 +45,7 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic'> 4/5</div>" +
+			"					<div class='score-graphic score-graphic-pass'> 10/10</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='title-tooltip info-graphic'>" +
@@ -66,7 +65,7 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic'> 4/5</div>" +
+			"					<div class='score-graphic score-graphic-pass'> 10/10</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='summary-tooltip info-graphic'>" +
@@ -86,14 +85,13 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic'> 4/5</div>" +
+			"					<div class='score-graphic score-graphic-fail'> 7/10</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='description-tooltip info-graphic'>" +
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-
 			"		<div class='column-21'>" +
 			"			<div class='section-header'>Description</div>" +
 			"			<div class='description-editor' style='height: 200px; overflow: auto;'>" +

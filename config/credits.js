@@ -21,7 +21,7 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic'> 4/5</div>" +
+			"					<div class='score-graphic score-graphic-pass'> 10/10</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='access-constraints-tooltip info-graphic'>" +
@@ -42,7 +42,7 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic'> 4/5</div>" +
+			"					<div class='score-graphic score-graphic-pass'> 10/10</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='credits-tooltip info-graphic'>" +

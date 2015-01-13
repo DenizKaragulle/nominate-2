@@ -265,12 +265,25 @@ table tr {
 	color: #D94C1D;
 	text-align: center;
 	-webkit-font-smoothing: antialiased;
-	font-size: 1.2em;
+	font-size: 1.0em;
 }
 
 .score-graphic-text {
 	/*transform: translateY(30%);*/
 }
+
+.score-graphic-pass {
+	border: 1px solid #0079C1;
+	color: #0079C1;
+}
+
+.score-graphic-fail {
+	border: 1px solid #D94C1D;
+	color: #D94C1D;
+}
+
+
+
 
 .header-tooltip {
 	/*transform: translateY(30%);*/
@@ -310,4 +323,18 @@ table tr {
 	margin-left: 10px !important;
 	border: 1px solid #CCC !important;
 	border-radius: 3px !important;
+}
+
+
+.performance-text {
+	text-align: center;
+	margin-top: 10px;
+}
+
+.performance-fade-out {
+	color: rgba(0, 122, 194, 0.24);
+}
+
+.performance-fade-in {
+	color: rgba(0, 122, 194, 1.0);
 }

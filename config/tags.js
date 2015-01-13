@@ -20,7 +20,7 @@ define({
 			'		<div class="column-3">' +
 			'			<div class="row">' +
 			'				<div class="column-12">' +
-			'					<div class="score-graphic"> 4/5</div>' +
+			'					<div class="score-graphic score-graphic-fail"> 7/10</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
 			'					<img src="assets/images/info_32.png" class="profile-thumbnail-tooltip info-graphic">' +
