@@ -1034,6 +1034,31 @@ require([
 			// load the content
 			loadContent(performanceConfig.PERFORMANCE_CONTENT);
 
+			var mapLayersTooltipNode = query(".map-layers-tooltip")[0],
+					sharingNode = query(".sharing-tooltip")[0],
+					drawTimeTooltipNode = query(".draw-time-tooltip")[0],
+					popupsTooltipNode = query(".popups-tooltip")[0];
+
+			var mdt = parseInt(processMapDrawTime(mapDrawTime));
+			if (mdt < defaults.drawTime.BEST) {
+				domStyle.set(query(".performance-text-very-slow")[0], "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(query(".performance-text-slow")[0], "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(query(".performance-text-good")[0], "color", "#005E95");
+			} else if (mdt < defaults.drawTime.BETTER) {
+				domStyle.set(query(".performance-text-very-slow")[0], "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(query(".performance-text-slow")[0], "color", "#005E95");
+				domStyle.set(query(".performance-text-good")[0], "color", "rgba(0, 122, 194, 0.24)");
+			} else if (mdt < defaults.drawTime.GOOD) {
+				domStyle.set(query(".performance-text-very-slow")[0], "color", "#005E95");
+				domStyle.set(query(".performance-text-slow")[0], "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(query(".performance-text-good")[0], "color", "rgba(0, 122, 194, 0.24)");
+			}
+
+			createTooltip(mapLayersTooltipNode, tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT);
+			createTooltip(sharingNode, tooltipsConfig.PERFORMANCE_SHARING_TOOLTIP_CONTENT);
+			createTooltip(drawTimeTooltipNode, tooltipsConfig.PERFORMANCE_DRAW_TIME_TOOLTIP_CONTENT);
+			createTooltip(popupsTooltipNode, tooltipsConfig.PERFORMANCE_POP_UPS_TOOLTIP_CONTENT);
+
 			/*if (layers !== undefined && layers.length < 1) {
 				domConstruct.create("div", {
 					innerHTML: "No available layers",
@@ -1189,6 +1214,8 @@ require([
 		}
 
 		function createTooltip(node, content) {
+			console.log(node);
+			console.log(content);
 			var userDescriptionTooltip = new Tooltip({
 				connectId:[node],
 				style:{

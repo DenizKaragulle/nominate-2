@@ -48,6 +48,11 @@ define({
 			"explanations and other supporting material." +
 			"<\/div>",
 
+	"PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT" : "<div>How many layers<\/div>",
+	"PERFORMANCE_SHARING_TOOLTIP_CONTENT" : "<div>Is the map public<\/div>",
+	"PERFORMANCE_DRAW_TIME_TOOLTIP_CONTENT" : "<div>Map draw time<\/div>",
+	"PERFORMANCE_POP_UPS_TOOLTIP_CONTENT" : "<div>Are all the layers popup enabled?<\/div>",
+
 	"USER_PROFILE_THUMBNAIL_TOOLTIP_CONTENT":"<div>" +
 			"Enter the pathname to the thumbnail image to be <br/>" +
 			"used for the user. The recommended image size is 200 <br/>" +

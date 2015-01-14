@@ -34,6 +34,12 @@ define({
 	"CATEGORIES": ['basemapsCB', 'lifestylesCB', 'urbanSystemsCB', 'historicalMapsCB', 'imageryCB', 'landscapeCB', 'transportationCB', 'storyMapsCB', 'demographgicsCB', 'earthObservationsCB', 'boundariesAndPlacesCB'],
 	"CATEGORIES_LABELS": ['Basemaps', 'Lifestyle', 'Urban Systems', 'Historical maps', 'Imagery', 'Landscape', 'Transportation', 'Story Maps', 'Demographics', 'Earth Observations', 'Boundaries and Places'],
 
+	// map draw times in seconds
+	"drawTime" : {
+		"GOOD" : 10,
+		"BETTER" : 3,
+		"BEST" : 1
+	},
 	//Default configuration settings for the application. This is where you'll define things like a bing maps key,
 	//default web map, default app color theme and more. These values can be overwritten by template configuration settings and url parameters.
 	"appid": "",

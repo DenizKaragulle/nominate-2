@@ -39,13 +39,13 @@ define({
 			'					<div class="score-graphic score-graphic-fail"> 6/10</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
-			'					<img src="assets/images/info_32.png" class="thumbnail-tooltip info-graphic">' +
+			'					<img src="assets/images/info_32.png" class="map-layers-tooltip info-graphic">' +
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
 			'		<div class="row">' +
 			'			<div class="column-5">' +
-			'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em; color: #4997D2;">number of map layers</span></h2>' +
+			'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em; color: #005E95;">number of map layers</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
 			'				<div class="section-header performance-text performance-fade-out">more than 10</div>' +
@@ -64,13 +64,13 @@ define({
 			'					<div class="score-graphic score-graphic-pass"> 10/10</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
-			'					<img src="assets/images/info_32.png" class="thumbnail-tooltip info-graphic">' +
+			'					<img src="assets/images/info_32.png" class="sharing-tooltip info-graphic">' +
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
 			'		<div class="row">' +
 			'			<div class="column-5">' +
-			'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em; color: #4997D2;">sharing</span></h2>' +
+			'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em; color: #005E95;">sharing</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
 			'				<div class="section-header performance-text performance-fade-out">not shared</div>' +
@@ -89,22 +89,22 @@ define({
 			'					<div class="score-graphic score-graphic-fail"> 6/10</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
-			'					<img src="assets/images/info_32.png" class="thumbnail-tooltip info-graphic">' +
+			'					<img src="assets/images/info_32.png" class="draw-time-tooltip info-graphic">' +
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
 			'		<div class="row">' +
 			'			<div class="column-5">' +
-			'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em; color: #4997D2;">draw time</span></h2>' +
+			'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em; color: #005E95;">draw time</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
-			'				<div class="section-header performance-text performance-fade-out">very slow</div>' +
+			'				<div class="section-header performance-text performance-text-very-slow">very slow</div>' +
 			'			</div>' +
 			'			<div class="column-3">' +
-			'				<div class="section-header performance-text performance-fade-in">slow</div>' +
+			'				<div class="section-header performance-text performance-text-slow">slow</div>' +
 			'			</div>' +
 			'			<div class="column-3">' +
-			'				<div class="section-header performance-text performance-fade-out">good</div>' +
+			'				<div class="section-header performance-text performance-text-good">good</div>' +
 			'			</div>' +
 			'		</div>' +
 
@@ -114,13 +114,13 @@ define({
 			'					<div class="score-graphic score-graphic-pass"> 10/10</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
-			'					<img src="assets/images/info_32.png" class="thumbnail-tooltip info-graphic">' +
+			'					<img src="assets/images/info_32.png" class="popups-tooltip info-graphic">' +
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
 			'		<div class="row">' +
 			'			<div class="column-5">' +
-			'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em; color: #4997D2;">pop ups</span></h2>' +
+			'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em; color: #005E95;">pop ups</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
 			'				<div class="section-header performance-text performance-fade-out">no popups</div>' +
