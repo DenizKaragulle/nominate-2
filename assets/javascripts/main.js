@@ -46,9 +46,10 @@ require([
 	"config/tags",
 	"config/performance",
 	"config/profile",
+	"config/tooltips",
 	"esri/dijit/Tags",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, Tags) {
+], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, Tags) {
 
 	parser.parse();
 
@@ -514,18 +515,31 @@ require([
 				var node = query(".content-container")[0];
 				domConstruct.place(details.DETAILS_CONTENT, node, "last");
 
+				// nodes
+				var editSaveBtnNode = query(".edit-save-btn")[0],
+					cancelBtnNode = query(".cancel-btn")[0],
+					itemThumbnailNode = query(".thumbnailUrl")[0],
+					itemTitleNode = query(".title-textbox")[0],
+					itemSummaryNode = query(".summary-textbox")[0],
+					itemDescriptionNode = query(".description-editor")[0],
+					itemThumbnailTooltipNode = query(".thumbnail-tooltip")[0],
+					itemTitleTooltipNode = query(".title-tooltip")[0],
+					itemSummaryTooltipNode = query(".summary-tooltip")[0],
+					itemDescriptionTooltipNode = query(".description-tooltip")[0];
+
+
 				// set the thumbnail
-				domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
-				domAttr.set(query(".thumbnailUrl")[0], "class", "expanded-item-thumbnail thumbnailUrl expanded-item-thumbnail-" + item.id);
+				domAttr.set(itemThumbnailNode, "src", thumbnailUrl);
+				domAttr.set(itemThumbnailNode, "class", "expanded-item-thumbnail thumbnailUrl expanded-item-thumbnail-" + item.id);
 				// set the title
-				domAttr.set(query(".title-textbox")[0], "id", titleID);
-				domConstruct.create("div", { innerHTML: itemTitle }, query(".title-textbox")[0], "first");
+				domAttr.set(itemTitleNode, "id", titleID);
+				domConstruct.create("div", { innerHTML: itemTitle }, itemTitleNode, "first");
 				// set the summary
-				domAttr.set(query(".summary-textbox")[0], "id", snippetID);
-				domAttr.set(query(".summary-textbox")[0], "value", itemSummary);
-				domConstruct.create("div", { innerHTML: itemSummary }, query(".summary-textbox")[0], "first");
+				domAttr.set(itemSummaryNode, "id", snippetID);
+				domAttr.set(itemSummaryNode, "value", itemSummary);
+				domConstruct.create("div", { innerHTML: itemSummary }, itemSummaryNode, "first");
 				// set the description
-				domAttr.set(query(".description-editor")[0], "id", descID);
+				domAttr.set(itemDescriptionNode, "id", descID);
 				if (itemDescription === "") {
 					domConstruct.place("<span></span>", "description-editor-widget", "first");
 				} else {
@@ -533,66 +547,10 @@ require([
 				}
 
 				//tooltips
-				var thumbnailTooltip = new Tooltip({
-					connectId: [query(".thumbnail-tooltip")[0]],
-					style: {
-						width: "10px"
-					},
-					label: "<div>" +
-							"Full points for using a custom thumbnail <br/>" +
-							"that you create and upload in the required<br/>" +
-							" dimensions (200 x 133 pixels)." +
-							"<\/div>"
-				});
-				var titleTooltip = new Tooltip({
-					connectId: [query(".title-tooltip")[0]],
-					style: {
-						width: "10px"
-					},
-					label: "<div>" +
-							"A title should be short, simple, clear. <br/>" +
-							"Three words is ideal. Avoid acronyms, <br/>" +
-							"ALL CAPS, underscores, “copy”, “test”, <br/>" +
-							"“demo”, “eval” in the title. Answers <br/>" +
-							"the basic question “What is this?\"" +
-							"<\/div>"
-				});
-				var summaryTooltip = new Tooltip({
-					connectId: [query(".summary-tooltip")[0]],
-					style: {
-						width: "10px"
-					},
-					label: "<div>" +
-							"A good summary briefly explains what this map is, <br />" +
-							"in 1-2 sentences, about 10 words per sentence. <br />" +
-							"Avoid acronyms, ALL CAPS, underscores, “copy”, <br />" +
-							"“test”, “demo”, “eval” in the summary. Answers <br />" +
-							"the basic question “What does this show?\"" +
-							"<\/div>"
-				});
-				var descriptionTooltip = new Tooltip({
-					connectId: [query(".description-tooltip")[0]],
-					style: {
-						width: "10px"
-					},
-					label: "<div>" +
-							"A good description further clarifies what this item</br >" +
-							"is and what it shows. It explains more about the </br >" +
-							"data and its sources, but does not go into pages</br >" +
-							"of explanation. Scoring is primarily based on </br >" +
-							"length of content. About 2-3 paragraphs is ideal, </br >" +
-							"with 4-5 sentences per paragraph, and about 12 or </br >" +
-							"so words per sentence. Bonus points if hyperlinks </br >" +
-							"whisk the reader away to more fully developed </br >" +
-							"explanations and other supporting material." +
-							"<\/div>"
-				});
-
-				var editSaveBtnNode = query(".edit-save-btn")[0];
-				var cancelBtnNode = query(".cancel-btn")[0];
-				var itemTitleNode = query(".title-textbox")[0];
-				var itemSummaryNode = query(".summary-textbox")[0];
-				var itemDescriptionNode = query(".description-editor")[0];
+				createTooltip(itemThumbnailTooltipNode, tooltipsConfig.ITEM_THUMBNAIL_TOOLTIP_CONTENT);
+				createTooltip(itemTitleTooltipNode, tooltipsConfig.ITEM_TITLE_TOOLTIP_CONTENT);
+				createTooltip(itemSummaryTooltipNode, tooltipsConfig.ITEM_SUMMARY_TOOLTIP_CONTENT);
+				createTooltip(itemDescriptionTooltipNode, tooltipsConfig.ITEM_DESCRIPTION_TOOLTIP_CONTENT);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -728,7 +686,7 @@ require([
 						if (itemDescription === "") {
 							domConstruct.place("<span></span>", "description-editor-widget", "first");
 						} else {
-							domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
+							//domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
 						}
 					}
 				});
@@ -1244,6 +1202,16 @@ require([
 			});
 		}
 
+
+		function createTooltip(node, content) {
+			var userDescriptionTooltip = new Tooltip({
+				connectId:[node],
+				style:{
+					width:"10px"
+				},
+				label: content
+			});
+		}
 
 		function uploadAlternateImage(item, imageSizeName) {
 			var deferred = new Deferred();
