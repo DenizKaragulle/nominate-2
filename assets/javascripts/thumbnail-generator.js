@@ -1044,18 +1044,14 @@ require([
 			});
 			on(fileInput, "change", lang.hitch(this, function (evt) {
 						var imgFile = fileInput.files[0];
-
 						var reader = new FileReader();
 						reader.readAsDataURL(imgFile);
 						reader.onload = function (_file) {
 							domClass.add(fileInput, "dijitHidden");
-
 							var imgNode = put(dialogContent, "img");
 							imgNode.onload = function () {
-
 								msgPane.innerHTML = "Valid file selected";
 								put(dialogContent, "div.imageSizeLabel", lang.replace("Image size: {0}px by {1}px", [this.width, this.height]));
-
 								if ((this.width === imageSizes[imageSizeName][0]) && (this.height === imageSizes[imageSizeName][1])) {
 									domClass.remove(uploadThumbBtn.domNode, "dijitHidden");
 									uploadThumbBtn.on("click", lang.hitch(this, function (evt) {

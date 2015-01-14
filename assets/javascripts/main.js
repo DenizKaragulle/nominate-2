@@ -1,6 +1,7 @@
 require([
 	"put-selector/put",
 	"dojo/store/Memory",
+	"dojo/store/Observable",
 	"dgrid/extensions/Pagination",
 	"dgrid/OnDemandGrid",
 	"dgrid/Keyboard",
@@ -47,7 +48,7 @@ require([
 	"config/profile",
 	"esri/dijit/Tags",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, Tags) {
+], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, Tags) {
 
 	parser.parse();
 
@@ -148,7 +149,7 @@ require([
 						'<div class="row">' +
 						'	<div class="column-3">' +
 						'		<div class="thumbnail">' +
-						'			<img src="' + thumbnailUrl + '" />' +
+						'			<img class="item-thumbnail-' + object.id + '" src="' + thumbnailUrl + '" />' +
 						'		</div>' +
 						'	</div>' +
 
@@ -327,6 +328,9 @@ require([
 							}
 						];
 						// dgrid memory store
+						//itemStore = new Observable(new Memory({
+						//	data: result.results
+						//}));
 						itemStore = new Memory({
 							data: result.results
 						});
@@ -591,7 +595,7 @@ require([
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
-						// EDIT clicked
+						// EDIT clicked (now in SAVE mode)
 						// update EDIT/SAVE button
 						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
 
@@ -651,13 +655,13 @@ require([
 						descriptionEditor.startup();
 
 						// update thumbnail
-						on(query(".expanded-item-thumbnail"), "click", function (event) {
-							portalUser.getItem(selectedRowID).then(function (results) {
-								uploadAlternateImage(results, "SMALL");
-							});
-						});
+						on(query(".expanded-item-thumbnail"), "click", lang.hitch(this, function (event) {
+							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
+								uploadAlternateImage(userItem, "SMALL");
+							}));
+						}));
 					} else {
-						// SAVE clicked
+						// SAVE clicked (now in EDIT mode)
 						itemTitle = query(".edit-title")[0].value;
 						itemSummary = query(".edit-summary")[0].value;
 						itemDescription = dijit.byId("description-editor-widget").value;
@@ -1170,6 +1174,13 @@ require([
 						domConstruct.create("input", { class: "edit-user-description", value:_userDescription }, itemUserDescriptionNode, "first");
 						domAttr.set(itemUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
+
+						// update thumbnail
+						/*on(query(".expanded-item-thumbnail"), "click", function (event) {
+							portalUser.getItem(selectedRowID).then(function (results) {
+								uploadAlternateImage(results, "SMALL");
+							});
+						});*/
 					} else {
 						_userFullName = query(".edit-user-full-name")[0].value;
 						_userDescription = query(".edit-user-description")[0].value;
@@ -1178,8 +1189,6 @@ require([
 							//var _portalUrl = results.portal.portalUrl;
 							//var _community = "community/users/";
 							//var _portalUser = results.owner;
-							console.log("item.portal.getPortalUser().fullName: " + item.portal.getPortalUser().fullName);
-							console.log("_userFullName: " + _userFullName);
 							esriRequest({
 								url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
 								content: {
@@ -1307,14 +1316,14 @@ require([
 							domClass.remove(uploadThumbBtn.domNode, "dijitHidden");
 							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
 								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
-								updateThumbnail_Form(item, form).then(lang.hitch(this, function (evt) {
+								updateItemThumbnail(item, form).then(lang.hitch(this, function (evt) {
 									portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
+										// If the store is updated the dGrid is refreshed and thje expanded content is lost
+										// itemStore.put(userItem);
+										domAttr.set(query(".item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
+										console.log(userItem);
 										updatedItems[imageSizeName].push(item.id);
 										msgPane.innerHTML = "Item updated with thumbnail";
-										//sourceItemList.store.put(userItem);
-										// update dgrid and live thubmnail here
-										// expanded-item-thumbnail
-										itemStore.put(userItem);
 										previewDlg.hide();
 									}), lang.hitch(this, function (error) {
 										console.warn(error);
@@ -1336,24 +1345,8 @@ require([
 			return deferred.promise;
 		}
 
-		function updateTitle(userItem, newTitle, newSummary, newDescription) {
+		function updateItemThumbnail(userItem, form) {
 			var deferred = new Deferred();
-			esriRequest({
-				url:lang.replace("{userItemUrl}/update", userItem),
-				content:{
-					f:"json",
-					title: newTitle,
-					snippet: newSummary,
-					description: newDescription
-				},
-				handleAs:"json"
-			}).then(deferred.resolve, deferred.reject);
-			return deferred.promise;
-		}
-
-		function updateThumbnail_Form(userItem, form) {
-			var deferred = new Deferred();
-
 			// UPDATE LARGE THUMBNAIL //
 			esriRequest({
 				url:lang.replace("{userItemUrl}/update", userItem),
@@ -1363,7 +1356,6 @@ require([
 				},
 				handleAs:"json"
 			}).then(deferred.resolve, deferred.reject);
-
 			return deferred.promise;
 		}
 

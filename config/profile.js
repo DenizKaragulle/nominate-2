@@ -39,6 +39,7 @@ define({
 			'		</div>' +
 			'	</div>' +
 
+			// USER FULL NAME
 			'	<div class="row">' +
 			'		<div class="column-3">' +
 			'			<div class="row">' +
@@ -56,6 +57,7 @@ define({
 			'		</div>' +
 			'	</div>' +
 
+			// USER DESCRIPTION
 			'	<div class="row">' +
 			'		<div class="column-3">' +
 			'			<div class="row">' +
@@ -67,8 +69,7 @@ define({
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
-
-			'		<div class="column-20">' +
+			'		<div class="column-18">' +
 			'			<div class="section-header">Description</div>' +
 			'			<div class="user-description-textbox"></div>' +
 			'		</div>' +
