@@ -402,9 +402,7 @@ require([
 
 											"		<div class='row'>" +
 											"			<div class='column-21 pre-3'>" +
-											"				<div class='row'>" +
-											"					<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-											"				</div>" +
+											"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
 											"			</div>" +
 											"		</div>" +
 
