@@ -141,7 +141,7 @@ require([
 						'	</div>' +
 
 						'	<div class="column-18">' +
-						'		<div class="item-title ' + object.id + '">' + itemTitle + '</div>' +
+						'		<div class="item-title title-' + object.id + '">' + itemTitle + '</div>' +
 						'		<div class="item-meta-data">' +
 						'			<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
 						'		</div>' +
@@ -480,6 +480,10 @@ require([
 					} else {
 						console.log("no results");
 					}
+
+					on(dgrid, "dgrid-refresh-complete", function (event) {
+						console.log("REFRESH COMPLETE");
+					});
 				});
 			});
 		}
@@ -926,12 +930,7 @@ require([
 							}).then(function (response) {
 								domConstruct.destroy(query(".alert-loader")[0]);
 								if (response.success) {
-									//var targetItem = itemStore.get(selectedRowID);
-									//targetItem.title = itemTitle;
-									var qTitle = query("." + selectedRowID);
-									console.log(qTitle);
-									console.log(qTitle.innerHTML);
-									html.set(query("." + selectedRowID)[0], itemTitle);
+									html.set(query(".title-" + selectedRowID)[0], itemTitle);
 									// NON-EDITING MODE
 									// update button label " EDIT "
 									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
@@ -1189,7 +1188,6 @@ require([
 
 		function tagsContentPane(_selectedRowID, categoryID, tagsID) {
 			var tagsDijit;
-			var tagStore;
 
 			portalUser.getItem(_selectedRowID).then(function (item) {
 				domConstruct.destroy("section-content");
@@ -1214,22 +1212,31 @@ require([
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				var cancelBtnNode = query(".cancel-btn")[0];
+				var tagStore = new Memory({
+					idProperty:'tag',
+					data:[].concat(itemTags)
+				});
 				on(editSaveBtnNode, "click", function () {
-					tagStore = new Memory({
-						idProperty:'tag',
-						data:[].concat(itemTags)
-					});
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
+						// EDIT mode
 						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
 						domStyle.set(cancelBtnNode, "display", "block");
-						// save to AGOL
-						// edit mode
+						// remove non-editing tags
 						domConstruct.empty(query(".existing-tags")[0]);
+
 						if (dijit.byId("tag-widget")) {
-							dijit.byId("tag-widget").destroy();
-							domConstruct.create("div", {
-								id:"tag-widget"
-							}, query(".tag-container")[0], "first");
+							console.log("---")
+							console.log(tagsDijit.values);
+							itemTags_clean = tagsDijit.values;
+							//dijit.byId("tag-widget").destroy();
+							//domConstruct.create("div", { id:"tag-widget" }, query(".tag-container")[0], "first");
+						} else {
+							if (tagsDijit !== undefined) {
+								tagStore = new Memory({
+									idProperty:'tag',
+									data:[].concat(itemTags_clean)
+								});
+							}
 						}
 						tagsDijit = new Tags({
 							placeholder:'Add tag(s)',
@@ -1257,6 +1264,7 @@ require([
 						}).then(function (response) {
 							if (response.success) {
 								if (dijit.byId("tag-widget")) {
+									itemTags_clean = tagsDijit.values;
 									domConstruct.create("div", {
 										class:"existing-tags",
 										innerHTML:tagsDijit.values
@@ -1279,6 +1287,10 @@ require([
 
 				on(cancelBtnNode, "click", function () {
 					if (dijit.byId("tag-widget")) {
+
+						console.log(tagsDijit.values);
+						console.log(itemTags_clean);
+
 						domConstruct.create("div", {
 							class:"existing-tags",
 							innerHTML: itemTags_clean
@@ -1288,6 +1300,11 @@ require([
 						domConstruct.create("div", {
 							id:"tag-widget"
 						}, query(".tag-container")[0], "first");
+
+						tagStore = new Memory({
+							idProperty:'tag',
+							data:[].concat(itemTags_clean)
+						});
 					}
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
