@@ -34,6 +34,7 @@ define({
 			"		</div>" +
 			"		<div class='column-14'>" +
 			"			<img class='expanded-item-thumbnail thumbnailUrl' src=''>" +
+			"			<div class='edit-thumbnail-msg'>Click thumbnail to change image.</div>" +
 			"		</div>" +
 			"		<div class='column-3'>" +
 			"			<button class='btn custom-btn edit-save-btn'> EDIT </button>" +

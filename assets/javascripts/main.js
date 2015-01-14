@@ -596,9 +596,13 @@ require([
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
-						// EDIT clicked (now in SAVE mode)
+						// EDIT clicked
 						// update EDIT/SAVE button
 						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
+						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "pointer");
+
+						// update thumbnail
+						domStyle.set(query(".edit-thumbnail-msg")[0], "display", "block");
 
 						// update title
 						domConstruct.empty(itemTitleNode);
@@ -662,7 +666,7 @@ require([
 							}));
 						}));
 					} else {
-						// SAVE clicked (now in EDIT mode)
+						// SAVE clicked
 						itemTitle = query(".edit-title")[0].value;
 						itemSummary = query(".edit-summary")[0].value;
 						itemDescription = dijit.byId("description-editor-widget").value;
@@ -692,6 +696,10 @@ require([
 								}
 							});
 						});
+
+						// update thumbnail
+						domStyle.set(query(".edit-thumbnail-msg")[0], "display", "none");
+						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
 
 						// update the title
 						domConstruct.empty(itemTitleNode);
@@ -726,6 +734,10 @@ require([
 				});
 
 				on(cancelBtnNode, "click", function () {
+					// update thumbnail cursor/message
+					domStyle.set(query(".edit-thumbnail-msg")[0], "display", "none");
+					domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
+
 					// update the title
 					domConstruct.empty(itemTitleNode);
 					domConstruct.create("div", { innerHTML: itemTitle_clean }, itemTitleNode, "first");

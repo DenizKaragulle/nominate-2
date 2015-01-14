@@ -110,9 +110,9 @@ table tr {
 	max-width: 120px;
 }
 
-.expanded-item-thumbnail:hover {
+/*.expanded-item-thumbnail:hover {
 	cursor: pointer;
-}
+}*/
 
 /* Current Score header text */
 .current-score-header {
@@ -368,3 +368,8 @@ table tr {
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
 
+.edit-thumbnail-msg {
+	display: none;
+	font-size: 0.8em;
+	margin-top: -15px;
+}
