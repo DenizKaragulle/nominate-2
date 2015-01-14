@@ -512,6 +512,7 @@ require([
 
 				// set the thumbnail
 				domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
+				// set the title
 				domAttr.set(query(".title-textbox")[0], "id", titleID);
 				domConstruct.create("div", { innerHTML: itemTitle }, query(".title-textbox")[0], "first");
 				// set the summary
@@ -526,6 +527,7 @@ require([
 					domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
 				}
 
+				//tooltips
 				var thumbnailTooltip = new Tooltip({
 					connectId: [query(".thumbnail-tooltip")[0]],
 					style: {
@@ -583,10 +585,10 @@ require([
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				var cancelBtnNode = query(".cancel-btn")[0];
-				var itemThumbnailNode = query(".thumbnailUrl")[0];
 				var itemTitleNode = query(".title-textbox")[0];
 				var itemSummaryNode = query(".summary-textbox")[0];
 				var itemDescriptionNode = query(".description-editor")[0];
+
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// EDIT clicked
@@ -654,15 +656,11 @@ require([
 								uploadAlternateImage(results, "SMALL");
 							});
 						});
-
-						console.log("EDIT CLICKED summary: " + itemSummary);
 					} else {
 						// SAVE clicked
 						itemTitle = query(".edit-title")[0].value;
 						itemSummary = query(".edit-summary")[0].value;
 						itemDescription = dijit.byId("description-editor-widget").value;
-
-						console.log("SAVE CLICKED summary: " + itemSummary);
 
 						// write to AGOL
 						portalUser.getItem(selectedRowID).then(function (results) {
@@ -678,17 +676,14 @@ require([
 							}, {
 								usePost:true
 							}).then(function (response) {
-								domConstruct.destroy(query(".alert-loader")[0]);
 								if (response.success) {
 									html.set(query(".title-" + selectedRowID)[0], itemTitle);
-									// update button label " EDIT "
-									updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 									itemTitle_clean = itemTitle;
 									itemSummary_clean = itemSummary;
 									itemDescription_clean = itemDescription;
-									console.log("SUCCESS");
+									updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 								} else {
-									console.log("ERROR");
+									console.log("Details not updated");
 								}
 							});
 						});
@@ -1099,23 +1094,30 @@ require([
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
-				var _userThumbnailUrl = item.portal.getPortalUser().thumbnailUrl;
-				var _userThumbnailUrl_clean = _userThumbnailUrl;
+				// item full name
 				var _userFullName = validateStr(item.portal.getPortalUser().fullName);
 				var _userFullName_clean = _userFullName;
+				// item user description
 				var _userDescription = validateStr(item.portal.getPortalUser().description);
 				var _userDescription_clean = _userDescription;
+				// item user thumbnail
+				var _userThumbnailUrl = item.portal.getPortalUser().thumbnailUrl;
+				var _userThumbnailUrl_clean = _userThumbnailUrl;
 
 				domConstruct.destroy("section-content");
 				var node = query(".content-container")[0];
 				domConstruct.place(profileConfig.PROFILE_CONTENT, node, "last");
 
+				// set the thumbnail
 				domAttr.set(query(".profileThumbnailUrl")[0], "src", _userThumbnailUrl);
+				// set the user full name
 				domAttr.set(query(".name-textbox")[0], "id", _userNameID);
 				domConstruct.create("div", { innerHTML: _userFullName }, query(".name-textbox")[0], "first");
+				// set the user description
 				domAttr.set(query(".user-description-textbox")[0], "id", _userDescriptionID);
 				domConstruct.create("div", { innerHTML: _userDescription }, query(".user-description-textbox")[0], "first");
 
+				// tooltips
 				var profileThumbnailTooltip = new Tooltip({
 					connectId: [query(".profile-thumbnail-tooltip")[0]],
 					style: {
@@ -1148,24 +1150,22 @@ require([
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				var cancelBtnNode = query(".cancel-btn")[0];
-				var itemThumbnailNode = query(".profileThumbnailUrl")[0];
 				var itemUserNameNode = query(".name-textbox")[0];
 				var itemUserDescriptionNode = query(".user-description-textbox")[0];
 
 				on(editSaveBtnNode, "click", function () {
-					//var itemThumbnailNode = query(".profileThumbnailUrl")[0];
-					//var itemUserNameNode = query(".name-textbox")[0];
-					//var itemUserDescriptionNode = query(".user-description-textbox")[0];
-
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
-						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
-						domStyle.set(cancelBtnNode, "display", "block");
+						// EDIT clicked
+						// update EDIT/SAVE button
+						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
 
+						// update user full name
 						domConstruct.empty(itemUserNameNode);
 						domConstruct.create("input", { class: "edit-user-full-name", value:_userFullName }, itemUserNameNode, "first");
 						domAttr.set(itemUserNameNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemUserNameNode, "id", _userNameID);
 
+						// update user description
 						domConstruct.empty(itemUserDescriptionNode);
 						domConstruct.create("input", { class: "edit-user-description", value:_userDescription }, itemUserDescriptionNode, "first");
 						domAttr.set(itemUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
@@ -1178,6 +1178,8 @@ require([
 							//var _portalUrl = results.portal.portalUrl;
 							//var _community = "community/users/";
 							//var _portalUser = results.owner;
+							console.log("item.portal.getPortalUser().fullName: " + item.portal.getPortalUser().fullName);
+							console.log("_userFullName: " + _userFullName);
 							esriRequest({
 								url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
 								content: {
@@ -1190,19 +1192,21 @@ require([
 							}).then(function (response) {
 								if (response.success) {
 									domConstruct.empty(itemUserNameNode);
-									domConstruct.create("div", { innerHTML: item.portal.getPortalUser().fullName }, itemUserNameNode, "first");
+									domConstruct.create("div", { innerHTML: _userFullName }, itemUserNameNode, "first");
 									domAttr.remove(itemUserNameNode, "data-dojo-type");
 									domAttr.set(itemUserNameNode, "id", _userNameID);
 
 									domConstruct.empty(itemUserDescriptionNode);
-									domConstruct.create("div", { innerHTML: item.portal.getPortalUser().description }, itemUserDescriptionNode, "first");
+									domConstruct.create("div", { innerHTML: _userDescription }, itemUserDescriptionNode, "first");
 									domAttr.remove(itemUserDescriptionNode, "data-dojo-type");
 									domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
 
-									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
-									domStyle.set(cancelBtnNode, "display", "none");
-								} else {
+									_userFullName_clean = _userFullName;
+									_userDescription_clean = _userDescription;
 
+									updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+								} else {
+									console.log("Profile not updated");
 								}
 							});
 						});
