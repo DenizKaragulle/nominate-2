@@ -305,7 +305,7 @@ require([
 					num: 1000
 				};
 				portal.queryItems(params).then(function (result) {
-					// total nuber of items
+					// total number of items
 					var numItems = result.total;
 					// update the ribbon header
 					// remove the globe icon from the ribbon header title
@@ -389,7 +389,6 @@ require([
 								var tagsID = TAB_CONTAINER_TAGS + selectedRowID;
 								var userNameID = TAB_CONTAINER_USERNAME + selectedRowID;
 								var userDescriptionID = TAB_CONTAINER_USERDESCRIPTION + selectedRowID;
-
 								// create the map
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
@@ -492,10 +491,6 @@ require([
 					} else {
 						console.log("no results");
 					}
-
-					on(dgrid, "dgrid-refresh-complete", function (event) {
-						console.log("REFRESH COMPLETE");
-					});
 				});
 			});
 		}
@@ -590,189 +585,6 @@ require([
 							"<\/div>"
 				});
 
-				/*var editBtn = dom.byId("edit-btn");
-				on(editBtn, "click", function () {
-					domConstruct.destroy("section-content");
-
-					var node = query(".content-container")[0];
-					domConstruct.place(details.DETAILS_CONTENT_EDIT, node, "last");
-					// set the title
-					domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
-					domAttr.set(query(".title-textbox")[0], "id", titleID);
-					domConstruct.create("div", { innerHTML:itemTitle }, query(".title-textbox")[0], "first");
-					// set the summary
-					domAttr.set(query(".summary-textbox")[0], "id", snippetID);
-					domAttr.set(query(".summary-textbox")[0], "value", itemSummary);
-					domConstruct.create("div", { innerHTML:itemSummary }, query(".summary-textbox")[0], "first");
-					// set the description
-					domAttr.set(query(".description-editor")[0], "id", descID);
-					domConstruct.create("div", { innerHTML:itemDescription }, query(".description-editor")[0], "first");
-					descriptionEditor = new Editor({
-						plugins:[
-							'bold',
-							'italic',
-							'underline',
-							'foreColor',
-							'hiliteColor',
-							'|',
-							'justifyLeft',
-							'justifyCenter',
-							'justifyRight',
-							'justifyFull',
-							'|',
-							'insertOrderedList',
-							'insertUnorderedList',
-							'|',
-							'indent',
-							'outdent',
-							'|',
-							'createLink',
-							'unlink',
-							'removeFormat',
-							'|',
-							'undo',
-							'redo',
-							'|',
-							'viewSource'
-						]
-					}, dom.byId(descID));
-					descriptionEditor.startup();
-
-					// update thumbnail dialog
-					var myDialog = new Dialog({
-						id:"update-thumbnail-dialog",
-						title:"Upload Thumbnail",
-						content:"<div class='container thumbnail-dialog'>" +
-								"	<div class='row thumbnail-dialog-row'>" +
-								"		<div class='column-24'>" +
-								"			<div>Specify the image to use as the thumbnail.<\/div>" +
-								"		<\/div>" +
-								"	<\/div>" +
-								"	<div class='row thumbnail-dialog-row'>" +
-								"		<div class='column-4'>" +
-								"			<div>Image: <\/div>" +
-								"		<\/div>" +
-								"		<div class='column-20'>" +
-								"			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
-								"		<\/div>" +
-								"	<\/div>" +
-								"	<div class='row thumbnail-dialog-row'>" +
-								"		<div class='column-24'>" +
-								"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
-								"		<\/div>" +
-								"	<\/div>" +
-								"	<div class='row thumbnail-dialog-row'>" +
-								"		<div class='column-6 right'>" +
-								"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
-								"		<\/div>" +
-								"		<div class='column-4 right'>" +
-								"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
-								"		<\/div>" +
-								"	<\/div>" +
-								"<\/div>",
-						style:"width: 450px"
-					});
-					myDialog.hide();
-
-					on(query(".expanded-item-thumbnail"), "click", function (event) {
-						myDialog.show();
-					});
-
-					on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
-						myDialog.hide();
-					});
-
-					on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
-						//
-					});
-
-					on(dom.byId("thumbnail-file-updload-btn"), "change", function () {
-						portalUser.getItem(selectedRowID).then(function (results) {
-							var _userItemUrl = results.userItemUrl;
-							console.log(_userItemUrl);
-							console.log(dom.byId("thumbnail-file-updload-btn").files[0]);
-							// http://www.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312
-							// http://jsapi.maps.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312/update
-							esriRequest({
-								url:_userItemUrl + "/update",
-								content:{
-									f:"json",
-									thubmnail:dom.byId("thumbnail-file-updload-btn").files[0]
-								},
-								multipart:true
-							}, {
-								usePost:true,
-							}).then(function (response) {
-										if (response.success) {
-											console.log("SUCCESS");
-											myDialog.hide();
-										} else {
-											console.log("FAILURE");
-										}
-									});
-						});
-					});
-				});
-
-				var saveBtn = dom.byId("save-btn");
-				on(saveBtn, "click", function () {
-					var alertAnchorNode = query(".section-content")[0];
-					domConstruct.place(
-						'<div class="loader alert-loader save-btn">' +
-						'	<span class="side side-left">' +
-						'		<span class="fill"></span>' +
-						'	</span>' +
-						'	<span class="side side-right">' +
-						'		<span class="fill"></span>' +
-						'	</span>' +
-						'	<p class="loading-word">Loading...</p>' +
-						'</div>', alertAnchorNode, "last");
-					// DETAILS
-					// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
-					// The title of the item. This is the name that's displayed to users and by
-					// which they refer to the item. Every item must have a title.
-					var _title = dom.byId(TAB_CONTAINER_TITLE + selectedRowID).value;
-					// A short summary description of the item.
-					var _snippet = dom.byId(TAB_CONTAINER_SNIPPET + selectedRowID).value;
-					// Item description.
-					var _description = dijit.byId(TAB_CONTAINER_DESC + selectedRowID).value;
-
-					portalUser.getItem(selectedRowID).then(function (results) {
-						var _userItemUrl = results.userItemUrl;
-						esriRequest({
-							url: _userItemUrl + "/update",
-							content: {
-								f: "json",
-								title: _title,
-								snippet: _snippet,
-								description: _description
-							}
-						}, {
-							usePost: true
-						}).then(function (response) {
-							domConstruct.destroy(query(".alert-loader")[0]);
-							if (response.success) {
-								domConstruct.place(
-									'<div class="row alert-success alert-loader-success">' +
-									'	<div class="column-24 center">' +
-									'		<div class="alert success icon-check"> Saved </div>' +
-									'	</div>' +
-									'</div>', alertAnchorNode, "last");
-								setTimeout(function () {
-									domConstruct.destroy(query(".alert-success")[0]);
-								}, 1500);
-							} else {
-								domConstruct.place(
-									'<div class="row alert-loader-error">' +
-									'	<div class="column-24 center">' +
-									'		<div class="alert error icon-alert"> Error </div>' +
-									'	</div>' +
-									'</div>', alertAnchorNode, "last");
-							}
-						});
-					});
-				});*/
-
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				var cancelBtnNode = query(".cancel-btn")[0];
 				var itemThumbnailNode = query(".thumbnailUrl")[0];
@@ -848,22 +660,10 @@ require([
 						descriptionEditor.startup();
 
 						on(query(".expanded-item-thumbnail"), "click", function (event) {
-							//myDialog.show();
 							portalUser.getItem(selectedRowID).then(function (results) {
 								uploadAlternateImage(results, "SMALL");
 							});
 						});
-						/*on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
-							//myDialog.hide();
-						});
-						on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
-							//
-						});
-						on(dom.byId("thumbnail-file-updload-btn"), "change", function () {
-							portalUser.getItem(selectedRowID).then(function (results) {
-								uploadAlternateImage(results, "SMALL")
-							});
-						});*/
 					} else {
 						// DETAILS
 						// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
@@ -1535,6 +1335,21 @@ require([
 					imgNode.src = _file.target.result;
 				};
 			}));
+			return deferred.promise;
+		}
+
+		function updateTitle(userItem, newTitle, newSummary, newDescription) {
+			var deferred = new Deferred();
+			esriRequest({
+				url:lang.replace("{userItemUrl}/update", userItem),
+				content:{
+					f:"json",
+					title: newTitle,
+					snippet: newSummary,
+					description: newDescription
+				},
+				handleAs:"json"
+			}).then(deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
 
