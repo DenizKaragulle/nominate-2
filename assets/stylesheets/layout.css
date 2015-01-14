@@ -350,3 +350,12 @@ table tr {
 .existing-tags {
 	word-break:break-all;
 }
+
+.upload-thumbnail-dialog {
+	width: 350px;
+	height: 300px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 0.85em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+

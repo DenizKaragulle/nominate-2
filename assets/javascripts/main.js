@@ -120,6 +120,18 @@ require([
 	var overallScoreGraphic;
 	var score = 0;
 
+	var imageSizes = {
+		"SMALL":[200, 133],
+		"LARGE":[286, 190],
+		"XLARGE":[450, 300]
+	};
+
+	var updatedItems = {
+		"SMALL":[],
+		"LARGE":[],
+		"XLARGE":[]
+	};
+
 	ready(function () {
 
 		run();
@@ -835,77 +847,23 @@ require([
 						}, dom.byId("description-editor-widget"));
 						descriptionEditor.startup();
 
-						// update thumbnail dialog
-						var myDialog = new Dialog({
-							id:"update-thumbnail-dialog",
-							title:"Upload Thumbnail",
-							content:"<div class='container thumbnail-dialog'>" +
-									"	<div class='row thumbnail-dialog-row'>" +
-									"		<div class='column-24'>" +
-									"			<div>Specify the image to use as the thumbnail.<\/div>" +
-									"		<\/div>" +
-									"	<\/div>" +
-									"	<div class='row thumbnail-dialog-row'>" +
-									"		<div class='column-4'>" +
-									"			<div>Image: <\/div>" +
-									"		<\/div>" +
-									"		<div class='column-20'>" +
-									"			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
-									"		<\/div>" +
-									"	<\/div>" +
-									"	<div class='row thumbnail-dialog-row'>" +
-									"		<div class='column-24'>" +
-									"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
-									"		<\/div>" +
-									"	<\/div>" +
-									"	<div class='row thumbnail-dialog-row'>" +
-									"		<div class='column-6 right'>" +
-									"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
-									"		<\/div>" +
-									"		<div class='column-4 right'>" +
-									"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
-									"		<\/div>" +
-									"	<\/div>" +
-									"<\/div>",
-							style:"width: 450px"
-						});
-						myDialog.hide();
-
 						on(query(".expanded-item-thumbnail"), "click", function (event) {
-							myDialog.show();
+							//myDialog.show();
+							portalUser.getItem(selectedRowID).then(function (results) {
+								uploadAlternateImage(results, "SMALL");
+							});
 						});
-						on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
-							myDialog.hide();
+						/*on(query(".cancel-thumbnail-dialog-btn")[0], "click", function (event) {
+							//myDialog.hide();
 						});
 						on(query(".ok-thumbnail-dialog-btn")[0], "click", function (event) {
 							//
 						});
 						on(dom.byId("thumbnail-file-updload-btn"), "change", function () {
 							portalUser.getItem(selectedRowID).then(function (results) {
-								var _userItemUrl = results.userItemUrl;
-								console.log(_userItemUrl);
-								console.log(dom.byId("thumbnail-file-updload-btn").files[0]);
-								// http://www.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312
-								// http://jsapi.maps.arcgis.com/sharing/rest/content/users/cmahlke_jsapi/items/d34ed6019b2348768002221c8ac9c312/update
-								esriRequest({
-									url:_userItemUrl + "/update",
-									content:{
-										f:"json",
-										thubmnail:dom.byId("thumbnail-file-updload-btn").files[0]
-									},
-									multipart:true
-								}, {
-									usePost:true,
-								}).then(function (response) {
-											if (response.success) {
-												console.log("SUCCESS");
-												myDialog.hide();
-											} else {
-												console.log("FAILURE");
-											}
-										});
+								uploadAlternateImage(results, "SMALL")
 							});
-						});
+						});*/
 					} else {
 						// DETAILS
 						// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
@@ -1473,6 +1431,128 @@ require([
 			});
 		}
 
+
+		function uploadAlternateImage(item, imageSizeName) {
+			var deferred = new Deferred();
+
+			var previewDlg = new Dialog({
+				title:item.title,
+				className:"upload-thumbnail-dialog"
+			});
+			previewDlg.show();
+			// update thumbnail dialog
+			/*var previewDlg = new Dialog({
+				id:"update-thumbnail-dialog",
+				title: item.title,
+				content:"<div class='container thumbnail-dialog'>" +
+						"	<div class='row thumbnail-dialog-row'>" +
+						"		<div class='column-24'>" +
+						"			<div>Specify the image to use as the thumbnail.<\/div>" +
+						"		<\/div>" +
+						"	<\/div>" +
+						"	<div class='row thumbnail-dialog-row'>" +
+						"		<div class='column-4'>" +
+						"			<div>Image: <\/div>" +
+						"		<\/div>" +
+						"		<div class='column-20'>" +
+						"			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
+						"		<\/div>" +
+						"	<\/div>" +
+						"	<div class='row thumbnail-dialog-row'>" +
+						"		<div class='column-24'>" +
+						"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
+						"		<\/div>" +
+						"	<\/div>" +
+						"	<div class='row thumbnail-dialog-row'>" +
+						"		<div class='column-6 right'>" +
+						"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
+						"		<\/div>" +
+						"		<div class='column-4 right'>" +
+						"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
+						"		<\/div>" +
+						"	<\/div>" +
+						"<\/div>",
+				style:"width: 450px"
+			});
+			previewDlg.show();*/
+
+			var dialogContent = put(previewDlg.containerNode, "div.dijitDialogPaneContentArea");
+			var actionBar = put(previewDlg.containerNode, "div.dijitDialogPaneActionBar");
+			var uploadThumbBtn = new Button({
+				label:"Upload Thumbnail"
+			}, put(actionBar, "div"));
+			domClass.add(uploadThumbBtn.domNode, "dijitHidden");
+			var cancelBtn = new Button({
+				label:"Cancel",
+				onClick:lang.hitch(previewDlg, previewDlg.hide)
+			}, put(actionBar, "div"));
+			var msgPane = put(dialogContent, "div.msgPane", "Upload alternate image:");
+			var form = put(dialogContent, "form", {
+				"method":"post",
+				"enctype":"multipart/form-data"
+			});
+			var fileInput = put(form, "input", {
+				type:"file",
+				name:(imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
+			});
+			on(fileInput, "change", lang.hitch(this, function (evt) {
+				var imgFile = fileInput.files[0];
+				var reader = new FileReader();
+				reader.readAsDataURL(imgFile);
+				reader.onload = function (_file) {
+					domClass.add(fileInput, "dijitHidden");
+					var imgNode = put(dialogContent, "img");
+					imgNode.onload = function () {
+						msgPane.innerHTML = "Valid file selected";
+						put(dialogContent, "div.imageSizeLabel", lang.replace("Image size: {0}px by {1}px", [this.width, this.height]));
+						if ((this.width === imageSizes[imageSizeName][0]) && (this.height === imageSizes[imageSizeName][1])) {
+							domClass.remove(uploadThumbBtn.domNode, "dijitHidden");
+							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
+								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
+								updateThumbnail_Form(item, form).then(lang.hitch(this, function (evt) {
+									portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
+										updatedItems[imageSizeName].push(item.id);
+										msgPane.innerHTML = "Item updated with thumbnail";
+										//sourceItemList.store.put(userItem);
+										// update dgrid and live thubmnail here
+										// expanded-item-thumbnail
+										itemStore.put(userItem);
+										previewDlg.hide();
+									}), lang.hitch(this, function (error) {
+										console.warn(error);
+										msgPane.innerHTML = error.message;
+									}));
+								}), lang.hitch(this, function (error) {
+									console.warn(error);
+									msgPane.innerHTML = error.message;
+								}));
+							}));
+						} else {
+							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", imageSizes[imageSizeName]);
+							//domClass.remove(fileInput, "dijitHidden");
+						}
+					};
+					imgNode.src = _file.target.result;
+				};
+			}));
+			return deferred.promise;
+		}
+
+		function updateThumbnail_Form(userItem, form) {
+			var deferred = new Deferred();
+
+			// UPDATE LARGE THUMBNAIL //
+			esriRequest({
+				url:lang.replace("{userItemUrl}/update", userItem),
+				form:form,
+				content:{
+					f:"json"
+				},
+				handleAs:"json"
+			}).then(deferred.resolve, deferred.reject);
+
+			return deferred.promise;
+		}
 
 		function applySort(value) {
 			if (value === "title") {
