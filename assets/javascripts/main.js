@@ -589,32 +589,25 @@ require([
 				var itemDescriptionNode = query(".description-editor")[0];
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
-						// EDITING MODE
-						// update button label " SAVE "
-						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
-						domStyle.set(cancelBtnNode, "display", "block");
+						// EDIT clicked
+						// update EDIT/SAVE button
+						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
 
-						// update title section
-						// empty the contents
+						// update title
 						domConstruct.empty(itemTitleNode);
-						// create the input tag and set the value
 						domConstruct.create("input", { class: "edit-title", value:itemTitle }, itemTitleNode, "first");
-						// create the type of input
 						domAttr.set(itemTitleNode, "data-dojo-type", "dijit/form/TextBox");
-						// give it and ID
 						domAttr.set(itemTitleNode, "id", titleID);
 
-						// update summary section
-						// empty the contents
+						// update summary
 						domConstruct.empty(itemSummaryNode);
-						// create the input tag and set the value
 						domConstruct.create("input", { class: "edit-summary", value:itemSummary }, itemSummaryNode, "first");
-						// create the type of input
 						domAttr.set(itemSummaryNode, "data-dojo-type", "dijit/form/TextBox");
-						// give it and ID
 						domAttr.set(itemSummaryNode, "id", snippetID);
 
+						// update description
 						if (dijit.byId("description-editor-widget")) {
+							console.log("1) DESTROYING DESCRIPTION DIJIT");
 							dijit.byId("description-editor-widget").destroy();
 							domAttr.remove(itemDescriptionNode, "id");
 							domConstruct.create("div", {
@@ -655,20 +648,23 @@ require([
 						}, dom.byId("description-editor-widget"));
 						descriptionEditor.startup();
 
+						// update thumbnail
 						on(query(".expanded-item-thumbnail"), "click", function (event) {
 							portalUser.getItem(selectedRowID).then(function (results) {
 								uploadAlternateImage(results, "SMALL");
 							});
 						});
+
+						console.log("EDIT CLICKED summary: " + itemSummary);
 					} else {
-						// DETAILS
-						// http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Item/02r30000007w000000/
-						// The title of the item. This is the name that's displayed to users and by
-						// which they refer to the item. Every item must have a title.
+						// SAVE clicked
 						itemTitle = query(".edit-title")[0].value;
 						itemSummary = query(".edit-summary")[0].value;
 						itemDescription = dijit.byId("description-editor-widget").value;
 
+						console.log("SAVE CLICKED summary: " + itemSummary);
+
+						// write to AGOL
 						portalUser.getItem(selectedRowID).then(function (results) {
 							var _userItemUrl = results.userItemUrl;
 							esriRequest({
@@ -685,10 +681,11 @@ require([
 								domConstruct.destroy(query(".alert-loader")[0]);
 								if (response.success) {
 									html.set(query(".title-" + selectedRowID)[0], itemTitle);
-									// NON-EDITING MODE
 									// update button label " EDIT "
-									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
-									domStyle.set(cancelBtnNode, "display", "none");
+									updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+									itemTitle_clean = itemTitle;
+									itemSummary_clean = itemSummary;
+									itemDescription_clean = itemDescription;
 									console.log("SUCCESS");
 								} else {
 									console.log("ERROR");
@@ -711,13 +708,14 @@ require([
 						// update the description
 						// empty the contents
 						if (dijit.byId("description-editor-widget")) {
+							console.log("2) DESTROYING DESCRIPTION DIJIT");
 							dijit.byId("description-editor-widget").destroy();
+							domAttr.remove(itemDescriptionNode, "id");
+							domConstruct.create("div", {
+								id:"description-editor-widget",
+								innerHTML:itemDescription
+							}, itemDescriptionNode, "first");
 						}
-
-						domAttr.remove(itemDescriptionNode, "id");
-						domConstruct.create("div", {
-							id:"description-editor-widget"
-						}, itemDescriptionNode, "first");
 
 						if (itemDescription === "") {
 							domConstruct.place("<span></span>", "description-editor-widget", "first");
@@ -1453,6 +1451,11 @@ require([
 			domStyle.set(signInRow, "display", "none");
 			var gridPanel = dom.byId("dgrid");
 			domStyle.set(gridPanel, "display", "block");
+		}
+
+		function updateEditSaveButton(_editSaveBtnNode, _label, _cancelBtnNode, _display) {
+			domAttr.set(_editSaveBtnNode, "innerHTML", _label);
+			domStyle.set(_cancelBtnNode, "display", _display);
 		}
 
 		function updateNodeHeight(node, height) {
