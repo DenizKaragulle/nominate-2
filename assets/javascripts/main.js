@@ -516,6 +516,7 @@ require([
 
 				// set the thumbnail
 				domAttr.set(query(".thumbnailUrl")[0], "src", thumbnailUrl);
+				domAttr.set(query(".thumbnailUrl")[0], "class", "expanded-item-thumbnail thumbnailUrl expanded-item-thumbnail-" + item.id);
 				// set the title
 				domAttr.set(query(".title-textbox")[0], "id", titleID);
 				domConstruct.create("div", { innerHTML: itemTitle }, query(".title-textbox")[0], "first");
@@ -1174,13 +1175,6 @@ require([
 						domConstruct.create("input", { class: "edit-user-description", value:_userDescription }, itemUserDescriptionNode, "first");
 						domAttr.set(itemUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
-
-						// update thumbnail
-						/*on(query(".expanded-item-thumbnail"), "click", function (event) {
-							portalUser.getItem(selectedRowID).then(function (results) {
-								uploadAlternateImage(results, "SMALL");
-							});
-						});*/
 					} else {
 						_userFullName = query(".edit-user-full-name")[0].value;
 						_userDescription = query(".edit-user-description")[0].value;
@@ -1319,9 +1313,9 @@ require([
 								updateItemThumbnail(item, form).then(lang.hitch(this, function (evt) {
 									portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
 										// If the store is updated the dGrid is refreshed and thje expanded content is lost
-										// itemStore.put(userItem);
+										itemStore.put(userItem);
 										domAttr.set(query(".item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
-										console.log(userItem);
+										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
 										updatedItems[imageSizeName].push(item.id);
 										msgPane.innerHTML = "Item updated with thumbnail";
 										previewDlg.hide();
