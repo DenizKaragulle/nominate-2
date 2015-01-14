@@ -93,8 +93,10 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-			"		<div class='column-21'>" +
+			"		<div class='column-3'>" +
 			"			<div class='section-header'>Description</div>" +
+			"		</div>" +
+			"		<div class='column-18'>" +
 			"			<div class='description-editor' style='height: 200px; overflow: auto;'>" +
 			"				<div id='description-editor-widget'></div>" +
 			"			</div>" +
