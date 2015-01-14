@@ -56,7 +56,7 @@ require([
 	//
 	var dgrid;
 	var itemStore;
-	var thumbnailRenderCell;
+	var renderRow;
 	var titleRenderCell;
 	var statusRenderCell;
 	//
@@ -89,7 +89,7 @@ require([
 	// element id/name
 	var SIGNIN_BUTTON_ID = "sign-in";
 	var EXPANDED_ROW_NAME = "expanded-row-";
-	var SAVE_BUTTON_NAME = "btn-";
+	//var SAVE_BUTTON_NAME = "btn-";
 	var TAB_CONTAINER_NAME = "tc-";
 	var TAB_CONTAINER_TITLE = "title-";
 	var TAB_CONTAINER_DESC = "desc-";
@@ -136,7 +136,7 @@ require([
 
 		run();
 
-		thumbnailRenderCell = function (object, data, cell) {
+		renderRow = function (object, data, cell) {
 			var itemTitle = object.title;
 			var thumbnailUrl = formatThumbnailUrl(object);
 			var type = validateStr(object.type);
@@ -178,11 +178,11 @@ require([
 			destroyNodes(_categoryNodes);
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
-					domClass.replace(node, "column-4 details", "active column-4 details");
+					domClass.replace(node, "column-4", "active column-4");
 					detailsContentPane(selectedRowID, _titleID, _snippetID, _descID);
 				}
 			});
-			domClass.replace(_detailsNode, "active column-4 credits", "column-4 credits");
+			domClass.replace(_detailsNode, "active column-4 details", "column-4 details");
 
 			//overallScoreGraphic.update({
 			//	progress: score
@@ -197,7 +197,7 @@ require([
 			destroyNodes(_categoryNodes);
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
-					domClass.replace(node, "column-4 details", "active column-4 details");
+					domClass.replace(node, "column-4", "active column-4");
 					useCreditsContentPane(selectedRowID, _accessID, _creditID);
 				}
 			});
@@ -213,33 +213,33 @@ require([
 
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
-					domClass.replace(node, "column-4 details", "active column-4 details");
+					domClass.replace(node, "column-4", "active column-4");
 					tagsContentPane(_selectedRowID, _categoryID, _tagsID);
 				}
 			});
-			domClass.replace(_tagsNode, "active column-4 credits", "column-4 credits");
+			domClass.replace(_tagsNode, "active column-4 tags", "column-4 tags");
 		};
 
 		performanceNodeClickHandler = function (_categoryNodes, _nodeList, _item, _popUps, _mapDrawTime, _layers, _performanceNode) {
 			destroyNodes(_categoryNodes);
 			array.forEach(nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
-					domClass.replace(node, "column-4 details", "active column-4 details");
+					domClass.replace(node, "column-4", "active column-4");
 					performanceContentPane(_item, _popUps, _mapDrawTime, _layers);
 				}
 			});
-			domClass.replace(_performanceNode, "active column-4 credits", "column-4 credits");
+			domClass.replace(_performanceNode, "active column-4 performance", "column-4 performance");
 		};
 
 		profileNodeClickHandler = function (_selectedRowID, _categoryNodes, _nodeList, _userNameID, _userDescriptionID, _profileNode) {
 			destroyNodes(_categoryNodes);
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
-					domClass.replace(node, "column-4 details", "active column-4 details");
+					domClass.replace(node, "column-4", "active column-4");
 					loadProfileContentPane(_selectedRowID, _userNameID, _userDescriptionID);
 				}
 			});
-			domClass.replace(_profileNode, "active column-4 credits", "column-4 credits");
+			domClass.replace(_profileNode, "active column-4 profile", "column-4 profile");
 		};
 
 		function run() {
@@ -323,7 +323,7 @@ require([
 							{
 								label: "",
 								field: "thumbnailUrl",
-								renderCell: thumbnailRenderCell
+								renderCell: renderRow
 							}
 						];
 						// dgrid memory store
@@ -378,7 +378,6 @@ require([
 								previousSelectedRowID = selectedRowID;
 								// unique id's
 								var rowID = EXPANDED_ROW_NAME + selectedRowID;
-								var btnID = SAVE_BUTTON_NAME + selectedRowID;
 								var tcID = TAB_CONTAINER_NAME + selectedRowID;
 								var titleID = TAB_CONTAINER_TITLE + selectedRowID;
 								var descID = TAB_CONTAINER_DESC + selectedRowID;
@@ -430,8 +429,7 @@ require([
 											"			</div>" +
 											"		</div>" +
 											"	</div>" +
-											"</div>" +
-											"<div id='" + btnID + "'></div>",
+											"</div>",
 											selectedRow.firstElementChild, "last");
 
 									progressBarAnchorNode = query(".current-score-graphic-container")[0];
@@ -442,11 +440,11 @@ require([
 									destroyNodes(categoryNodes);
 									array.forEach(nodeList, function (node) {
 										if (domClass.contains(node, "active")) {
-											domClass.replace(node, "column-4 details", "active column-4 details");
+											domClass.replace(node, "column-4", "active column-4");
 											detailsContentPane(selectedRowID, titleID, snippetID, descID);
 										}
 									});
-									domClass.replace(detailsNode, "active column-4 credits", "column-4 credits");
+									domClass.replace(detailsNode, "active column-4", "column-4");
 
 									if (item.type === "Web Map") {
 										var mapDrawBegin = performance.now();
@@ -1464,14 +1462,14 @@ require([
 		function createContentButtonGroup(id) {
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
-							'	<div class="btn-group column-24 icon-edit-btn-group">' +
-							'		<a class="active column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
-							'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
-							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
-							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
-							'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
-							'	</div>' +
-							'</div>', id, "last");
+					'	<div class="btn-group column-24 icon-edit-btn-group">' +
+					'		<a class="active column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
+					'		<a class="column-4 credits icon-check"> ' + defaults.USE_CREDITS + '</a>' +
+					'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
+					'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
+					'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
+					'	</div>' +
+					'</div>', id, "last");
 
 			detailsNode = query(".details")[0];
 			creditsNode = query(".credits")[0];

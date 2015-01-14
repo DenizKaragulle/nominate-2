@@ -307,11 +307,20 @@ table tr {
 	margin-left: -10px;
 }
 
-.icon-edit {
+.icon-edit-btn-group a {
 	margin-left: 10px !important;
-	border: 1px solid #CCC !important;
+	/*border: 1px solid #CCC !important;*/
+	border: 1px solid #C86A4A !important;
+	color: #C86A4A !important;
 	border-radius: 3px !important;
 }
+
+/*.icon-edit {
+	margin-left: 10px !important;
+	border: 1px solid #C86A4A !important;
+	color: #C86A4A !important;
+	border-radius: 3px !important;
+}*/
 
 .performance-text {
 	text-align: center;
