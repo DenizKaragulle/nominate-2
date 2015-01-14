@@ -346,3 +346,7 @@ table tr {
 	color: #5daddd;
 	border: 1px solid #5daddd;
 }
+
+.existing-tags {
+	word-break:break-all;
+}
