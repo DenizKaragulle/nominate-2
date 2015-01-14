@@ -46,5 +46,19 @@ define({
 			"so words per sentence. Bonus points if hyperlinks </br >" +
 			"whisk the reader away to more fully developed </br >" +
 			"explanations and other supporting material." +
-			"<\/div>"
+			"<\/div>",
+
+	"USER_PROFILE_THUMBNAIL_TOOLTIP_CONTENT":"<div>" +
+			"Enter the pathname to the thumbnail image to be <br/>" +
+			"used for the user. The recommended image size is 200 <br/>" +
+			"pixels wide by 133 pixels high. Acceptable image <br/>" +
+			"formats are PNG, GIF, and JPEG. The maximum file size <br/>" +
+			"for an image is 1 MB. This is not a reference to the <br/>" +
+			"file but the file itself, which will be stored on the <br/>" +
+			"sharing servers." +
+			"<\/div>",
+
+	"USER_PROFILE_FULL_NAME_TOOLTIP_CONTENT":"<div>The full name of the user. Only applicable for the arcgis identity provider.<\/div>",
+
+	"USER_PROFILE_DESCRIPTION_TOOLTIP_CONTENT" : "<div>A description of the user.<\/div>"
 });

@@ -511,9 +511,8 @@ require([
 				var thumbnailUrl = formatThumbnailUrl(item);
 				var thumbnailUrl_clean = thumbnailUrl;
 
-				domConstruct.destroy("section-content");
-				var node = query(".content-container")[0];
-				domConstruct.place(details.DETAILS_CONTENT, node, "last");
+				// load the content
+				loadContent(details.DETAILS_CONTENT);
 
 				// nodes
 				var editSaveBtnNode = query(".edit-save-btn")[0],
@@ -620,7 +619,7 @@ require([
 						// update thumbnail
 						on(query(".expanded-item-thumbnail"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadAlternateImage(userItem, "SMALL");
+								uploadItemThumbnail(userItem, "SMALL");
 							}));
 						}));
 					} else {
@@ -738,10 +737,8 @@ require([
 				var accessAndUseConstraints = validateStr(item.licenseInfo);
 				var accessAndUseConstraints_clean = accessAndUseConstraints;
 
-				domConstruct.destroy("section-content");
-				domConstruct.destroy("save-row");
-				var node = query(".content-container")[0];
-				domConstruct.place(credits.ACCESS_CREDITS_CONTENT, node, "last");
+				// load the content
+				loadContent(credits.ACCESS_CREDITS_CONTENT);
 
 				domAttr.set(query(".creditsID-textbox")[0], "id", creditID);
 				domConstruct.create("div", { innerHTML: itemCredits }, query(".creditsID-textbox")[0], "first");
@@ -912,9 +909,8 @@ require([
 			var tagsDijit;
 
 			portalUser.getItem(_selectedRowID).then(function (item) {
-				domConstruct.destroy("section-content");
-				var node = query(".content-container")[0];
-				domConstruct.place(tags.TAGS_CONTENT, node, "last");
+				// load the content
+				loadContent(tags.TAGS_CONTENT);
 
 				// tags
 				var itemTags = item.tags;
@@ -1035,11 +1031,8 @@ require([
 		}
 
 		function performanceContentPane(item, popUps, mapDrawTime, layers) {
-			domConstruct.destroy("section-content");
-			domConstruct.destroy("save-row");
-
-			var node = query(".content-container")[0];
-			domConstruct.place(performanceConfig.PERFORMANCE_CONTENT, node, "last");
+			// load the content
+			loadContent(performanceConfig.PERFORMANCE_CONTENT);
 
 			/*if (layers !== undefined && layers.length < 1) {
 				domConstruct.create("div", {
@@ -1079,73 +1072,59 @@ require([
 				var _userThumbnailUrl = item.portal.getPortalUser().thumbnailUrl;
 				var _userThumbnailUrl_clean = _userThumbnailUrl;
 
-				domConstruct.destroy("section-content");
-				var node = query(".content-container")[0];
-				domConstruct.place(profileConfig.PROFILE_CONTENT, node, "last");
+				// load the content
+				loadContent(profileConfig.PROFILE_CONTENT);
+
+				// nodes
+				var editSaveBtnNode = query(".edit-save-btn")[0],
+						cancelBtnNode = query(".cancel-btn")[0],
+						profileThumbnailNode = query(".profileThumbnailUrl")[0],
+						profileUserFullNameNode = query(".name-textbox")[0],
+						profileUserDescriptionNode = query(".user-description-textbox")[0],
+						profileThumbnailTooltipNode = query(".profile-thumbnail-tooltip")[0],
+						profileFullNameTooltipNode = query(".user-full-name-tooltip")[0],
+						profileDescriptionTooltipNode = query(".user-description-tooltip")[0];
 
 				// set the thumbnail
-				domAttr.set(query(".profileThumbnailUrl")[0], "src", _userThumbnailUrl);
+				domAttr.set(profileThumbnailNode, "src", _userThumbnailUrl);
 				// set the user full name
-				domAttr.set(query(".name-textbox")[0], "id", _userNameID);
-				domConstruct.create("div", { innerHTML: _userFullName }, query(".name-textbox")[0], "first");
+				domAttr.set(profileUserFullNameNode, "id", _userNameID);
+				domConstruct.create("div", { innerHTML: _userFullName }, profileUserFullNameNode, "first");
 				// set the user description
-				domAttr.set(query(".user-description-textbox")[0], "id", _userDescriptionID);
-				domConstruct.create("div", { innerHTML: _userDescription }, query(".user-description-textbox")[0], "first");
+				domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
+				domConstruct.create("div", { innerHTML: _userDescription }, profileUserDescriptionNode, "first");
 
 				// tooltips
-				var profileThumbnailTooltip = new Tooltip({
-					connectId: [query(".profile-thumbnail-tooltip")[0]],
-					style: {
-						width: "10px"
-					},
-					label: "<div>" +
-							"Enter the pathname to the thumbnail image to be <br/>" +
-							"used for the user. The recommended image size is 200 <br/>" +
-							"pixels wide by 133 pixels high. Acceptable image <br/>" +
-							"formats are PNG, GIF, and JPEG. The maximum file size <br/>" +
-							"for an image is 1 MB. This is not a reference to the <br/>" +
-							"file but the file itself, which will be stored on the <br/>" +
-							"sharing servers." +
-							"<\/div>"
-				});
-				var userFullNameTooltip = new Tooltip({
-					connectId: [query(".user-full-name-tooltip")[0]],
-					style: {
-						width: "10px"
-					},
-					label: "<div>The full name of the user. Only applicable for the arcgis identity provider.<\/div>"
-				});
-				var userDescriptionTooltip = new Tooltip({
-					connectId: [query(".user-description-tooltip")[0]],
-					style: {
-						width: "10px"
-					},
-					label: "<div>A description of the user.<\/div>"
-				});
-
-				var editSaveBtnNode = query(".edit-save-btn")[0];
-				var cancelBtnNode = query(".cancel-btn")[0];
-				var itemUserNameNode = query(".name-textbox")[0];
-				var itemUserDescriptionNode = query(".user-description-textbox")[0];
+				createTooltip(profileThumbnailTooltipNode, tooltipsConfig.USER_PROFILE_THUMBNAIL_TOOLTIP_CONTENT);
+				createTooltip(profileFullNameTooltipNode, tooltipsConfig.USER_PROFILE_FULL_NAME_TOOLTIP_CONTENT);
+				createTooltip(profileDescriptionTooltipNode, tooltipsConfig.USER_PROFILE_DESCRIPTION_TOOLTIP_CONTENT);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
-						// EDIT clicked
+						// "EDIT" clicked
 						// update EDIT/SAVE button
 						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
 
 						// update user full name
-						domConstruct.empty(itemUserNameNode);
-						domConstruct.create("input", { class: "edit-user-full-name", value:_userFullName }, itemUserNameNode, "first");
-						domAttr.set(itemUserNameNode, "data-dojo-type", "dijit/form/TextBox");
-						domAttr.set(itemUserNameNode, "id", _userNameID);
+						domConstruct.empty(profileUserFullNameNode);
+						domConstruct.create("input", { class: "edit-user-full-name", value:_userFullName }, profileUserFullNameNode, "first");
+						domAttr.set(profileUserFullNameNode, "data-dojo-type", "dijit/form/TextBox");
+						domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
 						// update user description
-						domConstruct.empty(itemUserDescriptionNode);
-						domConstruct.create("input", { class: "edit-user-description", value:_userDescription }, itemUserDescriptionNode, "first");
-						domAttr.set(itemUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
-						domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
+						domConstruct.empty(profileUserDescriptionNode);
+						domConstruct.create("input", { class: "edit-user-description", value:_userDescription }, profileUserDescriptionNode, "first");
+						domAttr.set(profileUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
+						domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
+
+						// update user thumbnail
+						on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
+							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
+								uploadItemThumbnail(userItem, "SMALL");
+							}));
+						}));
 					} else {
+						// "SAVE" clicked
 						_userFullName = query(".edit-user-full-name")[0].value;
 						_userDescription = query(".edit-user-description")[0].value;
 
@@ -1164,15 +1143,15 @@ require([
 								usePost: true
 							}).then(function (response) {
 								if (response.success) {
-									domConstruct.empty(itemUserNameNode);
-									domConstruct.create("div", { innerHTML: _userFullName }, itemUserNameNode, "first");
-									domAttr.remove(itemUserNameNode, "data-dojo-type");
-									domAttr.set(itemUserNameNode, "id", _userNameID);
+									domConstruct.empty(profileUserFullNameNode);
+									domConstruct.create("div", { innerHTML: _userFullName }, profileUserFullNameNode, "first");
+									domAttr.remove(profileUserFullNameNode, "data-dojo-type");
+									domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
-									domConstruct.empty(itemUserDescriptionNode);
-									domConstruct.create("div", { innerHTML: _userDescription }, itemUserDescriptionNode, "first");
-									domAttr.remove(itemUserDescriptionNode, "data-dojo-type");
-									domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
+									domConstruct.empty(profileUserDescriptionNode);
+									domConstruct.create("div", { innerHTML: _userDescription }, profileUserDescriptionNode, "first");
+									domAttr.remove(profileUserDescriptionNode, "data-dojo-type");
+									domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 
 									_userFullName_clean = _userFullName;
 									_userDescription_clean = _userDescription;
@@ -1187,21 +1166,27 @@ require([
 				});
 
 				on(cancelBtnNode, "click", function () {
-					domConstruct.empty(itemUserNameNode);
-					domConstruct.create("div", { innerHTML: _userFullName_clean }, itemUserNameNode, "first");
-					domAttr.remove(itemUserNameNode, "data-dojo-type");
-					domAttr.set(itemUserNameNode, "id", _userNameID);
+					domConstruct.empty(profileUserFullNameNode);
+					domConstruct.create("div", { innerHTML: _userFullName_clean }, profileUserFullNameNode, "first");
+					domAttr.remove(profileUserFullNameNode, "data-dojo-type");
+					domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
-					domConstruct.empty(itemUserDescriptionNode);
-					domConstruct.create("div", { innerHTML: _userDescription_clean }, itemUserDescriptionNode, "first");
-					domAttr.remove(itemUserDescriptionNode, "data-dojo-type");
-					domAttr.set(itemUserDescriptionNode, "id", _userDescriptionID);
+					domConstruct.empty(profileUserDescriptionNode);
+					domConstruct.create("div", { innerHTML: _userDescription_clean }, profileUserDescriptionNode, "first");
+					domAttr.remove(profileUserDescriptionNode, "data-dojo-type");
+					domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
 				});
 			});
 		}
 
+
+		function loadContent(content) {
+			domConstruct.destroy("section-content");
+			var node = query(".content-container")[0];
+			domConstruct.place(content, node, "last");
+		}
 
 		function createTooltip(node, content) {
 			var userDescriptionTooltip = new Tooltip({
@@ -1213,9 +1198,8 @@ require([
 			});
 		}
 
-		function uploadAlternateImage(item, imageSizeName) {
+		function uploadItemThumbnail(item, imageSizeName) {
 			var deferred = new Deferred();
-
 			var previewDlg = new Dialog({
 				title:item.title,
 				className:"upload-thumbnail-dialog"
@@ -1276,10 +1260,17 @@ require([
 				type:"file",
 				name:(imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
 			});
+
 			on(fileInput, "change", lang.hitch(this, function (evt) {
 				var imgFile = fileInput.files[0];
+				// The FileReader object lets web applications asynchronously read the contents of files (or raw data
+				// buffers) stored on the user's computer, using File or Blob objects to specify the file or data to read.
 				var reader = new FileReader();
+				// Starts reading the contents of the specified Blob, once finished, the result attribute contains a
+				// data: URL representing the file's data.
 				reader.readAsDataURL(imgFile);
+				// A handler for the load event. This event is triggered each time the reading operation is successfully
+				// completed.
 				reader.onload = function (_file) {
 					domClass.add(fileInput, "dijitHidden");
 					var imgNode = put(dialogContent, "img");
@@ -1288,6 +1279,7 @@ require([
 						put(dialogContent, "div.imageSizeLabel", lang.replace("Image size: {0}px by {1}px", [this.width, this.height]));
 						if ((this.width === imageSizes[imageSizeName][0]) && (this.height === imageSizes[imageSizeName][1])) {
 							domClass.remove(uploadThumbBtn.domNode, "dijitHidden");
+							// upload button selected
 							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
 								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
 								updateItemThumbnail(item, form).then(lang.hitch(this, function (evt) {
@@ -1321,6 +1313,10 @@ require([
 
 		function updateItemThumbnail(userItem, form) {
 			var deferred = new Deferred();
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/a5662275444c446a92ab2dc3ef131ab3/items/b19c8ecd6b4c4bc8b704c4381950a437/update
+
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
+			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
 			// UPDATE LARGE THUMBNAIL //
 			esriRequest({
 				url:lang.replace("{userItemUrl}/update", userItem),

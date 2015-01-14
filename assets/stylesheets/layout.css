@@ -373,3 +373,8 @@ table tr {
 	font-size: 0.8em;
 	margin-top: -15px;
 }
+
+a.column-4.credits.icon-check {
+	color: #005E95 !important;
+	border-color: #005E95 !important;
+}
