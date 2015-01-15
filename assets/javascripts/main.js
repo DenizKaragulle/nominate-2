@@ -167,15 +167,15 @@ require([
 						'		<div class="item-number-views">' + views + ' views</div>' +
 						'	</div>' +
 
-						'	<div class="column-1">' +
-						'		<h4 class="icon-checked icon-blue"></h4>' +
+						'	<div class="column-3">' +
+						'		<h4 class="icon-checked icon-red" style="color:#C86A4A"> NOMINATED </h4>' +
 						'	</div>' +
-						'	<div class="column-1">' +
+						/*'	<div class="column-1">' +
 						'		<h4 class="icon-unchecked icon-blue"></h4>' +
 						'	</div>' +
 						'	<div class="column-1">' +
 						'		<h4 class="icon-unchecked icon-blue"></h4>' +
-						'	</div>' +
+						'	</div>' +*/
 						'</div>'
 			});
 			cell.appendChild(n);
@@ -996,6 +996,18 @@ require([
 									}
 								});
 							}
+						});
+
+						on(query(".select2-search-choice-close"), "click", function(evt) {
+							var removeTag = evt.target.parentNode.title;
+							console.log(removeTag);
+							array.forEach(defaults.CATEGORIES_LABELS, function (label, i) {
+								if (label.toUpperCase() === removeTag.toUpperCase()) {
+									var widgetId = defaults.CATEGORIES[i] + selectedRowID;
+									console.log(widgetId);
+									dijit.byId(widgetId).setAttribute("checked", false);
+								}
+							});
 						});
 
 
