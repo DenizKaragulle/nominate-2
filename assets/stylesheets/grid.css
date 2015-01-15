@@ -17,7 +17,7 @@
 /* remove the cell borders */
 .dgrid-cell {
 	/*border: none !important;*/
-	border-top: 1px solid #ababab !important;
+	border-top: 1px solid #cccccc !important;
 	border-right: none !important;
 	border-left: none !important;
 	border-bottom: none !important;
