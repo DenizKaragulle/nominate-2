@@ -920,10 +920,11 @@ require([
 				// tags
 				var itemTags = item.tags;
 				var itemTags_clean = itemTags;
+
 				domConstruct.create("div", {
-					class: "existing-tags select2-search-resultSet",
-					innerHTML: itemTags
+					class: "existing-tags"
 				}, query(".tag-container")[0], "first");
+				styleTags(itemTags, query(".existing-tags")[0]);
 
 				array.forEach(defaults.CATEGORIES, function (id, i) {
 					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + defaults.CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
@@ -1211,6 +1212,24 @@ require([
 			});
 		}
 
+
+		function styleTags(tags, srcNodeRef) {
+			domClass.add(dom.byId(srcNodeRef), 'select2-container select2-container-multi');
+			var list = domConstruct.create('ul', null, dom.byId(srcNodeRef));
+			// add style to the list of tags
+			domClass.add(list, 'select2-choices');
+			domStyle.set(list, 'border', 'none');
+			array.forEach(tags, function (item, i) {
+				var listItemNode = domConstruct.create('li', null, list);
+				domStyle.set(listItemNode, 'padding', '3px 5px 3px 5px');
+				// add style to new tag
+				domClass.add(listItemNode, 'select2-search-resultSet');
+				var listItemDivNode = domConstruct.create('div', {
+					title: item
+				}, listItemNode);
+				html.set(listItemDivNode, item);
+			});
+		}
 
 		function loadContent(content) {
 			domConstruct.destroy("section-content");
