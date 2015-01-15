@@ -417,19 +417,19 @@ require([
 											"			<div class='column-2'>" +
 											"				<div class='current-score-number'>78</div>" +
 											"			</div>" +
-											"			<div class='column-4 right' style='margin-top: -15px !important;'>" +
+											"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
 											"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
 											"			</div>" +
 											"		</div>" +
 
 											"		<div class='row'>" +
-											"			<div class='column-21 pre-3'>" +
+											"			<div class='column-15 pre-3'>" +
 											"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
 											"			</div>" +
 											"		</div>" +
 
 											"		<div class='row'>" +
-											"			<div class='column-21 pre-3'>" +
+											"			<div class='column-17 pre-3'>" +
 											"				<div id='" + tcID + "'></div>" +
 											"			</div>" +
 											"		</div>" +

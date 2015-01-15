@@ -28,7 +28,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 
-			'		<div class="column-17">' +
+			'		<div class="column-18">' +
 			'			<div class="column-12">' +
 			'				<div class="section-header">Select at least one of the following categories</div>' +
 			'				<div id="tagCategories"></div>' +
@@ -41,7 +41,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 
-			'		<div class="column-3">' +
+			'		<div class="column-2">' +
 			'			<button class="btn custom-btn edit-save-btn"> EDIT </button>' +
 			'			<button class="btn custom-btn cancel-btn"> CANCEL </button>' +
 			'		</div>' +

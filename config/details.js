@@ -29,14 +29,14 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-			"		<div class='column-3'>" +
+			"		<div class='column-2'>" +
 			"			<div class='section-header'>Thumbnail</div>" +
 			"		</div>" +
-			"		<div class='column-14'>" +
+			"		<div class='column-16'>" +
 			"			<img class='expanded-item-thumbnail thumbnailUrl' src=''>" +
 			"			<div class='edit-thumbnail-msg'>Click thumbnail to change image.</div>" +
 			"		</div>" +
-			"		<div class='column-3'>" +
+			"		<div class='column-2'>" +
 			"			<button class='btn custom-btn edit-save-btn'> EDIT </button>" +
 			"			<button class='btn custom-btn cancel-btn'> CANCEL </button>" +
 			"		</div>" +
@@ -54,7 +54,7 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-			"		<div class='column-3'>" +
+			"		<div class='column-2'>" +
 			"			<div class='section-header'>Title</div>" +
 			"		</div>" +
 			"		<div class='column-9'>" +
@@ -74,7 +74,7 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-			"		<div class='column-3'>" +
+			"		<div class='column-2'>" +
 			"			<div class='section-header'>Summary</div>" +
 			"		</div>" +
 			"		<div class='column-9'>" +
@@ -94,7 +94,7 @@ define({
 			"				</div>" +
 			"			</div>" +
 			"		</div>" +
-			"		<div class='column-3'>" +
+			"		<div class='column-2'>" +
 			"			<div class='section-header'>Description</div>" +
 			"		</div>" +
 			"		<div class='column-18'>" +
