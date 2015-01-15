@@ -327,11 +327,11 @@ table tr {
 }
 
 .performance-fade-out {
-	color: rgba(0, 122, 194, 0.24);
+	color: rgba(0, 121, 193, 0.24);
 }
 
 .performance-fade-in {
-	color: rgba(0, 122, 194, 1.0);
+	color: rgba(0, 121, 193, 1.0);
 }
 
 #nominate-btn {

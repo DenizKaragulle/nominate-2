@@ -43,7 +43,7 @@ define({
 			'		</div>' +
 			'		<div class="row">' +
 			'			<div class="column-5">' +
-			'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em; color: #005E95;">number of map layers</span></h2>' +
+			'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em;">number of map layers</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
 			'				<div class="section-header performance-text performance-fade-out">more than 10</div>' +
@@ -68,7 +68,7 @@ define({
 			'		</div>' +
 			'		<div class="row">' +
 			'			<div class="column-5">' +
-			'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em; color: #005E95;">sharing</span></h2>' +
+			'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em;">sharing</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
 			'				<div class="section-header performance-text performance-fade-out">not shared</div>' +
@@ -93,7 +93,7 @@ define({
 			'		</div>' +
 			'		<div class="row">' +
 			'			<div class="column-5">' +
-			'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em; color: #005E95;">draw time</span></h2>' +
+			'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em;">draw time</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
 			'				<div class="section-header performance-text performance-text-very-slow">very slow</div>' +
@@ -118,7 +118,7 @@ define({
 			'		</div>' +
 			'		<div class="row">' +
 			'			<div class="column-5">' +
-			'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em; color: #005E95;">pop ups</span></h2>' +
+			'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em;">pop ups</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
 			'				<div class="section-header performance-text performance-fade-out">no popups</div>' +
