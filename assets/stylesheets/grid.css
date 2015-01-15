@@ -4,12 +4,6 @@
 	border: none;
 }
 
-.dgrid-header {
-	background-color: #ffffff !important;
-	color: #0079C1;
-	border: none;
-}
-
 /* adjust font size */
 .dgrid-row {
 	font-size: 0.9em;
@@ -92,7 +86,7 @@
 .item-type {
 	position: relative;
 	font-size: 1.2em;
-	color: #005E95;
+	color: ##999;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
@@ -100,7 +94,7 @@
 /* item access */
 .item-access {
 	position: relative;
-	color: #005E95;
+	color: ##999;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.0em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -109,37 +103,9 @@
 /* item number of views */
 .item-number-views {
 	font-size: 0.95em;
-	color: #005E95;
+	color: ##999;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
-}
-
-.title-column-views {
-	font-size: 9.5pt;
-	color: #005E95;
-	letter-spacing: 1px;
-	-webkit-font-smoothing: antialiased;
-	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
-}
-
-
-.title-column-modified {
-	color: #696969;
-}
-
-/* Type */
-.field-type {
-	color: #696969;
-	width: 120px;
-}
-
-/* Status */
-.field-status {
-	width: 150px;
-}
-
-.item {
-
 }
 
 /* dGrid Thumbnail */
