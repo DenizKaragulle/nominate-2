@@ -28,6 +28,7 @@ require([
 	"dojo/dom-construct",
 	"dojo/dom-style",
 	"dojo/html",
+	"dojo/keys",
 	"dojo/number",
 	"dojo/on",
 	"dojo/query",
@@ -49,7 +50,7 @@ require([
 	"config/tooltips",
 	"esri/dijit/Tags",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, Tags) {
+], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, Tags) {
 
 	parser.parse();
 
@@ -121,6 +122,11 @@ require([
 	//
 	var overallScoreGraphic;
 	var score = 0;
+	//
+	var checkBoxID_values = [];
+	var tagStore;
+	var tagsDijit;
+	var newTag;
 
 	var imageSizes = {
 		"SMALL":[200, 133],
@@ -146,8 +152,7 @@ require([
 			var views = validateStr(object.numViews);
 			var access = object.access;
 			var n = domConstruct.create("div", {
-				innerHTML:
-						'<div class="row">' +
+				innerHTML:'<div class="row">' +
 						'	<div class="column-3">' +
 						'		<div class="thumbnail">' +
 						'			<img class="item-thumbnail-' + object.id + '" src="' + thumbnailUrl + '" />' +
@@ -187,14 +192,14 @@ require([
 			domClass.replace(_detailsNode, "active column-4 details", "column-4 details");
 
 			/*if (overallScoreGraphic !== undefined) {
-				overallScoreGraphic.update({
-					progress: score
-				});
-				dijit.byId("overall-score-graphic").update({
-					'progress':score
-				});
-				overallScoreGraphic.set("value", score);
-			}*/
+			 overallScoreGraphic.update({
+			 progress: score
+			 });
+			 dijit.byId("overall-score-graphic").update({
+			 'progress':score
+			 });
+			 overallScoreGraphic.set("value", score);
+			 }*/
 		};
 
 		creditsNodeClickHandler = function (selectedRowID, _categoryNodes, _nodeList, _item, _accessID, _creditID, _creditsNode) {
@@ -305,8 +310,8 @@ require([
 				owner = portalUser.username;
 
 				var params = {
-					q: "owner:" + owner,
-					num: 1000
+					q:"owner:" + owner,
+					num:1000
 				};
 				portal.queryItems(params).then(function (result) {
 					// total number of items
@@ -325,9 +330,9 @@ require([
 						// dgrid columns
 						var dgridColumns = [
 							{
-								label: "",
-								field: "thumbnailUrl",
-								renderCell: renderRow
+								label:"",
+								field:"thumbnailUrl",
+								renderCell:renderRow
 							}
 						];
 						// dgrid memory store
@@ -335,17 +340,17 @@ require([
 						//	data: result.results
 						//}));
 						itemStore = new Memory({
-							data: result.results
+							data:result.results
 						});
 						// dgrid
 						dgrid = new (declare([OnDemandGrid, Pagination]))({
-							store: itemStore,
-							rowsPerPage: 6,
-							pagingLinks: true,
-							pagingTextBox: false,
-							firstLastArrows: true,
-							columns: dgridColumns,
-							showHeader: false
+							store:itemStore,
+							rowsPerPage:6,
+							pagingLinks:true,
+							pagingTextBox:false,
+							firstLastArrows:true,
+							columns:dgridColumns,
+							showHeader:false
 						}, "dgrid");
 						dgrid.startup();
 
@@ -399,44 +404,44 @@ require([
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
 											"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
-											"	<div class='content-container'>" +
-											"		<div class='row'>" +
-											"			<div class='column-21 pre-3'>" +
-											"				<div id='map'></div>" +
-											"			</div>" +
-											"		</div>" +
+													"	<div class='content-container'>" +
+													"		<div class='row'>" +
+													"			<div class='column-21 pre-3'>" +
+													"				<div id='map'></div>" +
+													"			</div>" +
+													"		</div>" +
 
-											"		<div class='row'>" +
-											"			<div class='column-21 pre-3'>" +
-											"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-											"			</div>" +
-											"		</div>" +
+													"		<div class='row'>" +
+													"			<div class='column-21 pre-3'>" +
+													"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+													"			</div>" +
+													"		</div>" +
 
-											"		<div class='row'>" +
-											"			<div class='column-15 pre-3'>" +
-											"				<div class='current-score-graphic-container'></div>" +
-											"			</div>" +
-											"			<div class='column-2'>" +
-											"				<div class='current-score-number'>78</div>" +
-											"			</div>" +
-											"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-											"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
-											"			</div>" +
-											"		</div>" +
+													"		<div class='row'>" +
+													"			<div class='column-15 pre-3'>" +
+													"				<div class='current-score-graphic-container'></div>" +
+													"			</div>" +
+													"			<div class='column-2'>" +
+													"				<div class='current-score-number'>78</div>" +
+													"			</div>" +
+													"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+													"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
+													"			</div>" +
+													"		</div>" +
 
-											"		<div class='row'>" +
-											"			<div class='column-15 pre-3'>" +
-											"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-											"			</div>" +
-											"		</div>" +
+													"		<div class='row'>" +
+													"			<div class='column-15 pre-3'>" +
+													"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+													"			</div>" +
+													"		</div>" +
 
-											"		<div class='row'>" +
-											"			<div class='column-17 pre-3'>" +
-											"				<div id='" + tcID + "'></div>" +
-											"			</div>" +
-											"		</div>" +
-											"	</div>" +
-											"</div>",
+													"		<div class='row'>" +
+													"			<div class='column-17 pre-3'>" +
+													"				<div id='" + tcID + "'></div>" +
+													"			</div>" +
+													"		</div>" +
+													"	</div>" +
+													"</div>",
 											selectedRow.firstElementChild, "last");
 
 									progressBarAnchorNode = query(".current-score-graphic-container")[0];
@@ -484,12 +489,12 @@ require([
 										dijit.byId("overall-score-graphic").destroy();
 									}
 									overallScoreGraphic = new ProgressBar({
-										id: "overall-score-graphic",
-										style: {
-											"width": "100%",
-											"height": "5px"
+										id:"overall-score-graphic",
+										style:{
+											"width":"100%",
+											"height":"5px"
 										},
-										value: score
+										value:score
 									}).placeAt(progressBarAnchorNode).startup();
 								});
 							}
@@ -521,15 +526,15 @@ require([
 
 				// nodes
 				var editSaveBtnNode = query(".edit-save-btn")[0],
-					cancelBtnNode = query(".cancel-btn")[0],
-					itemThumbnailNode = query(".thumbnailUrl")[0],
-					itemTitleNode = query(".title-textbox")[0],
-					itemSummaryNode = query(".summary-textbox")[0],
-					itemDescriptionNode = query(".description-editor")[0],
-					itemThumbnailTooltipNode = query(".thumbnail-tooltip")[0],
-					itemTitleTooltipNode = query(".title-tooltip")[0],
-					itemSummaryTooltipNode = query(".summary-tooltip")[0],
-					itemDescriptionTooltipNode = query(".description-tooltip")[0];
+						cancelBtnNode = query(".cancel-btn")[0],
+						itemThumbnailNode = query(".thumbnailUrl")[0],
+						itemTitleNode = query(".title-textbox")[0],
+						itemSummaryNode = query(".summary-textbox")[0],
+						itemDescriptionNode = query(".description-editor")[0],
+						itemThumbnailTooltipNode = query(".thumbnail-tooltip")[0],
+						itemTitleTooltipNode = query(".title-tooltip")[0],
+						itemSummaryTooltipNode = query(".summary-tooltip")[0],
+						itemDescriptionTooltipNode = query(".description-tooltip")[0];
 
 
 				// set the thumbnail
@@ -537,11 +542,11 @@ require([
 				domAttr.set(itemThumbnailNode, "class", "expanded-item-thumbnail thumbnailUrl expanded-item-thumbnail-" + item.id);
 				// set the title
 				domAttr.set(itemTitleNode, "id", titleID);
-				domConstruct.create("div", { innerHTML: itemTitle }, itemTitleNode, "first");
+				domConstruct.create("div", { innerHTML:itemTitle }, itemTitleNode, "first");
 				// set the summary
 				domAttr.set(itemSummaryNode, "id", snippetID);
 				domAttr.set(itemSummaryNode, "value", itemSummary);
-				domConstruct.create("div", { innerHTML: itemSummary }, itemSummaryNode, "first");
+				domConstruct.create("div", { innerHTML:itemSummary }, itemSummaryNode, "first");
 				// set the description
 				domAttr.set(itemDescriptionNode, "id", descID);
 				if (itemDescription === "") {
@@ -568,13 +573,13 @@ require([
 
 						// update title
 						domConstruct.empty(itemTitleNode);
-						domConstruct.create("input", { class: "edit-title", value:itemTitle }, itemTitleNode, "first");
+						domConstruct.create("input", { class:"edit-title", value:itemTitle }, itemTitleNode, "first");
 						domAttr.set(itemTitleNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemTitleNode, "id", titleID);
 
 						// update summary
 						domConstruct.empty(itemSummaryNode);
-						domConstruct.create("input", { class: "edit-summary", value:itemSummary }, itemSummaryNode, "first");
+						domConstruct.create("input", { class:"edit-summary", value:itemSummary }, itemSummaryNode, "first");
 						domAttr.set(itemSummaryNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemSummaryNode, "id", snippetID);
 
@@ -617,7 +622,7 @@ require([
 								'|',
 								'viewSource'
 							],
-							innerHTML: itemDescription
+							innerHTML:itemDescription
 						}, dom.byId("description-editor-widget"));
 						descriptionEditor.startup();
 
@@ -640,23 +645,23 @@ require([
 								url:_userItemUrl + "/update",
 								content:{
 									f:"json",
-									title: itemTitle,
-									snippet: itemSummary,
-									description: itemDescription
+									title:itemTitle,
+									snippet:itemSummary,
+									description:itemDescription
 								}
 							}, {
 								usePost:true
 							}).then(function (response) {
-								if (response.success) {
-									html.set(query(".title-" + selectedRowID)[0], itemTitle);
-									itemTitle_clean = itemTitle;
-									itemSummary_clean = itemSummary;
-									itemDescription_clean = itemDescription;
-									updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
-								} else {
-									console.log("Details not updated");
-								}
-							});
+										if (response.success) {
+											html.set(query(".title-" + selectedRowID)[0], itemTitle);
+											itemTitle_clean = itemTitle;
+											itemSummary_clean = itemSummary;
+											itemDescription_clean = itemDescription;
+											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+										} else {
+											console.log("Details not updated");
+										}
+									});
 						});
 
 						// update thumbnail
@@ -665,13 +670,13 @@ require([
 
 						// update the title
 						domConstruct.empty(itemTitleNode);
-						domConstruct.create("div", { innerHTML: itemTitle }, itemTitleNode, "first");
+						domConstruct.create("div", { innerHTML:itemTitle }, itemTitleNode, "first");
 						domAttr.remove(itemTitleNode, "data-dojo-type");
 						domAttr.set(itemTitleNode, "id", titleID);
 
 						// update the summary
 						domConstruct.empty(itemSummaryNode);
-						domConstruct.create("div", { innerHTML: itemSummary }, itemSummaryNode, "first");
+						domConstruct.create("div", { innerHTML:itemSummary }, itemSummaryNode, "first");
 						domAttr.remove(itemSummaryNode, "data-dojo-type");
 						domAttr.set(itemSummaryNode, "id", snippetID);
 
@@ -702,13 +707,13 @@ require([
 
 					// update the title
 					domConstruct.empty(itemTitleNode);
-					domConstruct.create("div", { innerHTML: itemTitle_clean }, itemTitleNode, "first");
+					domConstruct.create("div", { innerHTML:itemTitle_clean }, itemTitleNode, "first");
 					domAttr.remove(itemTitleNode, "data-dojo-type");
 					domAttr.set(itemTitleNode, "id", titleID);
 
 					// update the summary
 					domConstruct.empty(itemSummaryNode);
-					domConstruct.create("div", { innerHTML: itemSummary_clean }, itemSummaryNode, "first");
+					domConstruct.create("div", { innerHTML:itemSummary_clean }, itemSummaryNode, "first");
 					domAttr.remove(itemSummaryNode, "data-dojo-type");
 					domAttr.set(itemSummaryNode, "id", snippetID);
 
@@ -746,7 +751,7 @@ require([
 				loadContent(credits.ACCESS_CREDITS_CONTENT);
 
 				domAttr.set(query(".creditsID-textbox")[0], "id", creditID);
-				domConstruct.create("div", { innerHTML: itemCredits }, query(".creditsID-textbox")[0], "first");
+				domConstruct.create("div", { innerHTML:itemCredits }, query(".creditsID-textbox")[0], "first");
 
 				domAttr.set(query(".accessAndUseConstraintsEditor")[0], "id", accessAndUseConstraintsID);
 				if (accessAndUseConstraints === "") {
@@ -756,11 +761,11 @@ require([
 				}
 
 				var userFullNameTooltip = new Tooltip({
-					connectId: [query(".access-constraints-tooltip")[0]],
-					style: {
-						width: "10px"
+					connectId:[query(".access-constraints-tooltip")[0]],
+					style:{
+						width:"10px"
 					},
-					label: "<div>" +
+					label:"<div>" +
 							"Determines if other users can search for this <br/>" +
 							"user by name. Setting this to private hides the <br/>" +
 							"user from user searches and invites. If org, only <br/>" +
@@ -770,11 +775,11 @@ require([
 							"<\/div>"
 				});
 				var userDescriptionTooltip = new Tooltip({
-					connectId: [query(".credits-tooltip")[0]],
-					style: {
-						width: "10px"
+					connectId:[query(".credits-tooltip")[0]],
+					style:{
+						width:"10px"
 					},
-					label: "<div>Credits the source of the item.<\/div>"
+					label:"<div>Credits the source of the item.<\/div>"
 				});
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
@@ -791,7 +796,7 @@ require([
 						domStyle.set(cancelBtnNode, "display", "block");
 						// credits
 						domConstruct.empty(itemCreditsNode);
-						domConstruct.create("input", { class: "edit-credits", value: itemCredits }, itemCreditsNode, "first");
+						domConstruct.create("input", { class:"edit-credits", value:itemCredits }, itemCreditsNode, "first");
 						domAttr.set(itemCreditsNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemCreditsNode, "id", creditID);
 
@@ -832,7 +837,7 @@ require([
 								'|',
 								'viewSource'
 							],
-							innerHTML: accessAndUseConstraints
+							innerHTML:accessAndUseConstraints
 						}, dom.byId("access-editor-widget"));
 						accessUseConstraintsEditor.startup();
 					} else {
@@ -841,29 +846,29 @@ require([
 						accessAndUseConstraints = dijit.byId("access-editor-widget").value;
 
 						domConstruct.empty(itemCreditsNode);
-						domConstruct.create("div", { innerHTML: itemCredits }, itemCreditsNode, "first");
+						domConstruct.create("div", { innerHTML:itemCredits }, itemCreditsNode, "first");
 						domAttr.remove(itemCreditsNode, "data-dojo-type");
 						domAttr.set(itemCreditsNode, "id", creditID);
 
 						portalUser.getItem(selectedRowID).then(function (results) {
 							var _userItemUrl = results.userItemUrl;
 							esriRequest({
-								url: _userItemUrl + "/update",
-								content: {
-									f: "json",
-									licenseInfo: accessAndUseConstraints,
-									accessInformation: itemCredits
+								url:_userItemUrl + "/update",
+								content:{
+									f:"json",
+									licenseInfo:accessAndUseConstraints,
+									accessInformation:itemCredits
 								}
 							}, {
-								usePost: true
+								usePost:true
 							}).then(function (response) {
-								if (response.success) {
-									domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
-									domStyle.set(cancelBtnNode, "display", "none");
-								} else {
-									console.log("ERROR");
-								}
-							});
+										if (response.success) {
+											domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
+											domStyle.set(cancelBtnNode, "display", "none");
+										} else {
+											console.log("ERROR");
+										}
+									});
 						});
 
 						if (dijit.byId("access-editor-widget")) {
@@ -885,7 +890,7 @@ require([
 
 				on(cancelBtnNode, "click", function () {
 					domConstruct.empty(itemCreditsNode);
-					domConstruct.create("div", { innerHTML: accessAndUseConstraints_clean }, itemCreditsNode, "first");
+					domConstruct.create("div", { innerHTML:accessAndUseConstraints_clean }, itemCreditsNode, "first");
 					domAttr.remove(itemCreditsNode, "data-dojo-type");
 					domAttr.set(itemCreditsNode, "id", creditID);
 
@@ -911,7 +916,7 @@ require([
 		}
 
 		function tagsContentPane(_selectedRowID, categoryID, tagsID) {
-			var tagsDijit;
+			checkBoxID_values = [];
 
 			portalUser.getItem(_selectedRowID).then(function (item) {
 				// load the content
@@ -922,7 +927,7 @@ require([
 				var itemTags_clean = itemTags;
 
 				domConstruct.create("div", {
-					class: "existing-tags"
+					class:"existing-tags"
 				}, query(".tag-container")[0], "first");
 				styleTags(itemTags, query(".existing-tags")[0]);
 
@@ -930,13 +935,14 @@ require([
 					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + defaults.CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
 				});
 
-				array.forEach(defaults.CATEGORIES, function (id) {
-					addCheckbox(id + selectedRowID);
+				array.forEach(defaults.CATEGORIES, function (id, i) {
+					addCheckbox(itemTags, id + selectedRowID, defaults.CATEGORIES_LABELS[i]);
 				});
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				var cancelBtnNode = query(".cancel-btn")[0];
-				var tagStore = new Memory({
+
+				tagStore = new Memory({
 					idProperty:'tag',
 					data:[].concat(itemTags)
 				});
@@ -946,8 +952,11 @@ require([
 						// EDIT mode
 						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
 
-						// remove non-editing tags
+						// remove non-editing tag nodes
 						domConstruct.empty(query(".existing-tags")[0]);
+
+						// enable living atlas checkboxes
+						toggleCheckboxes(checkBoxID_values, "disabled", false);
 
 						if (dijit.byId("tag-widget")) {
 							itemTags_clean = tagsDijit.values;
@@ -974,6 +983,23 @@ require([
 						}, "tag-widget");
 						// prepopulate the widget with values from the list
 						tagsDijit.prepopulate(tagStore.data);
+
+						on(tagsDijit._inputTextBox, "keyup", function (evt) {
+							newTag = "";
+							if (keys.ENTER === evt.keyCode) {
+								newTag = tagsDijit.values[tagsDijit.values.length - 1];
+
+								array.forEach(defaults.CATEGORIES_LABELS, function (label, i) {
+									if (label.toUpperCase() === newTag.toUpperCase()) {
+										var widgetId = defaults.CATEGORIES[i] + selectedRowID;
+										dijit.byId(widgetId).setAttribute("checked", true);
+									}
+								});
+							}
+						});
+
+
+
 					} else {
 						// SAVE mode
 						var _userItemUrl = item.userItemUrl;
@@ -986,28 +1012,31 @@ require([
 						}, {
 							usePost:true
 						}).then(function (response) {
-							if (response.success) {
-								if (dijit.byId("tag-widget")) {
-									itemTags_clean = tagsDijit.values;
-									domConstruct.create("div", {
-										class:"existing-tags"
-									}, query(".tag-container")[0], "first");
-									tagsDijit.addStyledTags(tagsDijit.values, query(".existing-tags")[0]);
+									if (response.success) {
+										if (dijit.byId("tag-widget")) {
+											itemTags_clean = tagsDijit.values;
+											domConstruct.create("div", {
+												class:"existing-tags"
+											}, query(".tag-container")[0], "first");
+											tagsDijit.addStyledTags(tagsDijit.values, query(".existing-tags")[0]);
 
-									dijit.byId("tag-widget").destroy();
-									domConstruct.create("div", {
-										id:"tag-widget"
-									}, query(".tag-container")[0], "first");
-								}
-								updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
-							} else {
-								console.log("ERROR");
-							}
-						});
+											dijit.byId("tag-widget").destroy();
+											domConstruct.create("div", {
+												id:"tag-widget"
+											}, query(".tag-container")[0], "first");
+										}
+										// disable living atlas checkboxes
+										toggleCheckboxes(checkBoxID_values, "disabled", true);
+										updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+									} else {
+										console.log("ERROR");
+									}
+								});
 					}
 				});
 
 				on(cancelBtnNode, "click", function () {
+					newTag = "";
 					if (dijit.byId("tag-widget")) {
 						domConstruct.create("div", {
 							class:"existing-tags"
@@ -1024,6 +1053,8 @@ require([
 							data:[].concat(itemTags_clean)
 						});
 					}
+					// disable living atlas checkboxes
+					toggleCheckboxes(checkBoxID_values, "disabled", true);
 					updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 				});
 			});
@@ -1054,41 +1085,41 @@ require([
 			}
 
 			var userDescriptionTooltip = new Tooltip({
-					connectId: [query(".map-layers-tooltip")[0]],
-					style: {
-						width: "10px"
-					},
-					label: "<div>Credits the source of the item.<\/div>"
-				});
+				connectId:[query(".map-layers-tooltip")[0]],
+				style:{
+					width:"10px"
+				},
+				label:"<div>Credits the source of the item.<\/div>"
+			});
 			//createTooltip(mapLayersTooltipNode, tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT);
 			createTooltip(sharingNode, tooltipsConfig.PERFORMANCE_SHARING_TOOLTIP_CONTENT);
 			createTooltip(drawTimeTooltipNode, tooltipsConfig.PERFORMANCE_DRAW_TIME_TOOLTIP_CONTENT);
 			createTooltip(popupsTooltipNode, tooltipsConfig.PERFORMANCE_POP_UPS_TOOLTIP_CONTENT);
 
 			/*if (layers !== undefined && layers.length < 1) {
-				domConstruct.create("div", {
-					innerHTML: "No available layers",
-					style: {
-						"margin-left": "5px",
-						"paddingLeft": "0px"
-					}
-				}, "layers-list", "first");
-			} else {
-				var ul = domConstruct.create("ul", {
-					style: {
-						"margin-left": "5px",
-						"paddingLeft": "0px"
-					}
-				}, "layers-list", "first");
-				array.forEach(layers, function (layer) {
-					domConstruct.create("li", {
-						innerHTML: layer.title,
-						style: {
-							"list-style-type": "none"
-						}
-					}, ul);
-				});
-			}*/
+			 domConstruct.create("div", {
+			 innerHTML: "No available layers",
+			 style: {
+			 "margin-left": "5px",
+			 "paddingLeft": "0px"
+			 }
+			 }, "layers-list", "first");
+			 } else {
+			 var ul = domConstruct.create("ul", {
+			 style: {
+			 "margin-left": "5px",
+			 "paddingLeft": "0px"
+			 }
+			 }, "layers-list", "first");
+			 array.forEach(layers, function (layer) {
+			 domConstruct.create("li", {
+			 innerHTML: layer.title,
+			 style: {
+			 "list-style-type": "none"
+			 }
+			 }, ul);
+			 });
+			 }*/
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
@@ -1120,10 +1151,10 @@ require([
 				domAttr.set(profileThumbnailNode, "src", _userThumbnailUrl);
 				// set the user full name
 				domAttr.set(profileUserFullNameNode, "id", _userNameID);
-				domConstruct.create("div", { innerHTML: _userFullName }, profileUserFullNameNode, "first");
+				domConstruct.create("div", { innerHTML:_userFullName }, profileUserFullNameNode, "first");
 				// set the user description
 				domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
-				domConstruct.create("div", { innerHTML: _userDescription }, profileUserDescriptionNode, "first");
+				domConstruct.create("div", { innerHTML:_userDescription }, profileUserDescriptionNode, "first");
 
 				// tooltips
 				createTooltip(profileThumbnailTooltipNode, tooltipsConfig.USER_PROFILE_THUMBNAIL_TOOLTIP_CONTENT);
@@ -1138,13 +1169,13 @@ require([
 
 						// update user full name
 						domConstruct.empty(profileUserFullNameNode);
-						domConstruct.create("input", { class: "edit-user-full-name", value:_userFullName }, profileUserFullNameNode, "first");
+						domConstruct.create("input", { class:"edit-user-full-name", value:_userFullName }, profileUserFullNameNode, "first");
 						domAttr.set(profileUserFullNameNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
 						// update user description
 						domConstruct.empty(profileUserDescriptionNode);
-						domConstruct.create("input", { class: "edit-user-description", value:_userDescription }, profileUserDescriptionNode, "first");
+						domConstruct.create("input", { class:"edit-user-description", value:_userDescription }, profileUserDescriptionNode, "first");
 						domAttr.set(profileUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 
@@ -1164,46 +1195,46 @@ require([
 							//var _community = "community/users/";
 							//var _portalUser = results.owner;
 							esriRequest({
-								url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
-								content: {
-									f: "json",
-									fullname: _userFullName,
-									description: _userDescription
+								url:"https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
+								content:{
+									f:"json",
+									fullname:_userFullName,
+									description:_userDescription
 								}
 							}, {
-								usePost: true
+								usePost:true
 							}).then(function (response) {
-								if (response.success) {
-									domConstruct.empty(profileUserFullNameNode);
-									domConstruct.create("div", { innerHTML: _userFullName }, profileUserFullNameNode, "first");
-									domAttr.remove(profileUserFullNameNode, "data-dojo-type");
-									domAttr.set(profileUserFullNameNode, "id", _userNameID);
+										if (response.success) {
+											domConstruct.empty(profileUserFullNameNode);
+											domConstruct.create("div", { innerHTML:_userFullName }, profileUserFullNameNode, "first");
+											domAttr.remove(profileUserFullNameNode, "data-dojo-type");
+											domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
-									domConstruct.empty(profileUserDescriptionNode);
-									domConstruct.create("div", { innerHTML: _userDescription }, profileUserDescriptionNode, "first");
-									domAttr.remove(profileUserDescriptionNode, "data-dojo-type");
-									domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
+											domConstruct.empty(profileUserDescriptionNode);
+											domConstruct.create("div", { innerHTML:_userDescription }, profileUserDescriptionNode, "first");
+											domAttr.remove(profileUserDescriptionNode, "data-dojo-type");
+											domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 
-									_userFullName_clean = _userFullName;
-									_userDescription_clean = _userDescription;
+											_userFullName_clean = _userFullName;
+											_userDescription_clean = _userDescription;
 
-									updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
-								} else {
-									console.log("Profile not updated");
-								}
-							});
+											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+										} else {
+											console.log("Profile not updated");
+										}
+									});
 						});
 					}
 				});
 
 				on(cancelBtnNode, "click", function () {
 					domConstruct.empty(profileUserFullNameNode);
-					domConstruct.create("div", { innerHTML: _userFullName_clean }, profileUserFullNameNode, "first");
+					domConstruct.create("div", { innerHTML:_userFullName_clean }, profileUserFullNameNode, "first");
 					domAttr.remove(profileUserFullNameNode, "data-dojo-type");
 					domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
 					domConstruct.empty(profileUserDescriptionNode);
-					domConstruct.create("div", { innerHTML: _userDescription_clean }, profileUserDescriptionNode, "first");
+					domConstruct.create("div", { innerHTML:_userDescription_clean }, profileUserDescriptionNode, "first");
 					domAttr.remove(profileUserDescriptionNode, "data-dojo-type");
 					domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
@@ -1225,7 +1256,7 @@ require([
 				// add style to new tag
 				domClass.add(listItemNode, 'select2-search-resultSet');
 				var listItemDivNode = domConstruct.create('div', {
-					title: item
+					title:item
 				}, listItemNode);
 				html.set(listItemDivNode, item);
 			});
@@ -1245,7 +1276,7 @@ require([
 				style:{
 					width:"10px"
 				},
-				label: content
+				label:content
 			});
 		}
 
@@ -1258,39 +1289,39 @@ require([
 			previewDlg.show();
 			// update thumbnail dialog
 			/*var previewDlg = new Dialog({
-				id:"update-thumbnail-dialog",
-				title: item.title,
-				content:"<div class='container thumbnail-dialog'>" +
-						"	<div class='row thumbnail-dialog-row'>" +
-						"		<div class='column-24'>" +
-						"			<div>Specify the image to use as the thumbnail.<\/div>" +
-						"		<\/div>" +
-						"	<\/div>" +
-						"	<div class='row thumbnail-dialog-row'>" +
-						"		<div class='column-4'>" +
-						"			<div>Image: <\/div>" +
-						"		<\/div>" +
-						"		<div class='column-20'>" +
-						"			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
-						"		<\/div>" +
-						"	<\/div>" +
-						"	<div class='row thumbnail-dialog-row'>" +
-						"		<div class='column-24'>" +
-						"			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
-						"		<\/div>" +
-						"	<\/div>" +
-						"	<div class='row thumbnail-dialog-row'>" +
-						"		<div class='column-6 right'>" +
-						"			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
-						"		<\/div>" +
-						"		<div class='column-4 right'>" +
-						"			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
-						"		<\/div>" +
-						"	<\/div>" +
-						"<\/div>",
-				style:"width: 450px"
-			});
-			previewDlg.show();*/
+			 id:"update-thumbnail-dialog",
+			 title: item.title,
+			 content:"<div class='container thumbnail-dialog'>" +
+			 "	<div class='row thumbnail-dialog-row'>" +
+			 "		<div class='column-24'>" +
+			 "			<div>Specify the image to use as the thumbnail.<\/div>" +
+			 "		<\/div>" +
+			 "	<\/div>" +
+			 "	<div class='row thumbnail-dialog-row'>" +
+			 "		<div class='column-4'>" +
+			 "			<div>Image: <\/div>" +
+			 "		<\/div>" +
+			 "		<div class='column-20'>" +
+			 "			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
+			 "		<\/div>" +
+			 "	<\/div>" +
+			 "	<div class='row thumbnail-dialog-row'>" +
+			 "		<div class='column-24'>" +
+			 "			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
+			 "		<\/div>" +
+			 "	<\/div>" +
+			 "	<div class='row thumbnail-dialog-row'>" +
+			 "		<div class='column-6 right'>" +
+			 "			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
+			 "		<\/div>" +
+			 "		<div class='column-4 right'>" +
+			 "			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
+			 "		<\/div>" +
+			 "	<\/div>" +
+			 "<\/div>",
+			 style:"width: 450px"
+			 });
+			 previewDlg.show();*/
 
 			var dialogContent = put(previewDlg.containerNode, "div.dijitDialogPaneContentArea");
 			var actionBar = put(previewDlg.containerNode, "div.dijitDialogPaneActionBar");
@@ -1386,8 +1417,8 @@ require([
 			} else if (value === "type") {
 				dgrid.set("sort", value, false);
 				dgrid.set('sort', [
-					{ attribute: value, descending: false },
-					{ attribute: "title", descending: false }
+					{ attribute:value, descending:false },
+					{ attribute:"title", descending:false }
 				]);
 			} else if (value === "numViews") {
 				dgrid.set("sort", value, true);
@@ -1406,18 +1437,18 @@ require([
 			var params = {};
 			if (value === "all-items") {
 				params = {
-					q: "owner:" + owner,
-					num: 1000
+					q:"owner:" + owner,
+					num:1000
 				};
 			} else if (value === "Web Map") {
 				params = {
-					q: "owner:" + owner + ' Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
-					num: 1000
+					q:"owner:" + owner + ' Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
+					num:1000
 				};
 			} else {
 				params = {
-					q: "owner:" + owner + " type: " + value,
-					num: 1000
+					q:"owner:" + owner + " type: " + value,
+					num:1000
 				};
 			}
 
@@ -1482,14 +1513,14 @@ require([
 		function createContentButtonGroup(id) {
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
-					'	<div class="btn-group column-24 icon-edit-btn-group">' +
-					'		<a class="active column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
-					'		<a class="column-4 credits icon-check"> ' + defaults.USE_CREDITS + '</a>' +
-					'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
-					'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
-					'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
-					'	</div>' +
-					'</div>', id, "last");
+							'	<div class="btn-group column-24 icon-edit-btn-group">' +
+							'		<a class="active column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
+							'		<a class="column-4 credits icon-check"> ' + defaults.USE_CREDITS + '</a>' +
+							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
+							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
+							'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
+							'	</div>' +
+							'</div>', id, "last");
 
 			detailsNode = query(".details")[0];
 			creditsNode = query(".credits")[0];
@@ -1499,16 +1530,59 @@ require([
 			nodeList = [detailsNode, creditsNode, tagsNode, performanceNode, profileNode];
 		}
 
-		function addCheckbox(id) {
-			var checkBox = new CheckBox({
-				name: "checkBox",
-				disabled: true,
-				value: "",
-				checked: false,
-				onChange: function (b) {
-					alert('onChange called with parameter = ' + b + ', and widget value = ' + this.get('value'));
-				}
-			}, id).startup();
+		function addCheckbox(itemTags, id, atlasTag) {
+			var checkBox;
+			if (array.some(itemTags, function (tag) {
+				return tag.toUpperCase() === atlasTag.toUpperCase();
+			})) {
+				// Check = TRUE
+				checkBox = new CheckBox({
+					name:"checkBox",
+					disabled:true,
+					value:atlasTag,
+					checked:true,
+					onChange:function (b) {
+						if (this.checked) {
+							tagStore.data.push(this.get("value"));
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						} else {
+							var position = array.indexOf(tagStore.data, this.value);
+							tagStore.data.splice(position, 1);
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						}
+					}
+				}, id).startup();
+			} else {
+				// Check = FALSE
+				checkBox = new CheckBox({
+					name:"checkBox",
+					disabled:true,
+					value:atlasTag,
+					checked:false,
+					onChange:function (b) {
+						if (this.checked) {
+							tagStore.data.push(this.get("value"));
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						} else {
+							var position = array.indexOf(tagStore.data, this.value);
+							tagStore.data.splice(position, 1);
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						}
+					}
+				}, id).startup();
+			}
+			checkBoxID_values.push(id);
+		}
+
+		function toggleCheckboxes(checkBoxID_values, attr, value) {
+			// enable/disable living atlas checkboxes
+			array.forEach((checkBoxID_values), function (id) {
+				dijit.byId(id).setAttribute(attr, value);
+			});
 		}
 
 		function validateStr(str) {
@@ -1558,7 +1632,7 @@ require([
 		function processMapDrawTime(val) {
 			var temp = (val / 1000) % 60;
 			var seconds = number.format(temp, {
-				places: 5
+				places:5
 			});
 			if (seconds) {
 				return seconds + " seconds";
