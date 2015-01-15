@@ -1502,6 +1502,7 @@ require([
 		function addCheckbox(id) {
 			var checkBox = new CheckBox({
 				name: "checkBox",
+				disabled: true,
 				value: "",
 				checked: false,
 				onChange: function (b) {
