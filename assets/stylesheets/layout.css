@@ -96,7 +96,7 @@ table tr {
 	line-height: 1.0em;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	color: #999;
+	color: #333;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.0em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -141,7 +141,7 @@ table tr {
 
 /* Progress bar */
 .current-score-graphic-container {
-	height: 30px;
+	height: 25px;
 }
 
 .nihilo .dijitProgressBarEmpty {

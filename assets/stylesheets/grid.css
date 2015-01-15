@@ -86,7 +86,7 @@
 .item-type {
 	position: relative;
 	font-size: 1.2em;
-	color: ##999;
+	color: ##333;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
@@ -94,7 +94,7 @@
 /* item access */
 .item-access {
 	position: relative;
-	color: ##999;
+	color: ##333;
 	-webkit-font-smoothing: antialiased;
 	font-size: 1.0em;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
@@ -103,7 +103,7 @@
 /* item number of views */
 .item-number-views {
 	font-size: 0.95em;
-	color: ##999;
+	color: ##333;
 	-webkit-font-smoothing: antialiased;
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
