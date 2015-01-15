@@ -186,13 +186,15 @@ require([
 			});
 			domClass.replace(_detailsNode, "active column-4 details", "column-4 details");
 
-			//overallScoreGraphic.update({
-			//	progress: score
-			//});
-			//	dijit.byId("overall-score-graphic").update({
-			//		'progress':score
-			//	});
-			//overallScoreGraphic.set("value", score);
+			/*if (overallScoreGraphic !== undefined) {
+				overallScoreGraphic.update({
+					progress: score
+				});
+				dijit.byId("overall-score-graphic").update({
+					'progress':score
+				});
+				overallScoreGraphic.set("value", score);
+			}*/
 		};
 
 		creditsNodeClickHandler = function (selectedRowID, _categoryNodes, _nodeList, _item, _accessID, _creditID, _creditsNode) {
@@ -478,6 +480,9 @@ require([
 									on(profileNode, "click", lang.partial(profileNodeClickHandler, selectedRowID, categoryNodes, nodeList, userNameID, userDescriptionID, profileNode));
 
 									// overall score graphic
+									if (dijit.byId("overall-score-graphic")) {
+										dijit.byId("overall-score-graphic").destroy();
+									}
 									overallScoreGraphic = new ProgressBar({
 										id: "overall-score-graphic",
 										style: {
@@ -916,7 +921,7 @@ require([
 				var itemTags = item.tags;
 				var itemTags_clean = itemTags;
 				domConstruct.create("div", {
-					class: "existing-tags",
+					class: "existing-tags select2-search-resultSet",
 					innerHTML: itemTags
 				}, query(".tag-container")[0], "first");
 
@@ -934,17 +939,16 @@ require([
 					idProperty:'tag',
 					data:[].concat(itemTags)
 				});
+
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// EDIT mode
-						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
-						domStyle.set(cancelBtnNode, "display", "block");
+						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
+
 						// remove non-editing tags
 						domConstruct.empty(query(".existing-tags")[0]);
 
 						if (dijit.byId("tag-widget")) {
-							console.log("---")
-							console.log(tagsDijit.values);
 							itemTags_clean = tagsDijit.values;
 							//dijit.byId("tag-widget").destroy();
 							//domConstruct.create("div", { id:"tag-widget" }, query(".tag-container")[0], "first");
@@ -970,6 +974,7 @@ require([
 						// prepopulate the widget with values from the list
 						tagsDijit.prepopulate(tagStore.data);
 					} else {
+						// SAVE mode
 						var _userItemUrl = item.userItemUrl;
 						esriRequest({
 							url:_userItemUrl + "/update",
@@ -984,18 +989,16 @@ require([
 								if (dijit.byId("tag-widget")) {
 									itemTags_clean = tagsDijit.values;
 									domConstruct.create("div", {
-										class:"existing-tags",
-										innerHTML:tagsDijit.values
+										class:"existing-tags"
 									}, query(".tag-container")[0], "first");
+									tagsDijit.addStyledTags(tagsDijit.values, query(".existing-tags")[0]);
 
 									dijit.byId("tag-widget").destroy();
 									domConstruct.create("div", {
 										id:"tag-widget"
 									}, query(".tag-container")[0], "first");
 								}
-								domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
-								domStyle.set(cancelBtnNode, "display", "none");
-								console.log("SUCCESS");
+								updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 							} else {
 								console.log("ERROR");
 							}
@@ -1005,14 +1008,10 @@ require([
 
 				on(cancelBtnNode, "click", function () {
 					if (dijit.byId("tag-widget")) {
-
-						console.log(tagsDijit.values);
-						console.log(itemTags_clean);
-
 						domConstruct.create("div", {
-							class:"existing-tags",
-							innerHTML: itemTags_clean
+							class:"existing-tags"
 						}, query(".tag-container")[0], "first");
+						tagsDijit.addStyledTags(itemTags_clean, query(".existing-tags")[0]);
 
 						dijit.byId("tag-widget").destroy();
 						domConstruct.create("div", {
@@ -1024,8 +1023,7 @@ require([
 							data:[].concat(itemTags_clean)
 						});
 					}
-					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
-					domStyle.set(cancelBtnNode, "display", "none");
+					updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 				});
 			});
 		}
@@ -1054,7 +1052,14 @@ require([
 				domStyle.set(query(".performance-text-good")[0], "color", "rgba(0, 122, 194, 0.24)");
 			}
 
-			createTooltip(mapLayersTooltipNode, tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT);
+			var userDescriptionTooltip = new Tooltip({
+					connectId: [query(".map-layers-tooltip")[0]],
+					style: {
+						width: "10px"
+					},
+					label: "<div>Credits the source of the item.<\/div>"
+				});
+			//createTooltip(mapLayersTooltipNode, tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT);
 			createTooltip(sharingNode, tooltipsConfig.PERFORMANCE_SHARING_TOOLTIP_CONTENT);
 			createTooltip(drawTimeTooltipNode, tooltipsConfig.PERFORMANCE_DRAW_TIME_TOOLTIP_CONTENT);
 			createTooltip(popupsTooltipNode, tooltipsConfig.PERFORMANCE_POP_UPS_TOOLTIP_CONTENT);
@@ -1416,9 +1421,9 @@ require([
 				dijit.byId("update-thumbnail-dialog").destroy();
 			}
 
-			if (dijit.byId("overall-score-graphic")) {
-				dijit.byId("overall-score-graphic").destroy();
-			}
+			//if (dijit.byId("overall-score-graphic")) {
+			//	dijit.byId("overall-score-graphic").destroy();
+			//}
 			if (dijit.byId(TAB_CONTAINER_LICENSE + previousSelectedRowID))
 				dijit.byId(TAB_CONTAINER_LICENSE + previousSelectedRowID).destroy();
 			if (dijit.byId(TAB_CONTAINER_DESC + previousSelectedRowID))

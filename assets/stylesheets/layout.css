@@ -298,7 +298,6 @@ table tr {
 }
 
 .tag-container {
-	background-color: rgb(228, 228, 228);
 	height: 230px;
 	width: 310px;
 }
@@ -335,9 +334,6 @@ table tr {
 	color: rgba(0, 122, 194, 1.0);
 }
 
-
-
-
 #nominate-btn {
 	color: #C86A4A;
 	border: 1px solid #C86A4A;
@@ -357,7 +353,7 @@ table tr {
 }
 
 .existing-tags {
-	word-break:break-all;
+	word-break: break-all;
 }
 
 .upload-thumbnail-dialog {
@@ -377,4 +373,15 @@ table tr {
 a.column-4.credits.icon-check {
 	color: #005E95 !important;
 	border-color: #005E95 !important;
+}
+
+/* Individual tag styles */
+.select2-search-resultSet {
+	padding: 3px 5px;
+	float: left;
+	background-color: rgb(240, 240, 240);
+	border-radius: 3px;
+	margin-right: 6px;
+	margin-bottom: 4px;
+	border: 1px solid rgb(174, 174, 174);
 }

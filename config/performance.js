@@ -16,7 +16,7 @@
 define({
 	'PERFORMANCE_CONTENT':
 			'<div id="section-content">' +
-			'	<div class="row">' +
+
 
 			'		<div class="row">' +
 			'			<div class="column-3 pre-8">' +
@@ -29,8 +29,6 @@ define({
 			'				<div class="section-header performance-text">BEST</div>' +
 			'			</div>' +
 			'		</div>' +
-
-
 
 
 			'		<div class="column-3">' +
@@ -132,6 +130,6 @@ define({
 			'				<div class="section-header performance-text performance-fade-in">custom</div>' +
 			'			</div>' +
 			'		</div>' +
-			'	</div>' +
+
 			'</div>'
 });
