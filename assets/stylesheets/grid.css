@@ -17,10 +17,10 @@
 /* remove the cell borders */
 .dgrid-cell {
 	/*border: none !important;*/
-	border-top: none !important;
+	border-top: 1px solid #ababab !important;
 	border-right: none !important;
 	border-left: none !important;
-	border-bottom: 1px solid red;
+	border-bottom: none !important;
 }
 
 /* Styles for auto-height grids; simply add the dgrid-autoheight class */
