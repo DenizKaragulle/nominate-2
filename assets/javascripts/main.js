@@ -482,6 +482,7 @@ require([
 											}
 										});
 									} else {
+										fadeLoader();
 										// hide the map div
 										domStyle.set("map", "display", "none");
 										on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", layers, performanceNode));
@@ -1656,6 +1657,20 @@ require([
 				duration:2000
 			};
 			fx.fadeOut(fadeArgs).play();
+		}
+
+		function fadeInSectionContent() {
+			var section = dom.byId("section-content");
+			fx.animateProperty({
+				node:section,
+				properties:{
+					opacity:{
+						start:0,
+						end:1
+					}
+				},
+				duration:500
+			}).play();
 		}
 	});
 });

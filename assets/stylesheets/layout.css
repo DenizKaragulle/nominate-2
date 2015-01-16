@@ -13,6 +13,11 @@
 	margin-top: 100px;
 }
 
+/* defines a section (Includes tabs and content, not map and score graphic) */
+#section-content {
+	/*opacity: 0;*/
+}
+
 .btn-group-container {
 	margin-bottom: 20px;
 }

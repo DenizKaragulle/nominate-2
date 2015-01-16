@@ -30,16 +30,18 @@
 			margin-top: 150px;
 		}
 
-		.map-draw-time-content {
+		#meta-data-content {
 			opacity: 0.0;
+		}
+
+		#map-draw-time-content {
+
 		}
 
 		#num-layers-content {
-			opacity: 1.0;
 		}
 
 		.num-layers {
-			opacity: 0.0;
 			line-height: 1.3;
 		}
 
@@ -123,7 +125,7 @@
 
 				function run() {
 					var mapDrawBegin = performance.now();
-					arcgisUtils.createMap("c058dbdc48024bd1ade0c9fdbc1ee441", "map").then(function (response) {
+					arcgisUtils.createMap("b95a9fb4dec5443f9e0ea0fcb4859c67", "map").then(function (response) {
 						layers = response.itemInfo.itemData.operationalLayers;
 						console.log(layers);
 						map = response.map;
@@ -135,8 +137,23 @@
 							query(".map-draw-time")[0].innerHTML = processMapDrawTime(mapDrawTime);
 							fadeLoader();
 							array.forEach(layers, processLayers);
+							fadeInContent();
 						}
 					});
+				}
+
+				function fadeInContent() {
+					var loaderNode = dom.byId("meta-data-content");
+					fx.animateProperty({
+						node: loaderNode,
+						properties: {
+							opacity: {
+								start: 0,
+								end: 1
+							}
+						},
+						duration: 500
+					}).play();
 				}
 
 				function fadeLoader() {
@@ -182,17 +199,16 @@
 			<div id="map-mask" class="loader">
 				<span class="side side-left"><span class="fill"></span></span>
 				<span class="side side-right"><span class="fill"></span></span>
-
 				<p class="loading-word">Loading...</p>
 			</div>
 			<div id="map"></div>
 		</div>
 
 		<!-- Map metadata -->
-		<div class="column-9">
+		<div id="meta-data-content" class="column-9">
 			<!-- Map draw time -->
 			<div class="row">
-				<div class="column-24 map-draw-time-content">
+				<div id="map-draw-time-content" class="column-24">
 					<div class="section-header">MAP DRAW TIME</div>
 					<div class="map-draw-time"></div>
 				</div>
