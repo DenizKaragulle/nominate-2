@@ -75,7 +75,7 @@ define({
 			"label" : "<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h4 style='color:#C86A4A'> IN REVIEW </h4>"
 		},
 		{
-			"label" : "<img src='assets/images/ThumbsUp.png' class='status-thumbnail'/><h4 style='color:#0079C1'> ACCEPTED </h4>"
+			"label" : "<img src='assets/images/ThumbsUp_Blue.png' class='status-thumbnail'/><h4 style='color:#0079C1'> ACCEPTED </h4>"
 		}
 	],
 
