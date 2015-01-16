@@ -1,330 +1,216 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="assets/stylesheets/tailcoat.css">
-<link rel="stylesheet" type="text/css" href="assets/stylesheets/layout.css">
-<link rel="stylesheet" type="text/css" href="assets/stylesheets/editor.css">
-<link rel="stylesheet" type="text/css" href="assets/stylesheets/styles.css">
-<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.12/dijit/themes/nihilo/nihilo.css">
-<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.12/esri/css/esri.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/tailcoat.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/layout.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/editor.css">
+	<link rel="stylesheet" type="text/css" href="assets/stylesheets/styles.css">
+	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.12/dijit/themes/nihilo/nihilo.css">
+	<link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.12/esri/css/esri.css">
 
-<style>
-	/* This stylesheet provides the structural CSS for the dgrid */
-.dgrid {
-	position: relative;
-	overflow: hidden; /* This is needed by IE to prevent crazy scrollbar flashing */
-	border: 1px solid #ddd;
-	height: 30em;
-	display: block;
-}
+	<style>
+		.container {
+			padding: 10px;
+			color: #555;
+			-webkit-font-smoothing: antialiased;
+			font-size: 0.80em;
+			font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+		}
 
-.dgrid-header {
-	background-color: #eee;
-}
+		#map {
+			width: 100%;
+			height: 100%;
+		}
 
-.dgrid-header-row {
-	position: absolute;
-	right: 17px; /* scrollbar width; revised in List.js if necessary */
-	left: 0;
-}
+		#map-mask {
+			opacity: 1.0;
+			position: absolute;
+			z-index: 100;
+			margin-left: 350px;
+			margin-top: 150px;
+		}
 
-.dgrid-header-scroll {
-	position: absolute;
-	top: 0;
-	right: 0;
-}
+		.map-draw-time-content {
+			opacity: 0.0;
+		}
 
-.dgrid-footer {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-}
+		#num-layers-content {
+			opacity: 1.0;
+		}
 
-.dgrid-header-hidden {
-	/*
-		Used to "hide" header, without losing size information for reference.
-		!important is used to supersede theme styles at higher specificity.
-		Left/right box styles are untouched, as they may influence width of
-		.dgrid-content as updated in Grid's resize method.
-	*/
-	font-size: 0; /* allow shrinkage in IE Quirks mode for Lists */
-	height: 0 !important;
-	border-top: none !important;
-	border-bottom: none !important;
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
-	padding-top: 0 !important;
-	padding-bottom: 0 !important;
-}
+		.num-layers {
+			opacity: 0.0;
+			line-height: 1.3;
+		}
 
-.dgrid-footer-hidden {
-	/* Hiding footer is much simpler; simply set its display to none. */
-	display: none;
-}
+	</style>
 
-.dgrid-sortable {
-	cursor: pointer;
-}
+	<script type="text/javascript">
+		var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+		var dojoConfig = {
+			async:true,
+			// The locationPath logic below may look confusing but all its doing is
+			// enabling us to load the api from a CDN and load local modules from the correct location.
+			packages:[
+				{
+					name:"config",
+					location:package_path + '/config'
+				}
+			]
+		};
+	</script>
+	<script src="assets/javascripts/tailcoat.js"></script>
+	<script src="//js.arcgis.com/3.12/"></script>
 
-.dgrid-header, .dgrid-header-row, .dgrid-footer {
-	overflow: hidden;
-	background-color: #eee;
-}
+	<script>
 
-.dgrid-row-table {
-	border-collapse: collapse;
-	border: none;
-	table-layout: fixed;
-	empty-cells: show;
-	width: 100%;
-	height: 100%;
-}
+		require([
+			"dojo/_base/fx",
+			"dijit/Tooltip",
+			"put-selector/put",
+			"dojo/store/Memory",
+			"dgrid/extensions/Pagination",
+			"dgrid/OnDemandGrid",
+			"dgrid/OnDemandList",
+			"dgrid/Keyboard",
+			"dgrid/Selection",
+			"dijit/Editor",
+			"dijit/form/Button",
+			"dijit/form/CheckBox",
+			"dijit/form/ComboBox",
+			"dijit/form/SimpleTextarea",
+			"dijit/Dialog",
+			"dijit/ProgressBar",
+			"dojo/_base/array",
+			"dojo/_base/declare",
+			"dojo/_base/fx",
+			"dojo/_base/lang",
+			"dojo/aspect",
+			"dojo/date",
+			"dojo/Deferred",
+			"dojo/dom",
+			"dojo/dom-attr",
+			"dojo/dom-class",
+			"dojo/dom-construct",
+			"dojo/dom-style",
+			"dojo/html",
+			"dojo/number",
+			"dojo/on",
+			"dojo/query",
+			"esri/arcgis/Portal",
+			"esri/arcgis/OAuthInfo",
+			"esri/IdentityManager",
+			"esri/arcgis/utils",
+			"esri/config",
+			"esri/map",
+			"esri/request",
+			"dojo/parser",
+			"dojo/ready",
+			"config/defaults",
+			"config/details",
+			"dojo/NodeList-traverse"
+		], function (fx, Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details) {
 
-.dgrid-cell {
-	padding: 3px;
-	text-align: left;
-	overflow: hidden;
-	vertical-align: top;
-	border: 1px solid #ddd;
-	border-top-style: none;
+			parser.parse();
 
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-}
+			ready(function () {
 
-.dgrid-content {
-	position: relative;
-	height: 99%;
-}
+				var map;
+				var layers;
+				var mapDrawComplete;
 
-.dgrid-scroller {
-	overflow-x: auto;
-	overflow-y: scroll;
-	position: absolute;
-	top: 0px;
-	margin-top: 25px; /* this will be adjusted programmatically to fit below the header*/
-	bottom: 0px;
-	width: 100%;
-}
+				run();
 
-.dgrid-preload {
-	/* Force IE6 to honor 0 height */
-	font-size: 0;
-	line-height: 0;
-}
+				function run() {
+					var mapDrawBegin = performance.now();
+					arcgisUtils.createMap("c058dbdc48024bd1ade0c9fdbc1ee441", "map").then(function (response) {
+						layers = response.itemInfo.itemData.operationalLayers;
+						console.log(layers);
+						map = response.map;
 
-.dgrid-loading {
-	position: relative;
-	height: 100%;
-}
+						// make sure map is loaded
+						if (map.loaded) {
+							mapDrawComplete = performance.now();
+							var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+							query(".map-draw-time")[0].innerHTML = processMapDrawTime(mapDrawTime);
+							fadeLoader();
+							array.forEach(layers, processLayers);
+						}
+					});
+				}
 
-.dgrid-above {
-	position: absolute;
-	bottom: 0;
-}
+				function fadeLoader() {
+					var loaderNode = dom.byId("map-mask");
+					domStyle.set(loaderNode, "opacity", "1");
+					var fadeArgs = {
+						node: "map-mask",
+						duration: 2000
+					};
+					fx.fadeOut(fadeArgs).play();
+				}
 
-.ui-icon {
-	width: 16px;
-	height: 16px;
-	background-image: url('images/ui-icons_222222_256x240.png');
-}
+				function processLayers(layer) {
+					domConstruct.create("div", {
+						innerHTML:"<div>" + layer.title + "<\/div>"
+					}, query(".num-layers")[0], "last");
+				}
 
-.ui-icon-triangle-1-e {
-	background-position: -32px -16px;
-}
-
-.ui-icon-triangle-1-se {
-	background-position: -48px -16px;
-}
-
-.dgrid-expando-icon {
-	width: 16px;
-	height: 16px;
-}
-
-.dgrid-tree-container {
-	-webkit-transition-duration: 0.3s;
-	-moz-transition-duration: 0.3s;
-	-ms-transition-duration: 0.3s;
-	-o-transition-duration: 0.3s;
-	transition-duration: 0.3s;
-	overflow: hidden;
-}
-
-.dgrid-tree-container.dgrid-tree-resetting {
-	-webkit-transition-duration: 0;
-	-moz-transition-duration: 0;
-	-ms-transition-duration: 0;
-	-o-transition-duration: 0;
-	transition-duration: 0;
-}
-
-	/* Single Sort */
-.dgrid-sort-arrow {
-	background-position: -64px -16px;
-	display: block;
-	float: right;
-	margin: 0 4px 0 5px;
-	height: 12px;
-}
-
-.dgrid-sort-up .dgrid-sort-arrow {
-	background-position: 0px -16px;
-}
-
-	/* selection*/
-.dgrid-selected {
-	background-color: #bfd6eb;
-}
-
-.dgrid-input {
-	width: 99%;
-}
-
-html.has-mozilla .dgrid-focus {
-	/* Tighten outline to fit within cells (avoids cutting off top/bottom outlines) */
-	outline-offset: -1px;
-}
-
-	/* will be used to calculate the width of the scrollbar */
-.dgrid-scrollbar-measure {
-	width: 100px;
-	height: 100px;
-	overflow: scroll;
-	position: absolute;
-	top: -9999px;
-}
-
-	/* Styles for auto-height grids; simply add the dgrid-autoheight class */
-.dgrid-autoheight {
-	height: auto;
-}
-
-.dgrid-autoheight .dgrid-scroller {
-	position: relative;
-	overflow-y: hidden;
-}
-
-.dgrid-autoheight .dgrid-header-scroll {
-	display: none;
-}
-
-.dgrid-autoheight .dgrid-header {
-	right: 0;
-}
-
-	/* indicator of a successful load */
-#dgrid-css-dgrid-loaded {
-	display: none;
-}
-
-
-.dijitProgressBarTile {
-	background: none !important;
-	background-color: #0079C1 !important;
-	color: white !important;
-}
-
-.dijitProgressBarEmpty {
-	background: none !important;
-	background-color: #0800a8 !important;
-}
-
-.dijitProgressBarFull {
-	border: none !important;
-}
-</style>
-
-<script type="text/javascript">
-	var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-	var dojoConfig = {
-		async:true,
-		// The locationPath logic below may look confusing but all its doing is
-		// enabling us to load the api from a CDN and load local modules from the correct location.
-		packages:[
-			{
-				name:"config",
-				location:package_path + '/config'
-			}
-		]
-	};
-</script>
-<script src="assets/javascripts/tailcoat.js"></script>
-<script src="//js.arcgis.com/3.12/"></script>
-
-<script>
-
-	require([
-		"dijit/Tooltip",
-		"put-selector/put",
-		"dojo/store/Memory",
-		"dgrid/extensions/Pagination",
-		"dgrid/OnDemandGrid",
-		"dgrid/OnDemandList",
-		"dgrid/Keyboard",
-		"dgrid/Selection",
-		"dijit/Editor",
-		"dijit/form/Button",
-		"dijit/form/CheckBox",
-		"dijit/form/ComboBox",
-		"dijit/form/SimpleTextarea",
-		"dijit/Dialog",
-		"dijit/ProgressBar",
-		"dojo/_base/array",
-		"dojo/_base/declare",
-		"dojo/_base/fx",
-		"dojo/_base/lang",
-		"dojo/aspect",
-		"dojo/date",
-		"dojo/Deferred",
-		"dojo/dom",
-		"dojo/dom-attr",
-		"dojo/dom-class",
-		"dojo/dom-construct",
-		"dojo/dom-style",
-		"dojo/html",
-		"dojo/number",
-		"dojo/on",
-		"dojo/query",
-		"esri/arcgis/Portal",
-		"esri/arcgis/OAuthInfo",
-		"esri/IdentityManager",
-		"esri/arcgis/utils",
-		"esri/config",
-		"esri/map",
-		"esri/request",
-		"dojo/parser",
-		"dojo/ready",
-		"config/defaults",
-		"config/details",
-		"dojo/NodeList-traverse"
-	], function (Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details) {
-
-		parser.parse();
-
-		ready(function () {
-
-			run();
-
-			function run() {
-
-			}
+				function processMapDrawTime(val) {
+					var temp = (val / 1000) % 60;
+					var seconds = number.format(temp, {
+						places:5
+					});
+					if (seconds) {
+						return seconds + " seconds";
+					} else {
+						return "N/A";
+					}
+				}
+			});
 		});
-	});
 
-</script>
+	</script>
 </head>
 
 <body class="nihilo">
 
-<div class="wrapper">
 
-	<div class="container">
-		<div class="row">
-			<div class="column-24">
-				<div class="progress-bar"></div>
+<div class="container">
+	<div class="row">
+		<!-- Map -->
+		<div class="column-15">
+			<div id="map-mask" class="loader">
+				<span class="side side-left"><span class="fill"></span></span>
+				<span class="side side-right"><span class="fill"></span></span>
+
+				<p class="loading-word">Loading...</p>
+			</div>
+			<div id="map"></div>
+		</div>
+
+		<!-- Map metadata -->
+		<div class="column-9">
+			<!-- Map draw time -->
+			<div class="row">
+				<div class="column-24 map-draw-time-content">
+					<div class="section-header">MAP DRAW TIME</div>
+					<div class="map-draw-time"></div>
+				</div>
+			</div>
+
+			<!-- Number of map layers -->
+			<div class="row">
+				<div id="num-layers-content" class="column-24">
+					<div class="section-header">LAYERS</div>
+					<div class="num-layers"></div>
+				</div>
+			</div>
+
+			<!-- Popups -->
+			<div class="row">
+				<div class="column-24">
+					<div class="pop-ups"></div>
+				</div>
 			</div>
 		</div>
 	</div>

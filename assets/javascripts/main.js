@@ -18,6 +18,7 @@ require([
 	"dijit/Tooltip",
 	"dojo/_base/array",
 	"dojo/_base/declare",
+	"dojo/_base/fx",
 	"dojo/_base/lang",
 	"dojo/aspect",
 	"dojo/date",
@@ -50,7 +51,7 @@ require([
 	"config/tooltips",
 	"esri/dijit/Tags",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, Tags) {
+], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, Tags) {
 
 	parser.parse();
 
@@ -407,6 +408,11 @@ require([
 													"	<div class='content-container'>" +
 													"		<div class='row'>" +
 													"			<div class='column-21 pre-3'>" +
+													"				<div id='map-mask' class='loader'>" +
+													"					<span class='side side-left'><span class='fill'></span></span>" +
+													"					<span class='side side-right'><span class='fill'></span></span>" +
+													"					<p class='loading-word'>Loading...</p>" +
+													"				</div>" +
 													"				<div id='map'></div>" +
 													"			</div>" +
 													"		</div>" +
@@ -470,6 +476,7 @@ require([
 											if (map.loaded) {
 												mapDrawComplete = performance.now();
 												var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+												fadeLoader();
 												var popUps = processPopupData(map);
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popUps, mapDrawTime, layers, performanceNode));
 											}
@@ -1064,6 +1071,7 @@ require([
 			// load the content
 			loadContent(performanceConfig.PERFORMANCE_CONTENT);
 
+			// tooltip nodes
 			var mapLayersTooltipNode = query(".map-layers-tooltip")[0],
 					sharingNode = query(".sharing-tooltip")[0],
 					drawTimeTooltipNode = query(".draw-time-tooltip")[0],
@@ -1638,6 +1646,16 @@ require([
 			} else {
 				return "Popups are disabled"
 			}
+		}
+
+		function fadeLoader() {
+			var loaderNode = dom.byId("map-mask");
+			domStyle.set(loaderNode, "opacity", "1");
+			var fadeArgs = {
+				node:"map-mask",
+				duration:2000
+			};
+			fx.fadeOut(fadeArgs).play();
 		}
 	});
 });
