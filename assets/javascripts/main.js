@@ -768,27 +768,10 @@ require([
 					domConstruct.place("<span>" + accessAndUseConstraints + "</span>", "access-editor-widget", "first");
 				}
 
-				var userFullNameTooltip = new Tooltip({
-					connectId:[query(".access-constraints-tooltip")[0]],
-					style:{
-						width:"10px"
-					},
-					label:"<div>" +
-							"Determines if other users can search for this <br/>" +
-							"user by name. Setting this to private hides the <br/>" +
-							"user from user searches and invites. If org, only <br/>" +
-							"members of your organization can search for this <br/>" +
-							"user. Setting this to public makes the user searchable. <br/>" +
-							"public is the default." +
-							"<\/div>"
-				});
-				var userDescriptionTooltip = new Tooltip({
-					connectId:[query(".credits-tooltip")[0]],
-					style:{
-						width:"10px"
-					},
-					label:"<div>Credits the source of the item.<\/div>"
-				});
+				var accessConstraintsTooltipNode = query(".access-constraints-tooltip")[0];
+				var creditsTooltipNode = query(".credits-tooltip")[0];
+				createTooltip(accessConstraintsTooltipNode, tooltipsConfig.CREDITS_TOOLTIP_CONTENT);
+				createTooltip(creditsTooltipNode, tooltipsConfig.ACCESS_TOOLTIP_CONTENT);
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				var cancelBtnNode = query(".cancel-btn")[0];
@@ -929,6 +912,12 @@ require([
 			portalUser.getItem(_selectedRowID).then(function (item) {
 				// load the content
 				loadContent(tags.TAGS_CONTENT);
+
+				var tagsTooltip = new Tooltip({
+					connectId:[query(".tags-tooltip")[0]],
+					label: '<div class="custom-tooltip-style"><p>The idea: To be in the Living Atlas, choose one tag from the list on the left side of the screen. This tells us what the primary category of your map is. Then enter tags that help people find your work. This can duplicate what’s in your title, summary and description to some extent, but also think more broadly: “How someone find this item if they don’t know it’s title, or the industry?”</p>' +
+							'<p>The score: Points are awarded for having more than three tags total. Points are awarded for choosing only one tag from the list at left, to indicate the primary category for your item. Points deducted for tags “copy”, “demo”, “test”, “eval”.</p></div>'
+				});
 
 				// tags
 				var itemTags = item.tags;
@@ -1104,14 +1093,7 @@ require([
 				domStyle.set(query(".performance-text-good")[0], "color", "rgba(0, 122, 194, 0.24)");
 			}
 
-			var userDescriptionTooltip = new Tooltip({
-				connectId:[query(".map-layers-tooltip")[0]],
-				style:{
-					width:"10px"
-				},
-				label:"<div>Credits the source of the item.<\/div>"
-			});
-			//createTooltip(mapLayersTooltipNode, tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT);
+			createTooltip(mapLayersTooltipNode, tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT);
 			createTooltip(sharingNode, tooltipsConfig.PERFORMANCE_SHARING_TOOLTIP_CONTENT);
 			createTooltip(drawTimeTooltipNode, tooltipsConfig.PERFORMANCE_DRAW_TIME_TOOLTIP_CONTENT);
 			createTooltip(popupsTooltipNode, tooltipsConfig.PERFORMANCE_POP_UPS_TOOLTIP_CONTENT);
