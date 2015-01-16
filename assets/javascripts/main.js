@@ -217,10 +217,9 @@ require([
 		tagsNodeClickHandler = function (_selectedRowID, _categoryNodes, _nodeList, _categoryID, _tagsID, _tagsNode) {
 			destroyNodes(categoryNodes);
 			categoryNodes = [];
-			array.forEach(defaults.CATEGORIES, function (category) {
-				categoryNodes.push(category + previousSelectedRowID);
+			array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
+				categoryNodes.push(atlasTag.id + previousSelectedRowID);
 			});
-
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
 					domClass.replace(node, "column-4", "active column-4");
@@ -370,8 +369,8 @@ require([
 								// collapse the previously selected row height
 								updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
 								var categoryNodes = [];
-								array.forEach(defaults.CATEGORIES, function (category) {
-									categoryNodes.push(category + previousSelectedRowID);
+								array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
+									categoryNodes.push(atlasTag.id + previousSelectedRowID);
 								});
 								domConstruct.destroy(EXPANDED_ROW_NAME + previousSelectedRowID);
 								if (previousSelectedRowID === selectedRowID) {
@@ -925,15 +924,6 @@ require([
 					addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
 				});
 
-				/*array.forEach(defaults.CATEGORIES, function (id, i) {
-					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + defaults.CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
-					addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
-				});
-
-				array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
-					addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
-				});*/
-
 				// tags store
 				tagStore = new Memory({
 					idProperty:'tag',
@@ -952,6 +942,7 @@ require([
 						toggleCheckboxes(checkBoxID_values, "disabled", false);
 
 						if (dijit.byId("tag-widget")) {
+							// destroy the Tags Dijit if it exists
 							itemTags_clean = tagsDijit.values;
 							dijit.byId("tag-widget").destroy();
 							//domConstruct.create("div", { id:"tag-widget" }, query(".tag-container")[0], "first");
@@ -982,9 +973,9 @@ require([
 							if (keys.ENTER === evt.keyCode) {
 								newTag = tagsDijit.values[tagsDijit.values.length - 1];
 
-								array.forEach(defaults.CATEGORIES_LABELS, function (label, i) {
-									if (label.toUpperCase() === newTag.toUpperCase()) {
-										var widgetId = defaults.CATEGORIES[i] + selectedRowID;
+								array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
+									if (atlasTag.tag.toUpperCase() === newTag.toUpperCase()) {
+										var widgetId = atlasTag.id + selectedRowID;
 										dijit.byId(widgetId).setAttribute("checked", true);
 									}
 								});
@@ -993,9 +984,9 @@ require([
 
 						on(query(".select2-search-choice-close"), "click", function(evt) {
 							var removeTag = evt.target.parentNode.title;
-							array.forEach(defaults.CATEGORIES_LABELS, function (label, i) {
-								if (label.toUpperCase() === removeTag.toUpperCase()) {
-									var widgetId = defaults.CATEGORIES[i] + selectedRowID;
+							array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
+								if (atlasTag.tag.toUpperCase() === removeTag.toUpperCase()) {
+									var widgetId = atlasTag.id + selectedRowID;
 									dijit.byId(widgetId).setAttribute("checked", false);
 								}
 							});
@@ -1003,12 +994,10 @@ require([
 					} else {
 						// SAVE mode
 						var _userItemUrl = item.userItemUrl;
-
-						console.log(tagsDijit.values);
-						array.forEach(defaults.CATEGORIES_LABELS, function (label, i) {
+						array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
 							if (newTag !== undefined) {
-								if (label.toUpperCase() === newTag.toUpperCase()) {
-									var widgetId = defaults.CATEGORIES[i] + selectedRowID;
+								if (atlasTag.tag.toUpperCase() === newTag.toUpperCase()) {
+									var widgetId = atlasTag.id + selectedRowID;
 									dijit.byId(widgetId).setAttribute("checked", true);
 								}
 							}

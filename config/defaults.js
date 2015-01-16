@@ -30,53 +30,51 @@ define({
 	"MY_PROFILE":"MY PROFILE",
 
 	"MONTHS":[ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
-	"CATEGORIES":['basemapsCB', 'lifestylesCB', 'urbanSystemsCB', 'historicalMapsCB', 'imageryCB', 'landscapeCB', 'transportationCB', 'storyMapsCB', 'demographgicsCB', 'earthObservationsCB', 'boundariesAndPlacesCB'],
-	"CATEGORIES_LABELS":['Basemaps', 'Lifestyle', 'Urban Systems', 'Historical maps', 'Imagery', 'Landscape', 'Transportation', 'Story Maps', 'Demographics', 'Earth Observations', 'Boundaries and Places'],
 
-	"ATLAS_TAGS" : [
+	"ATLAS_TAGS":[
 		{
-			"id" : "basemapsCB",
-			"tag" : "Basemaps"
+			"id":"basemapsCB",
+			"tag":"Basemaps"
 		},
 		{
-			"id" : "lifestylesCB",
-			"tag" : "Lifestyle"
+			"id":"lifestylesCB",
+			"tag":"Lifestyle"
 		},
-			{
-			"id" : "urbanSystemsCB",
-			"tag" : "Urban Systems"
+		{
+			"id":"urbanSystemsCB",
+			"tag":"Urban Systems"
 		},
-			{
-			"id" : "historicalMapsCB",
-			"tag" : "Historical maps"
+		{
+			"id":"historicalMapsCB",
+			"tag":"Historical maps"
 		},
-			{
-			"id" : "imageryCB",
-			"tag" : "Imagery"
+		{
+			"id":"imageryCB",
+			"tag":"Imagery"
 		},
-			{
-			"id" : "landscapeCB",
-			"tag" : "Landscape"
+		{
+			"id":"landscapeCB",
+			"tag":"Landscape"
 		},
-			{
-			"id" : "transportationCB",
-			"tag" : "Transportation"
+		{
+			"id":"transportationCB",
+			"tag":"Transportation"
 		},
-			{
-			"id" : "storyMapsCB",
-			"tag" : "Story Maps"
+		{
+			"id":"storyMapsCB",
+			"tag":"Story Maps"
 		},
-			{
-			"id" : "demographgicsCB",
-			"tag" : "Demographics"
+		{
+			"id":"demographgicsCB",
+			"tag":"Demographics"
 		},
-			{
-			"id" : "earthObservationsCB",
-			"tag" : "Earth Observations"
+		{
+			"id":"earthObservationsCB",
+			"tag":"Earth Observations"
 		},
-			{
-			"id" : "boundariesAndPlacesCB",
-			"tag" : "Boundaries and Places"
+		{
+			"id":"boundariesAndPlacesCB",
+			"tag":"Boundaries and Places"
 		}
 	],
 
@@ -113,16 +111,16 @@ define({
 
 	"CURRENT_STATUS":[
 		{
-			"label" : "<h4> </h4>"
+			"label":"<h4> </h4>"
 		},
 		{
-			"label" : "<h4 class='icon-checked icon-red' style='color:#C86A4A'> NOMINATED </h4>"
+			"label":"<h4 class='icon-checked icon-red' style='color:#C86A4A'> NOMINATED </h4>"
 		},
 		{
-			"label" : "<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h4 style='color:#C86A4A'> IN REVIEW </h4>"
+			"label":"<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h4 style='color:#C86A4A'> IN REVIEW </h4>"
 		},
 		{
-			"label" : "<img src='assets/images/ThumbsUp_Blue.png' class='status-thumbnail'/><h4 style='color:#0079C1'> ACCEPTED </h4>"
+			"label":"<img src='assets/images/ThumbsUp_Blue.png' class='status-thumbnail'/><h4 style='color:#0079C1'> ACCEPTED </h4>"
 		}
 	],
 
