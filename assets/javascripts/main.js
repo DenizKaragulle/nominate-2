@@ -906,6 +906,8 @@ require([
 				// load the content
 				loadContent(tags.TAGS_CONTENT);
 
+				var editSaveBtnNode = query(".edit-save-btn")[0];
+				var cancelBtnNode = query(".cancel-btn")[0];
 				var tagsTooltipNode = query(".tags-tooltip")[0];
 				createTooltip(tagsTooltipNode, tooltipsConfig.TAGS_TOOLTIP_CONTENT);
 
@@ -913,9 +915,11 @@ require([
 				var itemTags = item.tags;
 				var itemTags_clean = itemTags;
 
+				// create the existing tags
 				domConstruct.create("div", { class:"existing-tags" }, query(".tag-container")[0], "first");
 				styleTags(itemTags, query(".existing-tags")[0]);
 
+				// create the Living Atlas checkboxes/categories
 				array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
 					domConstruct.place("<div><input id='" + atlasTag.id + selectedRowID + "' /> " + atlasTag.tag + "</div>", dom.byId("tagCategories"), "last");
 					addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
@@ -930,9 +934,7 @@ require([
 					addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
 				});*/
 
-				var editSaveBtnNode = query(".edit-save-btn")[0];
-				var cancelBtnNode = query(".cancel-btn")[0];
-
+				// tags store
 				tagStore = new Memory({
 					idProperty:'tag',
 					data:[].concat(itemTags)
@@ -951,7 +953,7 @@ require([
 
 						if (dijit.byId("tag-widget")) {
 							itemTags_clean = tagsDijit.values;
-							//dijit.byId("tag-widget").destroy();
+							dijit.byId("tag-widget").destroy();
 							//domConstruct.create("div", { id:"tag-widget" }, query(".tag-container")[0], "first");
 						} else {
 							if (tagsDijit !== undefined) {
@@ -991,18 +993,13 @@ require([
 
 						on(query(".select2-search-choice-close"), "click", function(evt) {
 							var removeTag = evt.target.parentNode.title;
-							console.log(removeTag);
 							array.forEach(defaults.CATEGORIES_LABELS, function (label, i) {
 								if (label.toUpperCase() === removeTag.toUpperCase()) {
 									var widgetId = defaults.CATEGORIES[i] + selectedRowID;
-									console.log(widgetId);
 									dijit.byId(widgetId).setAttribute("checked", false);
 								}
 							});
 						});
-
-
-
 					} else {
 						// SAVE mode
 						var _userItemUrl = item.userItemUrl;
