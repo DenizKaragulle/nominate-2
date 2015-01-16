@@ -1654,7 +1654,7 @@ require([
 			domStyle.set(loaderNode, "opacity", "1");
 			var fadeArgs = {
 				node:"map-mask",
-				duration:2000
+				duration:1000
 			};
 			fx.fadeOut(fadeArgs).play();
 		}
