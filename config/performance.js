@@ -21,11 +21,11 @@ define({
 			'	<div class="row">' +
 			'		<div class="column-3 pre-8">' +
 			'			<div class="section-header performance-text" style="float: left">GOOD</div>' +
-			'			<span style="vertical-align: text-top; margin-left: 7px; margin-top: 3px; color: rgb(189, 189, 189); position: absolute;"> _______________ </span>' +
+			'			<span style="vertical-align: text-top; margin-left: 7px; margin-top: 3px; color: rgb(189, 189, 189); position: absolute;"> ______________ </span>' +
 			'		</div>' +
 			'		<div class="column-3">' +
 			'			<div class="section-header performance-text" style="float: left">BETTER</div>' +
-			'			<span style="vertical-align: text-top; margin-left: 7px; margin-top: 3px; color: rgb(189, 189, 189); position: absolute;"> _____________ </span>' +
+			'			<span style="vertical-align: text-top; margin-left: 7px; margin-top: 3px; color: rgb(189, 189, 189); position: absolute;"> ______________ </span>' +
 			'		</div>' +
 			'		<div class="column-1">' +
 			'			<div class="section-header performance-text">BEST</div>' +
