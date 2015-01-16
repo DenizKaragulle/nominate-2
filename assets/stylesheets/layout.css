@@ -412,10 +412,3 @@ a.column-4.credits.icon-check {
 	float: left !important;
 	margin-right: 7px !important;
 }
-
-.custom-tooltip-style {
-	word-wrap: break-word;
-	width: 400px;
-	height: 250px;
-	font-size: 1.0em;
-}
