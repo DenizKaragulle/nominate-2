@@ -151,6 +151,13 @@ require([
 			var modifiedDate = formatDate(object.modified);
 			var views = validateStr(object.numViews);
 			var access = object.access;
+			var randomStatus = Math.floor((Math.random() * 4) + 0);
+
+			var status = defaults.CURRENT_STATUS[randomStatus].label;
+			var statusLabel = defaults.CURRENT_STATUS[randomStatus].label;
+			var statusColor = defaults.CURRENT_STATUS[randomStatus].color;
+			var statusClass = defaults.CURRENT_STATUS[randomStatus].class;
+
 			var n = domConstruct.create("div", {
 				innerHTML:'<div class="row">' +
 						'	<div class="column-3">' +
@@ -168,7 +175,8 @@ require([
 						'	</div>' +
 
 						'	<div class="column-3">' +
-						'		<h4 class="icon-checked icon-red" style="color:#C86A4A"> NOMINATED </h4>' +
+						'		<div>' + status + '</div>' +
+						//'		<h4 class="' + statusClass + '" style="color:' + statusColor + '">' + statusLabel + '</h4>' +
 						'	</div>' +
 						/*'	<div class="column-1">' +
 						'		<h4 class="icon-unchecked icon-blue"></h4>' +

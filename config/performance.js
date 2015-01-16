@@ -19,7 +19,7 @@ define({
 
 
 			'		<div class="row">' +
-			'			<div class="column-3 pre-8">' +
+			'			<div class="column-3 pre-7">' +
 			'				<div class="section-header performance-text">GOOD</div>' +
 			'			</div>' +
 			'			<div class="column-3">' +
@@ -42,7 +42,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="row">' +
-			'			<div class="column-5">' +
+			'			<div class="column-4">' +
 			'				<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em;">number of map layers</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
@@ -67,7 +67,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="row">' +
-			'			<div class="column-5">' +
+			'			<div class="column-4">' +
 			'				<h2 class="icon-share icon-blue"><span style="font-size: 0.5em;">sharing</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
@@ -92,7 +92,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="row">' +
-			'			<div class="column-5">' +
+			'			<div class="column-4">' +
 			'				<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em;">draw time</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
@@ -117,7 +117,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="row">' +
-			'			<div class="column-5">' +
+			'			<div class="column-4">' +
 			'				<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em;">pop ups</span></h2>' +
 			'			</div>' +
 			'			<div class="column-3">' +
