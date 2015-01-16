@@ -144,10 +144,6 @@ table tr {
 	height: 20px;
 }
 
-.nihilo .dijitProgressBarEmpty {
-	border-color: white !important;
-}
-
 /* drop down sort/filter */
 .drop-down-style {
 	letter-spacing: 1px;

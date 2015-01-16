@@ -14,6 +14,7 @@
  | limitations under the License.
  */
 define({
+	// DETAILS
 	"ITEM_TITLE_TOOLTIP_CONTENT":'<div class="custom-tooltip-style">' +
 			'<p>The idea: enter a title that is easy to read and avoid the use of jargon or abbreviations. The item name answers the question “What is this?” </p>' +
 			'<p>The score: points are deducted if “copy”, “demo”, “test”, “eval”, “_” or words in ALL CAPS are used. Points awarded if two or more words are in the title. </p>' +
@@ -34,8 +35,7 @@ define({
 			'<p>The score: points are awarded for having roughly 4-5 sentences, 12 words per sentence average. Points are awarded for providing links to more detailed information.</p>' +
 			'</div>',
 
-
-
+	// USE/CREDITS
 	"CREDITS_TOOLTIP_CONTENT":'<div class="custom-tooltip-style">' +
 			'<p>The idea: Enter text that gives credit to the organizations requiring credit: data provider, application developer, etc. </p>' +
 			'<p>The score: full points awarded for entering text here.</p>' +
@@ -46,8 +46,13 @@ define({
 			'<p>The score: points awarded for having more than one word here. Also rewarded: text that includes a hyperlink (to more detailed information explaining the constraints more fully). “No restrictions” in the text also gives extra points.</p>' +
 			'</div>',
 
+	// TAGS
+	"TAGS_TOOLTIP_CONTENT":'<div class="custom-tooltip-style">' +
+			'<p>The idea: To be in the Living Atlas, choose one tag from the list on the left side of the screen. This tells us what the primary category of your map is. Then enter tags that help people find your work. This can duplicate what’s in your title, summary and description to some extent, but also think more broadly: “How someone find this item if they don’t know it’s title, or the industry?”</p>' +
+			'<p>The score: Points are awarded for having more than three tags total. Points are awarded for choosing only one tag from the list at left, to indicate the primary category for your item. Points deducted for tags “copy”, “demo”, “test”, “eval”.</p>' +
+			'</div>',
 
-
+	// PERFORMANCE
 	"PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT":'<div class="custom-tooltip-style">' +
 			'<p>The idea: To be in the Living Atlas, choose one tag from the list on the left side of the screen. This tells us what the primary category of your map is. Then enter tags that help people find your work. This can duplicate what’s in your title, summary and description to some extent, but also think more broadly: “How someone find this item if they don’t know it’s title, or the industry?”</p>' +
 			'<p>The score: Points are awarded for having more than three tags total. Points are awarded for choosing only one tag from the list at left, to indicate the primary category for your item. Points deducted for tags “copy”, “demo”, “test”, “eval”.</p>' +
@@ -65,8 +70,7 @@ define({
 			'<p>The score: points are awarded for having any popup, but more points are awarded if a custom popup is detected (no rows and columns).</p>' +
 			'</div>',
 
-
-
+	// USER PROFILE
 	"USER_PROFILE_THUMBNAIL_TOOLTIP_CONTENT":'<div class="custom-tooltip-style">' +
 			'<p>The idea: People want to know who is behind a map or app. Share your image or organization logo — something visual to remember. </p>' +
 			'<p>The score: any image besides the default is awarded points. Bonus points if it fits the required dimensions.</p>' +

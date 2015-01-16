@@ -33,6 +33,53 @@ define({
 	"CATEGORIES":['basemapsCB', 'lifestylesCB', 'urbanSystemsCB', 'historicalMapsCB', 'imageryCB', 'landscapeCB', 'transportationCB', 'storyMapsCB', 'demographgicsCB', 'earthObservationsCB', 'boundariesAndPlacesCB'],
 	"CATEGORIES_LABELS":['Basemaps', 'Lifestyle', 'Urban Systems', 'Historical maps', 'Imagery', 'Landscape', 'Transportation', 'Story Maps', 'Demographics', 'Earth Observations', 'Boundaries and Places'],
 
+	"ATLAS_TAGS" : [
+		{
+			"id" : "basemapsCB",
+			"tag" : "Basemaps"
+		},
+		{
+			"id" : "lifestylesCB",
+			"tag" : "Lifestyle"
+		},
+			{
+			"id" : "urbanSystemsCB",
+			"tag" : "Urban Systems"
+		},
+			{
+			"id" : "historicalMapsCB",
+			"tag" : "Historical maps"
+		},
+			{
+			"id" : "imageryCB",
+			"tag" : "Imagery"
+		},
+			{
+			"id" : "landscapeCB",
+			"tag" : "Landscape"
+		},
+			{
+			"id" : "transportationCB",
+			"tag" : "Transportation"
+		},
+			{
+			"id" : "storyMapsCB",
+			"tag" : "Story Maps"
+		},
+			{
+			"id" : "demographgicsCB",
+			"tag" : "Demographics"
+		},
+			{
+			"id" : "earthObservationsCB",
+			"tag" : "Earth Observations"
+		},
+			{
+			"id" : "boundariesAndPlacesCB",
+			"tag" : "Boundaries and Places"
+		}
+	],
+
 	// map draw times in seconds
 	"drawTime":{
 		"GOOD":10,

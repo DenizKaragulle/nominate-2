@@ -176,14 +176,7 @@ require([
 
 						'	<div class="column-3">' +
 						'		<div>' + status + '</div>' +
-						//'		<h4 class="' + statusClass + '" style="color:' + statusColor + '">' + statusLabel + '</h4>' +
 						'	</div>' +
-						/*'	<div class="column-1">' +
-						'		<h4 class="icon-unchecked icon-blue"></h4>' +
-						'	</div>' +
-						'	<div class="column-1">' +
-						'		<h4 class="icon-unchecked icon-blue"></h4>' +
-						'	</div>' +*/
 						'</div>'
 			});
 			cell.appendChild(n);
@@ -913,28 +906,29 @@ require([
 				// load the content
 				loadContent(tags.TAGS_CONTENT);
 
-				var tagsTooltip = new Tooltip({
-					connectId:[query(".tags-tooltip")[0]],
-					label: '<div class="custom-tooltip-style"><p>The idea: To be in the Living Atlas, choose one tag from the list on the left side of the screen. This tells us what the primary category of your map is. Then enter tags that help people find your work. This can duplicate what’s in your title, summary and description to some extent, but also think more broadly: “How someone find this item if they don’t know it’s title, or the industry?”</p>' +
-							'<p>The score: Points are awarded for having more than three tags total. Points are awarded for choosing only one tag from the list at left, to indicate the primary category for your item. Points deducted for tags “copy”, “demo”, “test”, “eval”.</p></div>'
-				});
+				var tagsTooltipNode = query(".tags-tooltip")[0];
+				createTooltip(tagsTooltipNode, tooltipsConfig.TAGS_TOOLTIP_CONTENT);
 
 				// tags
 				var itemTags = item.tags;
 				var itemTags_clean = itemTags;
 
-				domConstruct.create("div", {
-					class:"existing-tags"
-				}, query(".tag-container")[0], "first");
+				domConstruct.create("div", { class:"existing-tags" }, query(".tag-container")[0], "first");
 				styleTags(itemTags, query(".existing-tags")[0]);
 
-				array.forEach(defaults.CATEGORIES, function (id, i) {
-					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + defaults.CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
+				array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
+					domConstruct.place("<div><input id='" + atlasTag.id + selectedRowID + "' /> " + atlasTag.tag + "</div>", dom.byId("tagCategories"), "last");
+					addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
 				});
 
-				array.forEach(defaults.CATEGORIES, function (id, i) {
-					addCheckbox(itemTags, id + selectedRowID, defaults.CATEGORIES_LABELS[i]);
+				/*array.forEach(defaults.CATEGORIES, function (id, i) {
+					domConstruct.place("<div><input id='" + id + selectedRowID + "' /> " + defaults.CATEGORIES_LABELS[i] + "</div>", dom.byId("tagCategories"), "last");
+					addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
 				});
+
+				array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
+					addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
+				});*/
 
 				var editSaveBtnNode = query(".edit-save-btn")[0];
 				var cancelBtnNode = query(".cancel-btn")[0];
@@ -1012,6 +1006,17 @@ require([
 					} else {
 						// SAVE mode
 						var _userItemUrl = item.userItemUrl;
+
+						console.log(tagsDijit.values);
+						array.forEach(defaults.CATEGORIES_LABELS, function (label, i) {
+							if (newTag !== undefined) {
+								if (label.toUpperCase() === newTag.toUpperCase()) {
+									var widgetId = defaults.CATEGORIES[i] + selectedRowID;
+									dijit.byId(widgetId).setAttribute("checked", true);
+								}
+							}
+						});
+
 						esriRequest({
 							url:_userItemUrl + "/update",
 							content:{
@@ -1271,8 +1276,6 @@ require([
 		}
 
 		function createTooltip(node, content) {
-			console.log(node);
-			console.log(content);
 			var userDescriptionTooltip = new Tooltip({
 				connectId:[node],
 				style:{

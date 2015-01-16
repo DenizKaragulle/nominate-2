@@ -219,6 +219,22 @@ html.has-mozilla .dgrid-focus {
 #dgrid-css-dgrid-loaded {
 	display: none;
 }
+
+
+.dijitProgressBarTile {
+	background: none !important;
+	background-color: #0079C1 !important;
+	color: white !important;
+}
+
+.dijitProgressBarEmpty {
+	background: none !important;
+	background-color: #0800a8 !important;
+}
+
+.dijitProgressBarFull {
+	border: none !important;
+}
 </style>
 
 <script type="text/javascript">
@@ -255,6 +271,7 @@ html.has-mozilla .dgrid-focus {
 		"dijit/form/ComboBox",
 		"dijit/form/SimpleTextarea",
 		"dijit/Dialog",
+		"dijit/ProgressBar",
 		"dojo/_base/array",
 		"dojo/_base/declare",
 		"dojo/_base/fx",
@@ -282,9 +299,8 @@ html.has-mozilla .dgrid-focus {
 		"dojo/ready",
 		"config/defaults",
 		"config/details",
-		"esri/dijit/Tags",
 		"dojo/NodeList-traverse"
-	], function (Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, Tags) {
+	], function (Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details) {
 
 		parser.parse();
 
@@ -293,137 +309,10 @@ html.has-mozilla .dgrid-focus {
 			run();
 
 			function run() {
-				var someData = [
-					{id:100, name:"One"},
-					{id:2, name:"Two"}
-				];
-				var store = new Memory({data:someData});
-
-				var anItem = store.get(100);
-				console.log(anItem);
-				anItem.name = "Chris";
-				console.log(anItem);
-
-				var _query = store.query({name:"One"});
-				console.log(_query);
-
-				store.query(function (object) {
-					return object.id > 50;
-				});
-
-				store.query({
-					name:"One"
-				}, {
-					sort:[{
-						attribute:"id"
-					}]
-				});
-				store.put({
-					id:3,
-					name:"Three"
-				});
-				store.remove(3);
-
-
-				var data = [
-					{ id:'2434', first:'Bob', last:'Barker', age:89 }
-				];
-
-				var itemStore = new Memory({
-					data:data
-				});
-
-				var thumbnailRenderCell = function (object, data, cell) {
-					console.log(object);
-					var n = domConstruct.create("div", {
-						innerHTML:'<div class="container">' +
-								'	<div class="row item">' +
-								'		<div class="column-8">COLUMN-8</div>' +
-								'		<div class="column-8">COLUMN-8</div>' +
-								'		<div class="column-8">COLUMN-8</div>' +
-								'	</div>' +
-								'</div>' +
-								'<div class="container" id="item-content"></div>'
-					});
-					cell.appendChild(n);
-				};
-
-				var dgridColumns = [
-					{
-						label:"",
-						field:"thumbnailUrl",
-						renderCell:thumbnailRenderCell
-					}
-				];
-
-				var dgrid = new (declare([OnDemandGrid, Pagination]))({
-					store:itemStore,
-					rowsPerPage:6,
-					pagingLinks:true,
-					pagingTextBox:false,
-					firstLastArrows:true,
-					columns:dgridColumns,
-					showHeader:false
-				}, "dgrid");
-
-				var portalUrl = document.location.protocol + '//www.arcgis.com';
-				var portal = new arcgisPortal.Portal(portalUrl);
-
-				on(dgrid.domNode, ".item:click", function (event) {
-					var selectedRow = dgrid.row(event).element;
-					domStyle.set(selectedRow, "height", "200px");
-					portal.signIn().then(function (user) {
-						var portalUser = portal.getPortalUser();
-						portalUser.getItem("c058dbdc48024bd1ade0c9fdbc1ee441").then(function (item) {
-							console.log(item);
-							domConstruct.create("div", {
-								innerHTML:'<div class="row item">' +
-										'	<div class="column-8">' + item.access + '</div>' +
-										'	<div class="column-8">' + item.owner + '</div>' +
-										'	<div class="column-8">' + item.numViews + '</div>' +
-										'</div>'
-							}, dom.byId("item-content"), "last");
-						});
-					});
-				});
-
-				var itemDescriptionNode = query(".description-editor")[0];
-				on(query(".edit-save-btn")[0], "click", function () {
-					if (query(".edit-save-btn")[0].innerHTML === " EDIT ") {
-						domAttr.set(query(".edit-save-btn")[0], "innerHTML", " SAVE ");
-						domAttr.set(itemDescriptionNode, "id", "SHIT");
-						domAttr.set(itemDescriptionNode, "data-dojo-type", "dijit/Editor");
-						domAttr.set(itemDescriptionNode, "data-dojo-props", "plugins:['bold', 'italic', 'underline']");
-					} else {
-						domAttr.set(query(".edit-save-btn")[0], "innerHTML", " EDIT ");
-					}
-				});
-
-				var def = dojo.xhrGet({
-					url:'data.json',
-					handleAs:'json'
-				}).then(function (tags) {
-							var tagStore1 = new Memory({
-								idProperty:'tag',
-								data:[].concat(tags)
-							});
-							// Widget (widget can be used more than once on a single page)
-							//
-							// first instance of widget (matches are set to match the first char of an item in the list)
-							var ac1 = new Tags({
-								placeholder:'Add tag(s)',
-								noDataMsg:'No results found.',
-								matchParam:'first',
-								idProperty:'tag',
-								gridId:'grid1',
-								filterId:'filter1',
-								minWidth:'400px',
-								maxWidth:'400px',
-								store:tagStore1
-							}, 'userTags');
-							// prepopulate the widget with values from the list
-							ac1.prepopulate(["Hammer,Hammerin' Hank,Bad Henry", "The Duke Of Tralee"]);
-						});
+				var myProgressBar = new ProgressBar({
+					style:"width: 600px",
+					value: "78"
+				}).placeAt(query(".progress-bar")[0]).startup();
 			}
 		});
 	});
@@ -438,23 +327,10 @@ html.has-mozilla .dgrid-focus {
 	<div class="container">
 		<div class="row">
 			<div class="column-24">
-				<div id="userTags"></div>
+				<div class="progress-bar"></div>
 			</div>
 		</div>
-
-		<div class="row">
-			<aside class="column-6">column-6</aside>
-			<main class="column-14">
-				<button class="btn edit-save-btn"> EDIT</button>
-				<div class='description-editor'>
-					<p>HELP</p>
-				</div>
-			</main>
-			<aside class="column-4">column-6</aside>
-		</div>
 	</div>
-
-	<div id="dgrid"></div>
 </div>
 
 </body>
