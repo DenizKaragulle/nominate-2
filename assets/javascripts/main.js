@@ -1439,8 +1439,8 @@ require([
 									//portal.getPortalUser().then(lang.hitch(this, function (userItem) {
 									//	console.log(userItem);
 									//}));
-									console.log(portalUser);
-									domAttr.set(query(".profileThumbnailUrl", "src", userItem.thumbnailUrl));
+									//console.log(portalUser);
+									//domAttr.set(query(".profileThumbnailUrl", "src", userItem.thumbnailUrl));
 
 
 									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
@@ -1475,8 +1475,8 @@ require([
 			// profile
 			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
 
-			console.log(lang.replace("{userItemUrl}/update", userItem));
-			console.log(lang.replace("{userContentUrl}/update", userItem));
+			//console.log(lang.replace("{userItemUrl}/update", userItem));
+			//console.log(lang.replace("{userContentUrl}/update", userItem));
 
 			var deferred = new Deferred();
 			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/a5662275444c446a92ab2dc3ef131ab3/items/b19c8ecd6b4c4bc8b704c4381950a437/update
