@@ -1440,7 +1440,7 @@ require([
 									//	console.log(userItem);
 									//}));
 									console.log(portalUser);
-									domAttr.set(query(".profileThumbnailUrl", "src", userItem.thumbnailUrl);
+									domAttr.set(query(".profileThumbnailUrl", "src", userItem.thumbnailUrl));
 
 
 									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
