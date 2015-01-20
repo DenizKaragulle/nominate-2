@@ -61,8 +61,6 @@ require([
 	var dgrid;
 	var itemStore;
 	var renderRow;
-	var titleRenderCell;
-	var statusRenderCell;
 	//
 	var selectedRow;
 	var selectedRowID;
@@ -130,15 +128,15 @@ require([
 	var newTag;
 
 	var imageSizes = {
-		"SMALL":[200, 133],
-		"LARGE":[286, 190],
-		"XLARGE":[450, 300]
+		"SMALL": [200, 133],
+		"LARGE": [286, 190],
+		"XLARGE": [450, 300]
 	};
 
 	var updatedItems = {
-		"SMALL":[],
-		"LARGE":[],
-		"XLARGE":[]
+		"SMALL": [],
+		"LARGE": [],
+		"XLARGE": []
 	};
 
 	ready(function () {
@@ -160,7 +158,7 @@ require([
 			var statusClass = defaults.CURRENT_STATUS[randomStatus].class;
 
 			var n = domConstruct.create("div", {
-				innerHTML:'<div class="row">' +
+				innerHTML: '<div class="row">' +
 						'	<div class="column-3">' +
 						'		<div class="thumbnail">' +
 						'			<img class="item-thumbnail-' + object.id + '" src="' + thumbnailUrl + '" />' +
@@ -192,16 +190,6 @@ require([
 				}
 			});
 			domClass.replace(_detailsNode, "active column-4 details", "column-4 details");
-
-			/*if (overallScoreGraphic !== undefined) {
-			 overallScoreGraphic.update({
-			 progress: score
-			 });
-			 dijit.byId("overall-score-graphic").update({
-			 'progress':score
-			 });
-			 overallScoreGraphic.set("value", score);
-			 }*/
 		};
 
 		creditsNodeClickHandler = function (selectedRowID, _categoryNodes, _nodeList, _item, _accessID, _creditID, _creditsNode) {
@@ -311,8 +299,8 @@ require([
 				owner = portalUser.username;
 
 				var params = {
-					q:"owner:" + owner,
-					num:1000
+					q: "owner:" + owner,
+					num: 1000
 				};
 				portal.queryItems(params).then(function (result) {
 					// total number of items
@@ -331,9 +319,9 @@ require([
 						// dgrid columns
 						var dgridColumns = [
 							{
-								label:"",
-								field:"thumbnailUrl",
-								renderCell:renderRow
+								label: "",
+								field: "thumbnailUrl",
+								renderCell: renderRow
 							}
 						];
 						// dgrid memory store
@@ -341,17 +329,17 @@ require([
 						//	data: result.results
 						//}));
 						itemStore = new Memory({
-							data:result.results
+							data: result.results
 						});
 						// dgrid
 						dgrid = new (declare([OnDemandGrid, Pagination]))({
-							store:itemStore,
-							rowsPerPage:6,
-							pagingLinks:true,
-							pagingTextBox:false,
-							firstLastArrows:true,
-							columns:dgridColumns,
-							showHeader:false
+							store: itemStore,
+							rowsPerPage: 6,
+							pagingLinks: true,
+							pagingTextBox: false,
+							firstLastArrows: true,
+							columns: dgridColumns,
+							showHeader: false
 						}, "dgrid");
 						dgrid.startup();
 
@@ -497,12 +485,12 @@ require([
 										dijit.byId("overall-score-graphic").destroy();
 									}
 									overallScoreGraphic = new ProgressBar({
-										id:"overall-score-graphic",
-										style:{
-											"width":"100%",
-											"height":"5px"
+										id: "overall-score-graphic",
+										style: {
+											"width": "100%",
+											"height": "5px"
 										},
-										value:score
+										value: score
 									}).placeAt(progressBarAnchorNode).startup();
 								});
 							}
@@ -550,11 +538,11 @@ require([
 				domAttr.set(itemThumbnailNode, "class", "expanded-item-thumbnail thumbnailUrl expanded-item-thumbnail-" + item.id);
 				// set the title
 				domAttr.set(itemTitleNode, "id", titleID);
-				domConstruct.create("div", { innerHTML:itemTitle }, itemTitleNode, "first");
+				domConstruct.create("div", { innerHTML: itemTitle }, itemTitleNode, "first");
 				// set the summary
 				domAttr.set(itemSummaryNode, "id", snippetID);
 				domAttr.set(itemSummaryNode, "value", itemSummary);
-				domConstruct.create("div", { innerHTML:itemSummary }, itemSummaryNode, "first");
+				domConstruct.create("div", { innerHTML: itemSummary }, itemSummaryNode, "first");
 				// set the description
 				domAttr.set(itemDescriptionNode, "id", descID);
 				if (itemDescription === "") {
@@ -581,13 +569,13 @@ require([
 
 						// update title
 						domConstruct.empty(itemTitleNode);
-						domConstruct.create("input", { class:"edit-title", value:itemTitle }, itemTitleNode, "first");
+						domConstruct.create("input", { class: "edit-title", value: itemTitle }, itemTitleNode, "first");
 						domAttr.set(itemTitleNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemTitleNode, "id", titleID);
 
 						// update summary
 						domConstruct.empty(itemSummaryNode);
-						domConstruct.create("input", { class:"edit-summary", value:itemSummary }, itemSummaryNode, "first");
+						domConstruct.create("input", { class: "edit-summary", value: itemSummary }, itemSummaryNode, "first");
 						domAttr.set(itemSummaryNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemSummaryNode, "id", snippetID);
 
@@ -597,13 +585,13 @@ require([
 							dijit.byId("description-editor-widget").destroy();
 							domAttr.remove(itemDescriptionNode, "id");
 							domConstruct.create("div", {
-								id:"description-editor-widget",
-								innerHTML:itemDescription
+								id: "description-editor-widget",
+								innerHTML: itemDescription
 							}, itemDescriptionNode, "first");
 						}
 						// create the Editor for the description
 						descriptionEditor = new Editor({
-							plugins:[
+							plugins: [
 								'bold',
 								'italic',
 								'underline',
@@ -630,7 +618,7 @@ require([
 								'|',
 								'viewSource'
 							],
-							innerHTML:itemDescription
+							innerHTML: itemDescription
 						}, dom.byId("description-editor-widget"));
 						descriptionEditor.startup();
 
@@ -650,15 +638,15 @@ require([
 						portalUser.getItem(selectedRowID).then(function (results) {
 							var _userItemUrl = results.userItemUrl;
 							esriRequest({
-								url:_userItemUrl + "/update",
-								content:{
-									f:"json",
-									title:itemTitle,
-									snippet:itemSummary,
-									description:itemDescription
+								url: _userItemUrl + "/update",
+								content: {
+									f: "json",
+									title: itemTitle,
+									snippet: itemSummary,
+									description: itemDescription
 								}
 							}, {
-								usePost:true
+								usePost: true
 							}).then(function (response) {
 										if (response.success) {
 											html.set(query(".title-" + selectedRowID)[0], itemTitle);
@@ -678,13 +666,13 @@ require([
 
 						// update the title
 						domConstruct.empty(itemTitleNode);
-						domConstruct.create("div", { innerHTML:itemTitle }, itemTitleNode, "first");
+						domConstruct.create("div", { innerHTML: itemTitle }, itemTitleNode, "first");
 						domAttr.remove(itemTitleNode, "data-dojo-type");
 						domAttr.set(itemTitleNode, "id", titleID);
 
 						// update the summary
 						domConstruct.empty(itemSummaryNode);
-						domConstruct.create("div", { innerHTML:itemSummary }, itemSummaryNode, "first");
+						domConstruct.create("div", { innerHTML: itemSummary }, itemSummaryNode, "first");
 						domAttr.remove(itemSummaryNode, "data-dojo-type");
 						domAttr.set(itemSummaryNode, "id", snippetID);
 
@@ -695,8 +683,8 @@ require([
 							dijit.byId("description-editor-widget").destroy();
 							domAttr.remove(itemDescriptionNode, "id");
 							domConstruct.create("div", {
-								id:"description-editor-widget",
-								innerHTML:itemDescription
+								id: "description-editor-widget",
+								innerHTML: itemDescription
 							}, itemDescriptionNode, "first");
 						}
 
@@ -715,13 +703,13 @@ require([
 
 					// update the title
 					domConstruct.empty(itemTitleNode);
-					domConstruct.create("div", { innerHTML:itemTitle_clean }, itemTitleNode, "first");
+					domConstruct.create("div", { innerHTML: itemTitle_clean }, itemTitleNode, "first");
 					domAttr.remove(itemTitleNode, "data-dojo-type");
 					domAttr.set(itemTitleNode, "id", titleID);
 
 					// update the summary
 					domConstruct.empty(itemSummaryNode);
-					domConstruct.create("div", { innerHTML:itemSummary_clean }, itemSummaryNode, "first");
+					domConstruct.create("div", { innerHTML: itemSummary_clean }, itemSummaryNode, "first");
 					domAttr.remove(itemSummaryNode, "data-dojo-type");
 					domAttr.set(itemSummaryNode, "id", snippetID);
 
@@ -733,7 +721,7 @@ require([
 
 					domAttr.remove(itemDescriptionNode, "id");
 					domConstruct.create("div", {
-						id:"description-editor-widget"
+						id: "description-editor-widget"
 					}, itemDescriptionNode, "first");
 
 					if (itemDescription === "") {
@@ -748,6 +736,7 @@ require([
 			});
 		}
 
+
 		function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
 				var itemCredits = validateStr(item.accessInformation);
@@ -759,7 +748,7 @@ require([
 				loadContent(credits.ACCESS_CREDITS_CONTENT);
 
 				domAttr.set(query(".creditsID-textbox")[0], "id", creditID);
-				domConstruct.create("div", { innerHTML:itemCredits }, query(".creditsID-textbox")[0], "first");
+				domConstruct.create("div", { innerHTML: itemCredits }, query(".creditsID-textbox")[0], "first");
 
 				domAttr.set(query(".accessAndUseConstraintsEditor")[0], "id", accessAndUseConstraintsID);
 				if (accessAndUseConstraints === "") {
@@ -787,7 +776,7 @@ require([
 						domStyle.set(cancelBtnNode, "display", "block");
 						// credits
 						domConstruct.empty(itemCreditsNode);
-						domConstruct.create("input", { class:"edit-credits", value:itemCredits }, itemCreditsNode, "first");
+						domConstruct.create("input", { class: "edit-credits", value: itemCredits }, itemCreditsNode, "first");
 						domAttr.set(itemCreditsNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(itemCreditsNode, "id", creditID);
 
@@ -796,12 +785,12 @@ require([
 							dijit.byId("access-editor-widget").destroy();
 							domAttr.remove(accessAndUseConstraintsEditorNode, "id");
 							domConstruct.create("div", {
-								id:"access-editor-widget",
-								innerHTML:accessAndUseConstraints
+								id: "access-editor-widget",
+								innerHTML: accessAndUseConstraints
 							}, accessAndUseConstraintsEditorNode, "first");
 						}
 						accessUseConstraintsEditor = new Editor({
-							plugins:[
+							plugins: [
 								'bold',
 								'italic',
 								'underline',
@@ -828,7 +817,7 @@ require([
 								'|',
 								'viewSource'
 							],
-							innerHTML:accessAndUseConstraints
+							innerHTML: accessAndUseConstraints
 						}, dom.byId("access-editor-widget"));
 						accessUseConstraintsEditor.startup();
 					} else {
@@ -837,21 +826,21 @@ require([
 						accessAndUseConstraints = dijit.byId("access-editor-widget").value;
 
 						domConstruct.empty(itemCreditsNode);
-						domConstruct.create("div", { innerHTML:itemCredits }, itemCreditsNode, "first");
+						domConstruct.create("div", { innerHTML: itemCredits }, itemCreditsNode, "first");
 						domAttr.remove(itemCreditsNode, "data-dojo-type");
 						domAttr.set(itemCreditsNode, "id", creditID);
 
 						portalUser.getItem(selectedRowID).then(function (results) {
 							var _userItemUrl = results.userItemUrl;
 							esriRequest({
-								url:_userItemUrl + "/update",
-								content:{
-									f:"json",
-									licenseInfo:accessAndUseConstraints,
-									accessInformation:itemCredits
+								url: _userItemUrl + "/update",
+								content: {
+									f: "json",
+									licenseInfo: accessAndUseConstraints,
+									accessInformation: itemCredits
 								}
 							}, {
-								usePost:true
+								usePost: true
 							}).then(function (response) {
 										if (response.success) {
 											domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
@@ -868,7 +857,7 @@ require([
 
 						domAttr.remove(accessAndUseConstraintsEditorNode, "id");
 						domConstruct.create("div", {
-							id:"access-editor-widget"
+							id: "access-editor-widget"
 						}, accessAndUseConstraintsEditorNode, "first");
 
 						if (accessAndUseConstraints === "") {
@@ -881,7 +870,7 @@ require([
 
 				on(cancelBtnNode, "click", function () {
 					domConstruct.empty(itemCreditsNode);
-					domConstruct.create("div", { innerHTML:accessAndUseConstraints_clean }, itemCreditsNode, "first");
+					domConstruct.create("div", { innerHTML: accessAndUseConstraints_clean }, itemCreditsNode, "first");
 					domAttr.remove(itemCreditsNode, "data-dojo-type");
 					domAttr.set(itemCreditsNode, "id", creditID);
 
@@ -891,7 +880,7 @@ require([
 
 					domAttr.remove(accessAndUseConstraintsEditorNode, "id");
 					domConstruct.create("div", {
-						id:"access-editor-widget"
+						id: "access-editor-widget"
 					}, accessAndUseConstraintsEditorNode, "first");
 
 					if (accessAndUseConstraints === "") {
@@ -923,7 +912,7 @@ require([
 				var itemTags_clean = itemTags;
 
 				// create the existing tags
-				domConstruct.create("div", { class:"existing-tags" }, query(".tag-container")[0], "first");
+				domConstruct.create("div", { class: "existing-tags" }, query(".tag-container")[0], "first");
 				styleTags(itemTags, query(".existing-tags")[0]);
 
 				// create the Living Atlas checkboxes/categories
@@ -934,8 +923,8 @@ require([
 
 				// tags store
 				tagStore = new Memory({
-					idProperty:'tag',
-					data:[].concat(itemTags)
+					idProperty: 'tag',
+					data: [].concat(itemTags)
 				});
 
 				on(editSaveBtnNode, "click", function () {
@@ -957,21 +946,21 @@ require([
 						} else {
 							if (tagsDijit !== undefined) {
 								tagStore = new Memory({
-									idProperty:'tag',
-									data:[].concat(itemTags_clean)
+									idProperty: 'tag',
+									data: [].concat(itemTags_clean)
 								});
 							}
 						}
 						tagsDijit = new Tags({
-							placeholder:'Add tag(s)',
-							noDataMsg:'No results found.',
-							matchParam:'all',
-							idProperty:'tag',
-							gridId:'grid1',
-							filterId:'filter1',
-							minWidth:'300px',
-							maxWidth:'400px',
-							store:tagStore
+							placeholder: 'Add tag(s)',
+							noDataMsg: 'No results found.',
+							matchParam: 'all',
+							idProperty: 'tag',
+							gridId: 'grid1',
+							filterId: 'filter1',
+							minWidth: '300px',
+							maxWidth: '400px',
+							store: tagStore
 						}, "tag-widget");
 						// prepopulate the widget with values from the list
 						tagsDijit.prepopulate(tagStore.data);
@@ -990,7 +979,7 @@ require([
 							}
 						});
 
-						on(query(".select2-search-choice-close"), "click", function(evt) {
+						on(query(".select2-search-choice-close"), "click", function (evt) {
 							var removeTag = evt.target.parentNode.title;
 							array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
 								if (atlasTag.tag.toUpperCase() === removeTag.toUpperCase()) {
@@ -1012,25 +1001,25 @@ require([
 						});
 
 						esriRequest({
-							url:_userItemUrl + "/update",
-							content:{
-								f:"json",
-								tags:"" + tagsDijit.values
+							url: _userItemUrl + "/update",
+							content: {
+								f: "json",
+								tags: "" + tagsDijit.values
 							}
 						}, {
-							usePost:true
+							usePost: true
 						}).then(function (response) {
 									if (response.success) {
 										if (dijit.byId("tag-widget")) {
 											itemTags_clean = tagsDijit.values;
 											domConstruct.create("div", {
-												class:"existing-tags"
+												class: "existing-tags"
 											}, query(".tag-container")[0], "first");
 											tagsDijit.addStyledTags(tagsDijit.values, query(".existing-tags")[0]);
 
 											dijit.byId("tag-widget").destroy();
 											domConstruct.create("div", {
-												id:"tag-widget"
+												id: "tag-widget"
 											}, query(".tag-container")[0], "first");
 										}
 										// disable living atlas checkboxes
@@ -1047,18 +1036,18 @@ require([
 					newTag = "";
 					if (dijit.byId("tag-widget")) {
 						domConstruct.create("div", {
-							class:"existing-tags"
+							class: "existing-tags"
 						}, query(".tag-container")[0], "first");
 						tagsDijit.addStyledTags(itemTags_clean, query(".existing-tags")[0]);
 
 						dijit.byId("tag-widget").destroy();
 						domConstruct.create("div", {
-							id:"tag-widget"
+							id: "tag-widget"
 						}, query(".tag-container")[0], "first");
 
 						tagStore = new Memory({
-							idProperty:'tag',
-							data:[].concat(itemTags_clean)
+							idProperty: 'tag',
+							data: [].concat(itemTags_clean)
 						});
 					}
 					// disable living atlas checkboxes
@@ -1153,10 +1142,10 @@ require([
 				domAttr.set(profileThumbnailNode, "src", _userThumbnailUrl);
 				// set the user full name
 				domAttr.set(profileUserFullNameNode, "id", _userNameID);
-				domConstruct.create("div", { innerHTML:_userFullName }, profileUserFullNameNode, "first");
+				domConstruct.create("div", { innerHTML: _userFullName }, profileUserFullNameNode, "first");
 				// set the user description
 				domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
-				domConstruct.create("div", { innerHTML:_userDescription }, profileUserDescriptionNode, "first");
+				domConstruct.create("div", { innerHTML: _userDescription }, profileUserDescriptionNode, "first");
 
 				// tooltips
 				createTooltip(profileThumbnailTooltipNode, tooltipsConfig.USER_PROFILE_THUMBNAIL_TOOLTIP_CONTENT);
@@ -1171,20 +1160,20 @@ require([
 
 						// update user full name
 						domConstruct.empty(profileUserFullNameNode);
-						domConstruct.create("input", { class:"edit-user-full-name", value:_userFullName }, profileUserFullNameNode, "first");
+						domConstruct.create("input", { class: "edit-user-full-name", value: _userFullName }, profileUserFullNameNode, "first");
 						domAttr.set(profileUserFullNameNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
 						// update user description
 						domConstruct.empty(profileUserDescriptionNode);
-						domConstruct.create("input", { class:"edit-user-description", value:_userDescription }, profileUserDescriptionNode, "first");
+						domConstruct.create("input", { class: "edit-user-description", value: _userDescription }, profileUserDescriptionNode, "first");
 						domAttr.set(profileUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 
 						// update user thumbnail
 						on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadItemThumbnail(userItem, "SMALL");
+								uploadUserThumbnail(userItem, "SMALL");
 							}));
 						}));
 					} else {
@@ -1197,23 +1186,23 @@ require([
 							//var _community = "community/users/";
 							//var _portalUser = results.owner;
 							esriRequest({
-								url:"https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
-								content:{
-									f:"json",
-									fullname:_userFullName,
-									description:_userDescription
+								url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
+								content: {
+									f: "json",
+									fullname: _userFullName,
+									description: _userDescription
 								}
 							}, {
-								usePost:true
+								usePost: true
 							}).then(function (response) {
 										if (response.success) {
 											domConstruct.empty(profileUserFullNameNode);
-											domConstruct.create("div", { innerHTML:_userFullName }, profileUserFullNameNode, "first");
+											domConstruct.create("div", { innerHTML: _userFullName }, profileUserFullNameNode, "first");
 											domAttr.remove(profileUserFullNameNode, "data-dojo-type");
 											domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
 											domConstruct.empty(profileUserDescriptionNode);
-											domConstruct.create("div", { innerHTML:_userDescription }, profileUserDescriptionNode, "first");
+											domConstruct.create("div", { innerHTML: _userDescription }, profileUserDescriptionNode, "first");
 											domAttr.remove(profileUserDescriptionNode, "data-dojo-type");
 											domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 
@@ -1231,12 +1220,12 @@ require([
 
 				on(cancelBtnNode, "click", function () {
 					domConstruct.empty(profileUserFullNameNode);
-					domConstruct.create("div", { innerHTML:_userFullName_clean }, profileUserFullNameNode, "first");
+					domConstruct.create("div", { innerHTML: _userFullName_clean }, profileUserFullNameNode, "first");
 					domAttr.remove(profileUserFullNameNode, "data-dojo-type");
 					domAttr.set(profileUserFullNameNode, "id", _userNameID);
 
 					domConstruct.empty(profileUserDescriptionNode);
-					domConstruct.create("div", { innerHTML:_userDescription_clean }, profileUserDescriptionNode, "first");
+					domConstruct.create("div", { innerHTML: _userDescription_clean }, profileUserDescriptionNode, "first");
 					domAttr.remove(profileUserDescriptionNode, "data-dojo-type");
 					domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
@@ -1258,7 +1247,7 @@ require([
 				// add style to new tag
 				domClass.add(listItemNode, 'select2-search-resultSet');
 				var listItemDivNode = domConstruct.create('div', {
-					title:item
+					title: item
 				}, listItemNode);
 				html.set(listItemDivNode, item);
 			});
@@ -1272,19 +1261,19 @@ require([
 
 		function createTooltip(node, content) {
 			var userDescriptionTooltip = new Tooltip({
-				connectId:[node],
-				style:{
-					width:"10px"
+				connectId: [node],
+				style: {
+					width: "10px"
 				},
-				label:content
+				label: content
 			});
 		}
 
 		function uploadItemThumbnail(item, imageSizeName) {
 			var deferred = new Deferred();
 			var previewDlg = new Dialog({
-				title:item.title,
-				className:"upload-thumbnail-dialog"
+				title: item.title,
+				className: "upload-thumbnail-dialog"
 			});
 			previewDlg.show();
 			// update thumbnail dialog
@@ -1326,21 +1315,21 @@ require([
 			var dialogContent = put(previewDlg.containerNode, "div.dijitDialogPaneContentArea");
 			var actionBar = put(previewDlg.containerNode, "div.dijitDialogPaneActionBar");
 			var uploadThumbBtn = new Button({
-				label:"Upload Thumbnail"
+				label: "Upload Thumbnail"
 			}, put(actionBar, "div"));
 			domClass.add(uploadThumbBtn.domNode, "dijitHidden");
 			var cancelBtn = new Button({
-				label:"Cancel",
-				onClick:lang.hitch(previewDlg, previewDlg.hide)
+				label: "Cancel",
+				onClick: lang.hitch(previewDlg, previewDlg.hide)
 			}, put(actionBar, "div"));
 			var msgPane = put(dialogContent, "div.msgPane", "Upload alternate image:");
 			var form = put(dialogContent, "form", {
-				"method":"post",
-				"enctype":"multipart/form-data"
+				"method": "post",
+				"enctype": "multipart/form-data"
 			});
 			var fileInput = put(form, "input", {
-				type:"file",
-				name:(imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
+				type: "file",
+				name: (imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
 			});
 
 			on(fileInput, "change", lang.hitch(this, function (evt) {
@@ -1366,7 +1355,7 @@ require([
 								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
 								updateItemThumbnail(item, form).then(lang.hitch(this, function (evt) {
 									portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
-										// If the store is updated the dGrid is refreshed and thje expanded content is lost
+										// If the store is updated the dGrid is refreshed and the expanded content is lost
 										itemStore.put(userItem);
 										domAttr.set(query(".item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
 										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
@@ -1393,20 +1382,131 @@ require([
 			return deferred.promise;
 		}
 
+		function uploadUserThumbnail(item, imageSizeName) {
+			var deferred = new Deferred();
+			var previewDlg = new Dialog({
+				title: item.title,
+				className: "upload-thumbnail-dialog"
+			});
+			previewDlg.show();
+			var dialogContent = put(previewDlg.containerNode, "div.dijitDialogPaneContentArea");
+			var actionBar = put(previewDlg.containerNode, "div.dijitDialogPaneActionBar");
+			var uploadThumbBtn = new Button({
+				label: "Upload Thumbnail"
+			}, put(actionBar, "div"));
+			domClass.add(uploadThumbBtn.domNode, "dijitHidden");
+			var cancelBtn = new Button({
+				label: "Cancel",
+				onClick: lang.hitch(previewDlg, previewDlg.hide)
+			}, put(actionBar, "div"));
+			var msgPane = put(dialogContent, "div.msgPane", "Upload alternate image:");
+			var form = put(dialogContent, "form", {
+				"method": "post",
+				"enctype": "multipart/form-data"
+			});
+			var fileInput = put(form, "input", {
+				type: "file",
+				name: (imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
+			});
+
+			on(fileInput, "change", lang.hitch(this, function (evt) {
+				var imgFile = fileInput.files[0];
+				// The FileReader object lets web applications asynchronously read the contents of files (or raw data
+				// buffers) stored on the user's computer, using File or Blob objects to specify the file or data to read.
+				var reader = new FileReader();
+				// Starts reading the contents of the specified Blob, once finished, the result attribute contains a
+				// data: URL representing the file's data.
+				reader.readAsDataURL(imgFile);
+				// A handler for the load event. This event is triggered each time the reading operation is successfully
+				// completed.
+				reader.onload = function (_file) {
+					domClass.add(fileInput, "dijitHidden");
+					var imgNode = put(dialogContent, "img");
+					imgNode.onload = function () {
+						msgPane.innerHTML = "Valid file selected";
+						put(dialogContent, "div.imageSizeLabel", lang.replace("Image size: {0}px by {1}px", [this.width, this.height]));
+						if ((this.width === imageSizes[imageSizeName][0]) && (this.height === imageSizes[imageSizeName][1])) {
+							domClass.remove(uploadThumbBtn.domNode, "dijitHidden");
+							// upload button selected
+							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
+								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
+								updateUserProfileThumbnail(item, form).then(lang.hitch(this, function (evt) {
+									portal.getPortalUser().then(lang.hitch(this, function (userItem) {
+										console.log(userItem);
+									}));
+
+
+									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
+										// If the store is updated the dGrid is refreshed and the expanded content is lost
+										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
+										updatedItems[imageSizeName].push(item.id);
+										msgPane.innerHTML = "Item updated with thumbnail";
+										previewDlg.hide();
+									}), lang.hitch(this, function (error) {
+										console.warn(error);
+										msgPane.innerHTML = error.message;
+									}));*/
+								}), lang.hitch(this, function (error) {
+									console.warn(error);
+									msgPane.innerHTML = error.message;
+								}));
+							}));
+						} else {
+							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", imageSizes[imageSizeName]);
+							//domClass.remove(fileInput, "dijitHidden");
+						}
+					};
+					imgNode.src = _file.target.result;
+				};
+			}));
+			return deferred.promise;
+		}
+
 		function updateItemThumbnail(userItem, form) {
+			// Item
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
+			// profile
+			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
+
+			console.log(lang.replace("{userItemUrl}/update", userItem));
+			console.log(lang.replace("{userContentUrl}/update", userItem));
+
 			var deferred = new Deferred();
 			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/a5662275444c446a92ab2dc3ef131ab3/items/b19c8ecd6b4c4bc8b704c4381950a437/update
-
 			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
 			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
 			// UPDATE LARGE THUMBNAIL //
 			esriRequest({
-				url:lang.replace("{userItemUrl}/update", userItem),
-				form:form,
-				content:{
-					f:"json"
+				url: lang.replace("{userItemUrl}/update", userItem),
+				form: form,
+				content: {
+					f: "json"
 				},
-				handleAs:"json"
+				handleAs: "json"
+			}).then(deferred.resolve, deferred.reject);
+			return deferred.promise;
+		}
+
+		function updateUserProfileThumbnail(userItem, form) {
+			// Item
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
+			// profile
+			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
+			console.log(lang.replace("{url}/update", portalUser));
+
+			var deferred = new Deferred();
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/a5662275444c446a92ab2dc3ef131ab3/items/b19c8ecd6b4c4bc8b704c4381950a437/update
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
+			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
+			// UPDATE LARGE THUMBNAIL //
+			esriRequest({
+				//url: lang.replace("{userItemUrl}/update", userItem),
+				url: lang.replace("{url}/update", portalUser),
+				form: form,
+				content: {
+					f: "json"
+				},
+				handleAs: "json"
 			}).then(deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
@@ -1417,8 +1517,8 @@ require([
 			} else if (value === "type") {
 				dgrid.set("sort", value, false);
 				dgrid.set('sort', [
-					{ attribute:value, descending:false },
-					{ attribute:"title", descending:false }
+					{ attribute: value, descending: false },
+					{ attribute: "title", descending: false }
 				]);
 			} else if (value === "numViews") {
 				dgrid.set("sort", value, true);
@@ -1437,18 +1537,18 @@ require([
 			var params = {};
 			if (value === "all-items") {
 				params = {
-					q:"owner:" + owner,
-					num:1000
+					q: "owner:" + owner,
+					num: 1000
 				};
 			} else if (value === "Web Map") {
 				params = {
-					q:"owner:" + owner + ' Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
-					num:1000
+					q: "owner:" + owner + ' Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
+					num: 1000
 				};
 			} else {
 				params = {
-					q:"owner:" + owner + " type: " + value,
-					num:1000
+					q: "owner:" + owner + " type: " + value,
+					num: 1000
 				};
 			}
 
@@ -1537,11 +1637,11 @@ require([
 			})) {
 				// Check = TRUE
 				checkBox = new CheckBox({
-					name:"checkBox",
-					disabled:true,
-					value:atlasTag,
-					checked:true,
-					onChange:function (b) {
+					name: "checkBox",
+					disabled: true,
+					value: atlasTag,
+					checked: true,
+					onChange: function (b) {
 						if (this.checked) {
 							tagStore.data.push(this.get("value"));
 							tagsDijit.clearTags();
@@ -1557,11 +1657,11 @@ require([
 			} else {
 				// Check = FALSE
 				checkBox = new CheckBox({
-					name:"checkBox",
-					disabled:true,
-					value:atlasTag,
-					checked:false,
-					onChange:function (b) {
+					name: "checkBox",
+					disabled: true,
+					value: atlasTag,
+					checked: false,
+					onChange: function (b) {
 						if (this.checked) {
 							tagStore.data.push(this.get("value"));
 							tagsDijit.clearTags();
@@ -1632,7 +1732,7 @@ require([
 		function processMapDrawTime(val) {
 			var temp = (val / 1000) % 60;
 			var seconds = number.format(temp, {
-				places:5
+				places: 5
 			});
 			if (seconds) {
 				return seconds + " seconds";
@@ -1653,8 +1753,8 @@ require([
 			var loaderNode = dom.byId("map-mask");
 			domStyle.set(loaderNode, "opacity", "1");
 			var fadeArgs = {
-				node:"map-mask",
-				duration:1000
+				node: "map-mask",
+				duration: 1000
 			};
 			fx.fadeOut(fadeArgs).play();
 		}
@@ -1662,14 +1762,14 @@ require([
 		function fadeInSectionContent() {
 			var section = dom.byId("section-content");
 			fx.animateProperty({
-				node:section,
-				properties:{
-					opacity:{
-						start:0,
-						end:1
+				node: section,
+				properties: {
+					opacity: {
+						start: 0,
+						end: 1
 					}
 				},
-				duration:500
+				duration: 500
 			}).play();
 		}
 	});
