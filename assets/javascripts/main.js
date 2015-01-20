@@ -1157,6 +1157,7 @@ require([
 						// "EDIT" clicked
 						// update EDIT/SAVE button
 						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
+						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "pointer");
 
 						// update user full name
 						domConstruct.empty(profileUserFullNameNode);
@@ -1184,6 +1185,7 @@ require([
 						_userDescription = query(".edit-user-description")[0].value;
 
 						domStyle.set(query(".edit-profile-thumbnail-msg")[0], "display", "none");
+						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
 
 						portalUser.getItem(selectedRowID).then(function (results) {
 							//var _portalUrl = results.portal.portalUrl;
@@ -1223,6 +1225,8 @@ require([
 				});
 
 				on(cancelBtnNode, "click", function () {
+					domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
+
 					domStyle.set(query(".edit-profile-thumbnail-msg")[0], "display", "none");
 					domConstruct.empty(profileUserFullNameNode);
 					domConstruct.create("div", { innerHTML: _userFullName_clean }, profileUserFullNameNode, "first");
@@ -1439,9 +1443,9 @@ require([
 									//portal.getPortalUser().then(lang.hitch(this, function (userItem) {
 									//	console.log(userItem);
 									//}));
-									//console.log(portalUser);
-									//domAttr.set(query(".profileThumbnailUrl", "src", userItem.thumbnailUrl));
-
+									console.log(portalUser);
+									domAttr.set(query(".profileThumbnailUrl", "src", item.thumbnailUrl));
+									previewDlg.hide();
 
 									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
 										// If the store is updated the dGrid is refreshed and the expanded content is lost
