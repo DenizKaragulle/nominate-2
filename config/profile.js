@@ -31,6 +31,7 @@ define({
 			'		<div class="column-18">' +
 			'			<div class="section-header">Thumbnail</div>' +
 			'			<img class="expanded-item-thumbnail profileThumbnailUrl" src="">' +
+			'			<div class="edit-profile-thumbnail-msg">Click thumbnail to change image.</div>' +
 			'		</div>' +
 
 			'		<div class="column-2">' +

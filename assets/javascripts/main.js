@@ -430,7 +430,7 @@ require([
 													"		</div>" +
 
 													"		<div class='row'>" +
-													"			<div class='column-17 pre-3'>" +
+													"			<div class='column-18 pre-3'>" +
 													"				<div id='" + tcID + "'></div>" +
 													"			</div>" +
 													"		</div>" +
@@ -1170,6 +1170,8 @@ require([
 						domAttr.set(profileUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
 						domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 
+						domStyle.set(query(".edit-thumbnail-msg")[0], "display", "block");
+
 						// update user thumbnail
 						on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
@@ -1180,6 +1182,8 @@ require([
 						// "SAVE" clicked
 						_userFullName = query(".edit-user-full-name")[0].value;
 						_userDescription = query(".edit-user-description")[0].value;
+
+						domStyle.set(query(".edit-thumbnail-msg")[0], "display", "none");
 
 						portalUser.getItem(selectedRowID).then(function (results) {
 							//var _portalUrl = results.portal.portalUrl;
@@ -1219,6 +1223,7 @@ require([
 				});
 
 				on(cancelBtnNode, "click", function () {
+					domStyle.set(query(".edit-thumbnail-msg")[0], "display", "none");
 					domConstruct.empty(profileUserFullNameNode);
 					domConstruct.create("div", { innerHTML: _userFullName_clean }, profileUserFullNameNode, "first");
 					domAttr.remove(profileUserFullNameNode, "data-dojo-type");
@@ -1434,6 +1439,8 @@ require([
 									//portal.getPortalUser().then(lang.hitch(this, function (userItem) {
 									//	console.log(userItem);
 									//}));
+									console.log(portalUser);
+									domAttr.set(query(".profileThumbnailUrl", "src", userItem.thumbnailUrl);
 
 
 									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
