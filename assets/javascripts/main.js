@@ -1431,9 +1431,9 @@ require([
 							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
 								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
 								updateUserProfileThumbnail(item, form).then(lang.hitch(this, function (evt) {
-									portal.getPortalUser().then(lang.hitch(this, function (userItem) {
-										console.log(userItem);
-									}));
+									//portal.getPortalUser().then(lang.hitch(this, function (userItem) {
+									//	console.log(userItem);
+									//}));
 
 
 									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
