@@ -1235,10 +1235,7 @@ require([
 						// update user thumbnail
 						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadUserThumbnail(userItem, "PROFILE").then(lang.hitch(this, function (user) {
-									console.log("DONE");
-									console.log(user);
-								}));
+								uploadUserThumbnail(userItem, "PROFILE");
 							}));
 						}));
 					} else {
@@ -1552,25 +1549,12 @@ require([
 							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
 								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
 								updateUserProfileThumbnail(item, form).then(lang.hitch(this, function (evt) {
-									//portal.getPortalUser().then(lang.hitch(this, function (userItem) {
-									//	console.log(userItem);
-									//}));
 									previewDlg.hide();
-									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
-										// If the store is updated the dGrid is refreshed and the expanded content is lost
-										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
-										updatedItems[imageSizeName].push(item.id);
-										msgPane.innerHTML = "Item updated with thumbnail";
-										previewDlg.hide();
-									}), lang.hitch(this, function (error) {
-										console.warn(error);
-										msgPane.innerHTML = error.message;
-									}));*/
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-
+									console.log("DONE");
 								}));
 							}));
 						} else {
