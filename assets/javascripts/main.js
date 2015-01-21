@@ -1517,10 +1517,13 @@ require([
 										console.log(portalUser);
 										esriRequest({
 											url:lang.replace("{url}", portalUser),
+											content:{
+												f:"json"
+											},
 											handleAs:"json"
 										}).then(function (item) {
-											console.log(item);
-										});
+													console.log(item);
+												});
 									}
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
