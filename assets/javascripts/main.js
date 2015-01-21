@@ -1237,9 +1237,9 @@ require([
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
 								uploadUserProfileThumbnail(userItem, "PROFILE").then(lang.hitch(this, function (userItem) {
 									console.log("DONE");
-									var user = portal.getPortalUser();
-									console.log(user);
-									console.log(userItem);
+									//var user = portal.getPortalUser();
+									//console.log(user);
+									//console.log(userItem);
 								}));
 							}));
 						}));
