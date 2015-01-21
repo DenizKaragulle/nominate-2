@@ -1554,7 +1554,10 @@ require([
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-
+									console.log("DONE");
+									console.log(portal);
+									var shit = portal.getPortalUser();
+									console.log(shit);
 								}));
 							}));
 						} else {
