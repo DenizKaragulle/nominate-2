@@ -658,7 +658,7 @@ require([
 						}));
 					} else {
 						itemThumbnailListener.remove();
-						
+
 						// SAVE clicked
 						itemTitle = query(".edit-title")[0].value;
 						itemSummary = query(".edit-summary")[0].value;

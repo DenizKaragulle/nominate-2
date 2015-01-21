@@ -32,56 +32,7 @@ define({
 			'		</div>' +
 			'	</div>' +
 
-			'	<div class="row">' +
-			'		<div class="column-3">' +
-			'			<div class="row">' +
-			'				<div class="column-12">' +
-			'					<div class="score-graphic score-graphic-fail"> 6/10</div>' +
-			'				</div>' +
-			'				<div class="column-12">' +
-			'					<img src="assets/images/info_32.png" class="map-layers-tooltip info-graphic">' +
-			'				</div>' +
-			'			</div>' +
-			'		</div>' +
-			'		<div class="column-4">' +
-			'			<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em;">number of map layers</span></h2>' +
-			'		</div>' +
-			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">more than 10</div>' +
-			'		</div>' +
-			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-in">2 - 10</div>' +
-			'		</div>' +
-			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">1</div>' +
-			'		</div>' +
-			'	</div>' +
-
-			'	<div class="row">' +
-			'		<div class="column-3">' +
-			'			<div class="row">' +
-			'				<div class="column-12">' +
-			'					<div class="score-graphic score-graphic-pass"> 10/10</div>' +
-			'				</div>' +
-			'				<div class="column-12">' +
-			'					<img src="assets/images/info_32.png" class="sharing-tooltip info-graphic">' +
-			'				</div>' +
-			'			</div>' +
-			'		</div>' +
-			'		<div class="column-4">' +
-			'			<h2 class="icon-share icon-blue"><span style="font-size: 0.5em;">sharing</span></h2>' +
-			'		</div>' +
-			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">not shared</div>' +
-			'		</div>' +
-			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">organization account</div>' +
-			'		</div>' +
-			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-in">public</div>' +
-			'		</div>' +
-			'	</div>' +
-
+			// MAP DRAW TIME
 			'	<div class="row">' +
 			'		<div class="column-3">' +
 			'			<div class="row">' +
@@ -107,6 +58,33 @@ define({
 			'		</div>' +
 			'	</div>' +
 
+			// NUMBER OF LAYERS
+			'	<div class="row">' +
+			'		<div class="column-3">' +
+			'			<div class="row">' +
+			'				<div class="column-12">' +
+			'					<div class="score-graphic score-graphic-fail"> 6/10</div>' +
+			'				</div>' +
+			'				<div class="column-12">' +
+			'					<img src="assets/images/info_32.png" class="map-layers-tooltip info-graphic">' +
+			'				</div>' +
+			'			</div>' +
+			'		</div>' +
+			'		<div class="column-4">' +
+			'			<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em;">number of map layers</span></h2>' +
+			'		</div>' +
+			'		<div class="column-3">' +
+			'			<div class="section-header performance-text performance-fade-out">more than 10</div>' +
+			'		</div>' +
+			'		<div class="column-3">' +
+			'			<div class="section-header performance-text performance-fade-in">2 - 10</div>' +
+			'		</div>' +
+			'		<div class="column-3">' +
+			'			<div class="section-header performance-text performance-fade-out">1</div>' +
+			'		</div>' +
+			'	</div>' +
+
+			// POPUPS
 			'	<div class="row">' +
 			'		<div class="column-3">' +
 			'			<div class="row">' +
@@ -131,5 +109,32 @@ define({
 			'			<div class="section-header performance-text performance-fade-in">custom</div>' +
 			'		</div>' +
 			'	</div>' +
+					
+			// SHARING
+			'	<div class="row">' +
+			'		<div class="column-3">' +
+			'			<div class="row">' +
+			'				<div class="column-12">' +
+			'					<div class="score-graphic score-graphic-pass"> 10/10</div>' +
+			'				</div>' +
+			'				<div class="column-12">' +
+			'					<img src="assets/images/info_32.png" class="sharing-tooltip info-graphic">' +
+			'				</div>' +
+			'			</div>' +
+			'		</div>' +
+			'		<div class="column-4">' +
+			'			<h2 class="icon-share icon-blue"><span style="font-size: 0.5em;">sharing</span></h2>' +
+			'		</div>' +
+			'		<div class="column-3">' +
+			'			<div class="section-header performance-text performance-fade-out">not shared</div>' +
+			'		</div>' +
+			'		<div class="column-3">' +
+			'			<div class="section-header performance-text performance-fade-out">organization account</div>' +
+			'		</div>' +
+			'		<div class="column-3">' +
+			'			<div class="section-header performance-text performance-fade-in">public</div>' +
+			'		</div>' +
+			'	</div>' +
+
 			'</div>'
 });
