@@ -1234,9 +1234,7 @@ require([
 
 						// update user thumbnail
 						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
-							uploadUserProfileThumbnail("PROFILE").then(lang.hitch(this, function (evt) {
-								console.log(this);
-							}));
+							uploadUserProfileThumbnail("PROFILE");
 						}));
 					} else {
 						// "SAVE" clicked
@@ -1516,13 +1514,15 @@ require([
 									previewDlg.hide();
 									if (response) {
 										console.log(portalUser);
-										esriRequest({
-											//url:portalUser.userContentUrl,
-											url:lang.replace("{userItemUrl/}", portalUser),
-											handleAs:"json"
-										}).then(function (item) {
-													console.log(item);
-												});
+										portalUser.getItem(selectedRowID).then(function (item) {
+											esriRequest({
+												//url:portalUser.userContentUrl,
+												url:lang.replace("{userItemUrl/}", item),
+												handleAs:"json"
+											}).then(function (item) {
+														console.log(item);
+													});
+										});
 									}
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
