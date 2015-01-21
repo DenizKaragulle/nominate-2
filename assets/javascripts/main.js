@@ -1518,7 +1518,7 @@ require([
 									console.log(portalUser);
 									esriRequest({
 										//url:portalUser.userContentUrl,
-										url:lang.replace("{userContentUrl}", portalUser),
+										url:lang.replace("{userContentUrl}"),
 										handleAs:"json"
 									}).then(function (item) {
 												console.log(item);
@@ -1527,7 +1527,6 @@ require([
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function () {
-									console.log(this);
 									//domAttr.set(query(".profileThumbnailUrl")[0], "src", domAttr.get(this, "src"));
 								}));
 							}));
