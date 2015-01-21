@@ -1462,7 +1462,7 @@ require([
 				};
 			}));
 			return deferred.promise;
-		},
+		}
 
 		function uploadUserProfileThumbnail(imageSizeName) {
 			var deferred = new Deferred();
