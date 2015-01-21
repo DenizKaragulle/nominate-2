@@ -1515,13 +1515,14 @@ require([
 									if (response) {
 										console.log(portalUser);
 										portalUser.getItem(selectedRowID).then(function (item) {
-											esriRequest({
+											console.log(item);
+											/*esriRequest({
 												//url:portalUser.userContentUrl,
-												url:lang.replace("{userItemUrl/}", item),
+												url:lang.replace("{userItemUrl}", item),
 												handleAs:"json"
 											}).then(function (item) {
 														console.log(item);
-													});
+													});*/
 										});
 									}
 								}), lang.hitch(this, function (error) {
