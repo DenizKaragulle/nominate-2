@@ -1235,7 +1235,7 @@ require([
 						// update user thumbnail
 						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadUserThumbnail(userItem, "PROFILE");
+								uploadUserProfileThumbnail(userItem, "PROFILE");
 							}));
 						}));
 					} else {
@@ -1500,7 +1500,7 @@ require([
 			return deferred.promise;
 		}
 
-		function uploadUserThumbnail(item, imageSizeName) {
+		function uploadUserProfileThumbnail(item, imageSizeName) {
 			var deferred = new Deferred();
 			var previewDlg = new Dialog({
 				title: item.title,
@@ -1554,7 +1554,7 @@ require([
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-									console.log("DONE");
+
 								}));
 							}));
 						} else {
@@ -1594,26 +1594,26 @@ require([
 		}
 
 		function updateUserProfileThumbnail(userItem, form) {
-			// Item
-			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
-			// profile
-			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
 			console.log(lang.replace("{url}/update", portalUser));
-
 			var deferred = new Deferred();
-			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/a5662275444c446a92ab2dc3ef131ab3/items/b19c8ecd6b4c4bc8b704c4381950a437/update
-			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
-			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
-			// UPDATE LARGE THUMBNAIL //
-			esriRequest({
-				//url: lang.replace("{userItemUrl}/update", userItem),
+			/*esriRequest({
 				url: lang.replace("{url}/update", portalUser),
 				form: form,
 				content: {
 					f: "json"
 				},
 				handleAs: "json"
-			}).then(deferred.resolve, deferred.reject);
+			}).then(deferred.resolve, deferred.reject);*/
+			esriRequest({
+				url: lang.replace("{url}/update", portalUser),
+				form: form,
+				content: {
+					f: "json"
+				},
+				handleAs: "json"
+			}).then(this, function() {
+						console.log("DONE")
+					});
 			return deferred.promise;
 		}
 
