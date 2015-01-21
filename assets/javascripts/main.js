@@ -1514,15 +1514,12 @@ require([
 									previewDlg.hide();
 									if (response) {
 										console.log(portalUser);
-										portalUser.getItem(selectedRowID).then(function (item) {
+										esriRequest({
+											//url:portalUser.userContentUrl,
+											url:portalUser.userContentUrl,
+											handleAs:"json"
+										}).then(function (item) {
 											console.log(item);
-											/*esriRequest({
-												//url:portalUser.userContentUrl,
-												url:lang.replace("{userItemUrl}", item),
-												handleAs:"json"
-											}).then(function (item) {
-														console.log(item);
-													});*/
 										});
 									}
 								}), lang.hitch(this, function (error) {
