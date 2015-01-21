@@ -503,7 +503,10 @@ require([
 										},
 										value: score
 									}).placeAt(progressBarAnchorNode).startup();
-									domConstruct.place("<div class='current-score-passing-marker'>80%</div>", progressBarAnchorNode, "before");
+									domConstruct.place("<div class='current-score-passing-marker'>" +
+											"<span class='current-overall-gr-number'> 80</span>" +
+											"<span class='current-overall-gr-label'>required score</span>" +
+											"</div>", progressBarAnchorNode, "before");
 								});
 							}
 						});

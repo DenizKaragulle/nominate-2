@@ -165,15 +165,28 @@ table tr {
 .current-score-passing-marker {
 	left: 600px;
 	position: relative;
-	top: -30px;
+	top: -10px;
 	z-index: 1000;
-	/* height: 100px; */
-	font-size: 1.0em;
 	border-left: 1px solid #969696;
-	width: 50px;
+	width: 150px;
 	height: 30px;
 	font-size: 0.75em;
 	/* padding-bottom: 40px; */
+}
+
+.current-overall-gr-label {
+	color: #005E95;
+	margin-left: -80px;
+	position: inherit;
+	top: -20px;
+}
+
+.current-overall-gr-number {
+	font-size: 1.8em;
+	position: absolute;
+	margin-left: -10px;
+	bottom: 30px;
+	color: #005E95;
 }
 
 /* drop down sort/filter */
@@ -436,7 +449,6 @@ a.column-4.credits.icon-check {
 	float: left !important;
 	margin-right: 7px !important;
 }
-
 
 /* Porgressbar */
 .dijitProgressBarTile {
