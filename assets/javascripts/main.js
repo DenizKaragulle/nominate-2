@@ -1521,15 +1521,19 @@ require([
 												f:"json"
 											},
 											handleAs:"json"
-										}).then(lang.hitch(this, function (item) {
-											console.log(item);
+										}).then(lang.hitch(this, function (user) {
+											// WORKS
+											//console.log(item);
+											user.getItem(selectedRowID).then(function (item) {
+												console.log(item);
+												var thumbnailUrl = formatThumbnailUrl(item);
+												console.log(thumbnailUrl);
+											});
 										}));
 									}
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
 									msgPane.innerHTML = error.message;
-								})).then(lang.hitch(this, function () {
-									//domAttr.set(query(".profileThumbnailUrl")[0], "src", domAttr.get(this, "src"));
 								}));
 							}));
 						} else {
