@@ -1467,7 +1467,7 @@ require([
 		function uploadUserProfileThumbnail(imageSizeName) {
 			var deferred = new Deferred();
 			var previewDlg = new Dialog({
-				title: item.title,
+				title: "Update Thumbnail",
 				className: "upload-thumbnail-dialog"
 			});
 			previewDlg.show();
