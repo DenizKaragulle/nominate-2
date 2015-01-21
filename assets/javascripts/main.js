@@ -1462,7 +1462,7 @@ require([
 				};
 			}));
 			return deferred.promise;
-		}
+		},
 
 		function uploadUserProfileThumbnail(imageSizeName) {
 			var deferred = new Deferred();
@@ -1515,6 +1515,9 @@ require([
 								updateUserProfileThumbnail(form).then(lang.hitch(this, function (response) {
 									previewDlg.hide();
 									console.log(response);
+									portalUser.getItem(selectedRowID).then(function (item) {
+										console.log(item);
+									});
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
 									msgPane.innerHTML = error.message;
