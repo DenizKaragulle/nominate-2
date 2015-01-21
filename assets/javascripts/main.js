@@ -1177,9 +1177,6 @@ require([
 				var _userThumbnailUrl = item.portal.getPortalUser().thumbnailUrl;
 				var _userThumbnailUrl_clean = _userThumbnailUrl;
 
-				console.log("item.portal.getPortalUser()");
-				console.log(item.portal.getPortalUser());
-
 				// load the content
 				loadContent(profileConfig.PROFILE_CONTENT);
 
@@ -1519,7 +1516,8 @@ require([
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-									domAttr.set(query(".profileThumbnailUrl")[0], "src", domAttr.get(this, "src"));
+									console.log(this);
+									//domAttr.set(query(".profileThumbnailUrl")[0], "src", domAttr.get(this, "src"));
 								}));
 							}));
 						} else {
