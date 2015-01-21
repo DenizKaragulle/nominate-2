@@ -33,6 +33,7 @@ require([
 	"dojo/number",
 	"dojo/on",
 	"dojo/query",
+	"dojo/string",
 	"esri/arcgis/Portal",
 	"esri/arcgis/OAuthInfo",
 	"esri/IdentityManager",
@@ -49,9 +50,10 @@ require([
 	"config/performance",
 	"config/profile",
 	"config/tooltips",
+	"config/scoring",
 	"esri/dijit/Tags",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, Tags) {
+], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, query, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Tags) {
 
 	parser.parse();
 
@@ -530,7 +532,16 @@ require([
 						itemThumbnailTooltipNode = query(".thumbnail-tooltip")[0],
 						itemTitleTooltipNode = query(".title-tooltip")[0],
 						itemSummaryTooltipNode = query(".summary-tooltip")[0],
-						itemDescriptionTooltipNode = query(".description-tooltip")[0];
+						itemDescriptionTooltipNode = query(".description-tooltip")[0],
+						titleScoreNodeContainer = query(".details-title-score-gr")[0],
+						titleScoreNumeratorNode = query(".details-title-score-num")[0],
+						titleScoreDenominatorNode = query(".details-title-score-denom")[0],
+						summaryScoreNodeContainer = query(".details-summary-score-gr")[0],
+						summaryScoreNumeratorNode = query(".details-summary-score-num")[0],
+						summaryScoreDenominatorNode = query(".details-summary-score-denom")[0],
+						descScoreNodeContainer = query(".details-desc-score-gr")[0],
+						descScoreNumeratorNode = query(".details-desc-score-num")[0],
+						descScoreDenominatorNode = query(".details-desc-score-denom")[0];
 
 
 				// set the thumbnail
@@ -557,6 +568,13 @@ require([
 				createTooltip(itemSummaryTooltipNode, tooltipsConfig.ITEM_SUMMARY_TOOLTIP_CONTENT);
 				createTooltip(itemDescriptionTooltipNode, tooltipsConfig.ITEM_DESCRIPTION_TOOLTIP_CONTENT);
 
+				titleScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				summaryScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				descScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				validateTextInput(itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+				validateTextInput(itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+				validateTextInput(itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// EDIT clicked
@@ -581,7 +599,6 @@ require([
 
 						// update description
 						if (dijit.byId("description-editor-widget")) {
-							console.log("1) DESTROYING DESCRIPTION DIJIT");
 							dijit.byId("description-editor-widget").destroy();
 							domAttr.remove(itemDescriptionNode, "id");
 							domConstruct.create("div", {
@@ -679,7 +696,6 @@ require([
 						// update the description
 						// empty the contents
 						if (dijit.byId("description-editor-widget")) {
-							console.log("2) DESTROYING DESCRIPTION DIJIT");
 							dijit.byId("description-editor-widget").destroy();
 							domAttr.remove(itemDescriptionNode, "id");
 							domConstruct.create("div", {
@@ -694,6 +710,9 @@ require([
 							//domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
 						}
 					}
+					validateTextInput(itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+					validateTextInput(itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+					validateTextInput(itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
 				});
 
 				on(cancelBtnNode, "click", function () {
@@ -732,6 +751,10 @@ require([
 
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
+
+					validateTextInput(itemTitle_clean, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+					validateTextInput(itemSummary_clean, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+					validateTextInput(itemDescription_clean, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
 				});
 			});
 		}
@@ -1177,9 +1200,7 @@ require([
 						on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
 								uploadUserThumbnail(userItem, "SMALL");
-							})).then(lang.hitch(this, function (item) {
-								console.log(portal.getPortalUser());
-									}));
+							}));
 						}));
 					} else {
 						// "SAVE" clicked
@@ -1245,6 +1266,38 @@ require([
 			});
 		}
 
+
+		function validateTextInput(inputText, containerNode, numeratorNode, minChars, prohibitedWords) {
+			if (validateLength(inputText, minChars)) {
+				validateContent(inputText, prohibitedWords, containerNode, numeratorNode);
+			} else {
+				numeratorNode.innerHTML = scoring.SECTION_MIN;
+				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
+			}
+		}
+
+		function validateLength(score, attr) {
+			var strippedString = score.replace(/(<([^>]+)>)/ig,"");
+			if (string.trim(strippedString).length < attr) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		function validateContent(inputValue, searchValues, nodeContainer, numeratorNode) {
+			if (array.some(searchValues, function (searchValue) {
+				return parseInt(inputValue.search(searchValue)) >= 0;
+			})) {
+				// yes
+				numeratorNode.innerHTML = scoring.SECTION_PASSING;
+				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
+			} else {
+				// no
+				numeratorNode.innerHTML = scoring.SECTION_MAX;
+				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
+			}
+		}
 
 		function styleTags(tags, srcNodeRef) {
 			domClass.add(dom.byId(srcNodeRef), 'select2-container select2-container-multi');
@@ -1446,7 +1499,6 @@ require([
 									//	console.log(userItem);
 									//}));
 									previewDlg.hide();
-									console.log(portal.getPortalUser());
 									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
 										// If the store is updated the dGrid is refreshed and the expanded content is lost
 										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
@@ -1461,7 +1513,7 @@ require([
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-									console.log(portal.getPortalUser());
+
 								}));
 							}));
 						} else {

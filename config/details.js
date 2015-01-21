@@ -47,7 +47,9 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic score-graphic-pass'> 10/10</div>" +
+			"					<div class='score-graphic score-graphic-pass details-title-score-gr'>" +
+			"						<span class='details-title-score-num'></span>/<span class='details-title-score-denom'></span>" +
+			"					</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='title-tooltip info-graphic'>" +
@@ -67,7 +69,9 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic score-graphic-pass'> 10/10</div>" +
+			"					<div class='score-graphic score-graphic-pass details-summary-score-gr'>" +
+			"						<span class='details-summary-score-num'></span>/<span class='details-summary-score-denom'></span>" +
+			"					</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='summary-tooltip info-graphic'>" +
@@ -87,7 +91,9 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic score-graphic-fail'> 7/10</div>" +
+			"					<div class='score-graphic score-graphic-pass details-desc-score-gr'>" +
+			"						<span class='details-desc-score-num'></span>/<span class='details-desc-score-denom'></span>" +
+			"					</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='description-tooltip info-graphic'>" +
