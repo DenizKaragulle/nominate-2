@@ -122,7 +122,7 @@ require([
 	var profileNodeClickHandler;
 	//
 	var overallScoreGraphic;
-	var score = 80;
+	var score = 78;
 	//
 	var checkBoxID_values = [];
 	var tagStore;

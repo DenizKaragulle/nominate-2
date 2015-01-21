@@ -436,3 +436,19 @@ a.column-4.credits.icon-check {
 	float: left !important;
 	margin-right: 7px !important;
 }
+
+
+/* Porgressbar */
+.dijitProgressBarTile {
+	background: none !important;
+	background-color: #005E95 !important;
+}
+
+.dijitProgressBarEmpty {
+	background: none !important;
+	background-color: #D7D7D7 !important;
+}
+
+.dijitProgressBarFull {
+	border: none !important;
+}
