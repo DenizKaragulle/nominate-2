@@ -287,8 +287,8 @@ table tr {
 	height: 25px;
 }
 
-#description-editor {
-	/*height: 100px !important;*/
+.description-editor {
+	height: 160px !important;
 }
 
 #access-constraints-editor {
