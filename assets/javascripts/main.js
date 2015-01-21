@@ -1515,7 +1515,11 @@ require([
 								updateUserProfileThumbnail(form).then(lang.hitch(this, function (response) {
 									previewDlg.hide();
 									console.log(response);
-									portalUser.getItem(selectedRowID).then(function (item) {
+									console.log(portalUser);
+									esriRequest({
+									url: portalUser.userContentUrl,
+									handleAs: "json"
+									}).then(function (item) {
 										console.log(item);
 									});
 								}), lang.hitch(this, function (error) {
