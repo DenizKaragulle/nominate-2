@@ -1460,7 +1460,7 @@ require([
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
 									console.log(portalUser);
-								});
+								}));
 							}));
 						} else {
 							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", imageSizes[imageSizeName]);
