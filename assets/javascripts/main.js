@@ -1234,11 +1234,9 @@ require([
 
 						// update user thumbnail
 						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
-							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadUserProfileThumbnail(userItem, "PROFILE").then(lang.hitch(this, function (userItem) {
-									console.log("FINISHED");
-								}));
-							}));
+							//portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
+							uploadUserProfileThumbnail("PROFILE");
+							//}));
 						}));
 					} else {
 						// "SAVE" clicked
@@ -1396,42 +1394,6 @@ require([
 				className: "upload-thumbnail-dialog"
 			});
 			previewDlg.show();
-			// update thumbnail dialog
-			/*var previewDlg = new Dialog({
-			 id:"update-thumbnail-dialog",
-			 title: item.title,
-			 content:"<div class='container thumbnail-dialog'>" +
-			 "	<div class='row thumbnail-dialog-row'>" +
-			 "		<div class='column-24'>" +
-			 "			<div>Specify the image to use as the thumbnail.<\/div>" +
-			 "		<\/div>" +
-			 "	<\/div>" +
-			 "	<div class='row thumbnail-dialog-row'>" +
-			 "		<div class='column-4'>" +
-			 "			<div>Image: <\/div>" +
-			 "		<\/div>" +
-			 "		<div class='column-20'>" +
-			 "			<input id='thumbnail-file-updload-btn' name='myFile' type='file'>" +
-			 "		<\/div>" +
-			 "	<\/div>" +
-			 "	<div class='row thumbnail-dialog-row'>" +
-			 "		<div class='column-24'>" +
-			 "			<div>For best results, the image should be 200 pixels wide by 133 pixels high. Other sizes will be adjusted to fit. Acceptable image formats are: PNG, GIF and JPEG.<\/div>" +
-			 "		<\/div>" +
-			 "	<\/div>" +
-			 "	<div class='row thumbnail-dialog-row'>" +
-			 "		<div class='column-6 right'>" +
-			 "			<button class='btn cancel-thumbnail-dialog-btn'> Cancel <\/button>" +
-			 "		<\/div>" +
-			 "		<div class='column-4 right'>" +
-			 "			<button class='btn ok-thumbnail-dialog-btn'> OK <\/button>" +
-			 "		<\/div>" +
-			 "	<\/div>" +
-			 "<\/div>",
-			 style:"width: 450px"
-			 });
-			 previewDlg.show();*/
-
 			var dialogContent = put(previewDlg.containerNode, "div.dijitDialogPaneContentArea");
 			var actionBar = put(previewDlg.containerNode, "div.dijitDialogPaneActionBar");
 			var uploadThumbBtn = new Button({
@@ -1502,7 +1464,7 @@ require([
 			return deferred.promise;
 		}
 
-		function uploadUserProfileThumbnail(item, imageSizeName) {
+		function uploadUserProfileThumbnail(imageSizeName) {
 			var deferred = new Deferred();
 			var previewDlg = new Dialog({
 				title: item.title,
@@ -1550,14 +1512,14 @@ require([
 							// upload button selected
 							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
 								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
-								updateUserProfileThumbnail(item, form).then(lang.hitch(this, function (evt) {
+								updateUserProfileThumbnail(form).then(lang.hitch(this, function (evt) {
 									previewDlg.hide();
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-									//var _user = portal.getPortalUser();
-									//console.log(_user);
+									var _user = portal.getPortalUser();
+									console.log(_user);
 								}));
 							}));
 						} else {
@@ -1596,7 +1558,7 @@ require([
 			return deferred.promise;
 		}
 
-		function updateUserProfileThumbnail(userItem, form) {
+		function updateUserProfileThumbnail(form) {
 			console.log(lang.replace("{url}/update", portalUser));
 			var deferred = new Deferred();
 			esriRequest({
