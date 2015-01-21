@@ -760,7 +760,6 @@ require([
 			});
 		}
 
-
 		function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
 				var itemCredits = validateStr(item.accessInformation);
@@ -790,6 +789,13 @@ require([
 				var cancelBtnNode = query(".cancel-btn")[0];
 				var itemCreditsNode = query(".creditsID-textbox")[0];
 				var accessAndUseConstraintsEditorNode = query(".accessAndUseConstraintsEditor")[0];
+				var creditsScoreNodeContainer = query(".credits-score-gr")[0];
+				var creditsScoreNumeratorNode = query(".credits-score-num")[0];
+				var creditsScoreDenominatorNode = query(".credits-score-denom")[0];
+
+				creditsScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				validateTextInput(itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+				//validateTextInput(itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
 
 				on(editSaveBtnNode, "click", function () {
 					//var itemCreditsNode = query(".creditsID-textbox")[0];
@@ -889,12 +895,14 @@ require([
 						} else {
 							domConstruct.place("<span>" + accessAndUseConstraints + "</span>", "access-editor-widget", "first");
 						}
+
+						validateTextInput(itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
 					}
 				});
 
 				on(cancelBtnNode, "click", function () {
 					domConstruct.empty(itemCreditsNode);
-					domConstruct.create("div", { innerHTML: accessAndUseConstraints_clean }, itemCreditsNode, "first");
+					domConstruct.create("div", { innerHTML: itemCredits_clean }, itemCreditsNode, "first");
 					domAttr.remove(itemCreditsNode, "data-dojo-type");
 					domAttr.set(itemCreditsNode, "id", creditID);
 
@@ -910,11 +918,13 @@ require([
 					if (accessAndUseConstraints === "") {
 						domConstruct.place("<span></span>", "access-editor-widget", "first");
 					} else {
-						domConstruct.place("<span>" + itemCredits_clean + "</span>", "access-editor-widget", "first");
+						domConstruct.place("<span>" + accessAndUseConstraints_clean + "</span>", "access-editor-widget", "first");
 					}
 
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
+
+					validateTextInput(itemCredits_clean, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
 				});
 			});
 		}

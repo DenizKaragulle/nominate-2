@@ -34,6 +34,7 @@ define({
 	// failing color
 	"SECTION_FAIL_COLOR" : "#C86A4A",
 
+	// Item Details
 	"ITEM_TITLE_MIN_LENGTH" : 2,
 	"ITEM_TITLE_CONTENT" : ["copy", "demo", "test", "eval", "_"],
 	"ITEM_SUMMARY_MIN_LENGTH" : 10,
@@ -41,8 +42,13 @@ define({
 	"ITEM_DESC_MIN_LENGTH" : 48,
 	"ITEM_DESC_CONTENT" : ["test", "testing", "demo", "sample"],
 
+	// Item Use/Credits
+	"ITEM_CREDITS_MIN_NUM_WORDS" : 1,
+	"ITEM_CREDITS_CONTENT" : [],
+	"ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS" : 2,
 
-
+	// Tags
+	"MIN_NUM_TAGS_TOTAL" : 3,
 
 	"ATLAS_TAGS":[
 		{
