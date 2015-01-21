@@ -130,12 +130,14 @@ require([
 	var newTag;
 
 	var imageSizes = {
+		"PROFILE": [150, 150],
 		"SMALL": [200, 133],
 		"LARGE": [286, 190],
 		"XLARGE": [450, 300]
 	};
 
 	var updatedItems = {
+		"PROFILE": [],
 		"SMALL": [],
 		"LARGE": [],
 		"XLARGE": []
@@ -732,6 +734,7 @@ require([
 				});
 
 				on(cancelBtnNode, "click", function () {
+					itemThumbnailListener.remove();
 					// update thumbnail cursor/message
 					domStyle.set(query(".edit-thumbnail-msg")[0], "display", "none");
 					domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
@@ -1188,7 +1191,8 @@ require([
 						profileDescriptionTooltipNode = query(".user-description-tooltip")[0],
 						userNameScoreNodeContainer = query(".profile-name-score-gr")[0],
 						userNameScoreNumeratorNode = query(".profile-name-score-num")[0],
-						userNameScoreDenominatorNode = query(".profile-name-score-denom")[0];
+						userNameScoreDenominatorNode = query(".profile-name-score-denom")[0],
+						profileThumbnailListener;
 
 				// set the thumbnail
 				domAttr.set(profileThumbnailNode, "src", _userThumbnailUrl);
@@ -1229,13 +1233,14 @@ require([
 						domStyle.set(query(".edit-profile-thumbnail-msg")[0], "display", "block");
 
 						// update user thumbnail
-						on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
+						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadUserThumbnail(userItem, "SMALL");
+								uploadUserThumbnail(userItem, "PROFILE");
 							}));
 						}));
 					} else {
 						// "SAVE" clicked
+						profileThumbnailListener.remove();
 						_userFullName = query(".edit-user-full-name")[0].value;
 						_userDescription = query(".edit-user-description")[0].value;
 
@@ -1281,6 +1286,7 @@ require([
 				});
 
 				on(cancelBtnNode, "click", function () {
+					profileThumbnailListener.remove();
 					domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
 
 					domStyle.set(query(".edit-profile-thumbnail-msg")[0], "display", "none");
