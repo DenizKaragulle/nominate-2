@@ -1524,11 +1524,12 @@ require([
 										}).then(lang.hitch(this, function (user) {
 											// WORKS
 											console.log(user);
-											/*user.getItem(selectedRowID).then(function (item) {
+											console.log(selectedRowID);
+											user.getItem(selectedRowID).then(function (item) {
 												console.log(item);
-												var thumbnailUrl = formatThumbnailUrl(item);
-												console.log(thumbnailUrl);
-											});*/
+												//var thumbnailUrl = formatThumbnailUrl(item);
+												//console.log(thumbnailUrl);
+											});
 										}));
 									}
 								}), lang.hitch(this, function (error) {
