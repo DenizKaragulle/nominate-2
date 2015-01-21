@@ -1284,7 +1284,7 @@ require([
 			s = s.replace(/[ ]{2,}/gi, " ");
 			// exclude newline with a space at beginning
 			s = s.replace(/\n /, "\n");
-			return s.split(' ').length;
+			return s.split(" ").length;
 		}
 
 		function validateTextInput(inputText, containerNode, numeratorNode, minChars, prohibitedWords) {
@@ -1298,7 +1298,10 @@ require([
 
 		function validateNumWords(score, numWordRequired) {
 			var strippedString = score.replace(/(<([^>]+)>)/ig,"");
-			var nWords = countWords(strippedString);
+			var nWords = 0;
+			if (strippedString.length > 0) {
+				nWords = countWords(strippedString);
+			}
 			if (nWords < numWordRequired) {
 				return false;
 			} else {
