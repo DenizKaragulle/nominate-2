@@ -551,7 +551,8 @@ require([
 						summaryScoreDenominatorNode = query(".details-summary-score-denom")[0],
 						descScoreNodeContainer = query(".details-desc-score-gr")[0],
 						descScoreNumeratorNode = query(".details-desc-score-num")[0],
-						descScoreDenominatorNode = query(".details-desc-score-denom")[0];
+						descScoreDenominatorNode = query(".details-desc-score-denom")[0],
+						itemThumbnailListener;
 
 
 				// set the thumbnail
@@ -650,12 +651,14 @@ require([
 						descriptionEditor.startup();
 
 						// update thumbnail
-						on(query(".expanded-item-thumbnail"), "click", lang.hitch(this, function (event) {
+						itemThumbnailListener = on(query(".expanded-item-thumbnail"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
 								uploadItemThumbnail(userItem, "SMALL");
 							}));
 						}));
 					} else {
+						itemThumbnailListener.remove();
+						
 						// SAVE clicked
 						itemTitle = query(".edit-title")[0].value;
 						itemSummary = query(".edit-summary")[0].value;
