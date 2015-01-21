@@ -1177,7 +1177,7 @@ require([
 				var _userThumbnailUrl = item.portal.getPortalUser().thumbnailUrl;
 				var _userThumbnailUrl_clean = _userThumbnailUrl;
 
-				consoel.log("item.portal.getPortalUser()");
+				console.log("item.portal.getPortalUser()");
 				console.log(item.portal.getPortalUser());
 
 				// load the content
