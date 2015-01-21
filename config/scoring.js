@@ -50,6 +50,12 @@ define({
 	// Tags
 	"MIN_NUM_TAGS_TOTAL" : 3,
 
+	//
+
+	// User Profile
+	"USER_NAME_MIN_NUM_WORDS" : 1,
+	"USER_NAME_CONTENT" : ["_"],
+
 	"ATLAS_TAGS":[
 		{
 			"id":"basemapsCB",

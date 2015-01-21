@@ -1170,7 +1170,10 @@ require([
 						profileUserDescriptionNode = query(".user-description-textbox")[0],
 						profileThumbnailTooltipNode = query(".profile-thumbnail-tooltip")[0],
 						profileFullNameTooltipNode = query(".user-full-name-tooltip")[0],
-						profileDescriptionTooltipNode = query(".user-description-tooltip")[0];
+						profileDescriptionTooltipNode = query(".user-description-tooltip")[0],
+						userNameScoreNodeContainer = query(".profile-name-score-gr")[0],
+						userNameScoreNumeratorNode = query(".profile-name-score-num")[0],
+						userNameScoreDenominatorNode = query(".profile-name-score-denom")[0];
 
 				// set the thumbnail
 				domAttr.set(profileThumbnailNode, "src", _userThumbnailUrl);
@@ -1185,6 +1188,9 @@ require([
 				createTooltip(profileThumbnailTooltipNode, tooltipsConfig.USER_PROFILE_THUMBNAIL_TOOLTIP_CONTENT);
 				createTooltip(profileFullNameTooltipNode, tooltipsConfig.USER_PROFILE_FULL_NAME_TOOLTIP_CONTENT);
 				createTooltip(profileDescriptionTooltipNode, tooltipsConfig.USER_PROFILE_DESCRIPTION_TOOLTIP_CONTENT);
+
+				userNameScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				validateTextInput(_userFullName, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -1250,6 +1256,7 @@ require([
 											_userDescription_clean = _userDescription;
 
 											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+											validateTextInput(_userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
 										} else {
 											console.log("Profile not updated");
 										}
@@ -1273,6 +1280,8 @@ require([
 					domAttr.set(profileUserDescriptionNode, "id", _userDescriptionID);
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
+
+					validateTextInput(_userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
 				});
 			});
 		}
