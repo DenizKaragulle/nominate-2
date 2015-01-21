@@ -1177,7 +1177,9 @@ require([
 						on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
 								uploadUserThumbnail(userItem, "SMALL");
-							}));
+							})).then(lang.hitch(this, function (item) {
+								console.log(portal.getPortalUser());
+									}));
 						}));
 					} else {
 						// "SAVE" clicked
@@ -1444,7 +1446,7 @@ require([
 									//	console.log(userItem);
 									//}));
 									previewDlg.hide();
-									console.log(portalUser);
+									console.log(portal.getPortalUser());
 									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
 										// If the store is updated the dGrid is refreshed and the expanded content is lost
 										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
@@ -1459,7 +1461,7 @@ require([
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-									console.log(portalUser);
+									console.log(portal.getPortalUser());
 								}));
 							}));
 						} else {
