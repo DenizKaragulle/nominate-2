@@ -34,11 +34,11 @@ define({
 	// failing color
 	"SECTION_FAIL_COLOR" : "#C86A4A",
 
-	"ITEM_TITLE_MIN_LENGTH" : 4,
+	"ITEM_TITLE_MIN_LENGTH" : 2,
 	"ITEM_TITLE_CONTENT" : ["copy", "demo", "test", "eval", "_"],
 	"ITEM_SUMMARY_MIN_LENGTH" : 10,
 	"ITEM_SUMMARY_CONTENT" : ["copy", "demo", "test", "eval"],
-	"ITEM_DESC_MIN_LENGTH" : 20,
+	"ITEM_DESC_MIN_LENGTH" : 48,
 	"ITEM_DESC_CONTENT" : ["test", "testing", "demo", "sample"],
 
 

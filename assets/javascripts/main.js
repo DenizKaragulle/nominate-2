@@ -1267,6 +1267,13 @@ require([
 		}
 
 
+		function countWords(s) {
+			s = s.replace(/(^\s*)|(\s*$)/gi, "");//exclude  start and end white-space
+			s = s.replace(/[ ]{2,}/gi, " ");//2 or more space to 1
+			s = s.replace(/\n /, "\n"); // exclude newline with a start spacing
+			return s.split(' ').length;
+		}
+
 		function validateTextInput(inputText, containerNode, numeratorNode, minChars, prohibitedWords) {
 			if (validateLength(inputText, minChars)) {
 				validateContent(inputText, prohibitedWords, containerNode, numeratorNode);
@@ -1276,9 +1283,10 @@ require([
 			}
 		}
 
-		function validateLength(score, attr) {
+		function validateLength(score, numWordRequired) {
 			var strippedString = score.replace(/(<([^>]+)>)/ig,"");
-			if (string.trim(strippedString).length < attr) {
+			var nWords = countWords(strippedString);
+			if (nWords < numWordRequired) {
 				return false;
 			} else {
 				return true;
