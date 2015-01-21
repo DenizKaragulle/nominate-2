@@ -1513,9 +1513,9 @@ require([
 								updateUserProfileThumbnail(form).then(lang.hitch(this, function (response) {
 									previewDlg.hide();
 									if (response) {
+										console.log(lang.replace("{url}", portalUser));
 										console.log(portalUser);
 										esriRequest({
-											//url:portalUser.userContentUrl,
 											url:portalUser.userContentUrl,
 											handleAs:"json"
 										}).then(function (item) {
