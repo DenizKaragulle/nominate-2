@@ -1234,7 +1234,9 @@ require([
 
 						// update user thumbnail
 						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
-							uploadUserProfileThumbnail("PROFILE");
+							uploadUserProfileThumbnail("PROFILE").then(lang.hitch(this, function (evt) {
+								console.log(this);
+							}));
 						}));
 					} else {
 						// "SAVE" clicked
@@ -1517,6 +1519,7 @@ require([
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
 									console.log(this);
+									console.log(evt);
 									//domAttr.set(query(".profileThumbnailUrl")[0], "src", domAttr.get(this, "src"));
 								}));
 							}));
