@@ -290,6 +290,16 @@ require([
 					applySort(target);
 				});
 			});
+
+			on(query(".icon-help")[0], "click", function () {
+				console.log("HELP")
+				var helpDialog = new Dialog({
+        			title: "HELP",
+        			content: "<div>\"HELP\" will re-direct users to a help page.</div>",
+        			style: "width: 300px"
+    			});
+				helpDialog.show();
+			});
 		}
 
 		function signIn() {
