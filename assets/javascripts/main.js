@@ -1235,7 +1235,10 @@ require([
 						// update user thumbnail
 						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadUserThumbnail(userItem, "PROFILE");
+								uploadUserThumbnail(userItem, "PROFILE").then(lang.hitch(this, function (user) {
+									console.log("DONE");
+									console.log(user);
+								}));
 							}));
 						}));
 					} else {
