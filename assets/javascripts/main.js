@@ -1516,7 +1516,7 @@ require([
 										console.log(lang.replace("{url}", portalUser));
 										console.log(portalUser);
 										esriRequest({
-											url:portalUser.userContentUrl,
+											url:lang.replace("{url}", portalUser),
 											handleAs:"json"
 										}).then(function (item) {
 											console.log(item);
@@ -1566,7 +1566,7 @@ require([
 		}
 
 		function updateUserProfileThumbnail(form) {
-			console.log(lang.replace("{url}/update", portalUser));
+			//console.log(lang.replace("{url}/update", portalUser));
 			var deferred = new Deferred();
 			esriRequest({
 				url:lang.replace("{url}/update", portalUser),
