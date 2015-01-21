@@ -122,7 +122,7 @@ require([
 	var profileNodeClickHandler;
 	//
 	var overallScoreGraphic;
-	var score = 0;
+	var score = 80;
 	//
 	var checkBoxID_values = [];
 	var tagStore;
@@ -494,6 +494,7 @@ require([
 										},
 										value: score
 									}).placeAt(progressBarAnchorNode).startup();
+									domConstruct.place("<div class='current-score-passing-marker'>80%</div>", progressBarAnchorNode, "before");
 								});
 							}
 						});
@@ -665,16 +666,16 @@ require([
 							}, {
 								usePost: true
 							}).then(function (response) {
-										if (response.success) {
-											html.set(query(".title-" + selectedRowID)[0], itemTitle);
-											itemTitle_clean = itemTitle;
-											itemSummary_clean = itemSummary;
-											itemDescription_clean = itemDescription;
-											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
-										} else {
-											console.log("Details not updated");
-										}
-									});
+								if (response.success) {
+									html.set(query(".title-" + selectedRowID)[0], itemTitle);
+									itemTitle_clean = itemTitle;
+									itemSummary_clean = itemSummary;
+									itemDescription_clean = itemDescription;
+									updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+								} else {
+									console.log("Details not updated");
+								}
+							});
 						});
 
 						// update thumbnail
@@ -1268,14 +1269,16 @@ require([
 
 
 		function countWords(s) {
-			s = s.replace(/(^\s*)|(\s*$)/gi, "");//exclude  start and end white-space
-			s = s.replace(/[ ]{2,}/gi, " ");//2 or more space to 1
-			s = s.replace(/\n /, "\n"); // exclude newline with a start spacing
+			// exclude white space
+			s = s.replace(/(^\s*)|(\s*$)/gi, "");
+			s = s.replace(/[ ]{2,}/gi, " ");
+			// exclude newline with a space at beginning
+			s = s.replace(/\n /, "\n");
 			return s.split(' ').length;
 		}
 
 		function validateTextInput(inputText, containerNode, numeratorNode, minChars, prohibitedWords) {
-			if (validateLength(inputText, minChars)) {
+			if (validateNumWords(inputText, minChars)) {
 				validateContent(inputText, prohibitedWords, containerNode, numeratorNode);
 			} else {
 				numeratorNode.innerHTML = scoring.SECTION_MIN;
@@ -1283,7 +1286,7 @@ require([
 			}
 		}
 
-		function validateLength(score, numWordRequired) {
+		function validateNumWords(score, numWordRequired) {
 			var strippedString = score.replace(/(<([^>]+)>)/ig,"");
 			var nWords = countWords(strippedString);
 			if (nWords < numWordRequired) {
