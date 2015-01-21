@@ -1523,12 +1523,12 @@ require([
 											handleAs:"json"
 										}).then(lang.hitch(this, function (user) {
 											// WORKS
-											//console.log(item);
-											user.getItem(selectedRowID).then(function (item) {
+											console.log(user);
+											/*user.getItem(selectedRowID).then(function (item) {
 												console.log(item);
 												var thumbnailUrl = formatThumbnailUrl(item);
 												console.log(thumbnailUrl);
-											});
+											});*/
 										}));
 									}
 								}), lang.hitch(this, function (error) {
