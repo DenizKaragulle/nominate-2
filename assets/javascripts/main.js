@@ -1519,9 +1519,10 @@ require([
 									var _user = portal.getPortalUser();
 									console.log(_user);
 									console.log(this);
-									query(".profileThumbnailUrl")[0] = this;
+									console.log(this.src);
+									query(".profileThumbnailUrl")[0].innerHTML = this;
 									console.log(query(".profileThumbnailUrl")[0]);
-									//domAttr.set(query(".item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
+									domAttr.set(query(".profileThumbnailUrl")[0], "src", domAttr.get(this, "src"));
 								}));
 							}));
 						} else {
