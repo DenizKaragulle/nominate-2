@@ -459,6 +459,7 @@ a.column-4.credits.icon-check {
 .dijitProgressBarEmpty {
 	background: none !important;
 	background-color: #D7D7D7 !important;
+	border-color: white !important;
 }
 
 .dijitProgressBarFull {
