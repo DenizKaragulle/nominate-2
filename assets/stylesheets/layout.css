@@ -158,6 +158,8 @@ table tr {
 .current-score-graphic-container {
 	height: 20px;
 	width: 750px !important;
+	position: absolute;
+	top: 0px;
 }
 
 .current-score-passing-marker {
