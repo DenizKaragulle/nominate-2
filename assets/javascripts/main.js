@@ -1235,7 +1235,9 @@ require([
 						// update user thumbnail
 						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadUserThumbnail(userItem, "PROFILE");
+								uploadUserProfileThumbnail(userItem, "PROFILE").then(lang.hitch(this, function (userItem) {
+									console.log("DONE")
+								}));
 							}));
 						}));
 					} else {
@@ -1500,7 +1502,7 @@ require([
 			return deferred.promise;
 		}
 
-		function uploadUserThumbnail(item, imageSizeName) {
+		function uploadUserProfileThumbnail(item, imageSizeName) {
 			var deferred = new Deferred();
 			var previewDlg = new Dialog({
 				title: item.title,
@@ -1554,7 +1556,7 @@ require([
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-									console.log("DONE");
+
 								}));
 							}));
 						} else {
