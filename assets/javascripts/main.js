@@ -1443,10 +1443,8 @@ require([
 									//portal.getPortalUser().then(lang.hitch(this, function (userItem) {
 									//	console.log(userItem);
 									//}));
-									console.log(portalUser);
-									domAttr.set(query(".profileThumbnailUrl", "src", item.thumbnailUrl));
 									previewDlg.hide();
-
+									console.log(portalUser);
 									/*portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
 										// If the store is updated the dGrid is refreshed and the expanded content is lost
 										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
@@ -1460,7 +1458,9 @@ require([
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
 									msgPane.innerHTML = error.message;
-								}));
+								})).then(lang.hitch(this, function (evt) {
+									console.log(portalUser);
+								});
 							}));
 						} else {
 							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", imageSizes[imageSizeName]);
