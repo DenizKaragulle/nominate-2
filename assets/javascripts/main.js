@@ -1235,7 +1235,9 @@ require([
 						// update user thumbnail
 						profileThumbnailListener = on(query(".profileThumbnailUrl"), "click", lang.hitch(this, function (event) {
 							portalUser.getItem(selectedRowID).then(lang.hitch(this, function (userItem) {
-								uploadUserProfileThumbnail(userItem, "PROFILE");
+								uploadUserProfileThumbnail(userItem, "PROFILE").then(lang.hitch(this, function (userItem) {
+									console.log("FINISHED");
+								}));
 							}));
 						}));
 					} else {
@@ -1554,10 +1556,8 @@ require([
 									console.warn(error);
 									msgPane.innerHTML = error.message;
 								})).then(lang.hitch(this, function (evt) {
-									console.log("DONE");
-									console.log(portal);
-									var shit = portal.getPortalUser();
-									console.log(shit);
+									//var _user = portal.getPortalUser();
+									//console.log(_user);
 								}));
 							}));
 						} else {
