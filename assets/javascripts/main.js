@@ -1596,14 +1596,6 @@ require([
 		function updateUserProfileThumbnail(userItem, form) {
 			console.log(lang.replace("{url}/update", portalUser));
 			var deferred = new Deferred();
-			/*esriRequest({
-				url: lang.replace("{url}/update", portalUser),
-				form: form,
-				content: {
-					f: "json"
-				},
-				handleAs: "json"
-			}).then(deferred.resolve, deferred.reject);*/
 			esriRequest({
 				url: lang.replace("{url}/update", portalUser),
 				form: form,
@@ -1611,9 +1603,7 @@ require([
 					f: "json"
 				},
 				handleAs: "json"
-			}).then(this, function() {
-						console.log("DONE")
-					});
+			}).then(deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
 
