@@ -1517,9 +1517,8 @@ require([
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
 									msgPane.innerHTML = error.message;
-								})).then(lang.hitch(this, function (evt) {
+								})).then(lang.hitch(this, function () {
 									console.log(this);
-									console.log(evt);
 									//domAttr.set(query(".profileThumbnailUrl")[0], "src", domAttr.get(this, "src"));
 								}));
 							}));
