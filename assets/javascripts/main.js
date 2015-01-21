@@ -1514,15 +1514,16 @@ require([
 								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
 								updateUserProfileThumbnail(form).then(lang.hitch(this, function (response) {
 									previewDlg.hide();
-									console.log(response);
-									console.log(portalUser);
-									esriRequest({
-										//url:portalUser.userContentUrl,
-										url:lang.replace("{userContentUrl}"),
-										handleAs:"json"
-									}).then(function (item) {
-												console.log(item);
-											});
+									if (response) {
+										console.log(portalUser);
+										esriRequest({
+											//url:portalUser.userContentUrl,
+											url:lang.replace("{userItemUrl/}", portalUser),
+											handleAs:"json"
+										}).then(function (item) {
+													console.log(item);
+												});
+									}
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
 									msgPane.innerHTML = error.message;
