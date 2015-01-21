@@ -1521,9 +1521,9 @@ require([
 												f:"json"
 											},
 											handleAs:"json"
-										}).then(function (item) {
-													console.log(item);
-												});
+										}).then(lang.hitch(this, function (item) {
+											console.log(item);
+										}));
 									}
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
