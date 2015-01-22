@@ -1516,21 +1516,13 @@ require([
 										//console.log(lang.replace("{url}", portalUser));
 										//console.log(portalUser);
 										esriRequest({
-											url:lang.replace("{url}", portalUser),
+											url:lang.replace("{userContentUrl}", portalUser),
 											content:{
 												f:"json"
 											},
 											handleAs:"json"
-										}).then(lang.hitch(this, function (user) {
-											// WORKS
+										}).then(lang.hitch(this, function (obj) {
 											console.log(user);
-											console.log(selectedRowID);
-											/*user.getItem(selectedRowID).then(function (item) {
-												console.log(item);
-												//var thumbnailUrl = formatThumbnailUrl(item);
-												//console.log(thumbnailUrl);
-											});*/
-											console.log(user.portal.getPortalUser().thumbnailUrl)
 										}));
 									}
 								}), lang.hitch(this, function (error) {
