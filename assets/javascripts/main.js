@@ -109,6 +109,7 @@ require([
 	var portal;
 	var portalUser;
 	var owner;
+	var portalUserThumbnailUrl = "";
 
 	// Dijit Editor for the description section
 	var descriptionEditor;
@@ -312,6 +313,7 @@ require([
 
 				portalUser = portal.getPortalUser();
 				owner = portalUser.username;
+				portalUserThumbnailUrl = portalUser.thumbnailUrl;
 
 				var params = {
 					q:"owner:" + owner,
@@ -1176,13 +1178,13 @@ require([
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
 				// item full name
-				var _userFullName = validateStr(item.portal.getPortalUser().fullName);
+				var _userFullName = validateStr(portalUser.fullName);
 				var _userFullName_clean = _userFullName;
 				// item user description
-				var _userDescription = validateStr(item.portal.getPortalUser().description);
+				var _userDescription = validateStr(portalUser.description);
 				var _userDescription_clean = _userDescription;
 				// item user thumbnail
-				var _userThumbnailUrl = item.portal.getPortalUser().thumbnailUrl;
+				var _userThumbnailUrl = portalUserThumbnailUrl;
 				var _userThumbnailUrl_clean = _userThumbnailUrl;
 
 				// load the content
@@ -1216,6 +1218,7 @@ require([
 				createTooltip(profileFullNameTooltipNode, tooltipsConfig.USER_PROFILE_FULL_NAME_TOOLTIP_CONTENT);
 				createTooltip(profileDescriptionTooltipNode, tooltipsConfig.USER_PROFILE_DESCRIPTION_TOOLTIP_CONTENT);
 
+				// score content
 				userNameScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				validateTextInput(_userFullName, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
 
@@ -1544,7 +1547,6 @@ require([
 								updateUserProfileThumbnail(form).then(lang.hitch(this, function (response) {
 									previewDlg.hide();
 									if (response) {
-										//console.log(lang.replace("{url}", portalUser));
 										esriRequest({
 											url:lang.replace("{url}", portalUser),
 											content:{
@@ -1552,8 +1554,9 @@ require([
 											},
 											handleAs:"json"
 										}).then(lang.hitch(this, function (obj) {
-											portalUser = obj;
-											console.log(portalUser);
+											portalUserThumbnailUrl = portalUserThumbnailUrl.substring(0, portalUserThumbnailUrl.lastIndexOf("/"));
+											portalUserThumbnailUrl = portalUserThumbnailUrl + "/" + obj.thumbnail;
+											domAttr.set(query(".profileThumbnailUrl")[0], "src", portalUserThumbnailUrl);
 										}));
 									}
 								}), lang.hitch(this, function (error) {
