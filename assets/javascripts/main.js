@@ -1522,7 +1522,6 @@ require([
 											handleAs:"json"
 										}).then(lang.hitch(this, function (obj) {
 											console.log(obj);
-											portalUser = obj;
 										}));
 									}
 								}), lang.hitch(this, function (error) {
