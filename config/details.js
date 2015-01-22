@@ -22,7 +22,9 @@ define({
 			"		<div class='column-3'>" +
 			"			<div class='row'>" +
 			"				<div class='column-12'>" +
-			"					<div class='score-graphic score-graphic-fail'> 5/10</div>" +
+			"					<div class='score-graphic score-graphic-pass item-thumbnail-score-gr'>" +
+			"						<span class='item-thumbnail-score-num'></span>/<span class='item-thumbnail-score-denom'></span>" +
+			"					</div>" +
 			"				</div>" +
 			"				<div class='column-12'>" +
 			"					<img src='assets/images/info_32.png' class='thumbnail-tooltip info-graphic'>" +

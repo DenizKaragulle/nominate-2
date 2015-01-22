@@ -35,6 +35,7 @@ define({
 	"SECTION_FAIL_COLOR" : "#C86A4A",
 
 	// Item Details
+	"NO_THUMBNAIL_FILE_NAME" : "ago_downloaded.png",
 	"ITEM_TITLE_MIN_LENGTH" : 2,
 	"ITEM_TITLE_CONTENT" : ["copy", "demo", "test", "eval", "_"],
 	"ITEM_SUMMARY_MIN_LENGTH" : 10,

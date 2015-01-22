@@ -126,6 +126,7 @@ require([
 	// overall score
 	var score = 78;
 	// section scores
+	var itemThumbnailScore = 0;
 	var itemTitleScore = 0;
 	var itemSummaryScore = 0;
 	var itemDescriptionScore = 0;
@@ -567,10 +568,15 @@ require([
 						itemTitleNode = query(".title-textbox")[0],
 						itemSummaryNode = query(".summary-textbox")[0],
 						itemDescriptionNode = query(".description-editor")[0],
+						// tooltip nodes
 						itemThumbnailTooltipNode = query(".thumbnail-tooltip")[0],
 						itemTitleTooltipNode = query(".title-tooltip")[0],
 						itemSummaryTooltipNode = query(".summary-tooltip")[0],
 						itemDescriptionTooltipNode = query(".description-tooltip")[0],
+						//
+						thumbnailScoreNodeContainer = query(".item-thumbnail-score-gr")[0],
+						thumbnailScoreNumeratorNode = query(".item-thumbnail-score-num")[0],
+						thumbnailScoreDenominatorNode = query(".item-thumbnail-score-denom")[0],
 						titleScoreNodeContainer = query(".details-title-score-gr")[0],
 						titleScoreNumeratorNode = query(".details-title-score-num")[0],
 						titleScoreDenominatorNode = query(".details-title-score-denom")[0],
@@ -607,9 +613,11 @@ require([
 				createTooltip(itemSummaryTooltipNode, tooltipsConfig.ITEM_SUMMARY_TOOLTIP_CONTENT);
 				createTooltip(itemDescriptionTooltipNode, tooltipsConfig.ITEM_DESCRIPTION_TOOLTIP_CONTENT);
 
+				thumbnailScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				titleScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				summaryScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				descScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				validateThumbnailUrl(thumbnailUrl, itemThumbnailScore, thumbnailScoreNodeContainer, thumbnailScoreNumeratorNode);
 				validateTextInput(itemTitleScore, itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
 				validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
 				validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
@@ -1358,6 +1366,23 @@ require([
 		}
 
 
+		function validateThumbnailUrl(thumbnail, sectionScore, containerNode, numeratorNode) {
+			console.log(thumbnail);
+			var index = thumbnail.lastIndexOf("/") + 1;
+			var filename = thumbnail.substr(index);
+			console.log(filename);
+
+			if (filename === null || filename === "nullThumbnail.png") {
+				sectionScore = scoring.SECTION_MIN;
+				numeratorNode.innerHTML = sectionScore;
+				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
+			} else {
+				sectionScore = scoring.SECTION_MAX;
+				numeratorNode.innerHTML = sectionScore;
+				domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
+			}
+		}
+
 		function validateTags(sectionScore, tags, containerNode, numeratorNode, penaltyWords) {
 			if (tags.length >= 3) {
 				var tempTags = [];
@@ -1386,7 +1411,6 @@ require([
 				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");console.log("FAIL");
 			}
 		}
-
 
 		function getNumSentences(s) {
 			return (s).match(reSentences).length

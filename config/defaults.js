@@ -14,7 +14,7 @@
  | limitations under the License.
  */
 define({
-	"HEADER_TEXT_PUBLIC":"Living Atlas of the World: Nominate an app, web map or layer",
+	"HEADER_TEXT_PUBLIC":"Living Atlas of the World: <br /><span style='margin-left: 37px;'>Nominate an item</span>",
 	"HEADER_BLOCK_PRIVATE":"My Items",
 	"INTRO_TEXT_1":"ArcGIS includes a Living Atlas of the World with beautiful and " +
 			"authoritative maps on hundreds of topics. It combines reference and thematic maps with many topics " +
