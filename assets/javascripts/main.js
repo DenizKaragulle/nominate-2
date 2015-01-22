@@ -1522,7 +1522,7 @@ require([
 											handleAs:"json"
 										}).then(lang.hitch(this, function (obj) {
 											console.log(obj);
-											domAttr.set(query(".profileThumbnailUrl")[0], "src", "https://www.arcgis.com/sharing/rest/community/users/cmahlke/info/" + obj.thumbnail);
+											portalUser = obj;
 										}));
 									}
 								}), lang.hitch(this, function (error) {
