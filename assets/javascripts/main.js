@@ -1522,7 +1522,7 @@ require([
 											},
 											handleAs:"json"
 										}).then(lang.hitch(this, function (obj) {
-											console.log(user);
+											console.log(obj);
 										}));
 									}
 								}), lang.hitch(this, function (error) {
