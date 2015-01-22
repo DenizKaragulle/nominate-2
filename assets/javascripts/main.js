@@ -782,10 +782,10 @@ require([
 
 		function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
-				var itemCredits = validateStr(item.accessInformation);
-				var itemCredits_clean = itemCredits;
-				var accessAndUseConstraints = validateStr(item.licenseInfo);
-				var accessAndUseConstraints_clean = accessAndUseConstraints;
+				var itemCredits = validateStr(item.accessInformation),
+					itemCredits_clean = itemCredits,
+					accessAndUseConstraints = validateStr(item.licenseInfo),
+					accessAndUseConstraints_clean = accessAndUseConstraints;
 
 				// load the content
 				loadContent(credits.ACCESS_CREDITS_CONTENT);
@@ -812,15 +812,17 @@ require([
 				var creditsScoreNodeContainer = query(".credits-score-gr")[0];
 				var creditsScoreNumeratorNode = query(".credits-score-num")[0];
 				var creditsScoreDenominatorNode = query(".credits-score-denom")[0];
+				var accessScoreNodeContainer = query(".access-score-gr")[0];
+				var accessScoreNumeratorNode = query(".access-score-num")[0];
+				var accessScoreDenominatorNode = query(".access-score-denom")[0];
 
 				creditsScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				accessScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				validateTextInput(itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
-				//validateTextInput(itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+				validateTextInput(accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+				hasWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 
 				on(editSaveBtnNode, "click", function () {
-					//var itemCreditsNode = query(".creditsID-textbox")[0];
-					//var accessAndUseConstraintsEditorNode = query(".accessAndUseConstraintsEditor")[0];
-
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
 						domStyle.set(cancelBtnNode, "display", "block");
@@ -917,6 +919,8 @@ require([
 						}
 
 						validateTextInput(itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+						validateTextInput(accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+						hasWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 					}
 				});
 
@@ -945,6 +949,8 @@ require([
 					domStyle.set(cancelBtnNode, "display", "none");
 
 					validateTextInput(itemCredits_clean, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+					validateTextInput(accessAndUseConstraints_clean, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+					hasWords(accessAndUseConstraints_clean, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 				});
 			});
 		}
@@ -1308,6 +1314,10 @@ require([
 		}
 
 
+
+
+
+
 		function getNumSentences(s) {
 			return (s).match(reSentences).length
 		}
@@ -1337,8 +1347,6 @@ require([
 				nWords = getNumWords(strippedString);
 			}
 
-			console.log(getNumSentences(strippedString));
-
 			if (nWords < numWordRequired) {
 				return false;
 			} else {
@@ -1359,6 +1367,20 @@ require([
 				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
 			}
 		}
+
+		function hasWords(inputStr, inputWords) {
+			array.forEach(inputWords, function (word) {
+				console.log(inputStr);
+				console.log(word);
+				console.log(inputStr.search(/word/));
+				if (inputStr.search(word) >= 0) {
+					console.log("MATCH");
+				} else {
+					console.log("NO MATCH");
+				}
+			});
+		}
+
 
 		function styleTags(tags, srcNodeRef) {
 			domClass.add(dom.byId(srcNodeRef), 'select2-container select2-container-multi');
@@ -1530,7 +1552,8 @@ require([
 											},
 											handleAs:"json"
 										}).then(lang.hitch(this, function (obj) {
-											console.log(obj);
+											portalUser = obj;
+											console.log(portalUser);
 										}));
 									}
 								}), lang.hitch(this, function (error) {

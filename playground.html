@@ -55,13 +55,13 @@
 <script type="text/javascript">
 	var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
 	var dojoConfig = {
-		async: true,
+		async:true,
 		// The locationPath logic below may look confusing but all its doing is
 		// enabling us to load the api from a CDN and load local modules from the correct location.
-		packages: [
+		packages:[
 			{
-				name: "config",
-				location: package_path + '/config'
+				name:"config",
+				location:package_path + '/config'
 			}
 		]
 	};
@@ -73,188 +73,210 @@
 
 <script>
 
-	require([
-		"dojo/_base/fx",
-		"dijit/Tooltip",
-		"put-selector/put",
-		"dojo/store/Memory",
-		"dgrid/extensions/Pagination",
-		"dgrid/OnDemandGrid",
-		"dgrid/OnDemandList",
-		"dgrid/Keyboard",
-		"dgrid/Selection",
-		"dijit/Editor",
-		"dijit/form/Button",
-		"dijit/form/CheckBox",
-		"dijit/form/ComboBox",
-		"dijit/form/SimpleTextarea",
-		"dijit/Dialog",
-		"dijit/ProgressBar",
-		"dojo/_base/array",
-		"dojo/_base/declare",
-		"dojo/_base/fx",
-		"dojo/_base/lang",
-		"dojo/aspect",
-		"dojo/date",
-		"dojo/Deferred",
-		"dojo/dom",
-		"dojo/dom-attr",
-		"dojo/dom-class",
-		"dojo/dom-construct",
-		"dojo/dom-style",
-		"dojo/html",
-		"dojo/number",
-		"dojo/on",
-		"dojo/string",
-		"dojo/query",
-		"esri/arcgis/Portal",
-		"esri/arcgis/OAuthInfo",
-		"esri/IdentityManager",
-		"esri/arcgis/utils",
-		"esri/config",
-		"esri/map",
-		"esri/request",
-		"dojo/parser",
-		"dojo/ready",
-		"config/defaults",
-		"config/details",
-		"config/scoring",
-		"dojo/NodeList-traverse"
-	], function (fx, Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, string, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, scoring) {
+require([
+	"dojo/_base/fx",
+	"dijit/Tooltip",
+	"put-selector/put",
+	"dojo/store/Memory",
+	"dgrid/extensions/Pagination",
+	"dgrid/OnDemandGrid",
+	"dgrid/OnDemandList",
+	"dgrid/Keyboard",
+	"dgrid/Selection",
+	"dijit/Editor",
+	"dijit/form/Button",
+	"dijit/form/CheckBox",
+	"dijit/form/ComboBox",
+	"dijit/form/SimpleTextarea",
+	"dijit/Dialog",
+	"dijit/ProgressBar",
+	"dojo/_base/array",
+	"dojo/_base/declare",
+	"dojo/_base/fx",
+	"dojo/_base/lang",
+	"dojo/aspect",
+	"dojo/date",
+	"dojo/Deferred",
+	"dojo/dom",
+	"dojo/dom-attr",
+	"dojo/dom-class",
+	"dojo/dom-construct",
+	"dojo/dom-style",
+	"dojo/html",
+	"dojo/number",
+	"dojo/on",
+	"dojo/string",
+	"dojo/query",
+	"esri/arcgis/Portal",
+	"esri/arcgis/OAuthInfo",
+	"esri/IdentityManager",
+	"esri/arcgis/utils",
+	"esri/config",
+	"esri/map",
+	"esri/request",
+	"dojo/parser",
+	"dojo/ready",
+	"config/defaults",
+	"config/details",
+	"config/scoring",
+	"dojo/NodeList-traverse"
+], function (fx, Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, string, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, scoring) {
 
-		parser.parse();
+	parser.parse();
 
-		ready(function () {
+	ready(function () {
 
-			var map;
-			var layers;
-			var mapDrawComplete;
+		var map;
+		var layers;
+		var mapDrawComplete;
 
-			run();
+		run();
 
-			function run() {
+		function run() {
 
-				var mapDrawBegin = performance.now();
-				arcgisUtils.createMap("b95a9fb4dec5443f9e0ea0fcb4859c67", "map").then(function (response) {
-					layers = response.itemInfo.itemData.operationalLayers;
-					map = response.map;
+			var mapDrawBegin = performance.now();
+			arcgisUtils.createMap("b95a9fb4dec5443f9e0ea0fcb4859c67", "map").then(function (response) {
+				layers = response.itemInfo.itemData.operationalLayers;
+				map = response.map;
 
-					// make sure map is loaded
-					if (map.loaded) {
-						mapDrawComplete = performance.now();
-						var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-						query(".map-draw-time")[0].innerHTML = processMapDrawTime(mapDrawTime);
-						fadeLoader();
-						array.forEach(layers, processLayers);
-						fadeInContent("meta-data-content");
-					}
-				});
-
-				on(query(".save")[0], "click", function () {
-					var inputValue = query(".details-title")[0].value;
-					if (validateLength(inputValue, scoring.ITEM_TITLE_MIN_LENGTH)) {
-						validateContent(inputValue, scoring.ITEM_TITLE_CONTENT);
-					} else {
-						query(".score-pre")[0].innerHTML = scoring.SECTION_MIN;
-						domClass.replace(query(".details-title-score-gr")[0], "score-graphic-fail", "score-graphic-pass");
-					}
-
-					var myRegExp = /Alex|John/;
-					var string1 = "Today John went to the store and talked with Alex.";
-					var matchPos1 = string1.search(myRegExp);
-
-					if (matchPos1 != -1)
-						console.log(matchPos1);
-					else
-						console.log("There was no match in the first string");
-
-				});
-
-				var re = /[^\r\n.!?]+(:?(:?\r\n|[\r\n]|[.!?])+|$)/gi;
-				console.log(("First sentence.. Second sentence?? Third sentence!!\n"+ "Fourth sentence, 'asdf'").match(re).length);
-			}
-
-			function validateLength(score, attr) {
-				if (string.trim(score).length < attr) {
-					return false;
-				} else {
-					return true;
+				// make sure map is loaded
+				if (map.loaded) {
+					mapDrawComplete = performance.now();
+					var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+					query(".map-draw-time")[0].innerHTML = processMapDrawTime(mapDrawTime);
+					fadeLoader();
+					array.forEach(layers, processLayers);
+					fadeInContent("meta-data-content");
 				}
-			}
+			});
 
-			function validateContent(inputValue, attr) {
-				if (array.some(attr, function (item) {
-					return parseInt(inputValue.search(/item/)) >= 0;
-				})) {
-					// yes
-					query(".score-pre")[0].innerHTML = scoring.SECTION_PASSING;
-					domClass.replace(query(".details-title-score-gr")[0], "score-graphic-pass", "score-graphic-fail");
+			on(query(".save")[0], "click", function () {
+				var inputValue = query(".details-title")[0].value;
+				if (validateLength(inputValue, scoring.ITEM_TITLE_MIN_LENGTH)) {
+					validateContent(inputValue, scoring.ITEM_TITLE_CONTENT);
 				} else {
-					// no
-					query(".score-pre")[0].innerHTML = scoring.SECTION_MAX;
-					domClass.replace(query(".details-title-score-gr")[0], "score-graphic-pass", "score-graphic-fail");
-				}
-			}
-
-			function updateSectionScroreGraphic(score) {
-				if (score > scoring.SECTION_MIN && score < scoring.SECTION_PASSING) {
-					query(".score-pre")[0].innerHTML = scoring.SECTION_PASS;
-					domClass.replace(query(".details-title-score-gr")[0], "score-graphic-pass", "score-graphic-fail");
-					console.log("1")
-				} else if (score > scoring.SECTION_PASS) {
-					query(".score-pre")[0].innerHTML = scoring.SECTION_CEILING;
-					domClass.replace(query(".details-title-score-gr")[0], "score-graphic-pass", "score-graphic-fail");
-					console.log("2")
-				} else if (score === scoring.SECTION_FLOOR) {
-					query(".score-pre")[0].innerHTML = scoring.SECTION_FLOOR;
+					query(".score-pre")[0].innerHTML = scoring.SECTION_MIN;
 					domClass.replace(query(".details-title-score-gr")[0], "score-graphic-fail", "score-graphic-pass");
-					console.log("3")
 				}
-			}
 
-			function fadeInContent(node) {
-				var loaderNode = dom.byId(node);
-				fx.animateProperty({
-					node: loaderNode,
-					properties: {
-						opacity: {
-							start: 0,
-							end: 1
-						}
-					},
-					duration: 800
-				}).play();
-			}
+				var myRegExp = /Alex|John/;
+				var string1 = "Today John went to the store and talked with Alex.";
+				var matchPos1 = string1.search(myRegExp);
 
-			function fadeLoader() {
-				var loaderNode = dom.byId("map-mask");
-				domStyle.set(loaderNode, "opacity", "1");
-				var fadeArgs = {
-					node: "map-mask",
-					duration: 1000
-				};
-				fx.fadeOut(fadeArgs).play();
-			}
+				if (matchPos1 != -1)
+					console.log(matchPos1);
+				else
+					console.log("There was no match in the first string");
 
-			function processLayers(layer) {
-				domConstruct.create("div", {
-					innerHTML: "<div>" + layer.title + "<\/div>"
-				}, query(".num-layers")[0], "last");
-			}
+			});
 
-			function processMapDrawTime(val) {
-				var temp = (val / 1000) % 60;
-				var seconds = number.format(temp, {
-					places: 5
-				});
-				if (seconds) {
-					return seconds + " seconds";
-				} else {
-					return "N/A";
-				}
+			var re = /[^\r\n.!?]+(:?(:?\r\n|[\r\n]|[.!?])+|$)/gi;
+
+
+			var myText = " My dog smelLsss worse than your dog";
+			var x = new RegExp('smells', 'i');
+			console.log(x.test(myText));
+			//console.log(("First sentence.. Second sentence?? Third sentence!!\n" + "Fourth sentence, 'asdf'").match(re).length);
+
+			//hasWords("This is a testing with no restricions.", ["no restrictions", "test"]);
+		}
+
+		function hasWords(inputStr, inputWords) {
+			//string.search(searchvalue)
+			if (array.some(inputWords, function (word) {
+				console.log(word)
+				console.log(inputStr.search(/word/));
+				return inputStr.search(/word/) >= 0;
+			})) {
+				// yes
+				console.log("YES");
+			} else {
+				// no
+				console.log("NO");
 			}
-		});
+		}
+
+		function validateLength(score, attr) {
+			if (string.trim(score).length < attr) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		function validateContent(inputValue, attr) {
+			if (array.some(attr, function (item) {
+				return parseInt(inputValue.search(/item/)) >= 0;
+			})) {
+				// yes
+				query(".score-pre")[0].innerHTML = scoring.SECTION_PASSING;
+				domClass.replace(query(".details-title-score-gr")[0], "score-graphic-pass", "score-graphic-fail");
+			} else {
+				// no
+				query(".score-pre")[0].innerHTML = scoring.SECTION_MAX;
+				domClass.replace(query(".details-title-score-gr")[0], "score-graphic-pass", "score-graphic-fail");
+			}
+		}
+
+		function updateSectionScroreGraphic(score) {
+			if (score > scoring.SECTION_MIN && score < scoring.SECTION_PASSING) {
+				query(".score-pre")[0].innerHTML = scoring.SECTION_PASS;
+				domClass.replace(query(".details-title-score-gr")[0], "score-graphic-pass", "score-graphic-fail");
+				console.log("1")
+			} else if (score > scoring.SECTION_PASS) {
+				query(".score-pre")[0].innerHTML = scoring.SECTION_CEILING;
+				domClass.replace(query(".details-title-score-gr")[0], "score-graphic-pass", "score-graphic-fail");
+				console.log("2")
+			} else if (score === scoring.SECTION_FLOOR) {
+				query(".score-pre")[0].innerHTML = scoring.SECTION_FLOOR;
+				domClass.replace(query(".details-title-score-gr")[0], "score-graphic-fail", "score-graphic-pass");
+				console.log("3")
+			}
+		}
+
+		function fadeInContent(node) {
+			var loaderNode = dom.byId(node);
+			fx.animateProperty({
+				node:loaderNode,
+				properties:{
+					opacity:{
+						start:0,
+						end:1
+					}
+				},
+				duration:800
+			}).play();
+		}
+
+		function fadeLoader() {
+			var loaderNode = dom.byId("map-mask");
+			domStyle.set(loaderNode, "opacity", "1");
+			var fadeArgs = {
+				node:"map-mask",
+				duration:1000
+			};
+			fx.fadeOut(fadeArgs).play();
+		}
+
+		function processLayers(layer) {
+			domConstruct.create("div", {
+				innerHTML:"<div>" + layer.title + "<\/div>"
+			}, query(".num-layers")[0], "last");
+		}
+
+		function processMapDrawTime(val) {
+			var temp = (val / 1000) % 60;
+			var seconds = number.format(temp, {
+				places:5
+			});
+			if (seconds) {
+				return seconds + " seconds";
+			} else {
+				return "N/A";
+			}
+		}
 	});
+});
 
 </script>
 </head>
