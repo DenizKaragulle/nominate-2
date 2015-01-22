@@ -1514,9 +1514,8 @@ require([
 									previewDlg.hide();
 									if (response) {
 										//console.log(lang.replace("{url}", portalUser));
-										//console.log(portalUser);
 										esriRequest({
-											url:lang.replace("{userContentUrl}", portalUser),
+											url:lang.replace("{url}", portalUser),
 											content:{
 												f:"json"
 											},
