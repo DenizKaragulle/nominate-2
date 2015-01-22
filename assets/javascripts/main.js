@@ -1521,7 +1521,7 @@ require([
 											},
 											handleAs:"json"
 										}).then(lang.hitch(this, function (obj) {
-											console.log(obj);
+											console.log(obj.thumbnailUrl);
 										}));
 									}
 								}), lang.hitch(this, function (error) {
