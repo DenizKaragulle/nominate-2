@@ -178,7 +178,27 @@ require([
 			//console.log(x.test(myText));
 			//console.log(("First sentence.. Second sentence?? Third sentence!!\n" + "Fourth sentence, 'asdf'").match(re).length);
 
-			hasWords("This is a testing with no restrictions.", ["No restrictions", "test"]);
+			//hasWords("This is a testing with no restrictions.", ["No restrictions", "test"]);
+			compareTwoArrays(["Cambridge", "Demographics", "Test"], ["copy", "demo", "test", "eval"]);
+		}
+
+		function validateTags(tags, penaltyWords) {
+			if (tags.length >= 3) {
+				var tempTags = [];
+				array.forEach(tags, function (tag) {
+					tempTags.push(tag.toLowerCase());
+				});
+
+				if (array.some(penaltyWords, function (penaltyWord) {
+					return tempTags.indexOf(penaltyWord.toLowerCase()) !== -1;
+				})) {
+					console.log("PASS with penalty");
+				} else {
+					console.log("BONUS");
+				}
+			} else {
+				console.log("FAIL");
+			}
 		}
 
 		function hasWords(inputStr, inputWords) {

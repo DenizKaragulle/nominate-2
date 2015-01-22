@@ -20,7 +20,9 @@ define({
 			'		<div class="column-3">' +
 			'			<div class="row">' +
 			'				<div class="column-12">' +
-			'					<div class="score-graphic score-graphic-fail"> 7/10</div>' +
+			'					<div class="score-graphic score-graphic-pass tags-score-gr">' +
+			'						<span class="tags-score-num"></span>/<span class="tags-score-denom"></span>' +
+			'					</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
 			'					<img src="assets/images/info_32.png" class="tags-tooltip info-graphic">' +

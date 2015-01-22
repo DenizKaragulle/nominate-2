@@ -974,14 +974,24 @@ require([
 				// load the content
 				loadContent(tags.TAGS_CONTENT);
 
-				var editSaveBtnNode = query(".edit-save-btn")[0];
-				var cancelBtnNode = query(".cancel-btn")[0];
-				var tagsTooltipNode = query(".tags-tooltip")[0];
+				var editSaveBtnNode = query(".edit-save-btn")[0],
+						cancelBtnNode = query(".cancel-btn")[0],
+						// nodes
+						tagsScoreNodeContainer = query(".tags-score-gr")[0],
+						tagsScoreNumeratorNode = query(".tags-score-num")[0],
+						tagsScoreDenominatorNode = query(".tags-score-denom")[0],
+						// tooltips
+						tagsTooltipNode = query(".tags-tooltip")[0];
+
 				createTooltip(tagsTooltipNode, tooltipsConfig.TAGS_TOOLTIP_CONTENT);
 
 				// tags
 				var itemTags = item.tags;
 				var itemTags_clean = itemTags;
+
+				tagsScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				validateTags(itemTagsScore, itemTags, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+
 
 				// create the existing tags
 				domConstruct.create("div", { class:"existing-tags" }, query(".tag-container")[0], "first");
@@ -1094,6 +1104,7 @@ require([
 												id:"tag-widget"
 											}, query(".tag-container")[0], "first");
 										}
+										validateTags(itemTagsScore, tagsDijit.values, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
 										// disable living atlas checkboxes
 										toggleCheckboxes(checkBoxID_values, "disabled", true);
 										updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
@@ -1122,6 +1133,9 @@ require([
 							data:[].concat(itemTags_clean)
 						});
 					}
+
+					validateTags(itemTagsScore, itemTags_clean, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+
 					// disable living atlas checkboxes
 					toggleCheckboxes(checkBoxID_values, "disabled", true);
 					updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
@@ -1332,6 +1346,36 @@ require([
 					validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
 				});
 			});
+		}
+
+
+		function validateTags(sectionScore, tags, containerNode, numeratorNode, penaltyWords) {
+			if (tags.length >= 3) {
+				var tempTags = [];
+				array.forEach(tags, function (tag) {
+					tempTags.push(tag.toLowerCase());
+				});
+
+				if (array.some(penaltyWords, function (penaltyWord) {
+					return tempTags.indexOf(penaltyWord.toLowerCase()) !== -1;
+				})) {
+					// PASS with penalty
+					sectionScore = 5;
+					numeratorNode.innerHTML = sectionScore;
+					domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
+				} else {
+					// PASS
+					sectionScore = scoring.SECTION_MAX;
+					numeratorNode.innerHTML = sectionScore;
+					domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
+				}
+			} else {
+				// FAIL
+				sectionScore = scoring.SECTION_MIN;
+				numeratorNode.innerHTML = sectionScore;
+				// update style of section scoring graphic
+				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");console.log("FAIL");
+			}
 		}
 
 

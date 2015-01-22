@@ -50,7 +50,8 @@ define({
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS" : ["No Restrictions"],
 
 	// Tags
-	"MIN_NUM_TAGS_TOTAL" : 3,
+	"TAGS_MIN_COUNT" : 3,
+	"TAGS_PENALTY_WORDS" : ["copy", "demo", "test", "eval"],
 
 	//
 
