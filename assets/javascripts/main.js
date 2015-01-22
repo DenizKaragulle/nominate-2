@@ -1513,8 +1513,8 @@ require([
 								updateUserProfileThumbnail(form).then(lang.hitch(this, function (response) {
 									previewDlg.hide();
 									if (response) {
-										console.log(lang.replace("{url}", portalUser));
-										console.log(portalUser);
+										//console.log(lang.replace("{url}", portalUser));
+										//console.log(portalUser);
 										esriRequest({
 											url:lang.replace("{url}", portalUser),
 											content:{
@@ -1525,11 +1525,12 @@ require([
 											// WORKS
 											console.log(user);
 											console.log(selectedRowID);
-											user.getItem(selectedRowID).then(function (item) {
+											/*user.getItem(selectedRowID).then(function (item) {
 												console.log(item);
 												//var thumbnailUrl = formatThumbnailUrl(item);
 												//console.log(thumbnailUrl);
-											});
+											});*/
+											console.log(user.portal.getPortalUser().thumbnailUrl)
 										}));
 									}
 								}), lang.hitch(this, function (error) {
