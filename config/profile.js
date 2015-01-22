@@ -54,7 +54,7 @@ define({
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
-			'		<div class="column-12">' +
+			'		<div class="column-17">' +
 			'			<div class="section-header">Name</div>' +
 			'			<div class="name-textbox"></div>' +
 			'		</div>' +
@@ -72,7 +72,7 @@ define({
 			'				</div>' +
 			'			</div>' +
 			'		</div>' +
-			'		<div class="column-18">' +
+			'		<div class="column-17">' +
 			'			<div class="section-header">Description</div>' +
 			'			<div class="user-description-textbox"></div>' +
 			'		</div>' +

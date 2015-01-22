@@ -59,7 +59,7 @@ define({
 			"		<div class='column-2'>" +
 			"			<div class='section-header'>Title</div>" +
 			"		</div>" +
-			"		<div class='column-9'>" +
+			"		<div class='column-15'>" +
 			"			<div class='title-textbox'></div>" +
 			"		</div>" +
 			"	</div>" +
@@ -81,7 +81,7 @@ define({
 			"		<div class='column-2'>" +
 			"			<div class='section-header'>Summary</div>" +
 			"		</div>" +
-			"		<div class='column-9'>" +
+			"		<div class='column-15'>" +
 			"			<div class='summary-textbox'></div>" +
 			"		</div>" +
 			"	</div>" +
@@ -103,7 +103,7 @@ define({
 			"		<div class='column-2'>" +
 			"			<div class='section-header'>Description</div>" +
 			"		</div>" +
-			"		<div class='column-18'>" +
+			"		<div class='column-15'>" +
 			"			<div class='description-editor' style='height: 200px; overflow: auto;'>" +
 			"				<div id='description-editor-widget'></div>" +
 			"			</div>" +
