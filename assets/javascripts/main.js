@@ -1239,8 +1239,7 @@ require([
 				userNameScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				validateTextInput(userNameScore, _userFullName, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
 				userDescriptionScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.USER_DESCRIPTION_CONTENT);
-
+				validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -1303,8 +1302,7 @@ require([
 
 											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 											validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
-											validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.USER_DESCRIPTION_CONTENT);
-
+											validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
 										} else {
 											console.log("Profile not updated");
 										}
@@ -1331,7 +1329,7 @@ require([
 					domStyle.set(cancelBtnNode, "display", "none");
 
 					validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
-					validateTextInput(userDescriptionScore, _userDescription_clean, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.USER_DESCRIPTION_CONTENT);
+					validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
 				});
 			});
 		}
