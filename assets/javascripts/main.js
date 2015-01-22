@@ -524,6 +524,15 @@ require([
 											"<span class='current-overall-gr-label'>required score</span>" +
 											"</div>", progressBarAnchorNode, "before");
 								});
+
+								/*on(dom.byId("nominate-btn"), "click", function () {
+									var nominateDialog = new Dialog({
+										title:"HELP",
+										content:"<div>Not implemented yet</div>",
+										style:"width: 300px"
+									});
+									nominateDialog.show();
+								});*/
 							}
 						});
 					} else {
