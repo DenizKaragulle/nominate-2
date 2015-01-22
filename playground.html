@@ -169,6 +169,9 @@
 						console.log("There was no match in the first string");
 
 				});
+
+				var re = /[^\r\n.!?]+(:?(:?\r\n|[\r\n]|[.!?])+|$)/gi;
+				console.log(("First sentence.. Second sentence?? Third sentence!!\n"+ "Fourth sentence, 'asdf'").match(re).length);
 			}
 
 			function validateLength(score, attr) {

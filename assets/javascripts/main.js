@@ -128,6 +128,8 @@ require([
 	var tagStore;
 	var tagsDijit;
 	var newTag;
+	//
+	var reSentences = /[^\r\n.!?]+(:?(:?\r\n|[\r\n]|[.!?])+|$)/gi;
 
 	var imageSizes = {
 		"PROFILE":[150, 150],
@@ -1306,7 +1308,11 @@ require([
 		}
 
 
-		function countWords(s) {
+		function getNumSentences(s) {
+			return (s).match(reSentences).length
+		}
+
+		function getNumWords(s) {
 			// exclude white space
 			s = s.replace(/(^\s*)|(\s*$)/gi, "");
 			s = s.replace(/[ ]{2,}/gi, " ");
@@ -1328,8 +1334,11 @@ require([
 			var strippedString = score.replace(/(<([^>]+)>)/ig, "");
 			var nWords = 0;
 			if (strippedString.length > 0) {
-				nWords = countWords(strippedString);
+				nWords = getNumWords(strippedString);
 			}
+
+			console.log(getNumSentences(strippedString));
+
 			if (nWords < numWordRequired) {
 				return false;
 			} else {

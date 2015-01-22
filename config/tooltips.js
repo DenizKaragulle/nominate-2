@@ -54,8 +54,8 @@ define({
 
 	// PERFORMANCE
 	"PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT":'<div class="tooltip-style">' +
-			'<p>The idea: To be in the Living Atlas, choose one tag from the list on the left side of the screen. This tells us what the primary category of your map is. Then enter tags that help people find your work. This can duplicate what’s in your title, summary and description to some extent, but also think more broadly: “How someone find this item if they don’t know it’s title, or the industry?”</p>' +
-			'<p>The score: Points are awarded for having more than three tags total. Points are awarded for choosing only one tag from the list at left, to indicate the primary category for your item. Points deducted for tags “copy”, “demo”, “test”, “eval”.</p>' +
+			'<p>The idea: generally speaking, it takes about 1-5 layers to make a clean, focused map. When an item requires more and more layers, it usually indicates the information product is not fully formed in the minds of the creators yet. More time is needed to clarify what needs to be built, and distill that.</p>' +
+			'<p>The score: one layer gets maximum points, with reduced points as the layer count increases.</p>' +
 			'</div>',
 	"PERFORMANCE_SHARING_TOOLTIP_CONTENT":'<div class="tooltip-style">' +
 			'<p>The idea: Share your item public, so it can be part of the Living Atlas.</p>' +
