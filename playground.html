@@ -175,25 +175,18 @@ require([
 
 			var myText = " My dog smelLsss worse than your dog";
 			var x = new RegExp('smells', 'i');
-			console.log(x.test(myText));
+			//console.log(x.test(myText));
 			//console.log(("First sentence.. Second sentence?? Third sentence!!\n" + "Fourth sentence, 'asdf'").match(re).length);
 
-			//hasWords("This is a testing with no restricions.", ["no restrictions", "test"]);
+			hasWords("This is a testing with no restrictions.", ["No restrictions", "test"]);
 		}
 
 		function hasWords(inputStr, inputWords) {
-			//string.search(searchvalue)
-			if (array.some(inputWords, function (word) {
-				console.log(word)
-				console.log(inputStr.search(/word/));
-				return inputStr.search(/word/) >= 0;
-			})) {
-				// yes
-				console.log("YES");
-			} else {
-				// no
-				console.log("NO");
-			}
+			array.forEach(inputWords, function (word) {
+				if (inputStr.toLowerCase().search(word.toLowerCase()) >= 0) {
+					console.log("YES");
+				}
+			});
 		}
 
 		function validateLength(score, attr) {

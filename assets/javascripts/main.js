@@ -123,7 +123,17 @@ require([
 	var profileNodeClickHandler;
 	//
 	var overallScoreGraphic;
+	// overall score
 	var score = 78;
+	// section scores
+	var itemTitleScore = 0;
+	var itemSummaryScore = 0;
+	var itemDescriptionScore = 0;
+	var itemCreditsScore = 0;
+	var itemAccessAndUseConstraintsScore = 0;
+	var itemTagsScore = 0;
+	var userNameScore = 0;
+	var userDescriptionScore = 0;
 	//
 	var checkBoxID_values = [];
 	var tagStore;
@@ -591,9 +601,9 @@ require([
 				titleScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				summaryScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				descScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateTextInput(itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
-				validateTextInput(itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
-				validateTextInput(itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+				validateTextInput(itemTitleScore, itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+				validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+				validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -732,9 +742,9 @@ require([
 							//domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
 						}
 					}
-					validateTextInput(itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
-					validateTextInput(itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
-					validateTextInput(itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+					validateTextInput(itemTitleScore, itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+					validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+					validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
 				});
 
 				on(cancelBtnNode, "click", function () {
@@ -775,9 +785,9 @@ require([
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
 
-					validateTextInput(itemTitle_clean, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
-					validateTextInput(itemSummary_clean, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
-					validateTextInput(itemDescription_clean, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+					validateTextInput(itemTitleScore, itemTitle_clean, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+					validateTextInput(itemSummaryScore, itemSummary_clean, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+					validateTextInput(itemDescriptionScore, itemDescription_clean, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
 				});
 			});
 		}
@@ -785,9 +795,9 @@ require([
 		function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
 				var itemCredits = validateStr(item.accessInformation),
-					itemCredits_clean = itemCredits,
-					accessAndUseConstraints = validateStr(item.licenseInfo),
-					accessAndUseConstraints_clean = accessAndUseConstraints;
+						itemCredits_clean = itemCredits,
+						accessAndUseConstraints = validateStr(item.licenseInfo),
+						accessAndUseConstraints_clean = accessAndUseConstraints;
 
 				// load the content
 				loadContent(credits.ACCESS_CREDITS_CONTENT);
@@ -820,9 +830,9 @@ require([
 
 				creditsScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				accessScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateTextInput(itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
-				validateTextInput(accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
-				hasWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+				validateTextInput(itemCreditsScore, itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+				validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+				hasBonusWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -920,9 +930,9 @@ require([
 							domConstruct.place("<span>" + accessAndUseConstraints + "</span>", "access-editor-widget", "first");
 						}
 
-						validateTextInput(itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
-						validateTextInput(accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
-						hasWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+						validateTextInput(itemCreditsScore, itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+						validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+						hasBonusWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 					}
 				});
 
@@ -950,9 +960,9 @@ require([
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
 
-					validateTextInput(itemCredits_clean, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
-					validateTextInput(accessAndUseConstraints_clean, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
-					hasWords(accessAndUseConstraints_clean, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+					validateTextInput(itemCreditsScore, itemCredits_clean, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+					validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints_clean, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+					hasBonusWords(accessAndUseConstraints_clean, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 				});
 			});
 		}
@@ -1193,15 +1203,22 @@ require([
 				// nodes
 				var editSaveBtnNode = query(".edit-save-btn")[0],
 						cancelBtnNode = query(".cancel-btn")[0],
+						//
 						profileThumbnailNode = query(".profileThumbnailUrl")[0],
 						profileUserFullNameNode = query(".name-textbox")[0],
 						profileUserDescriptionNode = query(".user-description-textbox")[0],
-						profileThumbnailTooltipNode = query(".profile-thumbnail-tooltip")[0],
-						profileFullNameTooltipNode = query(".user-full-name-tooltip")[0],
-						profileDescriptionTooltipNode = query(".user-description-tooltip")[0],
+
 						userNameScoreNodeContainer = query(".profile-name-score-gr")[0],
 						userNameScoreNumeratorNode = query(".profile-name-score-num")[0],
 						userNameScoreDenominatorNode = query(".profile-name-score-denom")[0],
+
+						userDescriptionScoreNodeContainer = query(".profile-description-score-gr")[0],
+						userDescriptionScoreNumeratorNode = query(".profile-description-score-num")[0],
+						userDescriptionScoreDenominatorNode = query(".profile-description-score-denom")[0],
+
+						profileThumbnailTooltipNode = query(".profile-thumbnail-tooltip")[0],
+						profileFullNameTooltipNode = query(".user-full-name-tooltip")[0],
+						profileDescriptionTooltipNode = query(".user-description-tooltip")[0],
 						profileThumbnailListener;
 
 				// set the thumbnail
@@ -1220,7 +1237,10 @@ require([
 
 				// score content
 				userNameScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateTextInput(_userFullName, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+				validateTextInput(userNameScore, _userFullName, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+				userDescriptionScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
+				validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.USER_DESCRIPTION_CONTENT);
+
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -1257,9 +1277,6 @@ require([
 						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
 
 						portalUser.getItem(selectedRowID).then(function (results) {
-							//var _portalUrl = results.portal.portalUrl;
-							//var _community = "community/users/";
-							//var _portalUser = results.owner;
 							esriRequest({
 								url:"https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
 								content:{
@@ -1285,7 +1302,9 @@ require([
 											_userDescription_clean = _userDescription;
 
 											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
-											validateTextInput(_userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+											validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+											validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.USER_DESCRIPTION_CONTENT);
+
 										} else {
 											console.log("Profile not updated");
 										}
@@ -1311,14 +1330,11 @@ require([
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
 
-					validateTextInput(_userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+					validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+					validateTextInput(userDescriptionScore, _userDescription_clean, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.USER_DESCRIPTION_CONTENT);
 				});
 			});
 		}
-
-
-
-
 
 
 		function getNumSentences(s) {
@@ -1334,52 +1350,54 @@ require([
 			return s.split(" ").length;
 		}
 
-		function validateTextInput(inputText, containerNode, numeratorNode, minChars, prohibitedWords) {
-			if (validateNumWords(inputText, minChars)) {
-				validateContent(inputText, prohibitedWords, containerNode, numeratorNode);
+		function validateTextInput(sectionScore, inputText, containerNode, numeratorNode, minNumWords, prohibitedWords) {
+			if (validateNumWords(inputText, minNumWords)) {
+				// PASS (has minimum number of words)
+				hasProhibitedWords(sectionScore, inputText, containerNode, numeratorNode, prohibitedWords);
 			} else {
-				numeratorNode.innerHTML = scoring.SECTION_MIN;
+				// FAIL (does not have minimum number of words)
+				// set the score to section minimum
+				sectionScore = scoring.SECTION_MIN;
+				numeratorNode.innerHTML = sectionScore;
+				// update style of section scoring graphic
 				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
 			}
 		}
 
-		function validateNumWords(score, numWordRequired) {
+		function validateNumWords(score, minNumWords) {
 			var strippedString = score.replace(/(<([^>]+)>)/ig, "");
 			var nWords = 0;
 			if (strippedString.length > 0) {
 				nWords = getNumWords(strippedString);
 			}
 
-			if (nWords < numWordRequired) {
+			if (nWords < minNumWords) {
 				return false;
 			} else {
 				return true;
 			}
 		}
 
-		function validateContent(inputValue, searchValues, nodeContainer, numeratorNode) {
-			if (array.some(searchValues, function (searchValue) {
-				return parseInt(inputValue.search(searchValue)) >= 0;
+		function hasProhibitedWords(sectionScore, inputText, nodeContainer, numeratorNode, prohibitedWords) {
+			if (array.some(prohibitedWords, function (word) {
+				return parseInt(inputText.search(word)) >= 0;
 			})) {
 				// yes
-				numeratorNode.innerHTML = scoring.SECTION_PASSING;
+				sectionScore = scoring.SECTION_PASSING;
+				numeratorNode.innerHTML = sectionScore;
 				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
 			} else {
 				// no
-				numeratorNode.innerHTML = scoring.SECTION_MAX;
+				sectionScore = scoring.SECTION_MAX;
+				numeratorNode.innerHTML = sectionScore;
 				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
 			}
 		}
 
-		function hasWords(inputStr, inputWords) {
+		function hasBonusWords(inputStr, inputWords) {
 			array.forEach(inputWords, function (word) {
-				console.log(inputStr);
-				console.log(word);
-				console.log(inputStr.search(/word/));
-				if (inputStr.search(word) >= 0) {
-					console.log("MATCH");
-				} else {
-					console.log("NO MATCH");
+				if (inputStr.toLowerCase().search(word.toLowerCase()) >= 0) {
+					console.log("YES");
 				}
 			});
 		}

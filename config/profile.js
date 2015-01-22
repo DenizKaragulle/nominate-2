@@ -65,7 +65,9 @@ define({
 			'		<div class="column-3">' +
 			'			<div class="row">' +
 			'				<div class="column-12">' +
-			'					<div class="score-graphic score-graphic-fail"> 5/10</div>' +
+			'					<div class="score-graphic score-graphic-pass profile-description-score-gr">' +
+			'						<span class="profile-description-score-num"></span>/<span class="profile-description-score-denom"></span>' +
+			'					</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
 			'					<img src="assets/images/info_32.png" class="user-description-tooltip info-graphic">' +
