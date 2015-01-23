@@ -93,7 +93,6 @@ require([
 	// element id/name
 	var SIGNIN_BUTTON_ID = "sign-in";
 	var EXPANDED_ROW_NAME = "expanded-row-";
-	//var SAVE_BUTTON_NAME = "btn-";
 	var TAB_CONTAINER_NAME = "tc-";
 	var TAB_CONTAINER_TITLE = "title-";
 	var TAB_CONTAINER_DESC = "desc-";
@@ -121,10 +120,13 @@ require([
 	var tagsNodeClickHandler;
 	var performanceNodeClickHandler;
 	var profileNodeClickHandler;
+	// Overall score
 	//
+	var currentOverallScoreNode;
+	// graphic
 	var overallScoreGraphic;
 	// overall score
-	var overAllCurrentScore = 78;
+	var overAllCurrentScore = 0;
 	// SECTION SCORES
 	// Details
 	var itemDetailsScore = 0;
@@ -141,6 +143,7 @@ require([
 	// Performance
 	// User Profile
 	var userProfileScore = 0;
+	var userThumbnailScore = 0;
 	var userNameScore = 0;
 	var userDescriptionScore = 0;
 	//
@@ -333,6 +336,9 @@ require([
 				portalUser = portal.getPortalUser();
 				owner = portalUser.username;
 				portalUserThumbnailUrl = portalUser.thumbnailUrl;
+				if (portalUserThumbnailUrl === null) {
+					portalUserThumbnailUrl = "https://cdn.arcgis.com/cdn/5777/js/arcgisonline/css/images/no-user-thumb.jpg";
+				}
 
 				var params = {
 					q:"owner:" + owner,
@@ -425,55 +431,56 @@ require([
 								var tagsID = TAB_CONTAINER_TAGS + selectedRowID;
 								var userNameID = TAB_CONTAINER_USERNAME + selectedRowID;
 								var userDescriptionID = TAB_CONTAINER_USERDESCRIPTION + selectedRowID;
-								// create the map
+
 								portalUser.getItem(selectedRowID).then(function (item) {
 									domConstruct.place(
 											"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
-													"	<div class='content-container'>" +
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div id='map-mask' class='loader'>" +
-													"					<span class='side side-left'><span class='fill'></span></span>" +
-													"					<span class='side side-right'><span class='fill'></span></span>" +
-													"					<p class='loading-word'>Loading...</p>" +
-													"				</div>" +
-													"				<div id='map'></div>" +
-													"			</div>" +
-													"		</div>" +
+											//
+											"	<div class='content-container'>" +
+											"		<div class='row'>" +
+											"			<div class='column-21 pre-3'>" +
+											"				<div id='map-mask' class='loader'>" +
+											"					<span class='side side-left'><span class='fill'></span></span>" +
+											"					<span class='side side-right'><span class='fill'></span></span>" +
+											"				</div>" +
+											"				<div id='map'></div>" +
+											"			</div>" +
+											"		</div>" +
 
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-													"			</div>" +
-													"		</div>" +
-
-													"		<div class='row'>" +
-													"			<div class='column-15 pre-3'>" +
-													"				<div class='current-score-graphic-container'></div>" +
-													"			</div>" +
-													"			<div class='column-2'>" +
-													"				<div class='current-score-number'>78</div>" +
-													"			</div>" +
-													"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-													"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
-													"			</div>" +
-													"		</div>" +
-
-													"		<div class='row'>" +
-													"			<div class='column-15 pre-3'>" +
-													"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-													"			</div>" +
-													"		</div>" +
-
-													"		<div class='row'>" +
-													"			<div class='column-18 pre-3'>" +
-													"				<div id='" + tcID + "'></div>" +
-													"			</div>" +
-													"		</div>" +
-													"	</div>" +
-													"</div>",
+											"		<div class='row'>" +
+											"			<div class='column-21 pre-3'>" +
+											"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+											"			</div>" +
+											"		</div>" +
+											// Scoring
+											"		<div class='row'>" +
+											"			<div class='column-15 pre-3'>" +
+											"				<div class='current-score-graphic-container'></div>" +
+											"			</div>" +
+											"			<div class='column-2'>" +
+											"				<div class='current-score-number'>78</div>" +
+											"			</div>" +
+											"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+											"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
+											"			</div>" +
+											"		</div>" +
+											//
+											"		<div class='row'>" +
+											"			<div class='column-15 pre-3'>" +
+											"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+											"			</div>" +
+											"		</div>" +
+											// Tab Container
+											"		<div class='row'>" +
+											"			<div class='column-18 pre-3'>" +
+											"				<div id='" + tcID + "'></div>" +
+											"			</div>" +
+											"		</div>" +
+											"	</div>" +
+											"</div>",
 											selectedRow.firstElementChild, "last");
 
+									currentOverallScoreNode = query(".current-score-number")[0];
 									progressBarAnchorNode = query(".current-score-graphic-container")[0];
 
 									createContentButtonGroup(tcID);
@@ -516,6 +523,8 @@ require([
 									on(tagsNode, "click", lang.partial(tagsNodeClickHandler, selectedRowID, categoryNodes, nodeList, categoryID, tagsID, tagsNode));
 									on(profileNode, "click", lang.partial(profileNodeClickHandler, selectedRowID, categoryNodes, nodeList, userNameID, userDescriptionID, profileNode));
 
+									updateScores(item, portalUser);
+
 									// overall score graphic
 									if (dijit.byId("overall-score-graphic")) {
 										dijit.byId("overall-score-graphic").destroy();
@@ -528,10 +537,9 @@ require([
 										},
 										value:overAllCurrentScore
 									}).placeAt(progressBarAnchorNode).startup();
-									domConstruct.place("<div class='current-score-passing-marker'>" +
-											"<span class='current-overall-gr-number'> 80</span>" +
-											"<span class='current-overall-gr-label'>required score</span>" +
-											"</div>", progressBarAnchorNode, "before");
+
+									// draw the minimum score marker
+									drawPassingMarker();
 								});
 							}
 						});
@@ -541,6 +549,115 @@ require([
 				});
 			});
 		}
+
+		function validateText(inputText, minNumWords, prohibitedWords) {
+			if (inputText === "" || inputText === null) {
+				return 0;
+			} else {
+				var strippedString = inputText.replace(/(<([^>]+)>)/ig, "");
+				if (validateNumWords(strippedString, minNumWords)) {
+					// PASS (has minimum number of words)
+					if (array.some(prohibitedWords, function (word) {
+						return parseInt(strippedString.search(word)) >= 0;
+					})) {
+						// yes
+						return 8;
+					} else {
+						// no
+						return 10;
+					}
+				} else {
+					// FAIL (does not have minimum number of words)
+					// set the score to section minimum
+					return 0;
+				}
+			}
+		}
+
+		function validateThumbnail(thumbnail) {
+			if (thumbnail === null) {
+				return scoring.SECTION_MIN;
+			} else {
+				var index = thumbnail.lastIndexOf("/") + 1;
+				var filename = thumbnail.substr(index);
+				filename = filename.split("?")[0];
+				if (filename === "nullThumbnail.png" || filename === "ago_downloaded.png" || filename === "no-user-thumb.jpg") {
+					return scoring.SECTION_MIN;
+				} else {
+					return scoring.SECTION_MAX;
+				}
+			}
+		}
+
+		function validateItemTags(tags, minNumTags, penaltyWords) {
+			if (tags.length >= minNumTags) {
+				var tempTags = [];
+				// case insensitive
+				array.forEach(tags, function (tag) {
+					tempTags.push(tag.toLowerCase());
+				});
+
+				if (array.some(penaltyWords, function (penaltyWord) {
+					return tempTags.indexOf(penaltyWord.toLowerCase()) !== -1;
+				})) {
+					// PASS with penalty
+					return scoring.SECTION_PASSING;
+				} else {
+					// PASS
+					return scoring.SECTION_MAX;
+				}
+			} else {
+				// FAIL
+				return scoring.SECTION_MIN;
+			}
+		}
+
+		function updateScores(item, portalUser) {
+			// details
+			itemThumbnailScore = validateThumbnail(item.thumbnail);
+			itemTitleScore = validateText(item.title, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+			itemSummaryScore = validateText(item.snippet, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+			itemDescriptionScore = validateText(item.description, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+			itemDetailsScore = (itemThumbnailScore + itemTitleScore + itemSummaryScore + itemDescriptionScore) / 40 * 100;
+			setPassFailStyleOnTabNode(itemDetailsScore, detailsNode);
+			// use/constrains
+			itemCreditsScore = validateText(item.accessInformation, scoring.ITEM_CREDITS_MIN_NUM_WORDS, [""]);
+			itemAccessAndUseConstraintsScore = validateText(item.licenseInfo, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, [""]);
+			creditsAndAccessScore = (itemCreditsScore + itemAccessAndUseConstraintsScore) / 20 * 100;
+			setPassFailStyleOnTabNode(creditsAndAccessScore, creditsNode);
+			// tags
+			itemTagsScore = validateItemTags(item.tags, scoring.TAGS_MIN_COUNT, scoring.TAGS_PENALTY_WORDS);
+			itemTagsScore = itemTagsScore / 10 * 100;
+			setPassFailStyleOnTabNode(itemTagsScore, tagsNode);
+			// performance
+			//
+			// user profile
+			userThumbnailScore = validateThumbnail(portalUser.thumbnail);
+			userNameScore = validateText(portalUser.fullName, scoring.ITEM_CREDITS_MIN_NUM_WORDS, [""]);
+			userDescriptionScore = validateText(portalUser.description, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, [""]);
+			userProfileScore = (userThumbnailScore + userNameScore + userDescriptionScore) / 30 * 100;
+			setPassFailStyleOnTabNode(userProfileScore, profileNode);
+			// update the overall score and score graphic
+			updateOverallScore();
+		}
+
+		function setPassFailStyleOnTabNode(score, node) {
+			var classAttrs = domAttr.get(node, "class");
+			if (score >= scoring.SCORE_THRESHOLD) {
+				classAttrs = classAttrs.replace("icon-edit", "icon-check");
+				domAttr.set(node, "class", classAttrs);
+				domStyle.set(node, "color", "#007ac2");
+				domStyle.set(node, "border", "1px solid #007ac2");
+			} else {
+				classAttrs = classAttrs.replace("icon-check", "icon-edit");
+				domAttr.set(node, "class", classAttrs);
+				domStyle.set(node, "color", "#C86A4A");
+				domStyle.set(node, "border", "1px solid #C86A4A");
+			}
+		}
+
+
+
 
 		function detailsContentPane(selectedRowID, titleID, snippetID, descID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
@@ -621,6 +738,9 @@ require([
 				itemDetailsScore = itemDetailsScore + validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
 				itemDetailsScore = itemDetailsScore + validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
 				updateSectionScore(itemDetailsScore, detailsNode, 40);
+
+				//updateOverallScore();
+				updateScores(item, portalUser);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -765,6 +885,7 @@ require([
 					itemDetailsScore = itemDetailsScore + validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
 					itemDetailsScore = itemDetailsScore + validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
 					updateSectionScore(itemDetailsScore, detailsNode, 40);
+					updateOverallScore();
 				});
 
 				on(cancelBtnNode, "click", function () {
@@ -810,6 +931,7 @@ require([
 					itemDetailsScore = itemDetailsScore + validateTextInput(itemSummaryScore, itemSummary_clean, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
 					itemDetailsScore = itemDetailsScore + validateTextInput(itemDescriptionScore, itemDescription_clean, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
 					updateSectionScore(itemDetailsScore, detailsNode, 40);
+					updateOverallScore();
 				});
 			});
 		}
@@ -856,6 +978,7 @@ require([
 				creditsAndAccessScore = creditsAndAccessScore + validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
 				//creditsAndAccessScore = creditsAndAccessScore + hasBonusWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 				updateSectionScore(creditsAndAccessScore, creditsNode, 20);
+				updateOverallScore();
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -957,6 +1080,7 @@ require([
 						creditsAndAccessScore = creditsAndAccessScore + validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
 						//hasBonusWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 						updateSectionScore(creditsAndAccessScore, creditsNode, 20);
+						updateOverallScore();
 					}
 				});
 
@@ -988,6 +1112,7 @@ require([
 					creditsAndAccessScore = creditsAndAccessScore + validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints_clean, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
 					//hasBonusWords(accessAndUseConstraints_clean, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
 					updateSectionScore(creditsAndAccessScore, creditsNode, 20);
+					updateOverallScore();
 				});
 			});
 		}
@@ -1123,7 +1248,6 @@ require([
 												class:"existing-tags"
 											}, query(".tag-container")[0], "first");
 											tagsDijit.addStyledTags(tagsDijit.values, query(".existing-tags")[0]);
-
 											dijit.byId("tag-widget").destroy();
 											domConstruct.create("div", {
 												id:"tag-widget"
@@ -1131,6 +1255,7 @@ require([
 										}
 										itemTagsScore = validateTags(itemTagsScore, tagsDijit.values, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
 										updateSectionScore(itemTagsScore, tagsNode, 10);
+										updateOverallScore();
 										// disable living atlas checkboxes
 										toggleCheckboxes(checkBoxID_values, "disabled", true);
 										updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
@@ -1162,6 +1287,7 @@ require([
 
 					itemTagsScore = validateTags(itemTagsScore, itemTags_clean, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
 					updateSectionScore(itemTagsScore, tagsNode, 10);
+					updateOverallScore();
 
 					// disable living atlas checkboxes
 					toggleCheckboxes(checkBoxID_values, "disabled", true);
@@ -1347,6 +1473,7 @@ require([
 											userProfileScore = validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
 											userProfileScore = userProfileScore + validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
 											updateSectionScore(userProfileScore, profileNode, 20);
+											updateOverallScore();
 										} else {
 											console.log("Profile not updated");
 										}
@@ -1375,54 +1502,61 @@ require([
 					userProfileScore = validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
 					userProfileScore = userProfileScore + validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
 					updateSectionScore(userProfileScore, profileNode, 20);
+					updateOverallScore();
 				});
 			});
 		}
 
 
 		function updateOverallScore() {
-			console.log("itemDetailsScore: " + itemDetailsScore);
-			console.log("creditsAndAccessScore: " + creditsAndAccessScore);
-			console.log("creditsAndAccessScore: " + creditsAndAccessScore);
-			console.log("userProfileScore: " + userProfileScore);
-			var total = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore)/90 * 100);
-			console.log(total);
+			// update the score
+			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore)/4);
+			if (overAllCurrentScore >= scoring.SCORE_THRESHOLD) {
+				domStyle.set(currentOverallScoreNode, "color", "#005E95");
+			} else {
+				domStyle.set(currentOverallScoreNode, "color", "#C86A4A");
+			}
+			// update the score label
+			currentOverallScoreNode.innerHTML = overAllCurrentScore;
 		}
 
 		function updateSectionScore(score, node, max) {
+			var classAttrs = domAttr.get(node, "class");
 			score = Math.floor(score / max * 100);
-			console.log(score);
 			if (score >= scoring.SCORE_THRESHOLD) {
 				// PASS
-				domAttr.set(node, "class", "active column-4 details-tab-node icon-check");
+				classAttrs = classAttrs.replace("icon-edit", "active icon-check");
+				domAttr.set(node, "class", classAttrs);
 				domStyle.set(node, "color", "#007ac2");
 				domStyle.set(node, "border", "1px solid #007ac2");
-				console.log("PASS");
 			} else {
 				// FAIL
-				domAttr.set(node, "class", "active column-4 details-tab-node icon-edit");
+				classAttrs = classAttrs.replace("icon-check", "active icon-edit");
+				domAttr.set(node, "class", classAttrs);
 				domStyle.set(node, "color", "#C86A4A");
 				domStyle.set(node, "border", "1px solid #C86A4A");
-				console.log("FAIL");
 			}
 		}
 
 		function validateThumbnailUrl(thumbnail, sectionScore, containerNode, numeratorNode) {
-			console.log(thumbnail);
-			var index = thumbnail.lastIndexOf("/") + 1;
-			var filename = thumbnail.substr(index);
-			console.log(filename);
-
-			if (filename === null || filename === "nullThumbnail.png") {
+			if (thumbnail === null) {
 				sectionScore = scoring.SECTION_MIN;
-				numeratorNode.innerHTML = sectionScore;
-				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
 				return sectionScore;
 			} else {
-				sectionScore = scoring.SECTION_MAX;
-				numeratorNode.innerHTML = sectionScore;
-				domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
-				return sectionScore;
+				var index = thumbnail.lastIndexOf("/") + 1;
+				var filename = thumbnail.substr(index);
+				filename = filename.split("?")[0];
+				if (filename === "nullThumbnail.png" || filename === "ago_downloaded.png" || filename === "no-user-thumb.jpg") {
+					sectionScore = scoring.SECTION_MIN;
+					numeratorNode.innerHTML = sectionScore;
+					domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
+					return sectionScore;
+				} else {
+					sectionScore = scoring.SECTION_MAX;
+					numeratorNode.innerHTML = sectionScore;
+					domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
+					return sectionScore;
+				}
 			}
 		}
 
@@ -1473,8 +1607,8 @@ require([
 
 		function validateTextInput(sectionScore, inputText, containerNode, numeratorNode, minNumWords, prohibitedWords) {
 			var strippedString = inputText.replace(/(<([^>]+)>)/ig, "");
-			console.log("nWords: " + getNumWords(strippedString));
-			console.log("minNumWords: " + minNumWords);
+			//console.log("nWords: " + getNumWords(strippedString));
+			//console.log("minNumWords: " + minNumWords);
 			if (validateNumWords(strippedString, minNumWords)) {
 				// PASS (has minimum number of words)
 				sectionScore = hasProhibitedWords(sectionScore, strippedString, containerNode, numeratorNode, prohibitedWords);
@@ -1504,7 +1638,7 @@ require([
 		}
 
 		function hasProhibitedWords(sectionScore, inputText, nodeContainer, numeratorNode, prohibitedWords) {
-			console.log(inputText);
+			//console.log(inputText);
 			if (array.some(prohibitedWords, function (word) {
 				return parseInt(inputText.search(word)) >= 0;
 			})) {
@@ -2006,6 +2140,13 @@ require([
 				},
 				duration:500
 			}).play();
+		}
+
+		function drawPassingMarker() {
+			domConstruct.place("<div class='current-score-passing-marker'>" +
+					"<span class='current-overall-gr-number'> 80</span>" +
+					"<span class='current-overall-gr-label'>required score</span>" +
+					"</div>", progressBarAnchorNode, "before");
 		}
 	});
 });
