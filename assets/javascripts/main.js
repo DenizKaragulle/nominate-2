@@ -539,12 +539,13 @@ require([
 												popupsScore = 5;
 
 												// Sharing enabled
-												if (item.access === "private") {
+												var sharing = item.access;
+												if (sharing === "private") {
 													sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE;
-												} else if (item.access === "public") {
-													sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
-												} else {
+												} else if (sharing === "public" || sharing === "shared") {
 													sharingScore = scoring.PERFORMANCE_SHARING_ORG;
+												} else {
+													sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
 												}
 
 												performanceScore = (mapDrawTimeScore + nLayersScore + popupsScore + sharingScore)/24 * 100;
@@ -1441,8 +1442,8 @@ require([
 			domStyle.set(popupsNumeratorNode, "color", "#005E95");
 			domStyle.set(popupsDenominatorNode, "color", "#005E95");
 
-
-			if (item.access === "private") {
+			var sharing = item.access;
+			if (sharing === "private") {
 				// GOOD
 				sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE;
 				// score
@@ -1453,16 +1454,7 @@ require([
 				domStyle.set(sharingGoodNode, "color", "#005E95");
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
-			} else if (item.access === "public") {
-				// BEST
-				sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
-				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
-				domStyle.set(sharingNumeratorNode, "color", "#005E95");
-				domStyle.set(sharingDenominatorNode, "color", "#005E95");
-				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(sharingBestNode, "color", "#005E95");
-			} else {
+			} else if (sharing === "org" || sharing === "shared") {
 				// BETTER
 				sharingScore = scoring.PERFORMANCE_SHARING_ORG;
 				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
@@ -1471,6 +1463,15 @@ require([
 				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBetterNode, "color", "#005E95");
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+			} else {
+				// BEST
+				sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
+				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
+				domStyle.set(sharingNumeratorNode, "color", "#005E95");
+				domStyle.set(sharingDenominatorNode, "color", "#005E95");
+				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(sharingBestNode, "color", "#005E95");
 			}
 
 			createTooltip(mapLayersTooltipNode, tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT);
