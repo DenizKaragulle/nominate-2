@@ -81,8 +81,8 @@ define({
 	// map draw times in seconds
 	"drawTime":{
 		"GOOD":10,
-		"BETTER":3,
-		"BEST":1
+		"BETTER":6,
+		"BEST":2
 	},
 	//Default configuration settings for the application. This is where you'll define things like a bing maps key,
 	//default web map, default app color theme and more. These values can be overwritten by template configuration settings and url parameters.

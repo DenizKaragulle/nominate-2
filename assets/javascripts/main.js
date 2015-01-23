@@ -141,6 +141,11 @@ require([
 	// Tags
 	var itemTagsScore = 0;
 	// Performance
+	var performanceScore = 0;
+	var mapDrawTimeScore = 0;
+	var nLayersScore = 0
+	var popupsScore = 0;
+	var sharingScore = 0;
 	// User Profile
 	var userProfileScore = 0;
 	var userThumbnailScore = 0;
@@ -220,7 +225,6 @@ require([
 			});
 			domClass.replace(_detailsNode, "active column-4 details", "column-4 details-tab-node");
 		};
-
 		creditsNodeClickHandler = function (selectedRowID, _categoryNodes, _nodeList, _item, _accessID, _creditID, _creditsNode) {
 			destroyNodes(_categoryNodes);
 			array.forEach(_nodeList, function (node) {
@@ -231,7 +235,6 @@ require([
 			});
 			domClass.replace(_creditsNode, "active column-4 credits", "column-4 credits");
 		};
-
 		tagsNodeClickHandler = function (_selectedRowID, _categoryNodes, _nodeList, _categoryID, _tagsID, _tagsNode) {
 			destroyNodes(categoryNodes);
 			categoryNodes = [];
@@ -246,7 +249,6 @@ require([
 			});
 			domClass.replace(_tagsNode, "active column-4 tags", "column-4 tags");
 		};
-
 		performanceNodeClickHandler = function (_categoryNodes, _nodeList, _item, _popUps, _mapDrawTime, _layers, _performanceNode) {
 			destroyNodes(_categoryNodes);
 			array.forEach(nodeList, function (node) {
@@ -257,7 +259,6 @@ require([
 			});
 			domClass.replace(_performanceNode, "active column-4 performance", "column-4 performance");
 		};
-
 		profileNodeClickHandler = function (_selectedRowID, _categoryNodes, _nodeList, _userNameID, _userDescriptionID, _profileNode) {
 			destroyNodes(_categoryNodes);
 			array.forEach(_nodeList, function (node) {
@@ -436,48 +437,48 @@ require([
 									domConstruct.place(
 											"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
 												//
-													"	<div class='content-container'>" +
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div id='map-mask' class='loader'>" +
-													"					<span class='side side-left'><span class='fill'></span></span>" +
-													"					<span class='side side-right'><span class='fill'></span></span>" +
-													"				</div>" +
-													"				<div id='map'></div>" +
-													"			</div>" +
-													"		</div>" +
+												"	<div class='content-container'>" +
+												"		<div class='row'>" +
+												"			<div class='column-21 pre-3'>" +
+												"				<div id='map-mask' class='loader'>" +
+												"					<span class='side side-left'><span class='fill'></span></span>" +
+												"					<span class='side side-right'><span class='fill'></span></span>" +
+												"				</div>" +
+												"				<div id='map'></div>" +
+												"			</div>" +
+												"		</div>" +
 
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-													"			</div>" +
-													"		</div>" +
+												"		<div class='row'>" +
+												"			<div class='column-21 pre-3'>" +
+												"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+												"			</div>" +
+												"		</div>" +
 												// Scoring
-													"		<div class='row'>" +
-													"			<div class='column-15 pre-3'>" +
-													"				<div class='current-score-graphic-container'></div>" +
-													"			</div>" +
-													"			<div class='column-2'>" +
-													"				<div class='current-score-number'>78</div>" +
-													"			</div>" +
-													"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-													"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
-													"			</div>" +
-													"		</div>" +
+												"		<div class='row'>" +
+												"			<div class='column-15 pre-3'>" +
+												"				<div class='current-score-graphic-container'></div>" +
+												"			</div>" +
+												"			<div class='column-2'>" +
+												"				<div class='current-score-number'>78</div>" +
+												"			</div>" +
+												"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+												"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
+												"			</div>" +
+												"		</div>" +
 												//
-													"		<div class='row'>" +
-													"			<div class='column-15 pre-3'>" +
-													"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-													"			</div>" +
-													"		</div>" +
+												"		<div class='row'>" +
+												"			<div class='column-15 pre-3'>" +
+												"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+												"			</div>" +
+												"		</div>" +
 												// Tab Container
-													"		<div class='row'>" +
-													"			<div class='column-18 pre-3'>" +
-													"				<div id='" + tcID + "'></div>" +
-													"			</div>" +
-													"		</div>" +
-													"	</div>" +
-													"</div>",
+												"		<div class='row'>" +
+												"			<div class='column-18 pre-3'>" +
+												"				<div id='" + tcID + "'></div>" +
+												"			</div>" +
+												"		</div>" +
+												"	</div>" +
+												"</div>",
 											selectedRow.firstElementChild, "last");
 
 									currentOverallScoreNode = query(".current-score-number")[0];
@@ -510,6 +511,44 @@ require([
 												fadeLoader();
 												var popUps = processPopupData(map);
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popUps, mapDrawTime, layers, performanceNode));
+
+												// get performance data
+												// Map Draw Time
+												var mdt = parseInt(processMapDrawTime(mapDrawTime));
+												if (mdt < defaults.drawTime.BEST) {
+													mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_BEST;
+												} else if (mdt < defaults.drawTime.BETTER) {
+													mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_BETTER;
+												} else if (mdt < defaults.drawTime.GOOD) {
+													mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_GOOD;
+												}
+
+												// Number of Layers
+												if (layers !== undefined && layers.length < 1) {
+													var nLayers = layers.length;
+													if (nLayers > 10) {
+														nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_GOOD;
+													} else if (nLayers <= 10 && nLayers >= 2) {
+														nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_BETTER;
+													} else if (nLayers == 1) {
+														nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_BEST;
+													}
+												}
+
+												// Popups enabled
+												popupsScore = 5;
+
+												// Sharing enabled
+												if (item.access === "private") {
+													sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE;
+												} else if (item.access === "public") {
+													sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
+												} else {
+													sharingScore = scoring.PERFORMANCE_SHARING_ORG;
+												}
+
+												performanceScore = (mapDrawTimeScore + nLayersScore + popupsScore + sharingScore)/24 * 100;
+												setPassFailStyleOnTabNode(performanceScore, performanceNode);
 											}
 										});
 									} else {
@@ -1310,19 +1349,128 @@ require([
 					drawTimeTooltipNode = query(".draw-time-tooltip")[0],
 					popupsTooltipNode = query(".popups-tooltip")[0];
 
+			var mdtScoreContainerNode = query(".mdt-score-gr")[0],
+					nLayersScoreContainerNode = query(".num-layers-score-gr")[0],
+					popupsScoreContainerNode = query(".popups-score-gr")[0],
+					sharingContainerNode = query(".sharing-score-gr")[0];
+
+			var mdtNumeratorNode = query(".mdt-score-num")[0],
+					layerCountNumeratorNode = query(".num-layers-score-num")[0],
+					popupsNumeratorNode = query(".popups-score-num")[0],
+					sharingNumeratorNode = query(".sharing-score-num")[0];
+			var mdtDenominatorNode = query(".mdt-score-denom")[0],
+					layerCountDenominatorNode = query(".num-layers-score-denom")[0],
+					popupsDenominatorNode = query(".popups-score-denom")[0],
+					sharingDenominatorNode = query(".sharing-score-denom")[0];
+			var mdtGoodNode = query(".performance-text-very-slow")[0],
+					mdtBetterNode = query(".performance-text-slow")[0],
+					mdtBestNode = query(".performance-text-good")[0];
+			var nLayersGoodNode = query(".num-layers-good")[0],
+					nLayersBetterNode = query(".num-layers-better")[0],
+					nLayersBestNode = query(".num-layers-best")[0];
+			var sharingGoodNode = query(".performance-sharing-good")[0],
+					sharingBetterNode = query(".performance-sharing-better")[0],
+					sharingBestNode = query(".performance-sharing-best")[0];
+
 			var mdt = parseInt(processMapDrawTime(mapDrawTime));
 			if (mdt < defaults.drawTime.BEST) {
-				domStyle.set(query(".performance-text-very-slow")[0], "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(query(".performance-text-slow")[0], "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(query(".performance-text-good")[0], "color", "#005E95");
+				domStyle.set(mdtGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(mdtBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(mdtBestNode, "color", "#0079C1");
+				// score
+				domStyle.set(mdtScoreContainerNode, "border", "1px solid #0079C1");
+				domStyle.set(mdtNumeratorNode, "color", "#0079C1");
+				domStyle.set(mdtDenominatorNode, "color", "#0079C1");
+				mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_BEST;
 			} else if (mdt < defaults.drawTime.BETTER) {
-				domStyle.set(query(".performance-text-very-slow")[0], "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(query(".performance-text-slow")[0], "color", "#005E95");
-				domStyle.set(query(".performance-text-good")[0], "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(mdtGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(mdtBetterNode, "color", "#0079C1");
+				domStyle.set(mdtBestNode, "color", "rgba(0, 122, 194, 0.24)");
+				// score
+				domStyle.set(mdtScoreContainerNode, "border", "1px solid #0079C1");
+				domStyle.set(mdtNumeratorNode, "color", "#0079C1");
+				domStyle.set(mdtDenominatorNode, "color", "#0079C1");
+				mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_BETTER;
 			} else if (mdt < defaults.drawTime.GOOD) {
-				domStyle.set(query(".performance-text-very-slow")[0], "color", "#005E95");
-				domStyle.set(query(".performance-text-slow")[0], "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(query(".performance-text-good")[0], "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(mdtGoodNode, "color", "#0079C1");
+				domStyle.set(mdtBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(mdtBestNode, "color", "rgba(0, 122, 194, 0.24)");
+				// score
+				domStyle.set(mdtScoreContainerNode, "border", "1px solid #C86A4A");
+				domStyle.set(mdtNumeratorNode, "color", "#C86A4A");
+				domStyle.set(mdtDenominatorNode, "color", "#C86A4A");
+				mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_GOOD;
+			}
+
+			if (layers !== undefined) {
+				var nLayers = layers.length;
+				if (nLayers > 10) {
+					// GOOD
+					domStyle.set(nLayersGoodNode, "color", "#005E95");
+					domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+					domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
+					// score graphic
+					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #C86A4A");
+					domStyle.set(layerCountNumeratorNode, "color", "#C86A4A");
+					domStyle.set(layerCountDenominatorNode, "color", "#C86A4A");
+					nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_GOOD;
+				} else if (nLayers <= 10 && nLayers >= 2) {
+					// BETTER
+					domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+					domStyle.set(nLayersBetterNode, "color", "#005E95");
+					domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
+					// score
+					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
+					domStyle.set(layerCountNumeratorNode, "color", "#005E95");
+					domStyle.set(layerCountDenominatorNode, "color", "#005E95");
+					nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_BETTER;
+				} else if (nLayers >= 0 && nLayers < 2) {
+					// BEST
+					domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+					domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+					domStyle.set(nLayersBestNode, "color", "#005E95");
+					// score
+					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
+					domStyle.set(layerCountNumeratorNode, "color", "#005E95");
+					domStyle.set(layerCountDenominatorNode, "color", "#005E95");
+					nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_BEST;
+				}
+			}
+
+			popupsScore = 5;
+			domStyle.set(popupsNumeratorNode, "color", "#005E95");
+			domStyle.set(popupsDenominatorNode, "color", "#005E95");
+
+
+			if (item.access === "private") {
+				// GOOD
+				sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE;
+				// score
+				domStyle.set(sharingContainerNode, "border", "1px solid #C86A4A");
+				domStyle.set(sharingNumeratorNode, "color", "#C86A4A");
+				domStyle.set(sharingDenominatorNode, "color", "#C86A4A");
+
+				domStyle.set(sharingGoodNode, "color", "#005E95");
+				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
+			} else if (item.access === "public") {
+				// BEST
+				sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
+				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
+				domStyle.set(sharingNumeratorNode, "color", "#005E95");
+				domStyle.set(sharingDenominatorNode, "color", "#005E95");
+				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(sharingBestNode, "color", "#005E95");
+			} else {
+				// BETTER
+				sharingScore = scoring.PERFORMANCE_SHARING_ORG;
+				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
+				domStyle.set(sharingNumeratorNode, "color", "#005E95");
+				domStyle.set(sharingDenominatorNode, "color", "#005E95");
+				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(sharingBetterNode, "color", "#005E95");
+				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 			}
 
 			createTooltip(mapLayersTooltipNode, tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT);
@@ -1330,30 +1478,35 @@ require([
 			createTooltip(drawTimeTooltipNode, tooltipsConfig.PERFORMANCE_DRAW_TIME_TOOLTIP_CONTENT);
 			createTooltip(popupsTooltipNode, tooltipsConfig.PERFORMANCE_POP_UPS_TOOLTIP_CONTENT);
 
+			mdtNumeratorNode.innerHTML = mapDrawTimeScore;
+			layerCountNumeratorNode.innerHTML = nLayersScore;
+			popupsNumeratorNode.innerHTML = popupsScore;
+			sharingNumeratorNode.innerHTML = sharingScore;
+			mdtDenominatorNode.innerHTML = layerCountDenominatorNode.innerHTML = popupsDenominatorNode.innerHTML = sharingDenominatorNode.innerHTML = scoring.PERFORMANCE_MAX;
 			/*if (layers !== undefined && layers.length < 1) {
-			 domConstruct.create("div", {
-			 innerHTML: "No available layers",
-			 style: {
-			 "margin-left": "5px",
-			 "paddingLeft": "0px"
-			 }
-			 }, "layers-list", "first");
-			 } else {
-			 var ul = domConstruct.create("ul", {
-			 style: {
-			 "margin-left": "5px",
-			 "paddingLeft": "0px"
-			 }
-			 }, "layers-list", "first");
-			 array.forEach(layers, function (layer) {
-			 domConstruct.create("li", {
-			 innerHTML: layer.title,
-			 style: {
-			 "list-style-type": "none"
-			 }
-			 }, ul);
-			 });
-			 }*/
+				domConstruct.create("div", {
+					innerHTML:"No available layers",
+					style:{
+						"margin-left":"5px",
+						"paddingLeft":"0px"
+					}
+				}, "layers-list", "first");
+			} else {
+				var ul = domConstruct.create("ul", {
+					style:{
+						"margin-left":"5px",
+						"paddingLeft":"0px"
+					}
+				}, "layers-list", "first");
+				array.forEach(layers, function (layer) {
+					domConstruct.create("li", {
+						innerHTML:layer.title,
+						style:{
+							"list-style-type":"none"
+						}
+					}, ul);
+				});
+			}*/
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {

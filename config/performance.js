@@ -37,7 +37,9 @@ define({
 			'		<div class="column-3">' +
 			'			<div class="row">' +
 			'				<div class="column-12">' +
-			'					<div class="score-graphic score-graphic-fail"> 6/10</div>' +
+			'					<div class="score-graphic score-graphic-pass mdt-score-gr">' +
+			'						<span class="mdt-score-num"></span>/<span class="mdt-score-denom"></span>' +
+			'					</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
 			'					<img src="assets/images/info_32.png" class="draw-time-tooltip info-graphic">' +
@@ -63,7 +65,9 @@ define({
 			'		<div class="column-3">' +
 			'			<div class="row">' +
 			'				<div class="column-12">' +
-			'					<div class="score-graphic score-graphic-fail"> 6/10</div>' +
+			'					<div class="score-graphic score-graphic-pass num-layers-score-gr">' +
+			'						<span class="num-layers-score-num"></span>/<span class="num-layers-score-denom"></span>' +
+			'					</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
 			'					<img src="assets/images/info_32.png" class="map-layers-tooltip info-graphic">' +
@@ -74,13 +78,13 @@ define({
 			'			<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em;">number of map layers</span></h2>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">more than 10</div>' +
+			'			<div class="section-header performance-text num-layers-good">more than 10</div>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-in">2 - 10</div>' +
+			'			<div class="section-header performance-text num-layers-better">2 - 10</div>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">1</div>' +
+			'			<div class="section-header performance-text num-layers-best">1</div>' +
 			'		</div>' +
 			'	</div>' +
 
@@ -89,7 +93,9 @@ define({
 			'		<div class="column-3">' +
 			'			<div class="row">' +
 			'				<div class="column-12">' +
-			'					<div class="score-graphic score-graphic-pass"> 10/10</div>' +
+			'					<div class="score-graphic score-graphic-pass popups-score-gr">' +
+			'						<span class="popups-score-num"></span>/<span class="popups-score-denom"></span>' +
+			'					</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
 			'					<img src="assets/images/info_32.png" class="popups-tooltip info-graphic">' +
@@ -115,7 +121,9 @@ define({
 			'		<div class="column-3">' +
 			'			<div class="row">' +
 			'				<div class="column-12">' +
-			'					<div class="score-graphic score-graphic-pass"> 10/10</div>' +
+			'					<div class="score-graphic score-graphic-pass sharing-score-gr">' +
+			'						<span class="sharing-score-num"></span>/<span class="sharing-score-denom"></span>' +
+			'					</div>' +
 			'				</div>' +
 			'				<div class="column-12">' +
 			'					<img src="assets/images/info_32.png" class="sharing-tooltip info-graphic">' +
@@ -126,13 +134,13 @@ define({
 			'			<h2 class="icon-share icon-blue"><span style="font-size: 0.5em;">sharing</span></h2>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">not shared</div>' +
+			'			<div class="section-header performance-text performance-sharing-good">not shared</div>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">organization account</div>' +
+			'			<div class="section-header performance-text performance-sharing-better">organization account</div>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-in">public</div>' +
+			'			<div class="section-header performance-text performance-sharing-best">public</div>' +
 			'		</div>' +
 			'	</div>' +
 
