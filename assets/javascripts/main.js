@@ -1446,11 +1446,9 @@ require([
 			if (sharing === "private") {
 				// GOOD
 				sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE;
-				// score
 				domStyle.set(sharingContainerNode, "border", "1px solid #C86A4A");
 				domStyle.set(sharingNumeratorNode, "color", "#C86A4A");
 				domStyle.set(sharingDenominatorNode, "color", "#C86A4A");
-
 				domStyle.set(sharingGoodNode, "color", "#005E95");
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1462,7 +1460,7 @@ require([
 				domStyle.set(sharingDenominatorNode, "color", "#005E95");
 				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBetterNode, "color", "#005E95");
-				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else {
 				// BEST
 				sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
