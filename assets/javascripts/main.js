@@ -124,15 +124,23 @@ require([
 	//
 	var overallScoreGraphic;
 	// overall score
-	var score = 78;
-	// section scores
+	var overAllCurrentScore = 78;
+	// SECTION SCORES
+	// Details
+	var itemDetailsScore = 0;
 	var itemThumbnailScore = 0;
 	var itemTitleScore = 0;
 	var itemSummaryScore = 0;
 	var itemDescriptionScore = 0;
+	// Use and Constraints
+	var creditsAndAccessScore = 0;
 	var itemCreditsScore = 0;
 	var itemAccessAndUseConstraintsScore = 0;
+	// Tags
 	var itemTagsScore = 0;
+	// Performance
+	// User Profile
+	var userProfileScore = 0;
 	var userNameScore = 0;
 	var userDescriptionScore = 0;
 	//
@@ -207,7 +215,7 @@ require([
 					detailsContentPane(selectedRowID, _titleID, _snippetID, _descID);
 				}
 			});
-			domClass.replace(_detailsNode, "active column-4 details", "column-4 details");
+			domClass.replace(_detailsNode, "active column-4 details", "column-4 details-tab-node");
 		};
 
 		creditsNodeClickHandler = function (selectedRowID, _categoryNodes, _nodeList, _item, _accessID, _creditID, _creditsNode) {
@@ -518,22 +526,13 @@ require([
 											"width":"100%",
 											"height":"5px"
 										},
-										value:score
+										value:overAllCurrentScore
 									}).placeAt(progressBarAnchorNode).startup();
 									domConstruct.place("<div class='current-score-passing-marker'>" +
 											"<span class='current-overall-gr-number'> 80</span>" +
 											"<span class='current-overall-gr-label'>required score</span>" +
 											"</div>", progressBarAnchorNode, "before");
 								});
-
-								/*on(dom.byId("nominate-btn"), "click", function () {
-									var nominateDialog = new Dialog({
-										title:"HELP",
-										content:"<div>Not implemented yet</div>",
-										style:"width: 300px"
-									});
-									nominateDialog.show();
-								});*/
 							}
 						});
 					} else {
@@ -546,7 +545,7 @@ require([
 		function detailsContentPane(selectedRowID, titleID, snippetID, descID) {
 			portalUser.getItem(selectedRowID).then(function (item) {
 				// item title
-				var itemTitle = validateItemTitle(item.title);
+				var itemTitle = validateStr(item.title);
 				var itemTitle_clean = itemTitle;
 				// item summary
 				var itemSummary = validateStr(item.snippet);
@@ -617,10 +616,11 @@ require([
 				titleScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				summaryScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				descScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateThumbnailUrl(thumbnailUrl, itemThumbnailScore, thumbnailScoreNodeContainer, thumbnailScoreNumeratorNode);
-				validateTextInput(itemTitleScore, itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
-				validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
-				validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+				itemDetailsScore = validateThumbnailUrl(thumbnailUrl, itemThumbnailScore, thumbnailScoreNodeContainer, thumbnailScoreNumeratorNode);
+				itemDetailsScore = itemDetailsScore + validateTextInput(itemTitleScore, itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+				itemDetailsScore = itemDetailsScore + validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+				itemDetailsScore = itemDetailsScore + validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+				updateSectionScore(itemDetailsScore, detailsNode, 40);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -759,9 +759,12 @@ require([
 							//domConstruct.place("<span>" + itemDescription + "</span>", "description-editor-widget", "first");
 						}
 					}
-					validateTextInput(itemTitleScore, itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
-					validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
-					validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+
+					itemDetailsScore = validateThumbnailUrl(thumbnailUrl, itemThumbnailScore, thumbnailScoreNodeContainer, thumbnailScoreNumeratorNode);
+					itemDetailsScore = itemDetailsScore + validateTextInput(itemTitleScore, itemTitle, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+					itemDetailsScore = itemDetailsScore + validateTextInput(itemSummaryScore, itemSummary, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+					itemDetailsScore = itemDetailsScore + validateTextInput(itemDescriptionScore, itemDescription, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+					updateSectionScore(itemDetailsScore, detailsNode, 40);
 				});
 
 				on(cancelBtnNode, "click", function () {
@@ -802,9 +805,11 @@ require([
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
 
-					validateTextInput(itemTitleScore, itemTitle_clean, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
-					validateTextInput(itemSummaryScore, itemSummary_clean, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
-					validateTextInput(itemDescriptionScore, itemDescription_clean, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+					itemDetailsScore = validateThumbnailUrl(thumbnailUrl, itemThumbnailScore, thumbnailScoreNodeContainer, thumbnailScoreNumeratorNode);
+					itemDetailsScore = itemDetailsScore + validateTextInput(itemTitleScore, itemTitle_clean, titleScoreNodeContainer, titleScoreNumeratorNode, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_CONTENT);
+					itemDetailsScore = itemDetailsScore + validateTextInput(itemSummaryScore, itemSummary_clean, summaryScoreNodeContainer, summaryScoreNumeratorNode, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
+					itemDetailsScore = itemDetailsScore + validateTextInput(itemDescriptionScore, itemDescription_clean, descScoreNodeContainer, descScoreNumeratorNode, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
+					updateSectionScore(itemDetailsScore, detailsNode, 40);
 				});
 			});
 		}
@@ -847,9 +852,10 @@ require([
 
 				creditsScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
 				accessScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateTextInput(itemCreditsScore, itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
-				validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
-				hasBonusWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+				creditsAndAccessScore = validateTextInput(itemCreditsScore, itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+				creditsAndAccessScore = creditsAndAccessScore + validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+				//creditsAndAccessScore = creditsAndAccessScore + hasBonusWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+				updateSectionScore(creditsAndAccessScore, creditsNode, 20);
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -947,9 +953,10 @@ require([
 							domConstruct.place("<span>" + accessAndUseConstraints + "</span>", "access-editor-widget", "first");
 						}
 
-						validateTextInput(itemCreditsScore, itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
-						validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
-						hasBonusWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+						creditsAndAccessScore = validateTextInput(itemCreditsScore, itemCredits, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+						creditsAndAccessScore = creditsAndAccessScore + validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+						//hasBonusWords(accessAndUseConstraints, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+						updateSectionScore(creditsAndAccessScore, creditsNode, 20);
 					}
 				});
 
@@ -977,9 +984,10 @@ require([
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
 
-					validateTextInput(itemCreditsScore, itemCredits_clean, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
-					validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints_clean, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
-					hasBonusWords(accessAndUseConstraints_clean, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+					creditsAndAccessScore = validateTextInput(itemCreditsScore, itemCredits_clean, creditsScoreNodeContainer, creditsScoreNumeratorNode, scoring.ITEM_CREDITS_MIN_NUM_WORDS, scoring.ITEM_CREDITS_CONTENT);
+					creditsAndAccessScore = creditsAndAccessScore + validateTextInput(itemAccessAndUseConstraintsScore, accessAndUseConstraints_clean, accessScoreNodeContainer, accessScoreNumeratorNode, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT);
+					//hasBonusWords(accessAndUseConstraints_clean, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS);
+					updateSectionScore(creditsAndAccessScore, creditsNode, 20);
 				});
 			});
 		}
@@ -1007,8 +1015,8 @@ require([
 				var itemTags_clean = itemTags;
 
 				tagsScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateTags(itemTagsScore, itemTags, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
-
+				itemTagsScore = validateTags(itemTagsScore, itemTags, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+				updateSectionScore(itemTagsScore, tagsNode, 10);
 
 				// create the existing tags
 				domConstruct.create("div", { class:"existing-tags" }, query(".tag-container")[0], "first");
@@ -1121,7 +1129,8 @@ require([
 												id:"tag-widget"
 											}, query(".tag-container")[0], "first");
 										}
-										validateTags(itemTagsScore, tagsDijit.values, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+										itemTagsScore = validateTags(itemTagsScore, tagsDijit.values, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+										updateSectionScore(itemTagsScore, tagsNode, 10);
 										// disable living atlas checkboxes
 										toggleCheckboxes(checkBoxID_values, "disabled", true);
 										updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
@@ -1151,7 +1160,8 @@ require([
 						});
 					}
 
-					validateTags(itemTagsScore, itemTags_clean, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+					itemTagsScore = validateTags(itemTagsScore, itemTags_clean, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+					updateSectionScore(itemTagsScore, tagsNode, 10);
 
 					// disable living atlas checkboxes
 					toggleCheckboxes(checkBoxID_values, "disabled", true);
@@ -1268,9 +1278,11 @@ require([
 
 				// score content
 				userNameScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateTextInput(userNameScore, _userFullName, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+				userProfileScore = validateTextInput(userNameScore, _userFullName, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
 				userDescriptionScoreDenominatorNode.innerHTML = scoring.SECTION_MAX;
-				validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
+				userProfileScore = userProfileScore + validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
+				updateSectionScore(userProfileScore, profileNode, 20);
+				updateOverallScore();
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
@@ -1332,8 +1344,9 @@ require([
 											_userDescription_clean = _userDescription;
 
 											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
-											validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
-											validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
+											userProfileScore = validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+											userProfileScore = userProfileScore + validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
+											updateSectionScore(userProfileScore, profileNode, 20);
 										} else {
 											console.log("Profile not updated");
 										}
@@ -1359,12 +1372,40 @@ require([
 					domAttr.set(editSaveBtnNode, "innerHTML", " EDIT ");
 					domStyle.set(cancelBtnNode, "display", "none");
 
-					validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
-					validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
+					userProfileScore = validateTextInput(userNameScore, _userFullName_clean, userNameScoreNodeContainer, userNameScoreNumeratorNode, scoring.USER_NAME_MIN_NUM_WORDS, scoring.USER_NAME_CONTENT);
+					userProfileScore = userProfileScore + validateTextInput(userDescriptionScore, _userDescription, userDescriptionScoreNodeContainer, userDescriptionScoreNumeratorNode, scoring.USER_DESCRIPTION_MIN_NUM_WORDS, scoring.USER_DESCRIPTION_CONTENT);
+					updateSectionScore(userProfileScore, profileNode, 20);
 				});
 			});
 		}
 
+
+		function updateOverallScore() {
+			console.log("itemDetailsScore: " + itemDetailsScore);
+			console.log("creditsAndAccessScore: " + creditsAndAccessScore);
+			console.log("creditsAndAccessScore: " + creditsAndAccessScore);
+			console.log("userProfileScore: " + userProfileScore);
+			var total = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore)/90 * 100);
+			console.log(total);
+		}
+
+		function updateSectionScore(score, node, max) {
+			score = Math.floor(score / max * 100);
+			console.log(score);
+			if (score >= scoring.SCORE_THRESHOLD) {
+				// PASS
+				domAttr.set(node, "class", "active column-4 details-tab-node icon-check");
+				domStyle.set(node, "color", "#007ac2");
+				domStyle.set(node, "border", "1px solid #007ac2");
+				console.log("PASS");
+			} else {
+				// FAIL
+				domAttr.set(node, "class", "active column-4 details-tab-node icon-edit");
+				domStyle.set(node, "color", "#C86A4A");
+				domStyle.set(node, "border", "1px solid #C86A4A");
+				console.log("FAIL");
+			}
+		}
 
 		function validateThumbnailUrl(thumbnail, sectionScore, containerNode, numeratorNode) {
 			console.log(thumbnail);
@@ -1376,10 +1417,12 @@ require([
 				sectionScore = scoring.SECTION_MIN;
 				numeratorNode.innerHTML = sectionScore;
 				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
+				return sectionScore;
 			} else {
 				sectionScore = scoring.SECTION_MAX;
 				numeratorNode.innerHTML = sectionScore;
 				domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
+				return sectionScore;
 			}
 		}
 
@@ -1394,14 +1437,16 @@ require([
 					return tempTags.indexOf(penaltyWord.toLowerCase()) !== -1;
 				})) {
 					// PASS with penalty
-					sectionScore = 5;
+					sectionScore = scoring.SECTION_PASSING;
 					numeratorNode.innerHTML = sectionScore;
 					domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
+					return sectionScore;
 				} else {
 					// PASS
 					sectionScore = scoring.SECTION_MAX;
 					numeratorNode.innerHTML = sectionScore;
 					domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
+					return sectionScore;
 				}
 			} else {
 				// FAIL
@@ -1409,6 +1454,7 @@ require([
 				numeratorNode.innerHTML = sectionScore;
 				// update style of section scoring graphic
 				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");console.log("FAIL");
+				return sectionScore;
 			}
 		}
 
@@ -1426,9 +1472,13 @@ require([
 		}
 
 		function validateTextInput(sectionScore, inputText, containerNode, numeratorNode, minNumWords, prohibitedWords) {
-			if (validateNumWords(inputText, minNumWords)) {
+			var strippedString = inputText.replace(/(<([^>]+)>)/ig, "");
+			console.log("nWords: " + getNumWords(strippedString));
+			console.log("minNumWords: " + minNumWords);
+			if (validateNumWords(strippedString, minNumWords)) {
 				// PASS (has minimum number of words)
-				hasProhibitedWords(sectionScore, inputText, containerNode, numeratorNode, prohibitedWords);
+				sectionScore = hasProhibitedWords(sectionScore, strippedString, containerNode, numeratorNode, prohibitedWords);
+				return sectionScore;
 			} else {
 				// FAIL (does not have minimum number of words)
 				// set the score to section minimum
@@ -1436,14 +1486,14 @@ require([
 				numeratorNode.innerHTML = sectionScore;
 				// update style of section scoring graphic
 				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
+				return sectionScore;
 			}
 		}
 
-		function validateNumWords(score, minNumWords) {
-			var strippedString = score.replace(/(<([^>]+)>)/ig, "");
+		function validateNumWords(inputText, minNumWords) {
 			var nWords = 0;
-			if (strippedString.length > 0) {
-				nWords = getNumWords(strippedString);
+			if (inputText.length > 0) {
+				nWords = getNumWords(inputText);
 			}
 
 			if (nWords < minNumWords) {
@@ -1454,6 +1504,7 @@ require([
 		}
 
 		function hasProhibitedWords(sectionScore, inputText, nodeContainer, numeratorNode, prohibitedWords) {
+			console.log(inputText);
 			if (array.some(prohibitedWords, function (word) {
 				return parseInt(inputText.search(word)) >= 0;
 			})) {
@@ -1461,11 +1512,13 @@ require([
 				sectionScore = scoring.SECTION_PASSING;
 				numeratorNode.innerHTML = sectionScore;
 				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
+				return sectionScore;
 			} else {
 				// no
 				sectionScore = scoring.SECTION_MAX;
 				numeratorNode.innerHTML = sectionScore;
 				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
+				return sectionScore;
 			}
 		}
 
@@ -1809,16 +1862,16 @@ require([
 		function createContentButtonGroup(id) {
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
-							'	<div class="btn-group column-24 icon-edit-btn-group">' +
-							'		<a class="active column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
-							'		<a class="column-4 credits icon-check"> ' + defaults.USE_CREDITS + '</a>' +
-							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
-							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
-							'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
-							'	</div>' +
-							'</div>', id, "last");
+					'	<div class="btn-group column-24 icon-edit-btn-group">' +
+					'		<a class="active column-4 details-tab-node icon-edit"> ' + defaults.DETAILS + '</a>' +
+					'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
+					'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
+					'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
+					'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
+					'	</div>' +
+					'</div>', id, "last");
 
-			detailsNode = query(".details")[0];
+			detailsNode = query(".details-tab-node")[0];
 			creditsNode = query(".credits")[0];
 			tagsNode = query(".tags")[0];
 			performanceNode = query(".performance")[0];
@@ -1889,16 +1942,6 @@ require([
 			}
 		}
 
-		function validateItemTitle(str) {
-			if (str === null || "") {
-				score = score - 10;
-				return "";
-			} else {
-				score = score + 10;
-				return str;
-			}
-		}
-
 		function formatDate(date) {
 			var d = new Date(date);
 			var month = defaults.MONTHS[d.getMonth()];
@@ -1919,10 +1962,6 @@ require([
 				thumbnailUrl = location.protocol + "//" + location.hostname + location.pathname + "assets/images/nullThumbnail.png";
 			}
 			return thumbnailUrl;
-		}
-
-		function processSharing(item) {
-			return item.access
 		}
 
 		function processMapDrawTime(val) {

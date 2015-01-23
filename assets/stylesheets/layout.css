@@ -360,8 +360,8 @@ table tr {
 .icon-edit-btn-group a {
 	margin-left: 10px !important;
 	/*border: 1px solid #CCC !important;*/
-	border: 1px solid #C86A4A !important;
-	color: #C86A4A !important;
+	/*border: 1px solid #C86A4A !important;
+	color: #C86A4A !important;*/
 	border-radius: 3px !important;
 }
 
@@ -427,10 +427,10 @@ table tr {
 	margin-top: -15px;
 }
 
-a.column-4.credits.icon-check {
+/*a.column-4.credits.icon-check {
 	color: #005E95 !important;
 	border-color: #005E95 !important;
-}
+}*/
 
 /* Individual tag styles */
 .select2-search-resultSet {
