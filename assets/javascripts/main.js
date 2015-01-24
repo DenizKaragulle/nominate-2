@@ -181,7 +181,7 @@ require([
 	var tagsDijit;
 	var newTag;
 	//
-	var reSentences = /[^\r\n.!?]+(:?(:?\r\n|[\r\n]|[.!?])+|$)/gi;
+	var HAS_PERFORMANCE_CONTENT = false;
 
 	var imageSizes = {
 		"PROFILE": [150, 150],
@@ -525,6 +525,7 @@ require([
 											mapDrawComplete;
 										// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
 										arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
+											console.log(response);
 											layers = response.itemInfo.itemData.operationalLayers;
 											map = response.map;
 
@@ -542,7 +543,10 @@ require([
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
 												// set performance style on button
 												setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
+												// initialize the scores
 												initScores(item, portalUser);
+												HAS_PERFORMANCE_CONTENT = true;
+												// update the overall score
 												updateOverallScore();
 
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
@@ -553,7 +557,11 @@ require([
 										// hide the map div
 										domStyle.set("map", "display", "none");
 										on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", layers, performanceNode));
+										// initialize the scores
 										initScores(item, portalUser);
+										HAS_PERFORMANCE_CONTENT = false;
+										// update the overall score;
+										updateOverallScore();
 									}
 									on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, categoryNodes, nodeList, titleID, snippetID, descID, detailsNode));
 									on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, categoryNodes, nodeList, item, accessID, creditID, creditsNode));
@@ -1442,30 +1450,6 @@ require([
 			popupsNumeratorNode.innerHTML = popupsScore;
 			sharingNumeratorNode.innerHTML = sharingScore;
 			mdtDenominatorNode.innerHTML = layerCountDenominatorNode.innerHTML = popupsDenominatorNode.innerHTML = sharingDenominatorNode.innerHTML = scoring.PERFORMANCE_MAX;
-			/*if (layers !== undefined && layers.length < 1) {
-				domConstruct.create("div", {
-					innerHTML:"No available layers",
-					style:{
-						"margin-left":"5px",
-						"paddingLeft":"0px"
-					}
-				}, "layers-list", "first");
-			} else {
-				var ul = domConstruct.create("ul", {
-					style:{
-						"margin-left":"5px",
-						"paddingLeft":"0px"
-					}
-				}, "layers-list", "first");
-				array.forEach(layers, function (layer) {
-					domConstruct.create("li", {
-						innerHTML:layer.title,
-						style:{
-							"list-style-type":"none"
-						}
-					}, ul);
-				});
-			}*/
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
@@ -1758,9 +1742,16 @@ require([
 		}
 
 		function updateOverallScore() {
+			var TMP_MAX_SCORE = 0;
 			// update the score
-			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / MAX_SCORE * 100);
-			if (overAllCurrentScore >= MAX_SCORE) {
+			if (HAS_PERFORMANCE_CONTENT) {
+				TMP_MAX_SCORE = MAX_SCORE;
+				overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / MAX_SCORE * 100);
+			} else {
+				TMP_MAX_SCORE = MAX_SCORE - PERFORMANCE_MAX_SCORE;
+				overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore) / TMP_MAX_SCORE * 100);
+			}
+			if (overAllCurrentScore >= TMP_MAX_SCORE) {
 				domStyle.set(currentOverallScoreNode, "color", "#005E95");
 			} else {
 				domStyle.set(currentOverallScoreNode, "color", "#C86A4A");
@@ -2543,10 +2534,16 @@ require([
 			var score = 0;
 			var isCustomPopup = false;
 			array.forEach(layers, function (layer) {
-				var popupInfo = layer.featureCollection.layers[0].popupInfo;
-				if (popupInfo.description !== null) {
-					isCustomPopup = true;
-					score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+				console.log(layer);
+				var popupInfo;
+				if (layer.featureCollection !== undefined) {
+					popupInfo = layer.featureCollection.layers[0].popupInfo;
+					if (popupInfo.description !== null) {
+						isCustomPopup = true;
+						score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+					}
+				} else {
+					score = 0;
 				}
 			});
 			return score;
