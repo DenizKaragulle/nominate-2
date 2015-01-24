@@ -538,10 +538,10 @@ require([
 												nLayersScore = setNumLayersScore(layers);
 												popupsScore = setPopupScore(layers);
 												sharingScore = setSharingScore(item);
-												console.log(mapDrawTimeScore);
-												console.log(nLayersScore);
-												console.log(popupsScore);
-												console.log(sharingScore);
+												/*console.log("mapDrawTimeScore: " + mapDrawTimeScore);
+												console.log("nLayersScore : " + nLayersScore);
+												console.log("popupsScore: " + popupsScore);
+												console.log("sharingScore: " + sharingScore);*/
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
 												initScores(item, portalUser, performanceScore);
 
