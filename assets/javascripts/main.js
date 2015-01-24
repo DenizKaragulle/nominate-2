@@ -541,7 +541,7 @@ require([
 												popupsScore = setPopupScore(layers);
 												sharingScore = setSharingScore(item);
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
-												// set performance style on button
+												// set style on performance button
 												setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
 												// initialize the scores
 												initScores(item, portalUser);
@@ -1475,6 +1475,10 @@ require([
 						profileUserFullNameNode = query(".name-textbox")[0],
 						profileUserDescriptionNode = query(".user-description-textbox")[0],
 
+						userThumbnailNodeContainer = query(".profile-thumbnail-score-gr")[0],
+						userThumbnailNumeratorNode = query(".profile-thumbnail-score-num")[0],
+						userThumbnailDenominatorNode = query(".profile-thumbnail-score-denom")[0],
+
 						userNameScoreNodeContainer = query(".profile-name-score-gr")[0],
 						userNameScoreNumeratorNode = query(".profile-name-score-num")[0],
 						userNameScoreDenominatorNode = query(".profile-name-score-denom")[0],
@@ -1501,17 +1505,20 @@ require([
 				createTooltips([profileThumbnailTooltipNode, profileFullNameTooltipNode, profileDescriptionTooltipNode], [tooltipsConfig.USER_PROFILE_THUMBNAIL_TOOLTIP_CONTENT, tooltipsConfig.USER_PROFILE_FULL_NAME_TOOLTIP_CONTENT, tooltipsConfig.USER_PROFILE_DESCRIPTION_TOOLTIP_CONTENT]);
 
 				// set denominator
+				userThumbnailDenominatorNode.innerHTML = USER_PROFILE_THUMBNAIL;
 				userNameScoreDenominatorNode.innerHTML = USER_PROFILE_FULLNAME;
 				userDescriptionScoreDenominatorNode.innerHTML = USER_PROFILE_DESCRIPTION;
 
 				// score content
-				userThumbnailScore = 0;//setUserProfileThumbnailScore()
+				userThumbnailScore = 7;//setThumbnailScore(portalUser.thumbnail);
 				userNameScore = setUserProfileFullNameScore(portalUser.fullName);
 				userDescriptionScore = setUserDescriptionScore(portalUser.description);
+				userThumbnailNumeratorNode.innerHTML = userThumbnailScore;
 				userNameScoreNumeratorNode.innerHTML = userNameScore;
 				userDescriptionScoreNumeratorNode.innerHTML = userDescriptionScore;
 
 				// update section style score graphics
+				updateSectionScoreStyle(userThumbnailScore, USER_PROFILE_THUMBNAIL, userThumbnailNodeContainer);
 				updateSectionScoreStyle(userNameScore, USER_PROFILE_FULLNAME, userNameScoreNodeContainer);
 				updateSectionScoreStyle(userDescriptionScore, USER_PROFILE_DESCRIPTION, userDescriptionScoreNodeContainer);
 
@@ -1732,7 +1739,7 @@ require([
 			//
 			setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
 			// user profile
-			userThumbnailScore = setThumbnailScore(portalUser);
+			userThumbnailScore = 7;//setThumbnailScore(portalUser);
 			userNameScore = setUserProfileFullNameScore(portalUser.fullName);
 			userDescriptionScore = setUserDescriptionScore(portalUser.description);
 			userProfileScore = userThumbnailScore + userNameScore + userDescriptionScore;
@@ -2583,7 +2590,9 @@ require([
 		}
 
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
+			console.log("score: " + score + "\tsectionThreshold: " + sectionThreshold);
 			var average = score/sectionThreshold * 100;
+			console.log("average: " + average);
 			var classAttrs = domAttr.get(node, "class");
 			if (average >= 80) {
 				classAttrs = classAttrs.replace("icon-edit", "icon-check");
