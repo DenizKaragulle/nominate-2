@@ -85,7 +85,7 @@ require([
 	var dropdownItemFilterNode = "";
 	var helpButtonNode = "";
 
-	var progressBarAnchorNode = "";
+	var progressBarNode = "";
 	var categoryNodes = [];
 	// div dimensions
 	var COLLAPSE_ROW_HEIGHT = 125;
@@ -406,7 +406,8 @@ require([
 						}, "dgrid");
 						dgrid.startup();
 
-						setScoreMaxValues();
+						// set the maximum score values for each section and overall max score
+						initScoreMaxValues();
 
 						// item title click handler
 						on(dgrid.domNode, ".item-title:click", function (event) {
@@ -504,9 +505,10 @@ require([
 											selectedRow.firstElementChild, "last");
 
 									currentOverallScoreNode = query(".current-score-number")[0];
-									progressBarAnchorNode = query(".current-score-graphic-container")[0];
+									progressBarNode = query(".current-score-graphic-container")[0];
 
-									createContentButtonGroup(tcID);
+									// create button group
+									initContentButtonGroup(tcID);
 
 									// initialize content area with details data
 									destroyNodes(categoryNodes);
@@ -516,11 +518,11 @@ require([
 											detailsContentPane(selectedRowID, titleID, snippetID, descID);
 										}
 									});
-									domClass.replace(detailsNode, "active column-4", "column-4");
+									domClass.replace(detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
 
 									if (item.type === "Web Map") {
-										var mapDrawBegin = performance.now();
-										var mapDrawComplete;
+										var mapDrawBegin = performance.now(),
+											mapDrawComplete;
 										// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
 										arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
 											layers = response.itemInfo.itemData.operationalLayers;
@@ -534,6 +536,7 @@ require([
 												var popUps = processPopupData(map);
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popUps, mapDrawTime, layers, performanceNode));
 
+												initScores(item, portalUser);
 												// get performance data
 												// Map Draw Time
 											/*	var mdt = parseInt(processMapDrawTime(mapDrawTime));
@@ -579,13 +582,12 @@ require([
 										// hide the map div
 										domStyle.set("map", "display", "none");
 										on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", layers, performanceNode));
+										initScores(item, portalUser);
 									}
 									on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, categoryNodes, nodeList, titleID, snippetID, descID, detailsNode));
 									on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, categoryNodes, nodeList, item, accessID, creditID, creditsNode));
 									on(tagsNode, "click", lang.partial(tagsNodeClickHandler, selectedRowID, categoryNodes, nodeList, categoryID, tagsID, tagsNode));
 									on(profileNode, "click", lang.partial(profileNodeClickHandler, selectedRowID, categoryNodes, nodeList, userNameID, userDescriptionID, profileNode));
-
-								//	updateScores(item, portalUser);
 
 									// overall score graphic
 									if (dijit.byId("overall-score-graphic")) {
@@ -598,7 +600,7 @@ require([
 											"height": "5px"
 										},
 										value: overAllCurrentScore
-									}).placeAt(progressBarAnchorNode).startup();
+									}).placeAt(progressBarNode).startup();
 
 									// draw the minimum score marker
 									drawPassingMarker();
@@ -1729,8 +1731,11 @@ require([
 			}
 		}
 
-		function validateItemTags(tags, minNumTags, penaltyWords) {
-			if (tags.length >= minNumTags) {
+		function validateItemTags(tags) {
+			var score = 0;
+			var penaltyWords = scoring.TAGS_PENALTY_WORDS;
+			if (tags.length >= scoring.TAGS_HAS_TAGS) {
+				score = 1;
 				var tempTags = [];
 				// case insensitive
 				array.forEach(tags, function (tag) {
@@ -1747,59 +1752,44 @@ require([
 					return scoring.SECTION_MAX;
 				}
 			} else {
-				// FAIL
-				return scoring.SECTION_MIN;
+				score = 0;
 			}
+			return score;
 		}
 
-		function updateScores(item, portalUser) {
+		function initScores(item, portalUser) {
 			// details
 			itemThumbnailScore = setThumbnailScore(item);
-			itemTitleScore = validateText(item.title, scoring.ITEM_TITLE_MIN_LENGTH, scoring.ITEM_TITLE_BAD_WORDS);
-			itemSummaryScore = validateText(item.snippet, scoring.ITEM_SUMMARY_MIN_LENGTH, scoring.ITEM_SUMMARY_CONTENT);
-			itemDescriptionScore = validateText(item.description, scoring.ITEM_DESC_MIN_LENGTH, scoring.ITEM_DESC_CONTENT);
-			itemDetailsScore = (itemThumbnailScore + itemTitleScore + itemSummaryScore + itemDescriptionScore) / 40 * 100;
-			setPassFailStyleOnTabNode(itemDetailsScore, detailsNode);
+			itemTitleScore = setItemTitleScore(item.title);
+			itemSummaryScore = setItemSummaryScore(item.snippet);
+			itemDescriptionScore = setItemDescriptionScore(item.description);
+			itemDetailsScore = itemThumbnailScore + itemTitleScore + itemSummaryScore + itemDescriptionScore;
+			setPassFailStyleOnTabNode(itemDetailsScore, detailsNode, ITEM_DETAILS_MAX_SCORE);
 			// use/constrains
-			itemCreditsScore = validateText(item.accessInformation, scoring.ITEM_CREDITS_MIN_NUM_WORDS, [""]);
-			itemAccessAndUseConstraintsScore = validateText(item.licenseInfo, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, [""]);
-			creditsAndAccessScore = (itemCreditsScore + itemAccessAndUseConstraintsScore) / 20 * 100;
-			setPassFailStyleOnTabNode(creditsAndAccessScore, creditsNode);
+			itemCreditsScore = setCredtisScore(item.accessInformation);
+			itemAccessAndUseConstraintsScore = setAccessAndUseConstraintsScore(item.licenseInfo);
+			creditsAndAccessScore = itemCreditsScore + itemAccessAndUseConstraintsScore;
+			setPassFailStyleOnTabNode(creditsAndAccessScore, creditsNode, ITEM_USE_CONSTRAINS_MAX_SCORE);
 			// tags
-			itemTagsScore = validateItemTags(item.tags, scoring.TAGS_MIN_COUNT, scoring.TAGS_PENALTY_WORDS);
-			itemTagsScore = itemTagsScore / 10 * 100;
-			setPassFailStyleOnTabNode(itemTagsScore, tagsNode);
+			itemTagsScore = validateItemTags(item.tags);
+			setPassFailStyleOnTabNode(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 			// performance
 			//
 			// user profile
 			userThumbnailScore = setThumbnailScore(portalUser);
-			userNameScore = validateText(portalUser.fullName, scoring.ITEM_CREDITS_MIN_NUM_WORDS, [""]);
-			userDescriptionScore = validateText(portalUser.description, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS, [""]);
-			userProfileScore = (userThumbnailScore + userNameScore + userDescriptionScore) / 30 * 100;
-			setPassFailStyleOnTabNode(userProfileScore, profileNode);
+			userNameScore = setUserProfileFullNameScore(portalUser.fullName);
+			userDescriptionScore = setUserDescriptionScore(portalUser.description);
+			userProfileScore = userThumbnailScore + userNameScore + userDescriptionScore;
+			setPassFailStyleOnTabNode(userProfileScore, profileNode, USER_PROFILE_MAX_SCORE);
 			// update the overall score and score graphic
 			updateOverallScore();
-		}
-
-		function setPassFailStyleOnTabNode(score, node) {
-			var classAttrs = domAttr.get(node, "class");
-			if (score >= scoring.SCORE_THRESHOLD) {
-				classAttrs = classAttrs.replace("icon-edit", "icon-check");
-				domAttr.set(node, "class", classAttrs);
-				domStyle.set(node, "color", "#007ac2");
-				domStyle.set(node, "border", "1px solid #007ac2");
-			} else {
-				classAttrs = classAttrs.replace("icon-check", "icon-edit");
-				domAttr.set(node, "class", classAttrs);
-				domStyle.set(node, "color", "#C86A4A");
-				domStyle.set(node, "border", "1px solid #C86A4A");
-			}
 		}
 
 		function updateOverallScore() {
 			// update the score
 			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore) / 4);
-			if (overAllCurrentScore >= scoring.SCORE_THRESHOLD) {
+			console.log(overAllCurrentScore);
+			if (overAllCurrentScore >= /*scoring.SCORE_THRESHOLD*/60) {
 				domStyle.set(currentOverallScoreNode, "color", "#005E95");
 			} else {
 				domStyle.set(currentOverallScoreNode, "color", "#C86A4A");
@@ -1897,7 +1887,7 @@ require([
 				// normal thumbnail
 				thumbnail = item.thumbnail;
 			}
-			if (thumbnail === null) {
+			if (thumbnail === null || thumbnail === undefined) {
 				score = 0;
 				return score;
 			} else {
@@ -2464,26 +2454,6 @@ require([
 			domStyle.set(node, "height", height + "px");
 		}
 
-		function createContentButtonGroup(id) {
-			domConstruct.place(
-					'<div class="row btn-group-container">' +
-							'	<div class="btn-group column-24 icon-edit-btn-group">' +
-							'		<a class="active column-4 details-tab-node icon-edit"> ' + defaults.DETAILS + '</a>' +
-							'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
-							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
-							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
-							'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
-							'	</div>' +
-							'</div>', id, "last");
-
-			detailsNode = query(".details-tab-node")[0];
-			creditsNode = query(".credits")[0];
-			tagsNode = query(".tags")[0];
-			performanceNode = query(".performance")[0];
-			profileNode = query(".profile")[0];
-			nodeList = [detailsNode, creditsNode, tagsNode, performanceNode, profileNode];
-		}
-
 		function addCheckbox(itemTags, id, atlasTag) {
 			var checkBox;
 			if (array.some(itemTags, function (tag) {
@@ -2582,10 +2552,18 @@ require([
 		}
 
 		function processPopupData(map) {
+			/*var isCustomPopup = false;
+			array.forEach(layers, function (layer) {
+				var popupInfo = layer.featureCollection.layers[0].popupInfo;
+				if (popupInfo.description !== null) {
+					isCustomPopup = true;
+				}
+			});*/
+
 			if (map.popupManager.enabled) {
-				return "Popups are enabled"
+				return "Popups are enabled";
 			} else {
-				return "Popups are disabled"
+				return "Popups are disabled";
 			}
 		}
 
@@ -2617,40 +2595,73 @@ require([
 			domConstruct.place("<div class='current-score-passing-marker'>" +
 					"<span class='current-overall-gr-number'> 80</span>" +
 					"<span class='current-overall-gr-label'>required score</span>" +
-					"</div>", progressBarAnchorNode, "before");
+					"</div>", progressBarNode, "before");
 		}
 
-		function setScoreMaxValues() {
+		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
+			var average = score/sectionThreshold * 100;
+			console.log(score + "\t" + sectionThreshold + "\taverage: " + average);
+			var classAttrs = domAttr.get(node, "class");
+			if (average >= 80) {
+				classAttrs = classAttrs.replace("icon-edit", "icon-check");
+				domAttr.set(node, "class", classAttrs);
+				domStyle.set(node, "color", "#007ac2");
+				domStyle.set(node, "border", "1px solid #007ac2");
+			} else {
+				classAttrs = classAttrs.replace("icon-check", "icon-edit");
+				domAttr.set(node, "class", classAttrs);
+				domStyle.set(node, "color", "#C86A4A");
+				domStyle.set(node, "border", "1px solid #C86A4A");
+			}
+		}
+
+		function initContentButtonGroup(id) {
+			domConstruct.place(
+					'<div class="row btn-group-container">' +
+							'	<div class="btn-group column-24 icon-edit-btn-group">' +
+							'		<a class="active column-4 details-tab-node icon-edit"> ' + defaults.DETAILS + '</a>' +
+							'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
+							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
+							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
+							'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
+							'	</div>' +
+							'</div>', id, "last");
+
+			detailsNode = query(".details-tab-node")[0];
+			creditsNode = query(".credits")[0];
+			tagsNode = query(".tags")[0];
+			performanceNode = query(".performance")[0];
+			profileNode = query(".profile")[0];
+			nodeList = [detailsNode, creditsNode, tagsNode, performanceNode, profileNode];
+		}
+
+		function initScoreMaxValues() {
+			// Details
 			ITEM_THUMBNAIL_MAX_SCORE = scoring.ITEM_THUMBNAIL_NONE + scoring.ITEM_THUMBNAIL_CUSTOM + scoring.ITEM_THUMBNAIL_LARGE;
 			ITEM_TITLE_MAX_SCORE = scoring.ITEM_TITLE_NO_BAD_WORDS + scoring.ITEM_TITLE_NO_UNDERSCORE + scoring.ITEM_TITLE_MIN_LENGTH + scoring.ITEM_TITLE_NO_ALL_CAPS;
 			ITEM_SUMMARY_MAX_SCORE = scoring.ITEM_SUMMARY_MUST_EXIST + scoring.ITEM_SUMMARY_NO_BAD_WORDS + scoring.ITEM_SUMMARY_NO_UNDERSCORE + scoring.ITEM_SUMMARY_MIN_LENGTH;
 			ITEM_DESC_MAX_SCORE = scoring.ITEM_DESCRIPTION_MUST_EXIST + scoring.ITEM_DESCRIPTION_MIN_LENGTH + scoring.ITEM_DESCRIPTION_LINK;
 			ITEM_DETAILS_MAX_SCORE = ITEM_THUMBNAIL_MAX_SCORE + ITEM_TITLE_MAX_SCORE + ITEM_SUMMARY_MAX_SCORE + ITEM_DESC_MAX_SCORE;
-
+			// Use/Credits
 			ITEM_CREDIT_MAX_SCORE = scoring.ITEM_CREDITS_HAS_WORDS;
 			ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE = scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK;
 			ITEM_USE_CONSTRAINS_MAX_SCORE = ITEM_CREDIT_MAX_SCORE + ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE;
-
+			// Tags
 			TAGS_MAX_SCORE = scoring.TAGS_HAS_TAGS + scoring.TAGS_HAS_ATLAS_TAGS + scoring.TAGS_HAS_CUSTOM_TAGS_MIN + scoring.TAGS_HAS_NO_BAD_WORDS;
-
-			PERFORMANCE_SHARING_MAX_SCORE = scoring.PERFORMANCE_SHARING_PRIVATE + scoring.PERFORMANCE_SHARING_ORG + scoring.PERFORMANCE_SHARING_PUBLIC;
+			// Performance
+			PERFORMANCE_SHARING_MAX_SCORE = scoring.PERFORMANCE_MAX;
 			PERFORMANCE_POPUPS_MAX_SCORE = scoring.PERFORMANCE_POPUPS_ENABLED + scoring.PERFORMANCE_POPUPS_CUSTOM;
-			PERFORMANCE_DRAW_TIME_MAX_SCORE = scoring.PERFORMANCE_DRAW_TIME_GOOD + scoring.PERFORMANCE_DRAW_TIME_BETTER + scoring.PERFORMANCE_DRAW_TIME_BEST;
-			PERFORMANCE_LAYER_COUNT_MAX_SCORE = scoring.PERFORMANCE_LAYER_COUNT_GOOD + scoring.PERFORMANCE_LAYER_COUNT_BETTER + scoring.PERFORMANCE_LAYER_COUNT_BEST;
+			PERFORMANCE_DRAW_TIME_MAX_SCORE = scoring.PERFORMANCE_MAX;
+			PERFORMANCE_LAYER_COUNT_MAX_SCORE = scoring.PERFORMANCE_MAX;
 			PERFORMANCE_MAX_SCORE = PERFORMANCE_SHARING_MAX_SCORE + PERFORMANCE_POPUPS_MAX_SCORE + PERFORMANCE_DRAW_TIME_MAX_SCORE + PERFORMANCE_LAYER_COUNT_MAX_SCORE;
-
+			// User Profile
 			USER_PROFILE_THUMBNAIL = scoring.USER_PROFILE_HAS_THUMBNAIL + scoring.USER_PROFILE_HAS_LARGE_THUMBNAIL;
 			USER_PROFILE_FULLNAME = scoring.USER_PROFILE_HAS_FULLNAME_MIN_NUM_WORDS + scoring.USER_PROFILE_FULLNAME_HAS_NO_UNDERSCORE;
 			USER_PROFILE_DESCRIPTION = scoring.USER_PROFILE_DESCRIPTION_HAS_DESCRIPTION + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_SENTENCES + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_WORDS + scoring.USER_PROFILE_DESCRIPTION_HAS_LINK + scoring.USER_PROFILE_DESCRIPTION_HAS_EMAIL;
 			USER_PROFILE_MAX_SCORE = USER_PROFILE_THUMBNAIL + USER_PROFILE_FULLNAME + USER_PROFILE_DESCRIPTION;
 
 			MAX_SCORE = ITEM_DETAILS_MAX_SCORE + ITEM_USE_CONSTRAINS_MAX_SCORE + TAGS_MAX_SCORE + PERFORMANCE_MAX_SCORE + USER_PROFILE_MAX_SCORE;
-			console.log("ITEM_DETAILS_MAX_SCORE : " + ITEM_DETAILS_MAX_SCORE);
-			console.log("ITEM_USE_CONSTRAINS_MAX_SCORE: " + ITEM_USE_CONSTRAINS_MAX_SCORE);
-			console.log("TAGS_MAX_SCORE: " + TAGS_MAX_SCORE);
-			console.log("PERFORMANCE_MAX_SCORE: " + PERFORMANCE_MAX_SCORE);
-			console.log("USER_PROFILE_MAX_SCORE: " + USER_PROFILE_MAX_SCORE);
-			console.log("MAX_SCORE: " + MAX_SCORE);
+			console.log(MAX_SCORE);
 		}
 	});
 });
