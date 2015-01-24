@@ -167,7 +167,7 @@ require([
 	// Performance
 	var performanceScore = 0;
 	var mapDrawTimeScore = 0;
-	var nLayersScore = 0
+	var nLayersScore = 0;
 	var popupsScore = 0;
 	var sharingScore = 0;
 	// User Profile
@@ -278,7 +278,7 @@ require([
 			array.forEach(nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
 					domClass.replace(node, "column-4", "active column-4");
-					performanceContentPane(_item, _popUps, _mapDrawTime, _layers);
+					performanceContentPane(_item, popupsScore, _mapDrawTime, _layers);
 				}
 			});
 			domClass.replace(_performanceNode, "active column-4 performance", "column-4 performance");
@@ -533,48 +533,19 @@ require([
 												mapDrawComplete = performance.now();
 												var mapDrawTime = (mapDrawComplete - mapDrawBegin);
 												fadeLoader();
-												var popUps = processPopupData(map);
-												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popUps, mapDrawTime, layers, performanceNode));
 
-												initScores(item, portalUser);
-												// get performance data
-												// Map Draw Time
-											/*	var mdt = parseInt(processMapDrawTime(mapDrawTime));
-												if (mdt < defaults.drawTime.BEST) {
-													mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_BEST;
-												} else if (mdt < defaults.drawTime.BETTER) {
-													mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_BETTER;
-												} else if (mdt < defaults.drawTime.GOOD) {
-													mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_GOOD;
-												}
+												mapDrawTimeScore = setMapDrawTimeScore(mapDrawTime);
+												nLayersScore = setNumLayersScore(layers);
+												popupsScore = setPopupScore(layers);
+												sharingScore = setSharingScore(item);
+												console.log(mapDrawTimeScore);
+												console.log(nLayersScore);
+												console.log(popupsScore);
+												console.log(sharingScore);
+												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
+												initScores(item, portalUser, performanceScore);
 
-												// Number of Layers
-												if (layers !== undefined && layers.length < 1) {
-													var nLayers = layers.length;
-													if (nLayers > 10) {
-														nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_GOOD;
-													} else if (nLayers <= 10 && nLayers >= 2) {
-														nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_BETTER;
-													} else if (nLayers == 1) {
-														nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_BEST;
-													}
-												}
-
-												// Popups enabled
-												popupsScore = 5;
-
-												// Sharing enabled
-												var sharing = item.access;
-												if (sharing === "private") {
-													sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE;
-												} else if (sharing === "public" || sharing === "shared") {
-													sharingScore = scoring.PERFORMANCE_SHARING_ORG;
-												} else {
-													sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
-												}
-
-												performanceScore = (mapDrawTimeScore + nLayersScore + popupsScore + sharingScore)/24 * 100;
-												setPassFailStyleOnTabNode(performanceScore, performanceNode);*/
+												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
 											}
 										});
 									} else {
@@ -582,7 +553,7 @@ require([
 										// hide the map div
 										domStyle.set("map", "display", "none");
 										on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", layers, performanceNode));
-										initScores(item, portalUser);
+										initScores(item, portalUser, performanceScore);
 									}
 									on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, categoryNodes, nodeList, titleID, snippetID, descID, detailsNode));
 									on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, categoryNodes, nodeList, item, accessID, creditID, creditsNode));
@@ -603,7 +574,7 @@ require([
 									}).placeAt(progressBarNode).startup();
 
 									// draw the minimum score marker
-									drawPassingMarker();
+									initPassingMarker();
 								});
 							}
 						});
@@ -1332,7 +1303,7 @@ require([
 			});
 		}
 
-		function performanceContentPane(item, popUps, mapDrawTime, layers) {
+		function performanceContentPane(item, popupScore, mapDrawTime, layers) {
 			// load the content
 			loadContent(performanceConfig.PERFORMANCE_CONTENT);
 
@@ -1757,7 +1728,7 @@ require([
 			return score;
 		}
 
-		function initScores(item, portalUser) {
+		function initScores(item, portalUser, performanceScore) {
 			// details
 			itemThumbnailScore = setThumbnailScore(item);
 			itemTitleScore = setItemTitleScore(item.title);
@@ -1775,6 +1746,7 @@ require([
 			setPassFailStyleOnTabNode(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 			// performance
 			//
+			setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
 			// user profile
 			userThumbnailScore = setThumbnailScore(portalUser);
 			userNameScore = setUserProfileFullNameScore(portalUser.fullName);
@@ -1787,9 +1759,7 @@ require([
 
 		function updateOverallScore() {
 			// update the score
-			overAllCurrentScore = (itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore) / (MAX_SCORE-28) * 100;
-			console.log(overAllCurrentScore);
-			overAllCurrentScore = Math.floor(overAllCurrentScore);
+			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore) / (MAX_SCORE-28) * 100);
 			if (overAllCurrentScore >= /*scoring.SCORE_THRESHOLD*/(MAX_SCORE-28)) {
 				domStyle.set(currentOverallScoreNode, "color", "#005E95");
 			} else {
@@ -2552,47 +2522,63 @@ require([
 			}
 		}
 
-		function processPopupData(map) {
-			/*var isCustomPopup = false;
+		function setMapDrawTimeScore(val) {
+			var temp = (val / 1000) % 60;
+			var seconds = number.format(temp, {
+				places: 5
+			});
+
+			if (seconds < defaults.drawTime.BEST) {
+				return scoring.PERFORMANCE_DRAW_TIME_BEST;
+			} else if (seconds < defaults.drawTime.BETTER) {
+				return scoring.PERFORMANCE_DRAW_TIME_BETTER;
+			} else if (seconds < defaults.drawTime.GOOD) {
+				return scoring.PERFORMANCE_DRAW_TIME_GOOD;
+			} else {
+				return 0;
+			}
+		}
+
+		function setPopupScore(layers) {
+			var score = 0;
+			var isCustomPopup = false;
 			array.forEach(layers, function (layer) {
 				var popupInfo = layer.featureCollection.layers[0].popupInfo;
 				if (popupInfo.description !== null) {
 					isCustomPopup = true;
+					score = scoring.PERFORMANCE_POPUPS_CUSTOM;
 				}
-			});*/
+			});
+			return score;
+		}
 
-			if (map.popupManager.enabled) {
-				return "Popups are enabled";
-			} else {
-				return "Popups are disabled";
+		function setNumLayersScore(layers) {
+			if (layers !== undefined) {
+				var nLayers = layers.length;
+				if (nLayers > 10) {
+					return scoring.PERFORMANCE_LAYER_COUNT_GOOD;
+				} else if (nLayers <= 10 && nLayers >= 2) {
+					return scoring.PERFORMANCE_LAYER_COUNT_BETTER;
+				} else if (nLayers === 1) {
+					return scoring.PERFORMANCE_LAYER_COUNT_BEST;
+				} else {
+					return 0;
+				}
 			}
 		}
 
-		function fadeLoader() {
-			var loaderNode = dom.byId("map-mask");
-			domStyle.set(loaderNode, "opacity", "1");
-			var fadeArgs = {
-				node: "map-mask",
-				duration: 1000
-			};
-			fx.fadeOut(fadeArgs).play();
+		function setSharingScore(item) {
+			var sharing = item.access;
+			if (sharing === "private") {
+				return scoring.PERFORMANCE_SHARING_PRIVATE;
+			} else if (sharing === "org" || sharing === "shared") {
+				return scoring.PERFORMANCE_SHARING_ORG;
+			} else {
+				return scoring.PERFORMANCE_SHARING_PUBLIC;
+			}
 		}
 
-		function fadeInSectionContent() {
-			var section = dom.byId("section-content");
-			fx.animateProperty({
-				node: section,
-				properties: {
-					opacity: {
-						start: 0,
-						end: 1
-					}
-				},
-				duration: 500
-			}).play();
-		}
-
-		function drawPassingMarker() {
+		function initPassingMarker() {
 			domConstruct.place("<div class='current-score-passing-marker'>" +
 					"<span class='current-overall-gr-number'> 80</span>" +
 					"<span class='current-overall-gr-label'>required score</span>" +
@@ -2601,7 +2587,6 @@ require([
 
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
 			var average = score/sectionThreshold * 100;
-			console.log(score + "\t" + sectionThreshold + "\taverage: " + average);
 			var classAttrs = domAttr.get(node, "class");
 			if (average >= 80) {
 				classAttrs = classAttrs.replace("icon-edit", "icon-check");
@@ -2663,6 +2648,16 @@ require([
 
 			MAX_SCORE = ITEM_DETAILS_MAX_SCORE + ITEM_USE_CONSTRAINS_MAX_SCORE + TAGS_MAX_SCORE + PERFORMANCE_MAX_SCORE + USER_PROFILE_MAX_SCORE;
 			console.log(MAX_SCORE);
+		}
+
+		function fadeLoader() {
+			var loaderNode = dom.byId("map-mask");
+			domStyle.set(loaderNode, "opacity", "1");
+			var fadeArgs = {
+				node: "map-mask",
+				duration: 1000
+			};
+			fx.fadeOut(fadeArgs).play();
 		}
 	});
 });
