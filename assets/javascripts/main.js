@@ -541,6 +541,11 @@ require([
 												popupsScore = setPopupScore(layers);
 												sharingScore = setSharingScore(item);
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
+												console.log("mdt: "  +mapDrawTimeScore);
+												console.log("nLayers: " + nLayersScore);
+												console.log("sharingScore: " + sharingScore);
+												console.log("popups: " + popupsScore);
+												console.log("performanceScore: " + performanceScore);
 												// set style on performance button
 												setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
 												// initialize the scores
@@ -1409,7 +1414,7 @@ require([
 				}
 			}
 
-			popupsScore = 5;
+			//popupsScore = 5;
 			domStyle.set(popupsNumeratorNode, "color", "#005E95");
 			domStyle.set(popupsDenominatorNode, "color", "#005E95");
 
@@ -1447,7 +1452,7 @@ require([
 
 			mdtNumeratorNode.innerHTML = mapDrawTimeScore;
 			layerCountNumeratorNode.innerHTML = nLayersScore;
-			popupsNumeratorNode.innerHTML = popupsScore;
+			popupsNumeratorNode.innerHTML = popupScore;
 			sharingNumeratorNode.innerHTML = sharingScore;
 			mdtDenominatorNode.innerHTML = layerCountDenominatorNode.innerHTML = popupsDenominatorNode.innerHTML = sharingDenominatorNode.innerHTML = scoring.PERFORMANCE_MAX;
 		}
@@ -2590,9 +2595,8 @@ require([
 		}
 
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
-			console.log("score: " + score + "\tsectionThreshold: " + sectionThreshold);
-			var average = score/sectionThreshold * 100;
-			console.log("average: " + average);
+			var average = Math.floor(score/sectionThreshold * 100);
+			console.log("score: " + score + "\tsectionThreshold: " + sectionThreshold + "\taverage: " + average);
 			var classAttrs = domAttr.get(node, "class");
 			if (average >= 80) {
 				classAttrs = classAttrs.replace("icon-edit", "icon-check");
