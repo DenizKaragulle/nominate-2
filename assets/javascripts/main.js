@@ -534,16 +534,16 @@ require([
 												var mapDrawTime = (mapDrawComplete - mapDrawBegin);
 												fadeLoader();
 
+												// set performance scores
 												mapDrawTimeScore = setMapDrawTimeScore(mapDrawTime);
 												nLayersScore = setNumLayersScore(layers);
 												popupsScore = setPopupScore(layers);
 												sharingScore = setSharingScore(item);
-												/*console.log("mapDrawTimeScore: " + mapDrawTimeScore);
-												console.log("nLayersScore : " + nLayersScore);
-												console.log("popupsScore: " + popupsScore);
-												console.log("sharingScore: " + sharingScore);*/
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
-												initScores(item, portalUser, performanceScore);
+												// set performance style on button
+												setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
+												initScores(item, portalUser);
+												updateOverallScore();
 
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
 											}
@@ -553,7 +553,7 @@ require([
 										// hide the map div
 										domStyle.set("map", "display", "none");
 										on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", layers, performanceNode));
-										initScores(item, portalUser, performanceScore);
+										initScores(item, portalUser);
 									}
 									on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, categoryNodes, nodeList, titleID, snippetID, descID, detailsNode));
 									on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, categoryNodes, nodeList, item, accessID, creditID, creditsNode));
@@ -1728,7 +1728,7 @@ require([
 			return score;
 		}
 
-		function initScores(item, portalUser, performanceScore) {
+		function initScores(item, portalUser) {
 			// details
 			itemThumbnailScore = setThumbnailScore(item);
 			itemTitleScore = setItemTitleScore(item.title);
@@ -1759,8 +1759,8 @@ require([
 
 		function updateOverallScore() {
 			// update the score
-			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore) / (MAX_SCORE-28) * 100);
-			if (overAllCurrentScore >= /*scoring.SCORE_THRESHOLD*/(MAX_SCORE-28)) {
+			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / MAX_SCORE * 100);
+			if (overAllCurrentScore >= MAX_SCORE) {
 				domStyle.set(currentOverallScoreNode, "color", "#005E95");
 			} else {
 				domStyle.set(currentOverallScoreNode, "color", "#C86A4A");
