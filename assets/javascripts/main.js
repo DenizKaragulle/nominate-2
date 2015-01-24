@@ -1145,7 +1145,9 @@ require([
 				tagsScoreDenominatorNode.innerHTML = TAGS_MAX_SCORE;
 
 				// set the numerator
-				itemTagsScore = validateTags(itemTagsScore, itemTags, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+				//itemTagsScore = validateTags(itemTagsScore, itemTags, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+				itemTagsScore = validateItemTags(itemTags);
+				//setPassFailStyleOnTabNode(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 				tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 
 				// section overall score
