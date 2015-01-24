@@ -1734,7 +1734,8 @@ require([
 		function validateItemTags(tags) {
 			var score = 0;
 			var penaltyWords = scoring.TAGS_PENALTY_WORDS;
-			if (tags.length >= scoring.TAGS_HAS_TAGS) {
+			var nTags = tags.length;
+			if (nTags >= scoring.TAGS_HAS_TAGS) {
 				score = 1;
 				var tempTags = [];
 				// case insensitive
@@ -1746,10 +1747,9 @@ require([
 					return tempTags.indexOf(penaltyWord.toLowerCase()) !== -1;
 				})) {
 					// PASS with penalty
-					return scoring.SECTION_PASSING;
 				} else {
 					// PASS
-					return scoring.SECTION_MAX;
+					score = score + scoring.TAGS_HAS_NO_BAD_WORDS;
 				}
 			} else {
 				score = 0;
@@ -1787,9 +1787,10 @@ require([
 
 		function updateOverallScore() {
 			// update the score
-			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore) / 4);
+			overAllCurrentScore = (itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore) / (MAX_SCORE-28) * 100;
 			console.log(overAllCurrentScore);
-			if (overAllCurrentScore >= /*scoring.SCORE_THRESHOLD*/60) {
+			overAllCurrentScore = Math.floor(overAllCurrentScore);
+			if (overAllCurrentScore >= /*scoring.SCORE_THRESHOLD*/(MAX_SCORE-28)) {
 				domStyle.set(currentOverallScoreNode, "color", "#005E95");
 			} else {
 				domStyle.set(currentOverallScoreNode, "color", "#C86A4A");
