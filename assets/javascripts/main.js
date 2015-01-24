@@ -541,11 +541,6 @@ require([
 												popupsScore = setPopupScore(layers);
 												sharingScore = setSharingScore(item);
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
-												console.log("mdt: "  +mapDrawTimeScore);
-												console.log("nLayers: " + nLayersScore);
-												console.log("sharingScore: " + sharingScore);
-												console.log("popups: " + popupsScore);
-												console.log("performanceScore: " + performanceScore);
 												// set style on performance button
 												setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
 												// initialize the scores
@@ -574,17 +569,20 @@ require([
 									on(profileNode, "click", lang.partial(profileNodeClickHandler, selectedRowID, categoryNodes, nodeList, userNameID, userDescriptionID, profileNode));
 
 									// overall score graphic
+									console.log("overAllCurrentScore: " + overAllCurrentScore);
 									if (dijit.byId("overall-score-graphic")) {
 										dijit.byId("overall-score-graphic").destroy();
 									}
-									overallScoreGraphic = new ProgressBar({
-										id: "overall-score-graphic",
-										style: {
-											"width": "100%",
-											"height": "5px"
-										},
-										value: overAllCurrentScore
-									}).placeAt(progressBarNode).startup();
+									if (dijit.byId("overall-score-graphic") === undefined) {
+										overallScoreGraphic = new ProgressBar({
+											id: "overall-score-graphic",
+											style: {
+												"width": "100%",
+												"height": "5px"
+											},
+											value: overAllCurrentScore
+										}).placeAt(progressBarNode).startup();
+									}
 
 									// draw the minimum score marker
 									initPassingMarker();
@@ -1455,6 +1453,10 @@ require([
 			popupsNumeratorNode.innerHTML = popupScore;
 			sharingNumeratorNode.innerHTML = sharingScore;
 			mdtDenominatorNode.innerHTML = layerCountDenominatorNode.innerHTML = popupsDenominatorNode.innerHTML = sharingDenominatorNode.innerHTML = scoring.PERFORMANCE_MAX;
+
+			updateSectionScoreStyle(popupScore, PERFORMANCE_POPUPS_MAX_SCORE, popupsScoreContainerNode);
+			//updateSectionScore(itemDetailsScore, detailsNode, ITEM_DETAILS_MAX_SCORE);
+			//updateOverallScore();
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
@@ -1770,10 +1772,12 @@ require([
 			}
 			// update the score label
 			currentOverallScoreNode.innerHTML = overAllCurrentScore;
+			console.log(dijit.byId("overall-score-graphic"));
 			if (dijit.byId("overall-score-graphic") !== undefined) {
 				dijit.byId("overall-score-graphic").update({
 					value: overAllCurrentScore
 				});
+				dijit.byId("overall-score-graphic").set("value", overAllCurrentScore);
 			}
 		}
 
