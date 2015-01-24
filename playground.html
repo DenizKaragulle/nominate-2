@@ -181,7 +181,12 @@ require([
 			//hasWords("This is a testing with no restrictions.", ["No restrictions", "test"]);
 			//compareTwoArrays(["Cambridge", "Demographics", "Test"], ["copy", "demo", "test", "eval"]);
 
-			console.log((10 + 8 + 8)/30 * 100);
+			var text = 'sdabhailifsd.ensfdfcogndfdail.com>';
+			console.log(extractEmails (text));
+		}
+
+		function extractEmails (text) {
+			return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
 		}
 
 		function validateTags(tags, penaltyWords) {
