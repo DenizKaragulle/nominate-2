@@ -243,6 +243,7 @@ require([
 			destroyNodes(_categoryNodes);
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
+					console.log("CALLING detailsContentPane");
 					domClass.replace(node, "column-4", "active column-4");
 					detailsContentPane(selectedRowID, _titleID, _snippetID, _descID);
 				}
@@ -267,6 +268,7 @@ require([
 			});
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
+					console.log("CALLING tagsContentPane");
 					domClass.replace(node, "column-4", "active column-4");
 					tagsContentPane(_selectedRowID, _categoryID, _tagsID);
 				}
@@ -413,6 +415,7 @@ require([
 						on(dgrid.domNode, ".item-title:click", function (event) {
 							// selected row
 							selectedRow = dgrid.row(event).element;
+							console.log("selectedRow: " + selectedRow);
 							// selected row ID
 							selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
 							// get row width
@@ -512,13 +515,13 @@ require([
 
 									// initialize content area with details data
 									destroyNodes(categoryNodes);
-									array.forEach(nodeList, function (node) {
-										if (domClass.contains(node, "active")) {
-											domClass.replace(node, "column-4", "active column-4");
+									//array.forEach(nodeList, function (node) {
+									//	if (domClass.contains(node, "active")) {
+									//		domClass.replace(node, "column-4", "active column-4");
 											detailsContentPane(selectedRowID, titleID, snippetID, descID);
-										}
-									});
-									domClass.replace(detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
+									//	}
+									//});
+									//domClass.replace(detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
 
 									if (item.type === "Web Map") {
 										var mapDrawBegin = performance.now(),
@@ -569,7 +572,6 @@ require([
 									on(profileNode, "click", lang.partial(profileNodeClickHandler, selectedRowID, categoryNodes, nodeList, userNameID, userDescriptionID, profileNode));
 
 									// overall score graphic
-									console.log("overAllCurrentScore: " + overAllCurrentScore);
 									if (dijit.byId("overall-score-graphic")) {
 										dijit.byId("overall-score-graphic").destroy();
 									}
@@ -598,6 +600,7 @@ require([
 
 
 		function detailsContentPane(selectedRowID, titleID, snippetID, descID) {
+			console.log("SELECTING detailsContentPane");
 			portalUser.getItem(selectedRowID).then(function (item) {
 				// item title
 				var itemTitle = validateStr(item.title);
@@ -913,6 +916,7 @@ require([
 		}
 
 		function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
+			console.log("SELECTING useCreditsContentPane");
 			portalUser.getItem(selectedRowID).then(function (item) {
 				var itemCredits = validateStr(item.accessInformation),
 						itemCredits_clean = itemCredits,
@@ -1121,6 +1125,7 @@ require([
 		}
 
 		function tagsContentPane(_selectedRowID, categoryID, tagsID) {
+			console.log("SELECTING tagsContentPane");
 			checkBoxID_values = [];
 			portalUser.getItem(_selectedRowID).then(function (item) {
 				// load the content
@@ -1147,7 +1152,6 @@ require([
 				// set the numerator
 				//itemTagsScore = validateTags(itemTagsScore, itemTags, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
 				itemTagsScore = validateItemTags(itemTags);
-				//setPassFailStyleOnTabNode(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 				tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 
 				// section overall score
@@ -1157,6 +1161,8 @@ require([
 				// create the existing tags
 				domConstruct.create("div", { class: "existing-tags" }, query(".tag-container")[0], "first");
 				styleTags(itemTags, query(".existing-tags")[0]);
+
+				console.log(query(".existing-tags")[0]);
 
 				// create the Living Atlas checkboxes/categories
 				array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
@@ -1462,6 +1468,7 @@ require([
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
+			console.log("SELECTING loadProfileContentPane");
 			portalUser.getItem(selectedRowID).then(function (item) {
 				// item full name
 				var _userFullName = validateStr(portalUser.fullName);
@@ -1774,7 +1781,6 @@ require([
 			}
 			// update the score label
 			currentOverallScoreNode.innerHTML = overAllCurrentScore;
-			console.log(dijit.byId("overall-score-graphic"));
 			if (dijit.byId("overall-score-graphic") !== undefined) {
 				dijit.byId("overall-score-graphic").update({
 					value: overAllCurrentScore
@@ -2435,6 +2441,9 @@ require([
 		}
 
 		function addCheckbox(itemTags, id, atlasTag) {
+			console.log(itemTags);
+			console.log(id);
+			console.log(atlasTag);
 			var checkBox;
 			if (array.some(itemTags, function (tag) {
 				return tag.toUpperCase() === atlasTag.toUpperCase();
@@ -2552,7 +2561,6 @@ require([
 			var score = 0;
 			var isCustomPopup = false;
 			array.forEach(layers, function (layer) {
-				console.log(layer);
 				var popupInfo;
 				if (layer.featureCollection !== undefined) {
 					popupInfo = layer.featureCollection.layers[0].popupInfo;
@@ -2602,7 +2610,6 @@ require([
 
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
 			var average = Math.floor(score/sectionThreshold * 100);
-			console.log("score: " + score + "\tsectionThreshold: " + sectionThreshold + "\taverage: " + average);
 			var classAttrs = domAttr.get(node, "class");
 			if (average >= 80) {
 				classAttrs = classAttrs.replace("icon-edit", "icon-check");
@@ -2620,14 +2627,14 @@ require([
 		function initContentButtonGroup(id) {
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
-							'	<div class="btn-group column-24 icon-edit-btn-group">' +
-							'		<a class="active column-4 details-tab-node icon-edit"> ' + defaults.DETAILS + '</a>' +
-							'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
-							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
-							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
-							'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
-							'	</div>' +
-							'</div>', id, "last");
+					'	<div class="btn-group column-24 icon-edit-btn-group">' +
+					'		<a class="column-4 details-tab-node icon-edit"> ' + defaults.DETAILS + '</a>' +
+					'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
+					'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
+					'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
+					'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
+					'	</div>' +
+					'</div>', id, "last");
 
 			detailsNode = query(".details-tab-node")[0];
 			creditsNode = query(".credits")[0];
