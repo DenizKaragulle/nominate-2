@@ -1149,11 +1149,10 @@ require([
 				// set denominator
 				tagsScoreDenominatorNode.innerHTML = TAGS_MAX_SCORE;
 
-				// set the numerator
+				// set the numerator and update score
 				//itemTagsScore = validateTags(itemTagsScore, itemTags, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
 				itemTagsScore = validateItemTags(itemTags);
 				tagsScoreNumeratorNode.innerHTML = itemTagsScore;
-
 				// section overall score
 				updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 				updateOverallScore();
@@ -1161,8 +1160,6 @@ require([
 				// create the existing tags
 				domConstruct.create("div", { class: "existing-tags" }, query(".tag-container")[0], "first");
 				styleTags(itemTags, query(".existing-tags")[0]);
-
-				console.log(query(".existing-tags")[0]);
 
 				// create the Living Atlas checkboxes/categories
 				array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
@@ -1270,10 +1267,9 @@ require([
 												id: "tag-widget"
 											}, query(".tag-container")[0], "first");
 										}
-										// set the numerator
-										itemTagsScore = validateTags(itemTagsScore, tagsDijit.values, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+										// set the numerator and update score
+										itemTagsScore = validateItemTags(tagsDijit.values);
 										tagsScoreNumeratorNode.innerHTML = itemTagsScore;
-
 										// section overall score
 										updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 										updateOverallScore();
@@ -1307,10 +1303,9 @@ require([
 						});
 					}
 
-					// set the numerator
-					itemTagsScore = validateTags(itemTagsScore, itemTags_clean, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
+					// set the numerator and update score
+					itemTagsScore = validateItemTags(itemTags_clean);
 					tagsScoreNumeratorNode.innerHTML = itemTagsScore;
-
 					// section overall score
 					updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 					updateOverallScore();
@@ -1711,27 +1706,46 @@ require([
 
 		function validateItemTags(tags) {
 			var score = 0;
-			var penaltyWords = scoring.TAGS_PENALTY_WORDS;
+			var badWords = scoring.TAGS_PENALTY_WORDS;
 			var nTags = tags.length;
 			if (nTags >= scoring.TAGS_HAS_TAGS) {
-				score = 1;
-				var tempTags = [];
+				// at least one tag exist +1
+				score = scoring.TAGS_HAS_TAGS;
 				// case insensitive
+				var tempTags = [];
 				array.forEach(tags, function (tag) {
 					tempTags.push(tag.toLowerCase());
 				});
-
-				if (array.some(penaltyWords, function (penaltyWord) {
-					return tempTags.indexOf(penaltyWord.toLowerCase()) !== -1;
+				// check if any tags are bad words
+				if (array.some(badWords, function (badWord) {
+					return tempTags.indexOf(badWord.toLowerCase()) !== -1;
 				})) {
-					// PASS with penalty
+					// FAIL
 				} else {
-					// PASS
+					// PASS +2
 					score = score + scoring.TAGS_HAS_NO_BAD_WORDS;
+				}
+
+				// check if there are more than 3 tags
+				if (nTags > 3) {
+					score = score + scoring.TAGS_HAS_CUSTOM_TAGS_MIN;
+				}
+				var hasAtlasTag = false;
+				array.forEach(defaults.ATLAS_TAGS, function (atlas_tag) {
+					array.forEach(tempTags, function (tag) {
+						if (tag === atlas_tag.tag.toLowerCase()) {
+							hasAtlasTag = true;
+						}
+					});
+				});
+
+				if (hasAtlasTag) {
+					score = score + scoring.TAGS_HAS_ATLAS_TAGS;
 				}
 			} else {
 				score = 0;
 			}
+			console.log("TAGS score: " + score);
 			return score;
 		}
 
@@ -1807,7 +1821,7 @@ require([
 			}
 		}
 
-		function validateTags(sectionScore, tags, containerNode, numeratorNode, penaltyWords) {
+		/*function validateTags(sectionScore, tags, containerNode, numeratorNode, penaltyWords) {
 			var score = 0;
 			if (tags.length >= scoring.TAGS_HAS_TAGS) {
 				score = 1;
@@ -1848,7 +1862,7 @@ require([
 				console.log("FAIL");
 				return score;
 			}
-		}
+		}*/
 
 
 
@@ -2017,25 +2031,6 @@ require([
 			return s.split(" ").length;
 		}
 
-		function validateTextInput(sectionScore, inputText, containerNode, numeratorNode, minNumWords, prohibitedWords) {
-			var strippedString = inputText.replace(/(<([^>]+)>)/ig, "");
-			//console.log("nWords: " + getNumWords(strippedString));
-			//console.log("minNumWords: " + minNumWords);
-			if (validateNumWords(strippedString, minNumWords)) {
-				// PASS (has minimum number of words)
-				sectionScore = hasProhibitedWords(sectionScore, strippedString, containerNode, numeratorNode, prohibitedWords);
-				return sectionScore;
-			} else {
-				// FAIL (does not have minimum number of words)
-				// set the score to section minimum
-				sectionScore = scoring.SECTION_MIN;
-				numeratorNode.innerHTML = sectionScore;
-				// update style of section scoring graphic
-				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
-				return sectionScore;
-			}
-		}
-
 		function validateNumWords(inputText, minNumWords) {
 			var nWords = 0;
 			if (inputText.length > 0) {
@@ -2076,39 +2071,6 @@ require([
 				return scoring.ITEM_TITLE_NO_ALL_CAPS;
 			}
 		}
-
-
-
-		function hasProhibitedWords(sectionScore, inputText, nodeContainer, numeratorNode, prohibitedWords) {
-			//console.log(inputText);
-			if (array.some(prohibitedWords, function (word) {
-				return parseInt(inputText.search(word)) >= 0;
-			})) {
-				// yes
-				sectionScore = scoring.SECTION_PASSING;
-				numeratorNode.innerHTML = sectionScore;
-				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
-				return sectionScore;
-			} else {
-				// no
-				sectionScore = scoring.SECTION_MAX;
-				numeratorNode.innerHTML = sectionScore;
-				domClass.replace(nodeContainer, "score-graphic-pass", "score-graphic-fail");
-				return sectionScore;
-			}
-		}
-
-		function hasBonusWords(inputStr, inputWords) {
-			array.forEach(inputWords, function (word) {
-				if (inputStr.toLowerCase().search(word.toLowerCase()) >= 0) {
-					console.log("YES");
-				}
-			});
-		}
-
-
-
-
 
 		function styleTags(tags, srcNodeRef) {
 			domClass.add(dom.byId(srcNodeRef), 'select2-container select2-container-multi');
@@ -2341,6 +2303,185 @@ require([
 			return deferred.promise;
 		}
 
+		function validateStr(str) {
+			if (str === null || "") {
+				return "";
+			} else {
+				return str;
+			}
+		}
+
+		function formatDate(date) {
+			var d = new Date(date);
+			var month = defaults.MONTHS[d.getMonth()];
+			if (d.isNaN) {
+				return "";
+			} else {
+				return month + " " + d.getDate() + ", " + d.getFullYear();
+			}
+		}
+
+		function formatThumbnailUrl(obj) {
+			var thumbnailUrl = "";
+			if (obj.largeThumbnail !== null) {
+				thumbnailUrl = obj.largeThumbnail;
+			} else if (obj.thumbnailUrl !== null) {
+				thumbnailUrl = obj.thumbnailUrl;
+			} else {
+				thumbnailUrl = location.protocol + "//" + location.hostname + location.pathname + "assets/images/nullThumbnail.png";
+			}
+			return thumbnailUrl;
+		}
+
+		function processMapDrawTime(val) {
+			var temp = (val / 1000) % 60;
+			var seconds = number.format(temp, {
+				places: 5
+			});
+			if (seconds) {
+				return seconds + " seconds";
+			} else {
+				return "N/A";
+			}
+		}
+
+		function setMapDrawTimeScore(val) {
+			var temp = (val / 1000) % 60;
+			var seconds = number.format(temp, {
+				places: 5
+			});
+
+			if (seconds < defaults.drawTime.BEST) {
+				return scoring.PERFORMANCE_DRAW_TIME_BEST;
+			} else if (seconds < defaults.drawTime.BETTER) {
+				return scoring.PERFORMANCE_DRAW_TIME_BETTER;
+			} else if (seconds < defaults.drawTime.GOOD) {
+				return scoring.PERFORMANCE_DRAW_TIME_GOOD;
+			} else {
+				return 0;
+			}
+		}
+
+		function setPopupScore(layers) {
+			var score = 0;
+			var isCustomPopup = false;
+			array.forEach(layers, function (layer) {
+				var popupInfo;
+				if (layer.featureCollection !== undefined) {
+					popupInfo = layer.featureCollection.layers[0].popupInfo;
+					if (popupInfo.description !== null) {
+						isCustomPopup = true;
+						score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+					}
+				} else {
+					score = 0;
+				}
+			});
+			return score;
+		}
+
+		function setNumLayersScore(layers) {
+			if (layers !== undefined) {
+				var nLayers = layers.length;
+				if (nLayers > 10) {
+					return scoring.PERFORMANCE_LAYER_COUNT_GOOD;
+				} else if (nLayers <= 10 && nLayers >= 2) {
+					return scoring.PERFORMANCE_LAYER_COUNT_BETTER;
+				} else if (nLayers === 1) {
+					return scoring.PERFORMANCE_LAYER_COUNT_BEST;
+				} else {
+					return 0;
+				}
+			}
+		}
+
+		function setSharingScore(item) {
+			var sharing = item.access;
+			if (sharing === "private") {
+				return scoring.PERFORMANCE_SHARING_PRIVATE;
+			} else if (sharing === "org" || sharing === "shared") {
+				return scoring.PERFORMANCE_SHARING_ORG;
+			} else {
+				return scoring.PERFORMANCE_SHARING_PUBLIC;
+			}
+		}
+
+		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
+			var average = Math.floor(score/sectionThreshold * 100);
+			var classAttrs = domAttr.get(node, "class");
+			if (average >= 80) {
+				classAttrs = classAttrs.replace("icon-edit", "icon-check");
+				domAttr.set(node, "class", classAttrs);
+				domStyle.set(node, "color", "#007ac2");
+				domStyle.set(node, "border", "1px solid #007ac2");
+			} else {
+				classAttrs = classAttrs.replace("icon-check", "icon-edit");
+				domAttr.set(node, "class", classAttrs);
+				domStyle.set(node, "color", "#C86A4A");
+				domStyle.set(node, "border", "1px solid #C86A4A");
+			}
+		}
+
+		function initPassingMarker() {
+			domConstruct.place("<div class='current-score-passing-marker'>" +
+					"<span class='current-overall-gr-number'> 80</span>" +
+					"<span class='current-overall-gr-label'>required score</span>" +
+					"</div>", progressBarNode, "before");
+		}
+
+		function initContentButtonGroup(id) {
+			domConstruct.place(
+					'<div class="row btn-group-container">' +
+					'	<div class="btn-group column-24 icon-edit-btn-group">' +
+					'		<a class="column-4 details-tab-node icon-edit"> ' + defaults.DETAILS + '</a>' +
+					'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
+					'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
+					'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
+					'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
+					'	</div>' +
+					'</div>', id, "last");
+
+			detailsNode = query(".details-tab-node")[0];
+			creditsNode = query(".credits")[0];
+			tagsNode = query(".tags")[0];
+			performanceNode = query(".performance")[0];
+			profileNode = query(".profile")[0];
+			nodeList = [detailsNode, creditsNode, tagsNode, performanceNode, profileNode];
+		}
+
+		function initScoreMaxValues() {
+			// Details
+			ITEM_THUMBNAIL_MAX_SCORE = scoring.ITEM_THUMBNAIL_NONE + scoring.ITEM_THUMBNAIL_CUSTOM + scoring.ITEM_THUMBNAIL_LARGE;
+			ITEM_TITLE_MAX_SCORE = scoring.ITEM_TITLE_NO_BAD_WORDS + scoring.ITEM_TITLE_NO_UNDERSCORE + scoring.ITEM_TITLE_MIN_LENGTH + scoring.ITEM_TITLE_NO_ALL_CAPS;
+			ITEM_SUMMARY_MAX_SCORE = scoring.ITEM_SUMMARY_MUST_EXIST + scoring.ITEM_SUMMARY_NO_BAD_WORDS + scoring.ITEM_SUMMARY_NO_UNDERSCORE + scoring.ITEM_SUMMARY_MIN_LENGTH;
+			ITEM_DESC_MAX_SCORE = scoring.ITEM_DESCRIPTION_MUST_EXIST + scoring.ITEM_DESCRIPTION_MIN_LENGTH + scoring.ITEM_DESCRIPTION_LINK;
+			ITEM_DETAILS_MAX_SCORE = ITEM_THUMBNAIL_MAX_SCORE + ITEM_TITLE_MAX_SCORE + ITEM_SUMMARY_MAX_SCORE + ITEM_DESC_MAX_SCORE;
+			// Use/Credits
+			ITEM_CREDIT_MAX_SCORE = scoring.ITEM_CREDITS_HAS_WORDS;
+			ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE = scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK;
+			ITEM_USE_CONSTRAINS_MAX_SCORE = ITEM_CREDIT_MAX_SCORE + ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE;
+			// Tags
+			TAGS_MAX_SCORE = scoring.TAGS_HAS_TAGS + scoring.TAGS_HAS_ATLAS_TAGS + scoring.TAGS_HAS_CUSTOM_TAGS_MIN + scoring.TAGS_HAS_NO_BAD_WORDS;
+			// Performance
+			PERFORMANCE_SHARING_MAX_SCORE = scoring.PERFORMANCE_MAX;
+			PERFORMANCE_POPUPS_MAX_SCORE = scoring.PERFORMANCE_POPUPS_ENABLED + scoring.PERFORMANCE_POPUPS_CUSTOM;
+			PERFORMANCE_DRAW_TIME_MAX_SCORE = scoring.PERFORMANCE_MAX;
+			PERFORMANCE_LAYER_COUNT_MAX_SCORE = scoring.PERFORMANCE_MAX;
+			PERFORMANCE_MAX_SCORE = PERFORMANCE_SHARING_MAX_SCORE + PERFORMANCE_POPUPS_MAX_SCORE + PERFORMANCE_DRAW_TIME_MAX_SCORE + PERFORMANCE_LAYER_COUNT_MAX_SCORE;
+			// User Profile
+			USER_PROFILE_THUMBNAIL = scoring.USER_PROFILE_HAS_THUMBNAIL + scoring.USER_PROFILE_HAS_LARGE_THUMBNAIL;
+			USER_PROFILE_FULLNAME = scoring.USER_PROFILE_HAS_FULLNAME_MIN_NUM_WORDS + scoring.USER_PROFILE_FULLNAME_HAS_NO_UNDERSCORE;
+			USER_PROFILE_DESCRIPTION = scoring.USER_PROFILE_DESCRIPTION_HAS_DESCRIPTION + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_SENTENCES + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_WORDS + scoring.USER_PROFILE_DESCRIPTION_HAS_LINK + scoring.USER_PROFILE_DESCRIPTION_HAS_EMAIL;
+			USER_PROFILE_MAX_SCORE = USER_PROFILE_THUMBNAIL + USER_PROFILE_FULLNAME + USER_PROFILE_DESCRIPTION;
+
+			MAX_SCORE = ITEM_DETAILS_MAX_SCORE + ITEM_USE_CONSTRAINS_MAX_SCORE + TAGS_MAX_SCORE + PERFORMANCE_MAX_SCORE + USER_PROFILE_MAX_SCORE;
+		}
+
+
+
+
+
+
 		function applySort(value) {
 			if (value === "title") {
 				dgrid.set("sort", value, false);
@@ -2496,181 +2637,6 @@ require([
 			array.forEach((checkBoxID_values), function (id) {
 				dijit.byId(id).setAttribute(attr, value);
 			});
-		}
-
-		function validateStr(str) {
-			if (str === null || "") {
-				return "";
-			} else {
-				return str;
-			}
-		}
-
-		function formatDate(date) {
-			var d = new Date(date);
-			var month = defaults.MONTHS[d.getMonth()];
-			if (d.isNaN) {
-				return "";
-			} else {
-				return month + " " + d.getDate() + ", " + d.getFullYear();
-			}
-		}
-
-		function formatThumbnailUrl(obj) {
-			var thumbnailUrl = "";
-			if (obj.largeThumbnail !== null) {
-				thumbnailUrl = obj.largeThumbnail;
-			} else if (obj.thumbnailUrl !== null) {
-				thumbnailUrl = obj.thumbnailUrl;
-			} else {
-				thumbnailUrl = location.protocol + "//" + location.hostname + location.pathname + "assets/images/nullThumbnail.png";
-			}
-			return thumbnailUrl;
-		}
-
-		function processMapDrawTime(val) {
-			var temp = (val / 1000) % 60;
-			var seconds = number.format(temp, {
-				places: 5
-			});
-			if (seconds) {
-				return seconds + " seconds";
-			} else {
-				return "N/A";
-			}
-		}
-
-		function setMapDrawTimeScore(val) {
-			var temp = (val / 1000) % 60;
-			var seconds = number.format(temp, {
-				places: 5
-			});
-
-			if (seconds < defaults.drawTime.BEST) {
-				return scoring.PERFORMANCE_DRAW_TIME_BEST;
-			} else if (seconds < defaults.drawTime.BETTER) {
-				return scoring.PERFORMANCE_DRAW_TIME_BETTER;
-			} else if (seconds < defaults.drawTime.GOOD) {
-				return scoring.PERFORMANCE_DRAW_TIME_GOOD;
-			} else {
-				return 0;
-			}
-		}
-
-		function setPopupScore(layers) {
-			var score = 0;
-			var isCustomPopup = false;
-			array.forEach(layers, function (layer) {
-				var popupInfo;
-				if (layer.featureCollection !== undefined) {
-					popupInfo = layer.featureCollection.layers[0].popupInfo;
-					if (popupInfo.description !== null) {
-						isCustomPopup = true;
-						score = scoring.PERFORMANCE_POPUPS_CUSTOM;
-					}
-				} else {
-					score = 0;
-				}
-			});
-			return score;
-		}
-
-		function setNumLayersScore(layers) {
-			if (layers !== undefined) {
-				var nLayers = layers.length;
-				if (nLayers > 10) {
-					return scoring.PERFORMANCE_LAYER_COUNT_GOOD;
-				} else if (nLayers <= 10 && nLayers >= 2) {
-					return scoring.PERFORMANCE_LAYER_COUNT_BETTER;
-				} else if (nLayers === 1) {
-					return scoring.PERFORMANCE_LAYER_COUNT_BEST;
-				} else {
-					return 0;
-				}
-			}
-		}
-
-		function setSharingScore(item) {
-			var sharing = item.access;
-			if (sharing === "private") {
-				return scoring.PERFORMANCE_SHARING_PRIVATE;
-			} else if (sharing === "org" || sharing === "shared") {
-				return scoring.PERFORMANCE_SHARING_ORG;
-			} else {
-				return scoring.PERFORMANCE_SHARING_PUBLIC;
-			}
-		}
-
-		function initPassingMarker() {
-			domConstruct.place("<div class='current-score-passing-marker'>" +
-					"<span class='current-overall-gr-number'> 80</span>" +
-					"<span class='current-overall-gr-label'>required score</span>" +
-					"</div>", progressBarNode, "before");
-		}
-
-		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
-			var average = Math.floor(score/sectionThreshold * 100);
-			var classAttrs = domAttr.get(node, "class");
-			if (average >= 80) {
-				classAttrs = classAttrs.replace("icon-edit", "icon-check");
-				domAttr.set(node, "class", classAttrs);
-				domStyle.set(node, "color", "#007ac2");
-				domStyle.set(node, "border", "1px solid #007ac2");
-			} else {
-				classAttrs = classAttrs.replace("icon-check", "icon-edit");
-				domAttr.set(node, "class", classAttrs);
-				domStyle.set(node, "color", "#C86A4A");
-				domStyle.set(node, "border", "1px solid #C86A4A");
-			}
-		}
-
-		function initContentButtonGroup(id) {
-			domConstruct.place(
-					'<div class="row btn-group-container">' +
-					'	<div class="btn-group column-24 icon-edit-btn-group">' +
-					'		<a class="column-4 details-tab-node icon-edit"> ' + defaults.DETAILS + '</a>' +
-					'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
-					'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
-					'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
-					'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
-					'	</div>' +
-					'</div>', id, "last");
-
-			detailsNode = query(".details-tab-node")[0];
-			creditsNode = query(".credits")[0];
-			tagsNode = query(".tags")[0];
-			performanceNode = query(".performance")[0];
-			profileNode = query(".profile")[0];
-			nodeList = [detailsNode, creditsNode, tagsNode, performanceNode, profileNode];
-		}
-
-		function initScoreMaxValues() {
-			// Details
-			ITEM_THUMBNAIL_MAX_SCORE = scoring.ITEM_THUMBNAIL_NONE + scoring.ITEM_THUMBNAIL_CUSTOM + scoring.ITEM_THUMBNAIL_LARGE;
-			ITEM_TITLE_MAX_SCORE = scoring.ITEM_TITLE_NO_BAD_WORDS + scoring.ITEM_TITLE_NO_UNDERSCORE + scoring.ITEM_TITLE_MIN_LENGTH + scoring.ITEM_TITLE_NO_ALL_CAPS;
-			ITEM_SUMMARY_MAX_SCORE = scoring.ITEM_SUMMARY_MUST_EXIST + scoring.ITEM_SUMMARY_NO_BAD_WORDS + scoring.ITEM_SUMMARY_NO_UNDERSCORE + scoring.ITEM_SUMMARY_MIN_LENGTH;
-			ITEM_DESC_MAX_SCORE = scoring.ITEM_DESCRIPTION_MUST_EXIST + scoring.ITEM_DESCRIPTION_MIN_LENGTH + scoring.ITEM_DESCRIPTION_LINK;
-			ITEM_DETAILS_MAX_SCORE = ITEM_THUMBNAIL_MAX_SCORE + ITEM_TITLE_MAX_SCORE + ITEM_SUMMARY_MAX_SCORE + ITEM_DESC_MAX_SCORE;
-			// Use/Credits
-			ITEM_CREDIT_MAX_SCORE = scoring.ITEM_CREDITS_HAS_WORDS;
-			ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE = scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK;
-			ITEM_USE_CONSTRAINS_MAX_SCORE = ITEM_CREDIT_MAX_SCORE + ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE;
-			// Tags
-			TAGS_MAX_SCORE = scoring.TAGS_HAS_TAGS + scoring.TAGS_HAS_ATLAS_TAGS + scoring.TAGS_HAS_CUSTOM_TAGS_MIN + scoring.TAGS_HAS_NO_BAD_WORDS;
-			// Performance
-			PERFORMANCE_SHARING_MAX_SCORE = scoring.PERFORMANCE_MAX;
-			PERFORMANCE_POPUPS_MAX_SCORE = scoring.PERFORMANCE_POPUPS_ENABLED + scoring.PERFORMANCE_POPUPS_CUSTOM;
-			PERFORMANCE_DRAW_TIME_MAX_SCORE = scoring.PERFORMANCE_MAX;
-			PERFORMANCE_LAYER_COUNT_MAX_SCORE = scoring.PERFORMANCE_MAX;
-			PERFORMANCE_MAX_SCORE = PERFORMANCE_SHARING_MAX_SCORE + PERFORMANCE_POPUPS_MAX_SCORE + PERFORMANCE_DRAW_TIME_MAX_SCORE + PERFORMANCE_LAYER_COUNT_MAX_SCORE;
-			// User Profile
-			USER_PROFILE_THUMBNAIL = scoring.USER_PROFILE_HAS_THUMBNAIL + scoring.USER_PROFILE_HAS_LARGE_THUMBNAIL;
-			USER_PROFILE_FULLNAME = scoring.USER_PROFILE_HAS_FULLNAME_MIN_NUM_WORDS + scoring.USER_PROFILE_FULLNAME_HAS_NO_UNDERSCORE;
-			USER_PROFILE_DESCRIPTION = scoring.USER_PROFILE_DESCRIPTION_HAS_DESCRIPTION + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_SENTENCES + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_WORDS + scoring.USER_PROFILE_DESCRIPTION_HAS_LINK + scoring.USER_PROFILE_DESCRIPTION_HAS_EMAIL;
-			USER_PROFILE_MAX_SCORE = USER_PROFILE_THUMBNAIL + USER_PROFILE_FULLNAME + USER_PROFILE_DESCRIPTION;
-
-			MAX_SCORE = ITEM_DETAILS_MAX_SCORE + ITEM_USE_CONSTRAINS_MAX_SCORE + TAGS_MAX_SCORE + PERFORMANCE_MAX_SCORE + USER_PROFILE_MAX_SCORE;
-			console.log(MAX_SCORE);
 		}
 
 		function fadeLoader() {
