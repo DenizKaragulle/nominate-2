@@ -586,6 +586,13 @@ require([
 										}).placeAt(progressBarNode).startup();
 									}
 
+									var barAttr = domStyle.get(query(".dijitProgressBarLabel")[0]);
+									var externalBarWidth = domStyle.get(query(".dijitProgressBarLabel")[0], "width");
+									var internalBarWidth = domStyle.get(query(".dijitProgressBarFull")[0], "width");
+									console.log(barAttr);
+									console.log(externalBarWidth);
+									console.log(internalBarWidth);
+
 									// draw the minimum score marker
 									initPassingMarker();
 								});
@@ -600,7 +607,6 @@ require([
 
 
 		function detailsContentPane(selectedRowID, titleID, snippetID, descID) {
-			console.log("SELECTING detailsContentPane");
 			portalUser.getItem(selectedRowID).then(function (item) {
 				// item title
 				var itemTitle = validateStr(item.title);
@@ -727,33 +733,7 @@ require([
 						}
 						// create the Editor for the description
 						descriptionEditor = new Editor({
-							plugins: [
-								'bold',
-								'italic',
-								'underline',
-								'foreColor',
-								'hiliteColor',
-								'|',
-								'justifyLeft',
-								'justifyCenter',
-								'justifyRight',
-								'justifyFull',
-								'|',
-								'insertOrderedList',
-								'insertUnorderedList',
-								'|',
-								'indent',
-								'outdent',
-								'|',
-								'createLink',
-								'unlink',
-								'removeFormat',
-								'|',
-								'undo',
-								'redo',
-								'|',
-								'viewSource'
-							],
+							plugins: defaults.EDITOR_PLUGINS,
 							innerHTML: itemDescription
 						}, dom.byId("description-editor-widget"));
 						descriptionEditor.startup();
@@ -916,7 +896,6 @@ require([
 		}
 
 		function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
-			console.log("SELECTING useCreditsContentPane");
 			portalUser.getItem(selectedRowID).then(function (item) {
 				var itemCredits = validateStr(item.accessInformation),
 						itemCredits_clean = itemCredits,
@@ -991,33 +970,7 @@ require([
 							}, accessAndUseConstraintsEditorNode, "first");
 						}
 						accessUseConstraintsEditor = new Editor({
-							plugins: [
-								'bold',
-								'italic',
-								'underline',
-								'foreColor',
-								'hiliteColor',
-								'|',
-								'justifyLeft',
-								'justifyCenter',
-								'justifyRight',
-								'justifyFull',
-								'|',
-								'insertOrderedList',
-								'insertUnorderedList',
-								'|',
-								'indent',
-								'outdent',
-								'|',
-								'createLink',
-								'unlink',
-								'removeFormat',
-								'|',
-								'undo',
-								'redo',
-								'|',
-								'viewSource'
-							],
+							plugins: defaults.EDITOR_PLUGINS,
 							innerHTML: accessAndUseConstraints
 						}, dom.byId("access-editor-widget"));
 						accessUseConstraintsEditor.startup();
@@ -1125,7 +1078,6 @@ require([
 		}
 
 		function tagsContentPane(_selectedRowID, categoryID, tagsID) {
-			console.log("SELECTING tagsContentPane");
 			checkBoxID_values = [];
 			portalUser.getItem(_selectedRowID).then(function (item) {
 				// load the content
@@ -1463,7 +1415,6 @@ require([
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
-			console.log("SELECTING loadProfileContentPane");
 			portalUser.getItem(selectedRowID).then(function (item) {
 				// item full name
 				var _userFullName = validateStr(portalUser.fullName);
@@ -1655,33 +1606,6 @@ require([
 		}
 
 
-
-
-
-		function validateText(inputText, minNumWords, prohibitedWords) {
-			if (inputText === "" || inputText === null) {
-				return 0;
-			} else {
-				var strippedString = inputText.replace(/(<([^>]+)>)/ig, "");
-				if (validateNumWords(strippedString, minNumWords)) {
-					// PASS (has minimum number of words)
-					if (array.some(prohibitedWords, function (word) {
-						return parseInt(strippedString.search(word)) >= 0;
-					})) {
-						// yes
-						return 8;
-					} else {
-						// no
-						return 10;
-					}
-				} else {
-					// FAIL (does not have minimum number of words)
-					// set the score to section minimum
-					return 0;
-				}
-			}
-		}
-
 		function validateThumbnailUrl(thumbnail, sectionScore, containerNode, numeratorNode) {
 			if (thumbnail === null) {
 				return 0;
@@ -1704,50 +1628,6 @@ require([
 			}
 		}
 
-		function validateItemTags(tags) {
-			var score = 0;
-			var badWords = scoring.TAGS_PENALTY_WORDS;
-			var nTags = tags.length;
-			if (nTags >= scoring.TAGS_HAS_TAGS) {
-				// at least one tag exist +1
-				score = scoring.TAGS_HAS_TAGS;
-				// case insensitive
-				var tempTags = [];
-				array.forEach(tags, function (tag) {
-					tempTags.push(tag.toLowerCase());
-				});
-				// check if any tags are bad words
-				if (array.some(badWords, function (badWord) {
-					return tempTags.indexOf(badWord.toLowerCase()) !== -1;
-				})) {
-					// FAIL
-				} else {
-					// PASS +2
-					score = score + scoring.TAGS_HAS_NO_BAD_WORDS;
-				}
-
-				// check if there are more than 3 tags
-				if (nTags > 3) {
-					score = score + scoring.TAGS_HAS_CUSTOM_TAGS_MIN;
-				}
-				var hasAtlasTag = false;
-				array.forEach(defaults.ATLAS_TAGS, function (atlas_tag) {
-					array.forEach(tempTags, function (tag) {
-						if (tag === atlas_tag.tag.toLowerCase()) {
-							hasAtlasTag = true;
-						}
-					});
-				});
-
-				if (hasAtlasTag) {
-					score = score + scoring.TAGS_HAS_ATLAS_TAGS;
-				}
-			} else {
-				score = 0;
-			}
-			console.log("TAGS score: " + score);
-			return score;
-		}
 
 		function initScores(item, portalUser) {
 			// details
@@ -1972,6 +1852,7 @@ require([
 			return score;
 		}
 
+		// set credit score
 		function setCredtisScore(itemCredit) {
 			var score = 0;
 			if (itemCredit === "" || itemCredit === null) {
@@ -1979,6 +1860,52 @@ require([
 			} else {
 				score = scoring.ITEM_CREDITS_HAS_WORDS;
 			}
+			return score;
+		}
+
+		// validate tags
+		function validateItemTags(tags) {
+			var score = 0;
+			var badWords = scoring.TAGS_PENALTY_WORDS;
+			var nTags = tags.length;
+			if (nTags >= scoring.TAGS_HAS_TAGS) {
+				// at least one tag exist +1
+				score = scoring.TAGS_HAS_TAGS;
+				// case insensitive
+				var tempTags = [];
+				array.forEach(tags, function (tag) {
+					tempTags.push(tag.toLowerCase());
+				});
+				// check if any tags are bad words
+				if (array.some(badWords, function (badWord) {
+					return tempTags.indexOf(badWord.toLowerCase()) !== -1;
+				})) {
+					// FAIL
+				} else {
+					// PASS +2
+					score = score + scoring.TAGS_HAS_NO_BAD_WORDS;
+				}
+
+				// check if there are more than 3 tags
+				if (nTags > 3) {
+					score = score + scoring.TAGS_HAS_CUSTOM_TAGS_MIN;
+				}
+				var hasAtlasTag = false;
+				array.forEach(defaults.ATLAS_TAGS, function (atlas_tag) {
+					array.forEach(tempTags, function (tag) {
+						if (tag === atlas_tag.tag.toLowerCase()) {
+							hasAtlasTag = true;
+						}
+					});
+				});
+
+				if (hasAtlasTag) {
+					score = score + scoring.TAGS_HAS_ATLAS_TAGS;
+				}
+			} else {
+				score = 0;
+			}
+			console.log("TAGS score: " + score);
 			return score;
 		}
 
@@ -1998,20 +1925,25 @@ require([
 			if (userDescription === "" || userDescription === null) {
 				score = 0;
 			} else {
-				score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_DESCRIPTION;
-				score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_LINK;
+				// has text +1
+				score = scoring.USER_PROFILE_DESCRIPTION_HAS_DESCRIPTION;
+				// has link 1
 				var strippedString = userDescription.replace(/(<([^>]+)>)/ig, "");
+				score = score + hasUrl(strippedString, scoring.USER_PROFILE_DESCRIPTION_HAS_LINK);
 				var nWords = getNumWords(strippedString);
 				if (nWords > 10) {
+					// > 10 +1
 					score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_WORDS;
 				}
-				var nSentences = userDescription.split(/[.|!|?]\s/gi);
+				var nSentences = userDescription.match( /[^\.!\?]+[\.!\?]+/g).length;
 				if (nSentences >= 2) {
-					scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_SENTENCES;
+					// 2 min sentence +2
+					score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_SENTENCES;
 				}
 
 				var emails = extractEmails(userDescription);
 				if (emails !== null) {
+					// has email +2
 					score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_EMAIL;
 				}
 			}
@@ -2020,6 +1952,52 @@ require([
 
 		function extractEmails(text) {
 			return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+		}
+
+		function hasUrl(str, bonus) {
+			var pattern = new RegExp("((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\'\\(\\)"
+					+ "\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-zA-Z0-9\\$\\-\\_"
+					+ "\\.\\+\\!\\*\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?"
+					+ "((?:(?:[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}\\.)+"   // named host
+					+ "(?:"   // plus top level domain
+					+ "(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])"
+					+ "|(?:biz|b[abdefghijmnorstvwyz])"
+					+ "|(?:cat|com|coop|c[acdfghiklmnoruvxyz])"
+					+ "|d[ejkmoz]"
+					+ "|(?:edu|e[cegrstu])"
+					+ "|f[ijkmor]"
+					+ "|(?:gov|g[abdefghilmnpqrstuwy])"
+					+ "|h[kmnrtu]"
+					+ "|(?:info|int|i[delmnoqrst])"
+					+ "|(?:jobs|j[emop])"
+					+ "|k[eghimnrwyz]"
+					+ "|l[abcikrstuvy]"
+					+ "|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])"
+					+ "|(?:name|net|n[acefgilopruz])"
+					+ "|(?:org|om)"
+					+ "|(?:pro|p[aefghklmnrstwy])"
+					+ "|qa"
+					+ "|r[eouw]"
+					+ "|s[abcdeghijklmnortuvyz]"
+					+ "|(?:tel|travel|t[cdfghjklmnoprtvwz])"
+					+ "|u[agkmsyz]"
+					+ "|v[aceginu]"
+					+ "|w[fs]"
+					+ "|y[etu]"
+					+ "|z[amw]))"
+					+ "|(?:(?:25[0-5]|2[0-4]" // or ip address
+					+ "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]"
+					+ "|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]"
+					+ "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}"
+					+ "|[1-9][0-9]|[0-9])))"
+					+ "(?:\\:\\d{1,5})?)" // plus option port number
+					+ "(\\/(?:(?:[a-zA-Z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~"  // plus option query params
+					+ "\\-\\.\\+\\!\\*\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?"); // fragment locator
+			if (!pattern.test(str)) {
+				return 0;
+			} else {
+				return bonus;
+			}
 		}
 
 		function getNumWords(s) {

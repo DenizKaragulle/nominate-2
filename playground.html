@@ -119,8 +119,9 @@
 		"config/defaults",
 		"config/details",
 		"config/scoring",
+		"dojo/_base/window",
 		"dojo/NodeList-traverse"
-	], function (fx, Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, string, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, scoring) {
+	], function (fx, Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, string, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, scoring, win) {
 
 		parser.parse();
 
@@ -134,42 +135,63 @@
 
 			function run() {
 
-				var mapDrawBegin = performance.now();
-				arcgisUtils.createMap("b95a9fb4dec5443f9e0ea0fcb4859c67", "map").then(function (response) {
-					layers = response.itemInfo.itemData.operationalLayers;
-					map = response.map;
+				/*var mapDrawBegin = performance.now();
+				 arcgisUtils.createMap("b95a9fb4dec5443f9e0ea0fcb4859c67", "map").then(function (response) {
+				 layers = response.itemInfo.itemData.operationalLayers;
+				 map = response.map;
 
-					// make sure map is loaded
-					if (map.loaded) {
-						mapDrawComplete = performance.now();
-						var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-						query(".map-draw-time")[0].innerHTML = processMapDrawTime(mapDrawTime);
-						fadeLoader();
-						array.forEach(layers, processLayers);
-						fadeInContent("meta-data-content");
-					}
-				});
-
-				/*on(query(".btn-1")[0], "click", function () {
-					console.log("btn-1");
-				});*/
+				 // make sure map is loaded
+				 if (map.loaded) {
+				 mapDrawComplete = performance.now();
+				 var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+				 query(".map-draw-time")[0].innerHTML = processMapDrawTime(mapDrawTime);
+				 fadeLoader();
+				 array.forEach(layers, processLayers);
+				 fadeInContent("meta-data-content");
+				 }
+				 });*/
 
 				btn1NodeNodeClickHandler = function () {
-					console.log("CLICK 1")
+					myProgressBar.set("value", 85);
+					progressBarNodeValue.innerHTML = myProgressBar.value;
 				}
 
 				btn2NodeNodeClickHandler = function () {
-					console.log("CLICK 2")
+					myProgressBar.set("value", 78);
+					progressBarNodeValue.innerHTML = myProgressBar.value;
 				}
 
 				btn3NodeNodeClickHandler = function () {
-					console.log("CLICK 3")
+					var barAttr = domStyle.get(query(".dijitProgressBarLabel")[0]);
+					var externalBarWidth = domStyle.get(query(".dijitProgressBarLabel")[0], "width");
+					var internalBarWidth = domStyle.get(query(".dijitProgressBarFull")[0], "width");
+					console.log(barAttr);
+					console.log(externalBarWidth);
+					console.log(internalBarWidth);
+					progressBarNodeValue.innerHTML = myProgressBar.value;
+
+					domConstruct.create("div", {
+						innerHTML : "<div style='position: absolute; left: " + (internalBarWidth + 7) + "px; z-index: 1000; color: #FF0000; background-color: red; height: 40px; bottom: 25px; width: 1px;'></div>"
+					}, dom.byId("progressBarMarker"), "first");
 				}
 
 				on(query(".btn-1")[0], "click", lang.partial(btn1NodeNodeClickHandler));
 				on(query(".btn-2")[0], "click", lang.partial(btn2NodeNodeClickHandler));
 				on(query(".btn-3")[0], "click", lang.partial(btn3NodeNodeClickHandler));
 
+				var progressBarNode = dom.byId("customProgressBar");
+				var progressBarNodeValue = dom.byId("customProgressBarValue");
+				var myProgressBar = new ProgressBar({
+					maximum: 100,
+					value: 80
+				}, progressBarNode);
+
+
+				//on(myProgressBar, "onChange", progressBarChangeHandler);
+			}
+
+			function progressBarChangeHandler(value, max, percent) {
+				console.log(value);
 			}
 
 			function fadeInContent(node) {
@@ -225,10 +247,10 @@
 		<div class="column-15">
 			<!-- Map -->
 			<div class="row">
-				<div id="map-mask" class="loader">
+				<!--<div id="map-mask" class="loader">
 					<span class="side side-left"><span class="fill"></span></span>
 					<span class="side side-right"><span class="fill"></span></span>
-				</div>
+				</div>-->
 				<div id="map"></div>
 			</div>
 		</div>
@@ -279,6 +301,17 @@
 				<a class="column-8 btn-2">Button 2</a>
 				<a class="column-8 btn-3">Button 3</a>
 			</div>
+		</div>
+	</div>
+
+
+	<div class="row" style="margin-top: 80px;">
+		<div class="column-10">
+			<div id="customProgressBar"></div>
+		</div>
+		<div class="column-2">
+			<div id="customProgressBarValue" style="font-size: 3.0em;"></div>
+			<div id="progressBarMarker"></div>
 		</div>
 	</div>
 
