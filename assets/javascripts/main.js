@@ -1343,7 +1343,7 @@ require([
 					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #C86A4A");
 					domStyle.set(layerCountNumeratorNode, "color", "#C86A4A");
 					domStyle.set(layerCountDenominatorNode, "color", "#C86A4A");
-					nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_GOOD;
+					nLayersScore = scoring.LAYER_COUNT_GOOD_POINTS;
 				} else if (nLayers <= 10 && nLayers >= 2) {
 					// BETTER
 					domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1353,7 +1353,7 @@ require([
 					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
 					domStyle.set(layerCountNumeratorNode, "color", "#005E95");
 					domStyle.set(layerCountDenominatorNode, "color", "#005E95");
-					nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_BETTER;
+					nLayersScore = scoring.LAYER_COUNT_BETTER_POINTS;
 				} else if (nLayers >= 0 && nLayers < 2) {
 					// BEST
 					domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1363,7 +1363,7 @@ require([
 					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
 					domStyle.set(layerCountNumeratorNode, "color", "#005E95");
 					domStyle.set(layerCountDenominatorNode, "color", "#005E95");
-					nLayersScore = scoring.PERFORMANCE_LAYER_COUNT_BEST;
+					nLayersScore = scoring.LAYER_COUNT_BEST_POINTS;
 				}
 			}
 
@@ -1374,7 +1374,7 @@ require([
 			var sharing = item.access;
 			if (sharing === "private") {
 				// GOOD
-				sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE;
+				sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE_POINTS;
 				domStyle.set(sharingContainerNode, "border", "1px solid #C86A4A");
 				domStyle.set(sharingNumeratorNode, "color", "#C86A4A");
 				domStyle.set(sharingDenominatorNode, "color", "#C86A4A");
@@ -1383,7 +1383,7 @@ require([
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else if (sharing === "org" || sharing === "shared") {
 				// BETTER
-				sharingScore = scoring.PERFORMANCE_SHARING_ORG;
+				sharingScore = scoring.PERFORMANCE_SHARING_ORG_POINTS;
 				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
 				domStyle.set(sharingNumeratorNode, "color", "#005E95");
 				domStyle.set(sharingDenominatorNode, "color", "#005E95");
@@ -1392,7 +1392,7 @@ require([
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else {
 				// BEST
-				sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC;
+				sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC_POINTS;
 				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
 				domStyle.set(sharingNumeratorNode, "color", "#005E95");
 				domStyle.set(sharingDenominatorNode, "color", "#005E95");
@@ -2362,11 +2362,11 @@ require([
 			if (layers !== undefined) {
 				var nLayers = layers.length;
 				if (nLayers > scoring.LAYER_COUNT_MAX) {
-					return scoring.PERFORMANCE_LAYER_COUNT_GOOD;
+					return scoring.LAYER_COUNT_GOOD_POINTS;
 				} else if (nLayers > scoring.LAYER_COUNT_MIN && nLayers <= scoring.LAYER_COUNT_MAX) {
-					return scoring.PERFORMANCE_LAYER_COUNT_BETTER;
+					return scoring.LAYER_COUNT_BETTER_POINTS;
 				} else if (nLayers === scoring.LAYER_COUNT_MIN) {
-					return scoring.PERFORMANCE_LAYER_COUNT_BEST;
+					return scoring.LAYER_COUNT_BEST_POINTS;
 				} else {
 					return 0;
 				}
@@ -2376,11 +2376,11 @@ require([
 		function setSharingScore(item) {
 			var sharing = item.access;
 			if (sharing === "private") {
-				return scoring.PERFORMANCE_SHARING_PRIVATE;
+				return scoring.PERFORMANCE_SHARING_PRIVATE_POINTS;
 			} else if (sharing === "org" || sharing === "shared") {
-				return scoring.PERFORMANCE_SHARING_ORG;
+				return scoring.PERFORMANCE_SHARING_ORG_POINTS;
 			} else {
-				return scoring.PERFORMANCE_SHARING_PUBLIC;
+				return scoring.PERFORMANCE_SHARING_PUBLIC_POINTS;
 			}
 		}
 

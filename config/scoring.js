@@ -96,13 +96,13 @@ define({
 	"PERFORMANCE_DRAW_TIME_GOOD" : 2,
 
 	// Number of map layers (Best)
-	"PERFORMANCE_LAYER_COUNT_BEST" : 7,
+	"LAYER_COUNT_BEST_POINTS" : 7,
 	// Minimum number of layers
 	"LAYER_COUNT_MIN" : 1,
 	// Number of map layers (Better)
-	"PERFORMANCE_LAYER_COUNT_BETTER" : 4,
+	"LAYER_COUNT_BETTER_POINTS" : 4,
 	// Number of map layers (Good)
-	"PERFORMANCE_LAYER_COUNT_GOOD" : 1,
+	"LAYER_COUNT_GOOD_POINTS" : 1,
 	// Maximum number of layers
 	"LAYER_COUNT_MAX" : 10,
 
@@ -112,11 +112,11 @@ define({
 	"PERFORMANCE_POPUPS_ENABLED" : 2,
 
 	// AGOL item sharing is set to public
-	"PERFORMANCE_SHARING_PUBLIC" : 5,
+	"PERFORMANCE_SHARING_PUBLIC_POINTS" : 5,
 	// AGOL item sharing is set to org
-	"PERFORMANCE_SHARING_ORG" : 2,
+	"PERFORMANCE_SHARING_ORG_POINTS" : 2,
 	// AGOL item sharing is set to private
-	"PERFORMANCE_SHARING_PRIVATE" : 0,
+	"PERFORMANCE_SHARING_PRIVATE_POINTS" : 0,
 
 	// User Profile scoring
 	"USER_PROFILE_HAS_THUMBNAIL" : 5,
