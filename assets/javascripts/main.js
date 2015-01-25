@@ -586,12 +586,12 @@ require([
 										}).placeAt(progressBarNode).startup();
 									}
 
-									/*var barAttr = domStyle.get(query(".dijitProgressBarLabel")[0]);
+									var barAttr = domStyle.get(query(".dijitProgressBarLabel")[0]);
 									var externalBarWidth = domStyle.get(query(".dijitProgressBarLabel")[0], "width");
 									var internalBarWidth = domStyle.get(query(".dijitProgressBarFull")[0], "width");
 									console.log(barAttr);
 									console.log(externalBarWidth);
-									console.log(internalBarWidth);*/
+									console.log(internalBarWidth);
 
 									// draw the minimum score marker
 									initPassingMarker();
