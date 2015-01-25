@@ -95,9 +95,16 @@ define({
 	// Map draw time (Good)
 	"PERFORMANCE_DRAW_TIME_GOOD" : 2,
 
+	// Number of map layers (Best)
 	"PERFORMANCE_LAYER_COUNT_BEST" : 7,
+	// Minimum number of layers
+	"LAYER_COUNT_MIN" : 1,
+	// Number of map layers (Better)
 	"PERFORMANCE_LAYER_COUNT_BETTER" : 4,
+	// Number of map layers (Good)
 	"PERFORMANCE_LAYER_COUNT_GOOD" : 1,
+	// Maximum number of layers
+	"LAYER_COUNT_MAX" : 10,
 
 	// Custom popup
 	"PERFORMANCE_POPUPS_CUSTOM" : 5,

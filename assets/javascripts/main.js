@@ -2361,11 +2361,11 @@ require([
 		function setNumLayersScore(layers) {
 			if (layers !== undefined) {
 				var nLayers = layers.length;
-				if (nLayers > 10) {
+				if (nLayers > scoring.LAYER_COUNT_MAX) {
 					return scoring.PERFORMANCE_LAYER_COUNT_GOOD;
-				} else if (nLayers <= 10 && nLayers >= 2) {
+				} else if (nLayers > scoring.LAYER_COUNT_MIN && nLayers <= scoring.LAYER_COUNT_MAX) {
 					return scoring.PERFORMANCE_LAYER_COUNT_BETTER;
-				} else if (nLayers === 1) {
+				} else if (nLayers === scoring.LAYER_COUNT_MIN) {
 					return scoring.PERFORMANCE_LAYER_COUNT_BEST;
 				} else {
 					return 0;
