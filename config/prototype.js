@@ -288,10 +288,14 @@ define([
 					// > 10 +1
 					score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_WORDS;
 				}
-				var nSentences = userDescription.match( /[^\.!\?]+[\.!\?]+/g).length;
-				if (nSentences >= 2) {
-					// 2 min sentence +2
-					score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_SENTENCES;
+
+				var nSentences = strippedString.match( /[^\.!\?]+[\.!\?]+/g);
+				if (nSentences !== null) {
+					console.log(nSentences);
+					if (nSentences.length >= 2) {
+						// 2 min sentence +2
+						score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_SENTENCES;
+					}
 				}
 
 				var emails = this._extractEmails(userDescription);

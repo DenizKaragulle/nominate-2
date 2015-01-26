@@ -55,13 +55,13 @@
 <script type="text/javascript">
 	var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
 	var dojoConfig = {
-		async: true,
+		async:true,
 		// The locationPath logic below may look confusing but all its doing is
 		// enabling us to load the api from a CDN and load local modules from the correct location.
-		packages: [
+		packages:[
 			{
-				name: "config",
-				location: package_path + '/config'
+				name:"config",
+				location:package_path + '/config'
 			}
 		]
 	};
@@ -74,7 +74,6 @@
 <script>
 
 	require([
-		"dojo/_base/fx",
 		"dijit/Tooltip",
 		"put-selector/put",
 		"dojo/store/Memory",
@@ -109,6 +108,7 @@
 		"dojo/query",
 		"esri/arcgis/Portal",
 		"esri/arcgis/OAuthInfo",
+		"esri/layers/FeatureLayer",
 		"esri/IdentityManager",
 		"esri/arcgis/utils",
 		"esri/config",
@@ -123,7 +123,7 @@
 		"config/validator",
 		"dojo/_base/window",
 		"dojo/NodeList-traverse"
-	], function (fx, Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, string, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, scoring, Prototype, Validator, win) {
+	], function (Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, string, query, arcgisPortal, ArcGISOAuthInfo, FeatureLayer, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, scoring, Prototype, Validator, win) {
 
 		parser.parse();
 
@@ -137,8 +137,25 @@
 
 			function run() {
 
-				/*var mapDrawBegin = performance.now();
-				 arcgisUtils.createMap("b95a9fb4dec5443f9e0ea0fcb4859c67", "map").then(function (response) {
+				var mapDrawBegin = performance.now();
+				arcgisUtils.getItem("9672bed6da79490e901354b1e4e03187").then(function (response) {
+
+					if (response.item.type === "Feature Service") {
+						var map = new Map("map", {
+							basemap:"topo",
+							center:[-122.45, 37.75], // longitude, latitude
+							zoom:5
+						});
+						console.log(response.item.url);
+						var fl = new FeatureLayer(response.item.url, {
+									mode:FeatureLayer.MODE_SNAPSHOT
+								}
+						);
+						map.addLayer(fl);
+					}
+				});
+				/*arcgisUtils.createMap("9672bed6da79490e901354b1e4e03187", "map").then(function (response) {
+				 console.log(response);
 				 layers = response.itemInfo.itemData.operationalLayers;
 				 map = response.map;
 
@@ -153,16 +170,16 @@
 				 }
 				 });*/
 
-				var prototype = new Prototype();
-				prototype.startup();
+				/*var prototype = new Prototype();
+				 prototype.startup();
 
-				var validator = new Validator(defaults);
-				validator.startup();
-				on(validator, "ready", function (response) {
-					console.log(prototype.setItemTitleScore(response.portal.itemInfo.item.title));
-					console.log(prototype.setItemSummaryScore(response.portal.itemInfo.item.snippet));
-					console.log(prototype.setItemDescriptionScore(response.portal.itemInfo.item.description));
-				});
+				 var validator = new Validator(defaults);
+				 validator.startup();
+				 on(validator, "ready", function (response) {
+				 console.log(prototype.setItemTitleScore(response.portal.itemInfo.item.title));
+				 console.log(prototype.setItemSummaryScore(response.portal.itemInfo.item.snippet));
+				 console.log(prototype.setItemDescriptionScore(response.portal.itemInfo.item.description));
+				 });*/
 
 				btn1NodeNodeClickHandler = function () {
 					myProgressBar.set("value", 85);
@@ -184,7 +201,7 @@
 					progressBarNodeValue.innerHTML = myProgressBar.value;
 
 					domConstruct.create("div", {
-						innerHTML : "<div style='position: absolute; left: " + (internalBarWidth + 7) + "px; z-index: 1000; color: #FF0000; background-color: red; height: 40px; bottom: 25px; width: 1px;'></div>"
+						innerHTML:"<div style='position: absolute; left: " + (internalBarWidth + 7) + "px; z-index: 1000; color: #FF0000; background-color: red; height: 40px; bottom: 25px; width: 1px;'></div>"
 					}, dom.byId("progressBarMarker"), "first");
 				}
 
@@ -195,11 +212,9 @@
 				var progressBarNode = dom.byId("customProgressBar");
 				var progressBarNodeValue = dom.byId("customProgressBarValue");
 				var myProgressBar = new ProgressBar({
-					maximum: 100,
-					value: 80
+					maximum:100,
+					value:80
 				}, progressBarNode);
-
-
 				//on(myProgressBar, "onChange", progressBarChangeHandler);
 			}
 
@@ -210,14 +225,14 @@
 			function fadeInContent(node) {
 				var loaderNode = dom.byId(node);
 				fx.animateProperty({
-					node: loaderNode,
-					properties: {
-						opacity: {
-							start: 0,
-							end: 1
+					node:loaderNode,
+					properties:{
+						opacity:{
+							start:0,
+							end:1
 						}
 					},
-					duration: 800
+					duration:800
 				}).play();
 			}
 
@@ -225,22 +240,22 @@
 				var loaderNode = dom.byId("map-mask");
 				domStyle.set(loaderNode, "opacity", "1");
 				var fadeArgs = {
-					node: "map-mask",
-					duration: 1000
+					node:"map-mask",
+					duration:1000
 				};
 				fx.fadeOut(fadeArgs).play();
 			}
 
 			function processLayers(layer) {
 				domConstruct.create("div", {
-					innerHTML: "<div>" + layer.title + "<\/div>"
+					innerHTML:"<div>" + layer.title + "<\/div>"
 				}, query(".num-layers")[0], "last");
 			}
 
 			function processMapDrawTime(val) {
 				var temp = (val / 1000) % 60;
 				var seconds = number.format(temp, {
-					places: 5
+					places:5
 				});
 				if (seconds) {
 					return seconds + " seconds";
