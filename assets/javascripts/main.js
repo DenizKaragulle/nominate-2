@@ -564,16 +564,6 @@ require([
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
 											}
 										});
-									} else if (item.type === "Feature Service") {
-										var map = new Map("map", {
-											basemap:"topo",
-											center:[-122.45, 37.75], // longitude, latitude
-											zoom:5
-										});
-										console.log(item)
-										var fl = new FeatureLayer(item.url);
-										map.addLayer(fl);
-										fadeLoader();
 									} else if (item.type === "Image Service") {
 										var mapDrawBegin = performance.now();
 										var map = new Map("map", {
