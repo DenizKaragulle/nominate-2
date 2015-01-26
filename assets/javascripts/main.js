@@ -420,7 +420,6 @@ require([
 						on(dgrid.domNode, ".item-title:click", function (event) {
 							// selected row
 							selectedRow = dgrid.row(event).element;
-							console.log("selectedRow: " + selectedRow);
 							// selected row ID
 							selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
 							// get row width
@@ -484,25 +483,28 @@ require([
 												"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
 												"			</div>" +
 												"		</div>" +
+
 												// Scoring
 												"		<div class='row'>" +
 												"			<div class='column-15 pre-3'>" +
 												"				<div class='current-score-graphic-container'></div>" +
 												"			</div>" +
 												"			<div class='column-2'>" +
-												"				<div class='current-score-number'>78</div>" +
+												"				<div class='current-score-number'></div>" +
 												"			</div>" +
 												"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
 												"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
 												"			</div>" +
 												"		</div>" +
-												//
+
+												// Overall Score
 												"		<div class='row'>" +
 												"			<div class='column-15 pre-3'>" +
 												"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
 												"			</div>" +
 												"		</div>" +
-												// Tab Container
+
+												// Button Group (i.e. sections)
 												"		<div class='row'>" +
 												"			<div class='column-18 pre-3'>" +
 												"				<div id='" + tcID + "'></div>" +
@@ -512,7 +514,9 @@ require([
 												"</div>",
 											selectedRow.firstElementChild, "last");
 
+									// get overall score node
 									currentOverallScoreNode = query(".current-score-number")[0];
+									// get progress bar node
 									progressBarNode = query(".current-score-graphic-container")[0];
 
 									// create button group
@@ -533,7 +537,7 @@ require([
 											mapDrawComplete;
 										// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
 										arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
-											console.log(response);
+											//console.log(response);
 											layers = response.itemInfo.itemData.operationalLayers;
 											map = response.map;
 
@@ -1364,6 +1368,10 @@ require([
 			domStyle.set(popupsNumeratorNode, "color", "#005E95");
 			domStyle.set(popupsDenominatorNode, "color", "#005E95");
 
+			console.log("popupsNumeratorNode: " + popupsNumeratorNode);
+			console.log("popupsDenominatorNode: " + popupsDenominatorNode);
+			console.log("popupsScore: " + popupsScore);
+
 			if (sharingScore === scoring.PERFORMANCE_SHARING_PRIVATE_POINTS) {
 				// GOOD
 				domStyle.set(sharingContainerNode, "border", "1px solid #C86A4A");
@@ -1628,6 +1636,13 @@ require([
 		}
 
 		function updateOverallScore() {
+			console.log("itemDetailsScore: " + itemDetailsScore);
+			console.log("creditsAndAccessScore: " + creditsAndAccessScore);
+			console.log("itemTagsScore: " + itemTagsScore);
+			console.log("performanceScore: " + performanceScore);
+			console.log("userProfileScore: " + userProfileScore);
+			console.log("MAX_SCORE: " + MAX_SCORE);
+
 			var TMP_MAX_SCORE = 0;
 			// update the score
 			if (HAS_PERFORMANCE_CONTENT) {
@@ -1650,6 +1665,8 @@ require([
 				});
 				dijit.byId("overall-score-graphic").set("value", overAllCurrentScore);
 			}
+			console.log("overAllCurrentScore: " + overAllCurrentScore);
+			console.log("------------------------------------");
 		}
 
 		function updateSectionScore(score, node, max) {
@@ -1721,7 +1738,7 @@ require([
 			} else {
 				score = 0;
 			}
-			console.log("TAGS score: " + score);
+			//console.log("TAGS score: " + score);
 			return score;
 		}
 

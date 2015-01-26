@@ -10,12 +10,11 @@ define([
 		instance: null,
 
 		constructor: function () {
-			console.log("loading constructor");
+
 		},
 
 		startup: function () {
 			this.instance = 1;
-			console.log(this.instance);
 		},
 
 		/**
@@ -200,6 +199,21 @@ define([
 		setPopupScore: function (layers) {
 			var score = 0;
 			var isCustomPopup = false;
+
+			array.forEach(layers, function (layer) {
+				array.forEach(layer.layers, function(lyr) {
+					if (isCustomPopup === false) {
+						if (lyr.popupInfo) {
+							var popupInfo = lyr.popupInfo;
+							if (popupInfo.description.length > 0) {
+								isCustomPopup = true;
+								score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+							}
+						}
+					}
+				});
+			});
+			console.log(score);
 			array.forEach(layers, function (layer) {
 				var popupInfo;
 				if (layer.featureCollection !== undefined) {
@@ -208,10 +222,17 @@ define([
 						isCustomPopup = true;
 						score = scoring.PERFORMANCE_POPUPS_CUSTOM;
 					}
-				} else {
-					score = 0;
+				}
+
+				if (layer.featureCollection !== undefined) {
+					popupInfo = layer.featureCollection.layers[0].popupInfo;
+					if (popupInfo.description !== null) {
+						isCustomPopup = true;
+						score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+					}
 				}
 			});
+			console.log(score);
 			return score;
 		},
 
