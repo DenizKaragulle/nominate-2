@@ -106,13 +106,13 @@ define({
 			'			<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em;">pop ups</span></h2>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">no popups</div>' +
+			'			<div class="section-header performance-text performance-popups-none">no popups</div>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-out">default only</div>' +
+			'			<div class="section-header performance-text performance-popups-default">default only</div>' +
 			'		</div>' +
 			'		<div class="column-3">' +
-			'			<div class="section-header performance-text performance-fade-in">custom</div>' +
+			'			<div class="section-header performance-text performance-popups-custom">custom</div>' +
 			'		</div>' +
 			'	</div>' +
 

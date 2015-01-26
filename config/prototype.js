@@ -213,7 +213,7 @@ define([
 					}
 				});
 			});
-			console.log(score);
+
 			array.forEach(layers, function (layer) {
 				var popupInfo;
 				if (layer.featureCollection !== undefined) {
@@ -232,7 +232,7 @@ define([
 					}
 				}
 			});
-			console.log(score);
+
 			return score;
 		},
 

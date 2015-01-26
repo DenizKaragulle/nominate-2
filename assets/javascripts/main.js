@@ -1368,9 +1368,32 @@ require([
 			domStyle.set(popupsNumeratorNode, "color", "#005E95");
 			domStyle.set(popupsDenominatorNode, "color", "#005E95");
 
-			console.log("popupsNumeratorNode: " + popupsNumeratorNode);
-			console.log("popupsDenominatorNode: " + popupsDenominatorNode);
-			console.log("popupsScore: " + popupsScore);
+			var popupsNoneNode = query(".performance-popups-none")[0],
+				popupsDefaultNode = query(".performance-popups-default")[0],
+				popupsCustomNode = query(".performance-popups-custom")[0];
+
+			if (popupsScore === scoring.PERFORMANCE_POPUPS_ENABLED) {
+				domStyle.set(popupsScoreContainerNode, "border", "1px solid #C86A4A");
+				domStyle.set(popupsNumeratorNode, "color", "#C86A4A");
+				domStyle.set(popupsDenominatorNode, "color", "#C86A4A");
+				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(popupsDefaultNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(popupsCustomNode, "color", "#005E95");
+			} else if (popupsScore === scoring.PERFORMANCE_POPUPS_CUSTOM) {
+				domStyle.set(popupsScoreContainerNode, "border", "1px solid #005E95");
+				domStyle.set(popupsNumeratorNode, "color", "#005E95");
+				domStyle.set(popupsDenominatorNode, "color", "#005E95");
+				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(popupsDefaultNode, "color", "#005E95");
+				domStyle.set(popupsCustomNode, "color", "rgba(0, 122, 194, 0.24)");
+			} else {
+				domStyle.set(popupsScoreContainerNode, "border", "1px solid #005E95");
+				domStyle.set(popupsNumeratorNode, "color", "#005E95");
+				domStyle.set(popupsDenominatorNode, "color", "#005E95");
+				domStyle.set(popupsNoneNode, "color", "#005E95");
+				domStyle.set(popupsDefaultNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(popupsCustomNode, "color", "rgba(0, 122, 194, 0.24)");
+			}
 
 			if (sharingScore === scoring.PERFORMANCE_SHARING_PRIVATE_POINTS) {
 				// GOOD
