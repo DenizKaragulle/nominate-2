@@ -51,9 +51,10 @@ require([
 	"config/profile",
 	"config/tooltips",
 	"config/scoring",
+	"config/prototype",
 	"esri/dijit/Tags",
 	"dojo/NodeList-traverse"
-], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, query, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Tags) {
+], function (put, Memory, Observable, Pagination, OnDemandGrid, Keyboard, Selection, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, query, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Prototype, Tags) {
 
 	parser.parse();
 
@@ -182,6 +183,8 @@ require([
 	var newTag;
 	//
 	var HAS_PERFORMANCE_CONTENT = false;
+	//
+	var validator = null;
 
 	var imageSizes = {
 		"PROFILE": [150, 150],
@@ -268,7 +271,6 @@ require([
 			});
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
-					console.log("CALLING tagsContentPane");
 					domClass.replace(node, "column-4", "active column-4");
 					tagsContentPane(_selectedRowID, _categoryID, _tagsID);
 				}
@@ -367,6 +369,9 @@ require([
 					portalUserThumbnailUrl = "https://cdn.arcgis.com/cdn/5777/js/arcgisonline/css/images/no-user-thumb.jpg";
 				}
 
+				validator = new Prototype();
+				validator.startup();
+
 				var params = {
 					q: "owner:" + owner,
 					num: 1000
@@ -377,7 +382,7 @@ require([
 					// update the ribbon header
 					// remove the globe icon from the ribbon header title
 					domAttr.set(query(".ribbon-header-title").parent()[0], "class", "");
-					var HEADER_BLOCK_PRIVATE_NAME = " (" + portalUser.fullName + " - " + owner + ")"
+					var HEADER_BLOCK_PRIVATE_NAME = " (" + portalUser.fullName + " - " + owner + ")";
 					ribbonHeaderTitle.innerHTML = defaults.HEADER_BLOCK_PRIVATE;
 					ribbonHeaderUser.innerHTML = HEADER_BLOCK_PRIVATE_NAME;
 					// update the text and icon
@@ -521,7 +526,7 @@ require([
 											detailsContentPane(selectedRowID, titleID, snippetID, descID);
 									//	}
 									//});
-									//domClass.replace(detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
+									domClass.replace(detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
 
 									if (item.type === "Web Map") {
 										var mapDrawBegin = performance.now(),
@@ -539,10 +544,10 @@ require([
 												fadeLoader();
 
 												// set performance scores
-												mapDrawTimeScore = setMapDrawTimeScore(mapDrawTime);
-												nLayersScore = setNumLayersScore(layers);
-												popupsScore = setPopupScore(layers);
-												sharingScore = setSharingScore(item);
+												mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
+												nLayersScore = validator.setNumLayersScore(layers);
+												popupsScore = validator.setPopupScore(layers);
+												sharingScore = validator.setSharingScore(item);
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
 												// set style on performance button
 												setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
@@ -589,9 +594,6 @@ require([
 									var barAttr = domStyle.get(query(".dijitProgressBarLabel")[0]);
 									var externalBarWidth = domStyle.get(query(".dijitProgressBarLabel")[0], "width");
 									var internalBarWidth = domStyle.get(query(".dijitProgressBarFull")[0], "width");
-									console.log(barAttr);
-									console.log(externalBarWidth);
-									console.log(internalBarWidth);
 
 									// draw the minimum score marker
 									initPassingMarker();
@@ -680,10 +682,10 @@ require([
 				descScoreDenominatorNode.innerHTML = ITEM_DESC_MAX_SCORE;
 
 				// set numerator
-				itemThumbnailScore = setThumbnailScore(item);
-				itemTitleScore = setItemTitleScore(item.title);
-				itemSummaryScore = setItemSummaryScore(item.snippet);
-				itemDescriptionScore = setItemDescriptionScore(item.description);
+				itemThumbnailScore = validator.setThumbnailScore(item);
+				itemTitleScore = validator.setItemTitleScore(item.title);
+				itemSummaryScore = validator.setItemSummaryScore(item.snippet);
+				itemDescriptionScore = validator.setItemDescriptionScore(item.description);
 				thumbnailScoreNumeratorNode.innerHTML = itemThumbnailScore;
 				titleScoreNumeratorNode.innerHTML = itemTitleScore;
 				summaryScoreNumeratorNode.innerHTML = itemSummaryScore;
@@ -773,10 +775,10 @@ require([
 											itemDescription_clean = itemDescription;
 											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 											// set numerator
-											itemThumbnailScore = setThumbnailScore(results);
-											itemTitleScore = setItemTitleScore(itemTitle);
-											itemSummaryScore = setItemSummaryScore(itemSummary);
-											itemDescriptionScore = setItemDescriptionScore(itemDescription);
+											itemThumbnailScore = validator.setThumbnailScore(results);
+											itemTitleScore = validator.setItemTitleScore(itemTitle);
+											itemSummaryScore = validator.setItemSummaryScore(itemSummary);
+											itemDescriptionScore = validator.setItemDescriptionScore(itemDescription);
 											thumbnailScoreNumeratorNode.innerHTML = itemThumbnailScore;
 											titleScoreNumeratorNode.innerHTML = itemTitleScore;
 											summaryScoreNumeratorNode.innerHTML = itemSummaryScore;
@@ -872,10 +874,10 @@ require([
 					domStyle.set(cancelBtnNode, "display", "none");
 
 					// set numerator
-					//itemThumbnailScore = setThumbnailScore(results);
-					itemTitleScore = setItemTitleScore(itemTitle_clean);
-					itemSummaryScore = setItemSummaryScore(itemSummary_clean);
-					itemDescriptionScore = setItemDescriptionScore(itemDescription_clean);
+					//itemThumbnailScore = validator.setThumbnailScore(results);
+					itemTitleScore = validator.setItemTitleScore(itemTitle_clean);
+					itemSummaryScore = validator.setItemSummaryScore(itemSummary_clean);
+					itemDescriptionScore = validator.setItemDescriptionScore(itemDescription_clean);
 					thumbnailScoreNumeratorNode.innerHTML = itemThumbnailScore;
 					titleScoreNumeratorNode.innerHTML = itemTitleScore;
 					summaryScoreNumeratorNode.innerHTML = itemSummaryScore;
@@ -937,8 +939,8 @@ require([
 				accessScoreDenominatorNode.innerHTML = ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE;
 
 				// set numerator
-				itemCreditsScore = setCredtisScore(item.accessInformation);
-				itemAccessAndUseConstraintsScore = setAccessAndUseConstraintsScore(item.licenseInfo);
+				itemCreditsScore = validator.setCredtisScore(item.accessInformation);
+				itemAccessAndUseConstraintsScore = validator.setAccessAndUseConstraintsScore(item.licenseInfo);
 				creditsScoreNumeratorNode.innerHTML = itemCreditsScore;
 				accessScoreNumeratorNode.innerHTML = itemAccessAndUseConstraintsScore;
 
@@ -1021,8 +1023,8 @@ require([
 						}
 
 						// set numerator
-						itemCreditsScore = setCredtisScore(itemCredits);
-						itemAccessAndUseConstraintsScore = setAccessAndUseConstraintsScore(accessAndUseConstraints);
+						itemCreditsScore = validator.setCredtisScore(itemCredits);
+						itemAccessAndUseConstraintsScore = validator.setAccessAndUseConstraintsScore(accessAndUseConstraints);
 						creditsScoreNumeratorNode.innerHTML = itemCreditsScore;
 						accessScoreNumeratorNode.innerHTML = itemAccessAndUseConstraintsScore;
 
@@ -1061,8 +1063,8 @@ require([
 					domStyle.set(cancelBtnNode, "display", "none");
 
 					// set numerator
-					itemCreditsScore = setCredtisScore(itemCredits_clean);
-					itemAccessAndUseConstraintsScore = setAccessAndUseConstraintsScore(accessAndUseConstraints_clean);
+					itemCreditsScore = validator.setCredtisScore(itemCredits_clean);
+					itemAccessAndUseConstraintsScore = validator.setAccessAndUseConstraintsScore(accessAndUseConstraints_clean);
 					creditsScoreNumeratorNode.innerHTML = itemCreditsScore;
 					accessScoreNumeratorNode.innerHTML = itemAccessAndUseConstraintsScore;
 
@@ -1129,7 +1131,6 @@ require([
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// EDIT mode
 						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
-
 						// remove non-editing tag nodes
 						domConstruct.empty(query(".existing-tags")[0]);
 
@@ -1197,6 +1198,8 @@ require([
 								}
 							}
 						});
+
+						console.log(tagsDijit.values);
 
 						esriRequest({
 							url: _userItemUrl + "/update",
@@ -1302,8 +1305,7 @@ require([
 					sharingBetterNode = query(".performance-sharing-better")[0],
 					sharingBestNode = query(".performance-sharing-best")[0];
 
-			var mdt = parseInt(processMapDrawTime(mapDrawTime));
-			if (mdt < defaults.drawTime.BEST) {
+			if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_BEST) {
 				domStyle.set(mdtGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBestNode, "color", "#0079C1");
@@ -1311,8 +1313,7 @@ require([
 				domStyle.set(mdtScoreContainerNode, "border", "1px solid #0079C1");
 				domStyle.set(mdtNumeratorNode, "color", "#0079C1");
 				domStyle.set(mdtDenominatorNode, "color", "#0079C1");
-				mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_BEST;
-			} else if (mdt < defaults.drawTime.BETTER) {
+			} else if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_BETTER) {
 				domStyle.set(mdtGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBetterNode, "color", "#0079C1");
 				domStyle.set(mdtBestNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1320,8 +1321,7 @@ require([
 				domStyle.set(mdtScoreContainerNode, "border", "1px solid #0079C1");
 				domStyle.set(mdtNumeratorNode, "color", "#0079C1");
 				domStyle.set(mdtDenominatorNode, "color", "#0079C1");
-				mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_BETTER;
-			} else if (mdt < defaults.drawTime.GOOD) {
+			} else if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_GOOD) {
 				domStyle.set(mdtGoodNode, "color", "#0079C1");
 				domStyle.set(mdtBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBestNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1329,61 +1329,51 @@ require([
 				domStyle.set(mdtScoreContainerNode, "border", "1px solid #C86A4A");
 				domStyle.set(mdtNumeratorNode, "color", "#C86A4A");
 				domStyle.set(mdtDenominatorNode, "color", "#C86A4A");
-				mapDrawTimeScore = scoring.PERFORMANCE_DRAW_TIME_GOOD;
 			}
 
-			if (layers !== undefined) {
-				var nLayers = layers.length;
-				if (nLayers > 10) {
-					// GOOD
-					domStyle.set(nLayersGoodNode, "color", "#005E95");
-					domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
-					domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
-					// score graphic
-					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #C86A4A");
-					domStyle.set(layerCountNumeratorNode, "color", "#C86A4A");
-					domStyle.set(layerCountDenominatorNode, "color", "#C86A4A");
-					nLayersScore = scoring.LAYER_COUNT_GOOD_POINTS;
-				} else if (nLayers <= 10 && nLayers >= 2) {
-					// BETTER
-					domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
-					domStyle.set(nLayersBetterNode, "color", "#005E95");
-					domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
-					// score
-					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
-					domStyle.set(layerCountNumeratorNode, "color", "#005E95");
-					domStyle.set(layerCountDenominatorNode, "color", "#005E95");
-					nLayersScore = scoring.LAYER_COUNT_BETTER_POINTS;
-				} else if (nLayers >= 0 && nLayers < 2) {
-					// BEST
-					domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
-					domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
-					domStyle.set(nLayersBestNode, "color", "#005E95");
-					// score
-					domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
-					domStyle.set(layerCountNumeratorNode, "color", "#005E95");
-					domStyle.set(layerCountDenominatorNode, "color", "#005E95");
-					nLayersScore = scoring.LAYER_COUNT_BEST_POINTS;
-				}
+
+			if (nLayersScore === scoring.LAYER_COUNT_GOOD_POINTS) {
+				// GOOD
+				domStyle.set(nLayersGoodNode, "color", "#005E95");
+				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
+				// score graphic
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #C86A4A");
+				domStyle.set(layerCountNumeratorNode, "color", "#C86A4A");
+				domStyle.set(layerCountDenominatorNode, "color", "#C86A4A");
+			} else if (nLayersScore === scoring.LAYER_COUNT_BETTER_POINTS) {
+				// BETTER
+				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(nLayersBetterNode, "color", "#005E95");
+				domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
+				// score
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
+				domStyle.set(layerCountNumeratorNode, "color", "#005E95");
+				domStyle.set(layerCountDenominatorNode, "color", "#005E95");
+			} else if (nLayersScore === scoring.LAYER_COUNT_BEST_POINTS) {
+				// BEST
+				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(nLayersBestNode, "color", "#005E95");
+				// score
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
+				domStyle.set(layerCountNumeratorNode, "color", "#005E95");
+				domStyle.set(layerCountDenominatorNode, "color", "#005E95");
 			}
 
-			//popupsScore = 5;
 			domStyle.set(popupsNumeratorNode, "color", "#005E95");
 			domStyle.set(popupsDenominatorNode, "color", "#005E95");
 
-			var sharing = item.access;
-			if (sharing === "private") {
+			if (sharingScore === scoring.PERFORMANCE_SHARING_PRIVATE_POINTS) {
 				// GOOD
-				sharingScore = scoring.PERFORMANCE_SHARING_PRIVATE_POINTS;
 				domStyle.set(sharingContainerNode, "border", "1px solid #C86A4A");
 				domStyle.set(sharingNumeratorNode, "color", "#C86A4A");
 				domStyle.set(sharingDenominatorNode, "color", "#C86A4A");
 				domStyle.set(sharingGoodNode, "color", "#005E95");
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
-			} else if (sharing === "org" || sharing === "shared") {
+			} else if (sharingScore === scoring.PERFORMANCE_SHARING_ORG_POINTS) {
 				// BETTER
-				sharingScore = scoring.PERFORMANCE_SHARING_ORG_POINTS;
 				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
 				domStyle.set(sharingNumeratorNode, "color", "#005E95");
 				domStyle.set(sharingDenominatorNode, "color", "#005E95");
@@ -1392,7 +1382,6 @@ require([
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else {
 				// BEST
-				sharingScore = scoring.PERFORMANCE_SHARING_PUBLIC_POINTS;
 				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
 				domStyle.set(sharingNumeratorNode, "color", "#005E95");
 				domStyle.set(sharingDenominatorNode, "color", "#005E95");
@@ -1410,8 +1399,6 @@ require([
 			mdtDenominatorNode.innerHTML = layerCountDenominatorNode.innerHTML = popupsDenominatorNode.innerHTML = sharingDenominatorNode.innerHTML = scoring.PERFORMANCE_MAX;
 
 			updateSectionScoreStyle(popupScore, PERFORMANCE_POPUPS_MAX_SCORE, popupsScoreContainerNode);
-			//updateSectionScore(itemDetailsScore, detailsNode, ITEM_DETAILS_MAX_SCORE);
-			//updateOverallScore();
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
@@ -1472,9 +1459,9 @@ require([
 				userDescriptionScoreDenominatorNode.innerHTML = USER_PROFILE_DESCRIPTION;
 
 				// score content
-				userThumbnailScore = 7;//setThumbnailScore(portalUser.thumbnail);
-				userNameScore = setUserProfileFullNameScore(portalUser.fullName);
-				userDescriptionScore = setUserDescriptionScore(portalUser.description);
+				userThumbnailScore = 7;//validator.setThumbnailScore(portalUser.thumbnail);
+				userNameScore = validator.setUserProfileFullNameScore(portalUser.fullName);
+				userDescriptionScore = validator.setUserDescriptionScore(portalUser.description);
 				userThumbnailNumeratorNode.innerHTML = userThumbnailScore;
 				userNameScoreNumeratorNode.innerHTML = userNameScore;
 				userDescriptionScoreNumeratorNode.innerHTML = userDescriptionScore;
@@ -1551,8 +1538,8 @@ require([
 
 											// score content
 											userThumbnailScore = 0;//setUserProfileThumbnailScore()
-											userNameScore = setUserProfileFullNameScore(_userFullName_clean);
-											userDescriptionScore = setUserDescriptionScore(_userDescription_clean);
+											userNameScore = validator.setUserProfileFullNameScore(_userFullName_clean);
+											userDescriptionScore = validator.setUserDescriptionScore(_userDescription_clean);
 											userNameScoreNumeratorNode.innerHTML = userNameScore;
 											userDescriptionScoreNumeratorNode.innerHTML = userDescriptionScore;
 
@@ -1589,8 +1576,8 @@ require([
 					domStyle.set(cancelBtnNode, "display", "none");
 
 					userThumbnailScore = 0;//setUserProfileThumbnailScore()
-					userNameScore = setUserProfileFullNameScore(_userFullName_clean);
-					userDescriptionScore = setUserDescriptionScore(_userDescription_clean);
+					userNameScore = validator.setUserProfileFullNameScore(_userFullName_clean);
+					userDescriptionScore = validator.setUserDescriptionScore(_userDescription_clean);
 					userNameScoreNumeratorNode.innerHTML = userNameScore;
 					userDescriptionScoreNumeratorNode.innerHTML = userDescriptionScore;
 
@@ -1605,41 +1592,23 @@ require([
 			});
 		}
 
-
-		function validateThumbnailUrl(thumbnail, sectionScore, containerNode, numeratorNode) {
-			if (thumbnail === null) {
-				return 0;
-			} else {
-				var index = thumbnail.lastIndexOf("/") + 1;
-				var filename = thumbnail.substr(index);
-				filename = filename.split("?")[0];
-				if (filename === "nullThumbnail.png" || filename === "ago_downloaded.png" || filename === "no-user-thumb.jpg") {
-					// thumbnail does not exist
-					sectionScore = scoring.ITEM_THUMBNAIL_NONE;
-					numeratorNode.innerHTML = sectionScore;
-					domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
-					return sectionScore;
-				} else {
-					sectionScore = scoring.ITEM_THUMBNAIL_CUSTOM;
-					numeratorNode.innerHTML = sectionScore;
-					domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
-					return sectionScore;
-				}
-			}
+		function loadContent(content) {
+			domConstruct.destroy("section-content");
+			var node = query(".content-container")[0];
+			domConstruct.place(content, node, "last");
 		}
-
 
 		function initScores(item, portalUser) {
 			// details
-			itemThumbnailScore = setThumbnailScore(item);
-			itemTitleScore = setItemTitleScore(item.title);
-			itemSummaryScore = setItemSummaryScore(item.snippet);
-			itemDescriptionScore = setItemDescriptionScore(item.description);
+			itemThumbnailScore = validator.setThumbnailScore(item);
+			itemTitleScore = validator.setItemTitleScore(item.title);
+			itemSummaryScore = validator.setItemSummaryScore(item.snippet);
+			itemDescriptionScore = validator.setItemDescriptionScore(item.description);
 			itemDetailsScore = itemThumbnailScore + itemTitleScore + itemSummaryScore + itemDescriptionScore;
 			setPassFailStyleOnTabNode(itemDetailsScore, detailsNode, ITEM_DETAILS_MAX_SCORE);
 			// use/constrains
-			itemCreditsScore = setCredtisScore(item.accessInformation);
-			itemAccessAndUseConstraintsScore = setAccessAndUseConstraintsScore(item.licenseInfo);
+			itemCreditsScore = validator.setCredtisScore(item.accessInformation);
+			itemAccessAndUseConstraintsScore = validator.setAccessAndUseConstraintsScore(item.licenseInfo);
 			creditsAndAccessScore = itemCreditsScore + itemAccessAndUseConstraintsScore;
 			setPassFailStyleOnTabNode(creditsAndAccessScore, creditsNode, ITEM_USE_CONSTRAINS_MAX_SCORE);
 			// tags
@@ -1649,9 +1618,9 @@ require([
 			//
 			setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
 			// user profile
-			userThumbnailScore = 7;//setThumbnailScore(portalUser);
-			userNameScore = setUserProfileFullNameScore(portalUser.fullName);
-			userDescriptionScore = setUserDescriptionScore(portalUser.description);
+			userThumbnailScore = 7;//validator.setThumbnailScore(portalUser);
+			userNameScore = validator.setUserProfileFullNameScore(portalUser.fullName);
+			userDescriptionScore = validator.setUserDescriptionScore(portalUser.description);
 			userProfileScore = userThumbnailScore + userNameScore + userDescriptionScore;
 			setPassFailStyleOnTabNode(userProfileScore, profileNode, USER_PROFILE_MAX_SCORE);
 			// update the overall score and score graphic
@@ -1701,51 +1670,6 @@ require([
 			}
 		}
 
-		/*function validateTags(sectionScore, tags, containerNode, numeratorNode, penaltyWords) {
-			var score = 0;
-			if (tags.length >= scoring.TAGS_HAS_TAGS) {
-				score = 1;
-				if (tags.length > 3) {
-					score = score + 2;
-				}
-
-				var tempTags = [];
-				array.forEach(tags, function (tag) {
-					tempTags.push(tag.toLowerCase());
-				});
-
-				if (array.some(penaltyWords, function (penaltyWord) {
-					return tempTags.indexOf(penaltyWord.toLowerCase()) !== -1;
-				})) {
-					// PASS with penalty
-					//sectionScore = scoring.SECTION_PASSING;
-					//numeratorNode.innerHTML = sectionScore;
-					console.log("FAIL");
-					domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
-					return score;
-				} else {
-					// PASS
-					//sectionScore = scoring.SECTION_MAX;
-					//numeratorNode.innerHTML = sectionScore;
-					console.log("PASS");
-					score = score + 1;
-					domClass.replace(containerNode, "score-graphic-pass", "score-graphic-fail");
-					return score;
-				}
-			} else {
-				// FAIL
-				//sectionScore = scoring.TAGS_HAS_NO_TAGS;
-				score = 0;
-				//numeratorNode.innerHTML = sectionScore;
-				// update style of section scoring graphic
-				domClass.replace(containerNode, "score-graphic-fail", "score-graphic-pass");
-				console.log("FAIL");
-				return score;
-			}
-		}*/
-
-
-
 		function updateSectionScoreStyle(itemScore, max, node) {
 			if ((itemScore / max * 100) >= 80) {
 				domClass.replace(node, "score-graphic-pass", "score-graphic-fail");
@@ -1754,114 +1678,6 @@ require([
 			}
 		}
 
-		// set item thumbnail score
-		function setThumbnailScore(item) {
-			var score = 0;
-			var thumbnail = null;
-			var largeThumbnail = item.largeThumbnail;
-			if (largeThumbnail !== null) {
-				// large thumbnail
-				thumbnail = largeThumbnail;
-				score = scoring.ITEM_THUMBNAIL_LARGE;
-			} else {
-				// normal thumbnail
-				thumbnail = item.thumbnail;
-			}
-			if (thumbnail === null || thumbnail === undefined) {
-				score = 0;
-				return score;
-			} else {
-				var index = thumbnail.lastIndexOf("/") + 1;
-				var filename = thumbnail.substr(index);
-				filename = filename.split("?")[0];
-				if (filename === "nullThumbnail.png" || filename === "ago_downloaded.png" || filename === "no-user-thumb.jpg") {
-					return 0;
-				} else {
-					return score + scoring.ITEM_THUMBNAIL_CUSTOM;
-				}
-			}
-		}
-
-		// set the item title score
-		function setItemTitleScore(itemTitle) {
-			var score = 0;
-			var strippedString = itemTitle.replace(/(<([^>]+)>)/ig, "");
-			var nWords = getNumWords(strippedString);
-			if (nWords > scoring.ITEM_TITLE_MIN_LENGTH) {
-				score = scoring.ITEM_TITLE_MIN_LENGTH;
-			}
-			score = score + hasBadWords(itemTitle, scoring.ITEM_TITLE_BAD_WORDS, scoring.ITEM_TITLE_NO_BAD_WORDS);
-			score = score + hasBadCharacters(itemTitle, "_", scoring.ITEM_TITLE_NO_UNDERSCORE);
-			score = score + isUpperCase(itemTitle);
-			return score;
-		}
-
-		// set item summary score
-		function setItemSummaryScore(itemSummary) {
-			var score = 0;
-			if (itemSummary === "" || itemSummary === null) {
-				score = 0;
-			} else {
-				score = scoring.ITEM_SUMMARY_MUST_EXIST;
-				var strippedString = itemSummary.replace(/(<([^>]+)>)/ig, "");
-				var nWords = getNumWords(strippedString);
-				if (nWords >= scoring.ITEM_SUMMARY_MIN_NUM_WORDS) {
-					score = score + scoring.ITEM_SUMMARY_MIN_LENGTH;
-				}
-				score = score + hasBadWords(strippedString, scoring.ITEM_SUMMARY_CONTENT, scoring.ITEM_SUMMARY_NO_BAD_WORDS);
-				score = score + hasBadCharacters(strippedString, "_", scoring.ITEM_SUMMARY_NO_UNDERSCORE);
-			}
-			return score;
-		}
-
-		// set item description score
-		function setItemDescriptionScore(itemDescription) {
-			var score = 0;
-			if (itemDescription === "" || itemDescription === null) {
-				score = 0;
-			} else {
-				score = score + scoring.ITEM_DESCRIPTION_MUST_EXIST;
-				var strippedString = itemDescription.replace(/(<([^>]+)>)/ig, "");
-				var nWords = getNumWords(strippedString);
-				if (nWords >= scoring.ITEM_DESC_MIN_LENGTH) {
-					score = score + scoring.ITEM_DESCRIPTION_MIN_LENGTH;
-				}
-				if (itemDescription.search("href") > -1) {
-					score = score + scoring.ITEM_DESCRIPTION_LINK;
-				}
-			}
-			return score;
-		}
-
-		// set item access and use constraints score
-		function setAccessAndUseConstraintsScore(itemAccessAndConstraints) {
-			var score = 0;
-			if (itemAccessAndConstraints === "" || itemAccessAndConstraints === null) {
-				score = 0;
-			} else {
-				score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS;
-				var strippedString = itemAccessAndConstraints.replace(/(<([^>]+)>)/ig, "");
-				var nWords = getNumWords(strippedString);
-				if (nWords >= scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS) {
-					score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS;
-				}
-				if (itemAccessAndConstraints.search("href") > -1) {
-					score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK;
-				}
-			}
-			return score;
-		}
-
-		// set credit score
-		function setCredtisScore(itemCredit) {
-			var score = 0;
-			if (itemCredit === "" || itemCredit === null) {
-				score = 0;
-			} else {
-				score = scoring.ITEM_CREDITS_HAS_WORDS;
-			}
-			return score;
-		}
 
 		// validate tags
 		function validateItemTags(tags) {
@@ -1909,147 +1725,6 @@ require([
 			return score;
 		}
 
-		function setUserProfileFullNameScore(userName) {
-			var score = 0;
-			if (userName === "" || userName === null) {
-				score = 0;
-			} else {
-				score = score + scoring.USER_PROFILE_HAS_FULLNAME_MIN_NUM_WORDS;
-				score = score + hasBadCharacters(userName, "_", scoring.USER_PROFILE_FULLNAME_HAS_NO_UNDERSCORE);
-			}
-			return score;
-		}
-
-		function setUserDescriptionScore(userDescription) {
-			var score = 0;
-			if (userDescription === "" || userDescription === null) {
-				score = 0;
-			} else {
-				// has text +1
-				score = scoring.USER_PROFILE_DESCRIPTION_HAS_DESCRIPTION;
-				// has link 1
-				var strippedString = userDescription.replace(/(<([^>]+)>)/ig, "");
-				score = score + hasUrl(strippedString, scoring.USER_PROFILE_DESCRIPTION_HAS_LINK);
-				var nWords = getNumWords(strippedString);
-				if (nWords > 10) {
-					// > 10 +1
-					score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_WORDS;
-				}
-				var nSentences = userDescription.match( /[^\.!\?]+[\.!\?]+/g).length;
-				if (nSentences >= 2) {
-					// 2 min sentence +2
-					score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_MIN_NUM_SENTENCES;
-				}
-
-				var emails = extractEmails(userDescription);
-				if (emails !== null) {
-					// has email +2
-					score = score + scoring.USER_PROFILE_DESCRIPTION_HAS_EMAIL;
-				}
-			}
-			return score;
-		}
-
-		function extractEmails(text) {
-			return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
-		}
-
-		function hasUrl(str, bonus) {
-			var pattern = new RegExp("((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\'\\(\\)"
-					+ "\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-zA-Z0-9\\$\\-\\_"
-					+ "\\.\\+\\!\\*\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?"
-					+ "((?:(?:[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}\\.)+"   // named host
-					+ "(?:"   // plus top level domain
-					+ "(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])"
-					+ "|(?:biz|b[abdefghijmnorstvwyz])"
-					+ "|(?:cat|com|coop|c[acdfghiklmnoruvxyz])"
-					+ "|d[ejkmoz]"
-					+ "|(?:edu|e[cegrstu])"
-					+ "|f[ijkmor]"
-					+ "|(?:gov|g[abdefghilmnpqrstuwy])"
-					+ "|h[kmnrtu]"
-					+ "|(?:info|int|i[delmnoqrst])"
-					+ "|(?:jobs|j[emop])"
-					+ "|k[eghimnrwyz]"
-					+ "|l[abcikrstuvy]"
-					+ "|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])"
-					+ "|(?:name|net|n[acefgilopruz])"
-					+ "|(?:org|om)"
-					+ "|(?:pro|p[aefghklmnrstwy])"
-					+ "|qa"
-					+ "|r[eouw]"
-					+ "|s[abcdeghijklmnortuvyz]"
-					+ "|(?:tel|travel|t[cdfghjklmnoprtvwz])"
-					+ "|u[agkmsyz]"
-					+ "|v[aceginu]"
-					+ "|w[fs]"
-					+ "|y[etu]"
-					+ "|z[amw]))"
-					+ "|(?:(?:25[0-5]|2[0-4]" // or ip address
-					+ "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]"
-					+ "|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]"
-					+ "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}"
-					+ "|[1-9][0-9]|[0-9])))"
-					+ "(?:\\:\\d{1,5})?)" // plus option port number
-					+ "(\\/(?:(?:[a-zA-Z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~"  // plus option query params
-					+ "\\-\\.\\+\\!\\*\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?"); // fragment locator
-			if (!pattern.test(str)) {
-				return 0;
-			} else {
-				return bonus;
-			}
-		}
-
-		function getNumWords(s) {
-			// exclude white space
-			s = s.replace(/(^\s*)|(\s*$)/gi, "");
-			s = s.replace(/[ ]{2,}/gi, " ");
-			// exclude newline with a space at beginning
-			s = s.replace(/\n /, "\n");
-			return s.split(" ").length;
-		}
-
-		function validateNumWords(inputText, minNumWords) {
-			var nWords = 0;
-			if (inputText.length > 0) {
-				nWords = getNumWords(inputText);
-			}
-
-			if (nWords < minNumWords) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-
-		function hasBadWords(inputText, badWords, bonus) {
-			if (array.some(badWords, function (badWord) {
-				return inputText.search(badWord) >= 0;
-			})) {
-				// yes
-				return 0;
-			} else {
-				// no
-				return bonus;
-			}
-		}
-
-		function hasBadCharacters(inputText, badChars, bonus) {
-			if (inputText.indexOf(badChars) == -1) {
-				return bonus;
-			} else {
-				return 0;
-			}
-		}
-
-		function isUpperCase(str) {
-			if (str === str.toUpperCase()) {
-				return 0;
-			} else {
-				return scoring.ITEM_TITLE_NO_ALL_CAPS;
-			}
-		}
-
 		function styleTags(tags, srcNodeRef) {
 			domClass.add(dom.byId(srcNodeRef), 'select2-container select2-container-multi');
 			var list = domConstruct.create('ul', null, dom.byId(srcNodeRef));
@@ -2068,11 +1743,6 @@ require([
 			});
 		}
 
-		function loadContent(content) {
-			domConstruct.destroy("section-content");
-			var node = query(".content-container")[0];
-			domConstruct.place(content, node, "last");
-		}
 
 		function createTooltips(nodes, content) {
 			array.forEach(nodes, function (node, i) {
@@ -2142,6 +1812,8 @@ require([
 										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
 										updatedItems[imageSizeName].push(item.id);
 										msgPane.innerHTML = "Item updated with thumbnail";
+										validator.setThumbnailScore(userItem);
+										updateOverallScore();
 										previewDlg.hide();
 									}), lang.hitch(this, function (error) {
 										console.warn(error);
@@ -2221,10 +1893,12 @@ require([
 											},
 											handleAs: "json"
 										}).then(lang.hitch(this, function (obj) {
-													portalUserThumbnailUrl = portalUserThumbnailUrl.substring(0, portalUserThumbnailUrl.lastIndexOf("/"));
-													portalUserThumbnailUrl = portalUserThumbnailUrl + "/" + obj.thumbnail;
-													domAttr.set(query(".profileThumbnailUrl")[0], "src", portalUserThumbnailUrl);
-												}));
+											validator.setThumbnailScore(obj);
+											updateOverallScore();
+											portalUserThumbnailUrl = portalUserThumbnailUrl.substring(0, portalUserThumbnailUrl.lastIndexOf("/"));
+											portalUserThumbnailUrl = portalUserThumbnailUrl + "/" + obj.thumbnail;
+											domAttr.set(query(".profileThumbnailUrl")[0], "src", portalUserThumbnailUrl);
+										}));
 									}
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
@@ -2311,78 +1985,7 @@ require([
 			return thumbnailUrl;
 		}
 
-		function processMapDrawTime(val) {
-			var temp = (val / 1000) % 60;
-			var seconds = number.format(temp, {
-				places: 5
-			});
-			if (seconds) {
-				return seconds + " seconds";
-			} else {
-				return "N/A";
-			}
-		}
 
-		function setMapDrawTimeScore(val) {
-			var temp = (val / 1000) % 60;
-			var seconds = number.format(temp, {
-				places: 5
-			});
-
-			if (seconds < defaults.drawTime.BEST) {
-				return scoring.PERFORMANCE_DRAW_TIME_BEST;
-			} else if (seconds < defaults.drawTime.BETTER) {
-				return scoring.PERFORMANCE_DRAW_TIME_BETTER;
-			} else if (seconds < defaults.drawTime.GOOD) {
-				return scoring.PERFORMANCE_DRAW_TIME_GOOD;
-			} else {
-				return 0;
-			}
-		}
-
-		function setPopupScore(layers) {
-			var score = 0;
-			var isCustomPopup = false;
-			array.forEach(layers, function (layer) {
-				var popupInfo;
-				if (layer.featureCollection !== undefined) {
-					popupInfo = layer.featureCollection.layers[0].popupInfo;
-					if (popupInfo.description !== null) {
-						isCustomPopup = true;
-						score = scoring.PERFORMANCE_POPUPS_CUSTOM;
-					}
-				} else {
-					score = 0;
-				}
-			});
-			return score;
-		}
-
-		function setNumLayersScore(layers) {
-			if (layers !== undefined) {
-				var nLayers = layers.length;
-				if (nLayers > scoring.LAYER_COUNT_MAX) {
-					return scoring.LAYER_COUNT_GOOD_POINTS;
-				} else if (nLayers > scoring.LAYER_COUNT_MIN && nLayers <= scoring.LAYER_COUNT_MAX) {
-					return scoring.LAYER_COUNT_BETTER_POINTS;
-				} else if (nLayers === scoring.LAYER_COUNT_MIN) {
-					return scoring.LAYER_COUNT_BEST_POINTS;
-				} else {
-					return 0;
-				}
-			}
-		}
-
-		function setSharingScore(item) {
-			var sharing = item.access;
-			if (sharing === "private") {
-				return scoring.PERFORMANCE_SHARING_PRIVATE_POINTS;
-			} else if (sharing === "org" || sharing === "shared") {
-				return scoring.PERFORMANCE_SHARING_ORG_POINTS;
-			} else {
-				return scoring.PERFORMANCE_SHARING_PUBLIC_POINTS;
-			}
-		}
 
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
 			var average = Math.floor(score/sectionThreshold * 100);
@@ -2561,8 +2164,6 @@ require([
 
 		function addCheckbox(itemTags, id, atlasTag) {
 			console.log(itemTags);
-			console.log(id);
-			console.log(atlasTag);
 			var checkBox;
 			if (array.some(itemTags, function (tag) {
 				return tag.toUpperCase() === atlasTag.toUpperCase();

@@ -34,12 +34,14 @@ define({
 	// failing color
 	"SECTION_FAIL_COLOR" : "#C86A4A",
 
-	// Item Details
+	////////////////////////////////////////////
+	// Details
+	////////////////////////////////////////////
 	// Thumbnail
 	"NO_THUMBNAIL_FILE_NAME" : "ago_downloaded.png",
-	"ITEM_THUMBNAIL_NONE" : 0,
-	"ITEM_THUMBNAIL_CUSTOM" : 4,
 	"ITEM_THUMBNAIL_LARGE" : 3,
+	"ITEM_THUMBNAIL_CUSTOM" : 4,
+	"ITEM_THUMBNAIL_NONE" : 0,
 	// Title
 	"ITEM_TITLE_NO_BAD_WORDS" : 2,
 	"ITEM_TITLE_BAD_WORDS" : ["copy", "demo", "test", "eval", "_"],
@@ -61,6 +63,9 @@ define({
 	"ITEM_DESC_MIN_LENGTH" : 48,
 	"ITEM_DESC_CONTENT" : [""],
 
+	////////////////////////////////////////////
+	// Use/Credtis
+	////////////////////////////////////////////
 	// Item Use/Credits Scoring
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS" : 1,
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS" : 3,
@@ -74,7 +79,9 @@ define({
 	"ITEM_CREDITS_MIN_NUM_WORDS" : 1,
 	"ITEM_CREDITS_CONTENT" : [],
 
-	// Tags Scoring
+	////////////////////////////////////////////
+	// Tags
+	////////////////////////////////////////////
 	"TAGS_HAS_NO_TAGS" : 0,
 	"TAGS_HAS_TAGS" : 1,
 	"TAGS_HAS_ATLAS_TAGS" : 3,
@@ -84,8 +91,9 @@ define({
 	"TAGS_MIN_COUNT" : 3,
 	"TAGS_PENALTY_WORDS" : ["copy", "demo", "test", "eval"],
 
-	// Performance Scoring
-
+	////////////////////////////////////////////
+	// Performance
+	////////////////////////////////////////////
 	// Performance Parameter
 	"PERFORMANCE_MAX" : 7,
 	// Map draw time (Best)
@@ -118,6 +126,9 @@ define({
 	// AGOL item sharing is set to private
 	"PERFORMANCE_SHARING_PRIVATE_POINTS" : 0,
 
+	////////////////////////////////////////////
+	// User Profile
+	////////////////////////////////////////////
 	// User Profile scoring
 	"USER_PROFILE_HAS_THUMBNAIL" : 5,
 	"USER_PROFILE_HAS_LARGE_THUMBNAIL" : 2,
@@ -185,7 +196,7 @@ define({
 	// map draw times in seconds
 	"drawTime":{
 		"GOOD":10,
-		"BETTER":3,
-		"BEST":1
+		"BETTER":6,
+		"BEST":2
 	}
 });

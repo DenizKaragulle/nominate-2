@@ -119,9 +119,11 @@
 		"config/defaults",
 		"config/details",
 		"config/scoring",
+		"config/prototype",
+		"config/validator",
 		"dojo/_base/window",
 		"dojo/NodeList-traverse"
-	], function (fx, Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, string, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, scoring, win) {
+	], function (fx, Tooltip, put, Memory, Pagination, OnDemandGrid, OnDemandList, Keyboard, Selection, Editor, Button, CheckBox, ComboBox, SimpleTextarea, Dialog, ProgressBar, array, declare, fx, lang, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, number, on, string, query, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, Map, esriRequest, parser, ready, defaults, details, scoring, Prototype, Validator, win) {
 
 		parser.parse();
 
@@ -150,6 +152,17 @@
 				 fadeInContent("meta-data-content");
 				 }
 				 });*/
+
+				var prototype = new Prototype();
+				prototype.startup();
+
+				var validator = new Validator(defaults);
+				validator.startup();
+				on(validator, "ready", function (response) {
+					console.log(prototype.setItemTitleScore(response.portal.itemInfo.item.title));
+					console.log(prototype.setItemSummaryScore(response.portal.itemInfo.item.snippet));
+					console.log(prototype.setItemDescriptionScore(response.portal.itemInfo.item.description));
+				});
 
 				btn1NodeNodeClickHandler = function () {
 					myProgressBar.set("value", 85);
