@@ -491,6 +491,7 @@ require([
 												"			</div>" +
 												"			<div class='column-2'>" +
 												"				<div class='current-score-number'></div>" +
+												"				<div id='progressBarMarker'></div>" +
 												"			</div>" +
 												"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
 												"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
@@ -565,10 +566,19 @@ require([
 											}
 										});
 									} else {
+										// fade the loader
 										fadeLoader();
 										// hide the map div
 										domStyle.set("map", "display", "none");
+										//
 										on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", layers, performanceNode));
+
+										mapDrawTimeScore = 0;
+										nLayersScore = 0;
+										popupsScore = 0;
+										sharingScore = validator.setSharingScore(item);
+										performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
+
 										// initialize the scores
 										initScores(item, portalUser);
 										HAS_PERFORMANCE_CONTENT = false;
@@ -595,9 +605,9 @@ require([
 										}).placeAt(progressBarNode).startup();
 									}
 
-									var barAttr = domStyle.get(query(".dijitProgressBarLabel")[0]);
-									var externalBarWidth = domStyle.get(query(".dijitProgressBarLabel")[0], "width");
-									var internalBarWidth = domStyle.get(query(".dijitProgressBarFull")[0], "width");
+									//var barAttr = domStyle.get(query(".dijitProgressBarLabel")[0]);
+									//var externalBarWidth = domStyle.get(query(".dijitProgressBarLabel")[0], "width");
+									//var internalBarWidth = domStyle.get(query(".dijitProgressBarFull")[0], "width");
 
 									// draw the minimum score marker
 									initPassingMarker();
@@ -1351,9 +1361,9 @@ require([
 				domStyle.set(nLayersBetterNode, "color", "#005E95");
 				domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
 				// score
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
-				domStyle.set(layerCountNumeratorNode, "color", "#005E95");
-				domStyle.set(layerCountDenominatorNode, "color", "#005E95");
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #C86A4A");
+				domStyle.set(layerCountNumeratorNode, "color", "#C86A4A");
+				domStyle.set(layerCountDenominatorNode, "color", "#C86A4A");
 			} else if (nLayersScore === scoring.LAYER_COUNT_BEST_POINTS) {
 				// BEST
 				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1668,13 +1678,13 @@ require([
 
 			var TMP_MAX_SCORE = 0;
 			// update the score
-			if (HAS_PERFORMANCE_CONTENT) {
+			//if (HAS_PERFORMANCE_CONTENT) {
 				TMP_MAX_SCORE = MAX_SCORE;
 				overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / MAX_SCORE * 100);
-			} else {
-				TMP_MAX_SCORE = MAX_SCORE - PERFORMANCE_MAX_SCORE;
-				overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + userProfileScore) / TMP_MAX_SCORE * 100);
-			}
+			//} else {
+			//	TMP_MAX_SCORE = MAX_SCORE - PERFORMANCE_MAX_SCORE;
+			//	overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / TMP_MAX_SCORE * 100);
+			//}
 			if (overAllCurrentScore >= TMP_MAX_SCORE) {
 				domStyle.set(currentOverallScoreNode, "color", "#005E95");
 			} else {
