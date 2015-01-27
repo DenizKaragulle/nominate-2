@@ -1,5 +1,5 @@
 # Nominate
-Prototype used to nomiate items going into the Living Atlas.
+Prototype used to nominate items going into the Living Atlas.
 
 [Read the docs](link coming soon)!
 
