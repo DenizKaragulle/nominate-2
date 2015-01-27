@@ -164,16 +164,16 @@ define([
 				places: 5
 			});
 
-			if (seconds < scoring.drawTime.BEST) {
-				score = scoring.PERFORMANCE_DRAW_TIME_BEST_SCORE;
+			if (seconds < scoring.drawTime.GOOD) {
+				score = scoring.PERFORMANCE_DRAW_TIME_GOOD_SCORE;
 			}
 
 			if (seconds < scoring.drawTime.BETTER) {
 				score = scoring.PERFORMANCE_DRAW_TIME_BETTER_SCORE;
 			}
-
-			if (seconds < scoring.drawTime.GOOD) {
-				score = scoring.PERFORMANCE_DRAW_TIME_GOOD_SCORE;
+			
+			if (seconds < scoring.drawTime.BEST) {
+				score = scoring.PERFORMANCE_DRAW_TIME_BEST_SCORE;
 			}
 			return score;
 		},

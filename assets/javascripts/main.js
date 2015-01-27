@@ -580,6 +580,7 @@ require([
 
 												// set performance scores
 												mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
+												console.log("MAP DRAW TIME SCORE: " + mapDrawTimeScore);
 												nLayersScore = validator.setNumLayersScore(layers);
 												popupsScore = validator.setPopupScore(layers);
 												sharingScore = validator.setSharingScore(item);
@@ -1339,26 +1340,14 @@ require([
 				domStyle.set(mdtGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBestNode, "color", "#0079C1");
-				// score
-				domStyle.set(mdtScoreContainerNode, "border", "1px solid #0079C1");
-				domStyle.set(mdtNumeratorNode, "color", "#0079C1");
-				domStyle.set(mdtDenominatorNode, "color", "#0079C1");
 			} else if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_BETTER_SCORE) {
 				domStyle.set(mdtGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBetterNode, "color", "#0079C1");
 				domStyle.set(mdtBestNode, "color", "rgba(0, 122, 194, 0.24)");
-				// score
-				domStyle.set(mdtScoreContainerNode, "border", "1px solid #0079C1");
-				domStyle.set(mdtNumeratorNode, "color", "#0079C1");
-				domStyle.set(mdtDenominatorNode, "color", "#0079C1");
 			} else if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_GOOD_SCORE) {
 				domStyle.set(mdtGoodNode, "color", "#0079C1");
 				domStyle.set(mdtBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBestNode, "color", "rgba(0, 122, 194, 0.24)");
-				// score
-				domStyle.set(mdtScoreContainerNode, "border", "1px solid #C86A4A");
-				domStyle.set(mdtNumeratorNode, "color", "#C86A4A");
-				domStyle.set(mdtDenominatorNode, "color", "#C86A4A");
 			}
 
 			// number of map layers
@@ -1373,37 +1362,21 @@ require([
 				domStyle.set(nLayersGoodNode, "color", scoring.PASS_COLOR);
 				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
-				// score graphic
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid " + scoring.FAIL_COLOR);
-				domStyle.set(layerCountNumeratorNode, "color", scoring.FAIL_COLOR);
-				domStyle.set(layerCountDenominatorNode, "color", scoring.FAIL_COLOR);
 			} else if (nLayersScore === scoring.LAYER_COUNT_BETTER_SCORE) {
 				// BETTER
 				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(nLayersBetterNode, "color", "#005E95");
+				domStyle.set(nLayersBetterNode, "color", scoring.PASS_COLOR);
 				domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
-				// score
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid " + scoring.FAIL_COLOR);
-				domStyle.set(layerCountNumeratorNode, "color", scoring.FAIL_COLOR);
-				domStyle.set(layerCountDenominatorNode, "color", scoring.FAIL_COLOR);
 			} else if (nLayersScore === scoring.LAYER_COUNT_BEST_SCORE) {
 				// BEST
 				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBestNode, "color", scoring.PASS_COLOR);
-				// score
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid " + scoring.PASS_COLOR);
-				domStyle.set(layerCountNumeratorNode, "color", scoring.PASS_COLOR);
-				domStyle.set(layerCountDenominatorNode, "color", scoring.PASS_COLOR);
 			} else {
 				// NO LAYERS
 				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBestNode, "color", scoring.PASS_COLOR);
-				// score
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid " + scoring.PASS_COLOR);
-				domStyle.set(layerCountNumeratorNode, "color", scoring.PASS_COLOR);
-				domStyle.set(layerCountDenominatorNode, "color", scoring.PASS_COLOR);
 			}
 
 			// popups
@@ -1413,26 +1386,15 @@ require([
 			var popupsNoneNode = query(".performance-popups-none")[0],
 				popupsDefaultNode = query(".performance-popups-default")[0],
 				popupsCustomNode = query(".performance-popups-custom")[0];
-			//domStyle.set(popupsNumeratorNode, "color", "#005E95");
-			//domStyle.set(popupsDenominatorNode, "color", "#005E95");
 			if (popupsScore === scoring.PERFORMANCE_POPUPS_ENABLED) {
-				domStyle.set(popupsScoreContainerNode, "border", "1px solid #C86A4A");
-				domStyle.set(popupsNumeratorNode, "color", "#C86A4A");
-				domStyle.set(popupsDenominatorNode, "color", "#C86A4A");
 				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsDefaultNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsCustomNode, "color", "#005E95");
 			} else if (popupsScore === scoring.PERFORMANCE_POPUPS_CUSTOM) {
-				domStyle.set(popupsScoreContainerNode, "border", "1px solid #005E95");
-				domStyle.set(popupsNumeratorNode, "color", "#005E95");
-				domStyle.set(popupsDenominatorNode, "color", "#005E95");
 				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsDefaultNode, "color", "#005E95");
 				domStyle.set(popupsCustomNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else {
-				domStyle.set(popupsScoreContainerNode, "border", "1px solid #005E95");
-				domStyle.set(popupsNumeratorNode, "color", "#005E95");
-				domStyle.set(popupsDenominatorNode, "color", "#005E95");
 				domStyle.set(popupsNoneNode, "color", "#005E95");
 				domStyle.set(popupsDefaultNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsCustomNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1447,25 +1409,16 @@ require([
 				sharingBestNode = query(".performance-sharing-best")[0];
 			if (sharingScore === scoring.PERFORMANCE_SHARING_PRIVATE_SCORE) {
 				// GOOD
-				domStyle.set(sharingContainerNode, "border", "1px solid #C86A4A");
-				domStyle.set(sharingNumeratorNode, "color", "#C86A4A");
-				domStyle.set(sharingDenominatorNode, "color", "#C86A4A");
 				domStyle.set(sharingGoodNode, "color", "#005E95");
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else if (sharingScore === scoring.PERFORMANCE_SHARING_ORG_SCORE) {
 				// BETTER
-				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
-				domStyle.set(sharingNumeratorNode, "color", "#005E95");
-				domStyle.set(sharingDenominatorNode, "color", "#005E95");
 				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBetterNode, "color", "#005E95");
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else {
 				// BEST
-				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
-				domStyle.set(sharingNumeratorNode, "color", "#005E95");
-				domStyle.set(sharingDenominatorNode, "color", "#005E95");
 				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBestNode, "color", "#005E95");
