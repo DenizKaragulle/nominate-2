@@ -226,7 +226,7 @@ define([
 				if (layer.featureCollection !== undefined) {
 					popupInfo = layer.featureCollection.layers[0].popupInfo;
 					var popupDescription = popupInfo.description;
-					if (popupDescription !== null || popupDescription !== undefined) {
+					if (popupDescription !== null && popupDescription !== undefined) {
 						if (popupDescription !== null) {
 							isCustomPopup = true;
 							score = scoring.PERFORMANCE_POPUPS_CUSTOM;
