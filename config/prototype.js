@@ -186,7 +186,7 @@ define([
 				} else if (nLayers === scoring.LAYER_COUNT_MIN) {
 					return scoring.LAYER_COUNT_BEST_POINTS;
 				} else {
-					return 0;
+					return 7;
 				}
 			}
 		},

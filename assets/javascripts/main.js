@@ -1375,6 +1375,15 @@ require([
 				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
 				domStyle.set(layerCountNumeratorNode, "color", "#005E95");
 				domStyle.set(layerCountDenominatorNode, "color", "#005E95");
+			} else {
+				// NO LAYERS
+				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
+				domStyle.set(nLayersBestNode, "color", "#005E95");
+				// score
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
+				domStyle.set(layerCountNumeratorNode, "color", "#005E95");
+				domStyle.set(layerCountDenominatorNode, "color", "#005E95");
 			}
 
 			domStyle.set(popupsNumeratorNode, "color", "#005E95");
