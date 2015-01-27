@@ -29,7 +29,7 @@ define([
 			if (largeThumbnail !== null) {
 				// large thumbnail
 				thumbnail = largeThumbnail;
-				score = scoring.ITEM_THUMBNAIL_LARGE;
+				score = scoring.ITEM_THUMBNAIL_LARGE_SCORE;
 			} else {
 				// normal thumbnail
 				thumbnail = item.thumbnail;
@@ -40,7 +40,7 @@ define([
 				var index = thumbnail.lastIndexOf("/") + 1;
 				var filename = thumbnail.substr(index);
 				filename = filename.split("?")[0];
-				if (filename === "nullThumbnail.png" || filename === "ago_downloaded.png" || filename === "no-user-thumb.jpg") {
+				if (filename === "nullThumbnail.png" || filename === scoring.NO_THUMBNAIL_FILE_NAME || filename === "no-user-thumb.jpg") {
 					return 0;
 				} else {
 					return score + scoring.ITEM_THUMBNAIL_CUSTOM;
@@ -121,14 +121,17 @@ define([
 			if (itemAccessAndConstraints === "" || itemAccessAndConstraints === null) {
 				score = 0;
 			} else {
-				score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS;
 				var strippedString = itemAccessAndConstraints.replace(/(<([^>]+)>)/ig, "");
 				var nWords = this._getNumWords(strippedString);
-				if (nWords >= scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS) {
-					score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS;
+				if (nWords >= scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS) {
+					score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS_SCORE;
+					if (nWords > 1) {
+						score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS;
+					}
 				}
+				score = score + this._hasBonusWords(strippedString, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS_SCORE);
 				if (itemAccessAndConstraints.search("href") > -1) {
-					score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK;
+					score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK_SCORE;
 				}
 			}
 			return score;
@@ -370,6 +373,20 @@ define([
 			// exclude newline with a space at beginning
 			s = s.replace(/\n /, "\n");
 			return s.split(" ").length;
+		},
+
+		_hasBonusWords: function (inputText, bonusWords, bonus) {
+			inputText = inputText.toLowerCase();
+			if (array.some(bonusWords, function (bonusWord) {
+				bonusWord = bonusWord.toLowerCase();
+				return inputText.search(bonusWord) >= 0;
+			})) {
+				// yes
+				return bonus;
+			} else {
+				// no
+				return 0;
+			}
 		},
 
 		_hasBadWords: function (inputText, badWords, bonus) {
