@@ -202,12 +202,19 @@ define([
 
 			array.forEach(layers, function (layer) {
 				array.forEach(layer.layers, function(lyr) {
+					console.log(lyr);
 					if (isCustomPopup === false) {
 						if (lyr.popupInfo) {
 							var popupInfo = lyr.popupInfo;
-							if (popupInfo.description.length > 0) {
-								isCustomPopup = true;
-								score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+							var popupDescription = popupInfo.description;
+							if (popupDescription !== null && popupDescription !== undefined) {
+								console.log(popupDescription);
+								if (popupDescription.length > 0) {
+									isCustomPopup = true;
+									score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+								}
+							} else {
+								score = 2;
 							}
 						}
 					}
@@ -218,17 +225,14 @@ define([
 				var popupInfo;
 				if (layer.featureCollection !== undefined) {
 					popupInfo = layer.featureCollection.layers[0].popupInfo;
-					if (popupInfo.description !== null) {
-						isCustomPopup = true;
-						score = scoring.PERFORMANCE_POPUPS_CUSTOM;
-					}
-				}
-
-				if (layer.featureCollection !== undefined) {
-					popupInfo = layer.featureCollection.layers[0].popupInfo;
-					if (popupInfo.description !== null) {
-						isCustomPopup = true;
-						score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+					var popupDescription = popupInfo.description;
+					if (popupDescription !== null || popupDescription !== undefined) {
+						if (popupDescription !== null) {
+							isCustomPopup = true;
+							score = scoring.PERFORMANCE_POPUPS_CUSTOM;
+						}
+					} else {
+						score = 2;
 					}
 				}
 			});
