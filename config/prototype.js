@@ -373,7 +373,9 @@ define([
 		},
 
 		_hasBadWords: function (inputText, badWords, bonus) {
+			inputText = inputText.toLowerCase();
 			if (array.some(badWords, function (badWord) {
+				badWord = badWord.toLowerCase();
 				return inputText.search(badWord) >= 0;
 			})) {
 				// yes
