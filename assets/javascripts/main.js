@@ -84,7 +84,7 @@ require([
 	var dropdownSortNode = "";
 	var dropdownItemFilterNode = "";
 	var helpButtonNode = "";
-
+	var nominateBtnNode = null;
 	var progressBarNode = "";
 	var categoryNodes = [];
 	// div dimensions
@@ -494,7 +494,7 @@ require([
 													"				<div id='progressBarMarker'></div>" +
 													"			</div>" +
 													"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-													"				<button id='nominate-btn' class='btn icon-email custom-btn'> NOMINATE </button>" +
+													"				<button id='nominate-btn' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
 													"			</div>" +
 													"		</div>" +
 
@@ -519,6 +519,8 @@ require([
 									currentOverallScoreNode = query(".current-score-number")[0];
 									// get progress bar node
 									progressBarNode = query(".current-score-graphic-container")[0];
+									// nominate button node
+									nominateBtnNode = dom.byId("nominate-btn");
 
 									// create button group
 									initContentButtonGroup(tcID);
@@ -1685,10 +1687,15 @@ require([
 			//	TMP_MAX_SCORE = MAX_SCORE - PERFORMANCE_MAX_SCORE;
 			//	overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / TMP_MAX_SCORE * 100);
 			//}
-			if (overAllCurrentScore >= 80) {
+			var classAttrs = domAttr.get(nominateBtnNode, "class");
+			if (overAllCurrentScore >= scoring.SCORE_THRESHOLD) {
 				domStyle.set(currentOverallScoreNode, "color", "#005E95");
+				classAttrs = classAttrs.replace("disabled", "enabled");
+				domAttr.set(nominateBtnNode, "class", classAttrs);
 			} else {
 				domStyle.set(currentOverallScoreNode, "color", "#C86A4A");
+				classAttrs = classAttrs.replace("enabled", "disabled");
+				domAttr.set(nominateBtnNode, "class", classAttrs);
 			}
 			// update the score label
 			currentOverallScoreNode.innerHTML = overAllCurrentScore;
