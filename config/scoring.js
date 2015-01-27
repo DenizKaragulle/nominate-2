@@ -99,20 +99,18 @@ define({
 	// Performance Parameter
 	"PERFORMANCE_MAX" : 7,
 	// Map draw time (Best)
-	"PERFORMANCE_DRAW_TIME_BEST" : 7,
+	"PERFORMANCE_DRAW_TIME_BEST_SCORE" : 7,
 	// Map draw time (Better)
-	"PERFORMANCE_DRAW_TIME_BETTER" : 4,
+	"PERFORMANCE_DRAW_TIME_BETTER_SCORE" : 4,
 	// Map draw time (Good)
-	"PERFORMANCE_DRAW_TIME_GOOD" : 2,
+	"PERFORMANCE_DRAW_TIME_GOOD_SCORE" : 1,
 
-	// Number of map layers (Best)
-	"LAYER_COUNT_BEST_POINTS" : 7,
+	// Number of map layers
+	"LAYER_COUNT_GOOD_SCORE" : 1,
+	"LAYER_COUNT_BETTER_SCORE" : 4,
+	"LAYER_COUNT_BEST_SCORE" : 7,
 	// Minimum number of layers
 	"LAYER_COUNT_MIN" : 1,
-	// Number of map layers (Better)
-	"LAYER_COUNT_BETTER_POINTS" : 4,
-	// Number of map layers (Good)
-	"LAYER_COUNT_GOOD_POINTS" : 1,
 	// Maximum number of layers
 	"LAYER_COUNT_MAX" : 10,
 
@@ -122,11 +120,11 @@ define({
 	"PERFORMANCE_POPUPS_ENABLED" : 2,
 
 	// AGOL item sharing is set to public
-	"PERFORMANCE_SHARING_PUBLIC_POINTS" : 5,
+	"PERFORMANCE_SHARING_PUBLIC_SCORE" : 5,
 	// AGOL item sharing is set to org
-	"PERFORMANCE_SHARING_ORG_POINTS" : 2,
+	"PERFORMANCE_SHARING_ORG_SCORE" : 2,
 	// AGOL item sharing is set to private
-	"PERFORMANCE_SHARING_PRIVATE_POINTS" : 0,
+	"PERFORMANCE_SHARING_PRIVATE_SCORE" : 0,
 
 	////////////////////////////////////////////
 	// User Profile
@@ -197,8 +195,8 @@ define({
 
 	// map draw times in seconds
 	"drawTime":{
-		"GOOD":10,
+		"BEST":2,
 		"BETTER":6,
-		"BEST":2
+		"GOOD":10
 	}
 });

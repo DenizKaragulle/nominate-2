@@ -146,10 +146,10 @@ require([
 	var TAGS_MAX_SCORE = 0;
 	// Performance
 	var PERFORMANCE_MAX_SCORE = 0,
-			PERFORMANCE_SHARING_MAX_SCORE = 0,
-			PERFORMANCE_POPUPS_MAX_SCORE = 0,
 			PERFORMANCE_DRAW_TIME_MAX_SCORE = 0,
-			PERFORMANCE_LAYER_COUNT_MAX_SCORE = 0;
+			PERFORMANCE_LAYER_COUNT_MAX_SCORE = 0,
+			PERFORMANCE_POPUPS_MAX_SCORE = 0,
+			PERFORMANCE_SHARING_MAX_SCORE = 0;
 	// User Profile
 	var USER_PROFILE_MAX_SCORE = 0,
 			USER_PROFILE_THUMBNAIL = 0,
@@ -1325,31 +1325,17 @@ require([
 					sharingNode = query(".sharing-tooltip")[0],
 					drawTimeTooltipNode = query(".draw-time-tooltip")[0],
 					popupsTooltipNode = query(".popups-tooltip")[0];
+			// create tooltips
+			createTooltips([mapLayersTooltipNode, sharingNode, drawTimeTooltipNode, popupsTooltipNode], [tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT, tooltipsConfig.PERFORMANCE_SHARING_TOOLTIP_CONTENT, tooltipsConfig.PERFORMANCE_DRAW_TIME_TOOLTIP_CONTENT, tooltipsConfig.PERFORMANCE_POP_UPS_TOOLTIP_CONTENT]);
 
+			// map draw time nodes
 			var mdtScoreContainerNode = query(".mdt-score-gr")[0],
-					nLayersScoreContainerNode = query(".num-layers-score-gr")[0],
-					popupsScoreContainerNode = query(".popups-score-gr")[0],
-					sharingContainerNode = query(".sharing-score-gr")[0];
-
-			var mdtNumeratorNode = query(".mdt-score-num")[0],
-					layerCountNumeratorNode = query(".num-layers-score-num")[0],
-					popupsNumeratorNode = query(".popups-score-num")[0],
-					sharingNumeratorNode = query(".sharing-score-num")[0];
-			var mdtDenominatorNode = query(".mdt-score-denom")[0],
-					layerCountDenominatorNode = query(".num-layers-score-denom")[0],
-					popupsDenominatorNode = query(".popups-score-denom")[0],
-					sharingDenominatorNode = query(".sharing-score-denom")[0];
+				mdtNumeratorNode = query(".mdt-score-num")[0],
+				mdtDenominatorNode = query(".mdt-score-denom")[0];
 			var mdtGoodNode = query(".performance-text-very-slow")[0],
-					mdtBetterNode = query(".performance-text-slow")[0],
-					mdtBestNode = query(".performance-text-good")[0];
-			var nLayersGoodNode = query(".num-layers-good")[0],
-					nLayersBetterNode = query(".num-layers-better")[0],
-					nLayersBestNode = query(".num-layers-best")[0];
-			var sharingGoodNode = query(".performance-sharing-good")[0],
-					sharingBetterNode = query(".performance-sharing-better")[0],
-					sharingBestNode = query(".performance-sharing-best")[0];
-
-			if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_BEST) {
+				mdtBetterNode = query(".performance-text-slow")[0],
+				mdtBestNode = query(".performance-text-good")[0];
+			if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_BEST_SCORE) {
 				domStyle.set(mdtGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBestNode, "color", "#0079C1");
@@ -1357,7 +1343,7 @@ require([
 				domStyle.set(mdtScoreContainerNode, "border", "1px solid #0079C1");
 				domStyle.set(mdtNumeratorNode, "color", "#0079C1");
 				domStyle.set(mdtDenominatorNode, "color", "#0079C1");
-			} else if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_BETTER) {
+			} else if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_BETTER_SCORE) {
 				domStyle.set(mdtGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBetterNode, "color", "#0079C1");
 				domStyle.set(mdtBestNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1365,7 +1351,7 @@ require([
 				domStyle.set(mdtScoreContainerNode, "border", "1px solid #0079C1");
 				domStyle.set(mdtNumeratorNode, "color", "#0079C1");
 				domStyle.set(mdtDenominatorNode, "color", "#0079C1");
-			} else if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_GOOD) {
+			} else if (mapDrawTimeScore === scoring.PERFORMANCE_DRAW_TIME_GOOD_SCORE) {
 				domStyle.set(mdtGoodNode, "color", "#0079C1");
 				domStyle.set(mdtBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(mdtBestNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1375,52 +1361,60 @@ require([
 				domStyle.set(mdtDenominatorNode, "color", "#C86A4A");
 			}
 
-
-			if (nLayersScore === scoring.LAYER_COUNT_GOOD_POINTS) {
+			// number of map layers
+			var nLayersScoreContainerNode = query(".num-layers-score-gr")[0],
+				layerCountNumeratorNode = query(".num-layers-score-num")[0],
+				layerCountDenominatorNode = query(".num-layers-score-denom")[0];
+			var nLayersGoodNode = query(".num-layers-good")[0],
+				nLayersBetterNode = query(".num-layers-better")[0],
+				nLayersBestNode = query(".num-layers-best")[0];
+			if (nLayersScore === scoring.LAYER_COUNT_GOOD_SCORE) {
 				// GOOD
-				domStyle.set(nLayersGoodNode, "color", "#005E95");
+				domStyle.set(nLayersGoodNode, "color", scoring.PASS_COLOR);
 				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
 				// score graphic
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #C86A4A");
-				domStyle.set(layerCountNumeratorNode, "color", "#C86A4A");
-				domStyle.set(layerCountDenominatorNode, "color", "#C86A4A");
-			} else if (nLayersScore === scoring.LAYER_COUNT_BETTER_POINTS) {
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid " + scoring.FAIL_COLOR);
+				domStyle.set(layerCountNumeratorNode, "color", scoring.FAIL_COLOR);
+				domStyle.set(layerCountDenominatorNode, "color", scoring.FAIL_COLOR);
+			} else if (nLayersScore === scoring.LAYER_COUNT_BETTER_SCORE) {
 				// BETTER
 				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBetterNode, "color", "#005E95");
 				domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
 				// score
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #C86A4A");
-				domStyle.set(layerCountNumeratorNode, "color", "#C86A4A");
-				domStyle.set(layerCountDenominatorNode, "color", "#C86A4A");
-			} else if (nLayersScore === scoring.LAYER_COUNT_BEST_POINTS) {
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid " + scoring.FAIL_COLOR);
+				domStyle.set(layerCountNumeratorNode, "color", scoring.FAIL_COLOR);
+				domStyle.set(layerCountDenominatorNode, "color", scoring.FAIL_COLOR);
+			} else if (nLayersScore === scoring.LAYER_COUNT_BEST_SCORE) {
 				// BEST
 				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(nLayersBestNode, "color", "#005E95");
+				domStyle.set(nLayersBestNode, "color", scoring.PASS_COLOR);
 				// score
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
-				domStyle.set(layerCountNumeratorNode, "color", "#005E95");
-				domStyle.set(layerCountDenominatorNode, "color", "#005E95");
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid " + scoring.PASS_COLOR);
+				domStyle.set(layerCountNumeratorNode, "color", scoring.PASS_COLOR);
+				domStyle.set(layerCountDenominatorNode, "color", scoring.PASS_COLOR);
 			} else {
 				// NO LAYERS
 				domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(nLayersBestNode, "color", "#005E95");
+				domStyle.set(nLayersBestNode, "color", scoring.PASS_COLOR);
 				// score
-				domStyle.set(nLayersScoreContainerNode, "border", "1px solid #005E95");
-				domStyle.set(layerCountNumeratorNode, "color", "#005E95");
-				domStyle.set(layerCountDenominatorNode, "color", "#005E95");
+				domStyle.set(nLayersScoreContainerNode, "border", "1px solid " + scoring.PASS_COLOR);
+				domStyle.set(layerCountNumeratorNode, "color", scoring.PASS_COLOR);
+				domStyle.set(layerCountDenominatorNode, "color", scoring.PASS_COLOR);
 			}
 
-			domStyle.set(popupsNumeratorNode, "color", "#005E95");
-			domStyle.set(popupsDenominatorNode, "color", "#005E95");
-
+			// popups
+			var popupsScoreContainerNode = query(".popups-score-gr")[0],
+				popupsNumeratorNode = query(".popups-score-num")[0],
+				popupsDenominatorNode = query(".popups-score-denom")[0];
 			var popupsNoneNode = query(".performance-popups-none")[0],
-					popupsDefaultNode = query(".performance-popups-default")[0],
-					popupsCustomNode = query(".performance-popups-custom")[0];
-
+				popupsDefaultNode = query(".performance-popups-default")[0],
+				popupsCustomNode = query(".performance-popups-custom")[0];
+			//domStyle.set(popupsNumeratorNode, "color", "#005E95");
+			//domStyle.set(popupsDenominatorNode, "color", "#005E95");
 			if (popupsScore === scoring.PERFORMANCE_POPUPS_ENABLED) {
 				domStyle.set(popupsScoreContainerNode, "border", "1px solid #C86A4A");
 				domStyle.set(popupsNumeratorNode, "color", "#C86A4A");
@@ -1444,7 +1438,14 @@ require([
 				domStyle.set(popupsCustomNode, "color", "rgba(0, 122, 194, 0.24)");
 			}
 
-			if (sharingScore === scoring.PERFORMANCE_SHARING_PRIVATE_POINTS) {
+			// sharing
+			var sharingContainerNode = query(".sharing-score-gr")[0],
+				sharingNumeratorNode = query(".sharing-score-num")[0],
+				sharingDenominatorNode = query(".sharing-score-denom")[0];
+			var sharingGoodNode = query(".performance-sharing-good")[0],
+				sharingBetterNode = query(".performance-sharing-better")[0],
+				sharingBestNode = query(".performance-sharing-best")[0];
+			if (sharingScore === scoring.PERFORMANCE_SHARING_PRIVATE_SCORE) {
 				// GOOD
 				domStyle.set(sharingContainerNode, "border", "1px solid #C86A4A");
 				domStyle.set(sharingNumeratorNode, "color", "#C86A4A");
@@ -1452,7 +1453,7 @@ require([
 				domStyle.set(sharingGoodNode, "color", "#005E95");
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
-			} else if (sharingScore === scoring.PERFORMANCE_SHARING_ORG_POINTS) {
+			} else if (sharingScore === scoring.PERFORMANCE_SHARING_ORG_SCORE) {
 				// BETTER
 				domStyle.set(sharingContainerNode, "border", "1px solid #005E95");
 				domStyle.set(sharingNumeratorNode, "color", "#005E95");
@@ -1470,15 +1471,19 @@ require([
 				domStyle.set(sharingBestNode, "color", "#005E95");
 			}
 
-			createTooltips([mapLayersTooltipNode, sharingNode, drawTimeTooltipNode, popupsTooltipNode], [tooltipsConfig.PERFORMANCE_MAP_LAYERS_TOOLTIP_CONTENT, tooltipsConfig.PERFORMANCE_SHARING_TOOLTIP_CONTENT, tooltipsConfig.PERFORMANCE_DRAW_TIME_TOOLTIP_CONTENT, tooltipsConfig.PERFORMANCE_POP_UPS_TOOLTIP_CONTENT]);
-
+			// set the numerators
 			mdtNumeratorNode.innerHTML = mapDrawTimeScore;
 			layerCountNumeratorNode.innerHTML = nLayersScore;
-			popupsNumeratorNode.innerHTML = popupScore;
+			popupsNumeratorNode.innerHTML = popupsScore;
 			sharingNumeratorNode.innerHTML = sharingScore;
+			// set the denominators
 			mdtDenominatorNode.innerHTML = layerCountDenominatorNode.innerHTML = popupsDenominatorNode.innerHTML = sharingDenominatorNode.innerHTML = scoring.PERFORMANCE_MAX;
 
-			updateSectionScoreStyle(popupScore, PERFORMANCE_POPUPS_MAX_SCORE, popupsScoreContainerNode);
+			// update the section styles
+			updateSectionScoreStyle(mapDrawTimeScore, PERFORMANCE_DRAW_TIME_MAX_SCORE, mdtScoreContainerNode);
+			updateSectionScoreStyle(nLayersScore, PERFORMANCE_LAYER_COUNT_MAX_SCORE, nLayersScoreContainerNode);
+			updateSectionScoreStyle(popupsScore, PERFORMANCE_POPUPS_MAX_SCORE, popupsScoreContainerNode);
+			updateSectionScoreStyle(sharingScore, PERFORMANCE_SHARING_MAX_SCORE, sharingContainerNode);
 		}
 
 		function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
@@ -1774,7 +1779,7 @@ require([
 		}
 
 		function updateSectionScoreStyle(itemScore, max, node) {
-			if ((itemScore / max * 100) >= 80) {
+			if ((itemScore / max * 100) >= scoring.SCORE_THRESHOLD) {
 				domClass.replace(node, "score-graphic-pass", "score-graphic-fail");
 			} else {
 				domClass.replace(node, "score-graphic-fail", "score-graphic-pass");
@@ -2092,7 +2097,7 @@ require([
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
 			var average = Math.floor(score / sectionThreshold * 100);
 			var classAttrs = domAttr.get(node, "class");
-			if (average >= 80) {
+			if (average >= scoring.SCORE_THRESHOLD) {
 				classAttrs = classAttrs.replace("icon-edit", "icon-check");
 				domAttr.set(node, "class", classAttrs);
 				domStyle.set(node, "color", "#007ac2");
@@ -2107,7 +2112,7 @@ require([
 
 		function initPassingMarker() {
 			domConstruct.place("<div class='current-score-passing-marker'>" +
-					"<span class='current-overall-gr-number'> 80</span>" +
+					"<span class='current-overall-gr-number'> " + scoring.SCORE_THRESHOLD + "</span>" +
 					"<span class='current-overall-gr-label'>required score</span>" +
 					"</div>", progressBarNode, "before");
 		}

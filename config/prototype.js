@@ -158,20 +158,24 @@ define([
 		 * @returns {*}
 		 */
 		setMapDrawTimeScore: function (val) {
+			var score = 0;
 			var temp = (val / 1000) % 60;
 			var seconds = number.format(temp, {
 				places: 5
 			});
 
 			if (seconds < scoring.drawTime.BEST) {
-				return scoring.PERFORMANCE_DRAW_TIME_BEST;
-			} else if (seconds < scoring.drawTime.BETTER) {
-				return scoring.PERFORMANCE_DRAW_TIME_BETTER;
-			} else if (seconds < scoring.drawTime.GOOD) {
-				return scoring.PERFORMANCE_DRAW_TIME_GOOD;
-			} else {
-				return 0;
+				score = scoring.PERFORMANCE_DRAW_TIME_BEST_SCORE;
 			}
+
+			if (seconds < scoring.drawTime.BETTER) {
+				score = scoring.PERFORMANCE_DRAW_TIME_BETTER_SCORE;
+			}
+
+			if (seconds < scoring.drawTime.GOOD) {
+				score = scoring.PERFORMANCE_DRAW_TIME_GOOD_SCORE;
+			}
+			return score;
 		},
 
 		/**
@@ -180,18 +184,32 @@ define([
 		 * @returns {*}
 		 */
 		setNumLayersScore: function (layers) {
+			var score = 0,
+				nLayers = 0;
 			if (layers !== undefined) {
-				var nLayers = layers.length;
-				if (nLayers > scoring.LAYER_COUNT_MAX) {
-					return scoring.LAYER_COUNT_GOOD_POINTS;
-				} else if (nLayers > scoring.LAYER_COUNT_MIN && nLayers <= scoring.LAYER_COUNT_MAX) {
-					return scoring.LAYER_COUNT_BETTER_POINTS;
-				} else if (nLayers === scoring.LAYER_COUNT_MIN) {
-					return scoring.LAYER_COUNT_BEST_POINTS;
-				} else {
-					return 7;
+				nLayers = layers.length;
+
+				if (nLayers === scoring.LAYER_COUNT_MIN) {
+					score = scoring.LAYER_COUNT_BEST_SCORE;
 				}
+
+				if (nLayers > scoring.LAYER_COUNT_MIN && nLayers <= scoring.LAYER_COUNT_MAX) {
+					score = scoring.LAYER_COUNT_BETTER_SCORE;
+				}
+
+				if (nLayers > scoring.LAYER_COUNT_MAX) {
+					score = scoring.LAYER_COUNT_GOOD_SCORE;
+				}
+			} else {
+				score =0;
 			}
+
+			if (nLayers < 1) {
+				// basemap case
+				score = 0;
+			}
+
+			return score;
 		},
 
 		/**
@@ -249,14 +267,16 @@ define([
 		 * @returns {*}
 		 */
 		setSharingScore: function (item) {
-			var sharing = item.access;
+			var score = 0,
+				sharing = item.access;
 			if (sharing === "private") {
-				return scoring.PERFORMANCE_SHARING_PRIVATE_POINTS;
+				score = scoring.PERFORMANCE_SHARING_PRIVATE_SCORE;
 			} else if (sharing === "org" || sharing === "shared") {
-				return scoring.PERFORMANCE_SHARING_ORG_POINTS;
+				score = scoring.PERFORMANCE_SHARING_ORG_SCORE;
 			} else {
-				return scoring.PERFORMANCE_SHARING_PUBLIC_POINTS;
+				score = scoring.PERFORMANCE_SHARING_PUBLIC_SCORE;
 			}
+			return score;
 		},
 
 		/**
