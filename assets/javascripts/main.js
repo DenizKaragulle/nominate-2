@@ -127,6 +127,7 @@ require([
 	var overallScoreGraphic;
 	// overall score
 	var overAllCurrentScore = 0;
+
 	// SECTION SCORES
 	var MAX_SCORE = 0;
 	// Item Details
@@ -563,39 +564,6 @@ require([
 
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
 											}
-										});
-									} else if (item.type === "Image Service") {
-										var mapDrawBegin = performance.now();
-										var map = new Map("map", {
-											basemap:"topo",
-											center:[-122.45, 37.75], // longitude, latitude
-											zoom:3
-										});
-										var imageServiceLayer = new ArcGISImageServiceLayer(item.url);
-										map.addLayer(imageServiceLayer);
-										on(map, "load", function (evt) {
-											mapDrawComplete = performance.now();
-											var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-											fadeLoader();
-											var layerIDs = evt.map.layerIds;
-											array.forEach(layerIDs, function (layerID) {
-												var lyr = evt.map.getLayer(layerID);
-											});
-											// set performance scores
-											mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
-											nLayersScore = validator.setNumLayersScore(layerIDs);
-											popupsScore = validator.setPopupScore(layers);
-											sharingScore = validator.setSharingScore(item);
-											performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
-											// set style on performance button
-											setPassFailStyleOnTabNode(performanceScore, performanceNode, PERFORMANCE_MAX_SCORE);
-											// initialize the scores
-											initScores(item, portalUser);
-											HAS_PERFORMANCE_CONTENT = true;
-											// update the overall score
-											updateOverallScore();
-											on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
-
 										});
 									} else {
 										// fade the loader
@@ -1717,7 +1685,7 @@ require([
 			//	TMP_MAX_SCORE = MAX_SCORE - PERFORMANCE_MAX_SCORE;
 			//	overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / TMP_MAX_SCORE * 100);
 			//}
-			if (overAllCurrentScore >= TMP_MAX_SCORE) {
+			if (overAllCurrentScore >= 80) {
 				domStyle.set(currentOverallScoreNode, "color", "#005E95");
 			} else {
 				domStyle.set(currentOverallScoreNode, "color", "#C86A4A");
