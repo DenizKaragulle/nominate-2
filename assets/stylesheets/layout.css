@@ -166,7 +166,7 @@ table tr {
 	left: 600px;
 	position: relative;
 	top: -10px;
-	z-index: 1000;
+	z-index: 100;
 	border-left: 1px solid #969696;
 	width: 150px;
 	height: 30px;
@@ -213,12 +213,13 @@ table tr {
 	left: 0;
 	top: 0;
 	z-index: -10;
-	opacity: 0.5;
+	/*opacity: 0.5;*/
 }
 
 .test {
 	/*background-color: #0079C1;*/
-	color: #4d4d4d;
+	/*color: #4d4d4d;*/
+	color: #f4f4f4;
 	height: 150px;
 }
 

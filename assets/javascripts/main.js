@@ -2279,6 +2279,15 @@ require([
 			});
 		}
 
+		function nominateBtnClickHandler(evt) {
+			var nominateBtnDialog = new Dialog({
+				title:"Nominate Item",
+				content:"<div>Not implemented yet</div>",
+				style:"width: 300px"
+			});
+			nominateBtnDialog.show();
+		}
+
 		function fadeLoader() {
 			var loaderNode = dom.byId("map-mask");
 			domStyle.set(loaderNode, "opacity", "1");
