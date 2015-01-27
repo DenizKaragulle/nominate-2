@@ -120,6 +120,8 @@ require([
 	var tagsNodeClickHandler;
 	var performanceNodeClickHandler;
 	var profileNodeClickHandler;
+	var nominateBtnClickHandler = null;
+	var nominateBtnDialog = null;
 	// Overall score
 	//
 	var currentOverallScoreNode;
@@ -522,6 +524,32 @@ require([
 									// nominate button node
 									nominateBtnNode = dom.byId("nominate-btn");
 
+									nominateBtnDialog = new Dialog({
+										title:"Nominate Item",
+										content:'<div class="dialog-container">' +
+												'	<div class="row">' +
+												'		<div class = "column-24" >Not implemented yet...<\/div>' +
+												'	<\/div>' +
+												/*'	<div class="row">' +
+												'		<div class = "column-5" >Score<\/div>' +
+												'		<div class = "column-19 nominated-item-score" ><\/div>' +
+												'	<\/div>' +
+												'	<div class="dialog-btn-container">' +
+												'		<div class="row">' +
+												'			<div class = "column-24" >' +
+												'				<button class="btn dialog-cancel-btn"> Cancel <\/button>' +
+												'				<button class="btn dialog-ok-btn disabled"> Ok <\/button>' +
+												'			<\/div>' +
+												'		<\/div>' +
+												'	<\/div>' +*/
+												'<\/div>',
+										style:"width: 300px"
+									});
+
+									nominateBtnClickHandler = on(nominateBtnNode, "click", function () {
+										nominateBtnDialog.show();
+									});
+
 									// create button group
 									initContentButtonGroup(tcID);
 
@@ -562,7 +590,7 @@ require([
 												initScores(item, portalUser);
 												HAS_PERFORMANCE_CONTENT = true;
 												// update the overall score
-												updateOverallScore();
+												//updateOverallScore();
 
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
 											}
@@ -585,7 +613,7 @@ require([
 										initScores(item, portalUser);
 										HAS_PERFORMANCE_CONTENT = false;
 										// update the overall score;
-										updateOverallScore();
+										//updateOverallScore();
 									}
 									on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, categoryNodes, nodeList, titleID, snippetID, descID, detailsNode));
 									on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, categoryNodes, nodeList, item, accessID, creditID, creditsNode));
@@ -1698,15 +1726,24 @@ require([
 			//}
 			var classAttrs = domAttr.get(nominateBtnNode, "class");
 			if (overAllCurrentScore >= scoring.SCORE_THRESHOLD) {
-				domStyle.set(currentOverallScoreNode, "color", "#005E95");
+				// PASS
+				domStyle.set(currentOverallScoreNode, "color", scoring.PASS_COLOR);
 				classAttrs = classAttrs.replace("disabled", "enabled");
 				domAttr.set(nominateBtnNode, "class", classAttrs);
+				nominateBtnClickHandler = on(nominateBtnNode, "click", function () {
+					nominateBtnDialog.show();
+				});
 			} else {
-				domStyle.set(currentOverallScoreNode, "color", "#C86A4A");
+				// FAIL
+				domStyle.set(currentOverallScoreNode, "color", scoring.FAIL_COLOR);
 				classAttrs = classAttrs.replace("enabled", "disabled");
 				domAttr.set(nominateBtnNode, "class", classAttrs);
+				if (nominateBtnClickHandler !== null) {
+					nominateBtnClickHandler.remove();
+				}
 			}
-			// update the score label
+
+			// update the overall score label
 			currentOverallScoreNode.innerHTML = overAllCurrentScore;
 			if (dijit.byId("overall-score-graphic") !== undefined) {
 				dijit.byId("overall-score-graphic").update({
@@ -2224,7 +2261,6 @@ require([
 		}
 
 		function addCheckbox(itemTags, id, atlasTag) {
-			console.log(itemTags);
 			var checkBox;
 			if (array.some(itemTags, function (tag) {
 				return tag.toUpperCase() === atlasTag.toUpperCase();
@@ -2277,15 +2313,6 @@ require([
 			array.forEach((checkBoxID_values), function (id) {
 				dijit.byId(id).setAttribute(attr, value);
 			});
-		}
-
-		function nominateBtnClickHandler(evt) {
-			var nominateBtnDialog = new Dialog({
-				title:"Nominate Item",
-				content:"<div>Not implemented yet</div>",
-				style:"width: 300px"
-			});
-			nominateBtnDialog.show();
 		}
 
 		function fadeLoader() {

@@ -466,3 +466,21 @@ table tr {
 .dijitProgressBarFull {
 	border: none !important;
 }
+
+/* Nominate button dialog */
+.dialog-container {
+	margin: 5px;
+}
+
+.dialog-btn-container {
+	margin-top: 10px;
+}
+
+.dialog-ok-btn {
+	float: right;
+	margin-right: 10px;
+}
+
+.dialog-cancel-btn {
+	float: right;
+}

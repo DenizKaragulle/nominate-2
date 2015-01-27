@@ -30,9 +30,9 @@ define({
 	// minimum required to pass
 	"SECTION_PASSING" : 8,
 	// passing color
-	"SECTION_PASS_COLOR" : "#005E95",
+	"PASS_COLOR" : "#005E95",
 	// failing color
-	"SECTION_FAIL_COLOR" : "#C86A4A",
+	"FAIL_COLOR" : "#C86A4A",
 
 	////////////////////////////////////////////
 	// Details
