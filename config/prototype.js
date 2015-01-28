@@ -35,17 +35,23 @@ define([
 				thumbnail = item.thumbnail;
 			}
 			if (thumbnail === null || thumbnail === undefined) {
-				return 0;
+				score = 0;
 			} else {
 				var index = thumbnail.lastIndexOf("/") + 1;
 				var filename = thumbnail.substr(index);
 				filename = filename.split("?")[0];
-				if (filename === "nullThumbnail.png" || filename === scoring.NO_THUMBNAIL_FILE_NAME || filename === "no-user-thumb.jpg") {
-					return 0;
-				} else {
-					return score + scoring.ITEM_THUMBNAIL_CUSTOM;
+				//nullThumbnail.png = 0
+				//no-user-thumb.jpg = 0
+				//ago_downloaded.png = 4
+				if (filename === "nullThumbnail.png" || filename === "no-user-thumb.jpg") {
+					score = 0;
+				} else if (filename === scoring.NO_THUMBNAIL_FILE_NAME) {
+					score = score + scoring.ITEM_THUMBNAIL_CUSTOM + scoring.ITEM_THUMBNAIL_LARGE_SCORE;
+				} else if (filename !== "nullThumbnail.png" || filename !== "no-user-thumb.jpg") {
+					score = score + scoring.ITEM_THUMBNAIL_CUSTOM + scoring.ITEM_THUMBNAIL_LARGE_SCORE;
 				}
 			}
+			return score;
 		},
 
 		/**
@@ -60,7 +66,7 @@ define([
 			if (nWords > scoring.ITEM_TITLE_MIN_LENGTH) {
 				score = scoring.ITEM_TITLE_MIN_LENGTH;
 			}
-			score = score + this._hasBadWords(itemTitle, scoring.ITEM_TITLE_BAD_WORDS, scoring.ITEM_TITLE_NO_BAD_WORDS);
+			score = score + this._titleHasBadWords(itemTitle, scoring.ITEM_TITLE_BAD_WORDS, scoring.ITEM_TITLE_NO_BAD_WORDS);
 			score = score + this._hasBadCharacters(itemTitle, "_", scoring.ITEM_TITLE_NO_UNDERSCORE);
 			score = score + this._isUpperCase(itemTitle);
 			return score;
@@ -171,7 +177,7 @@ define([
 			if (seconds < scoring.drawTime.BETTER) {
 				score = scoring.PERFORMANCE_DRAW_TIME_BETTER_SCORE;
 			}
-			
+
 			if (seconds < scoring.drawTime.BEST) {
 				score = scoring.PERFORMANCE_DRAW_TIME_BEST_SCORE;
 			}
@@ -406,6 +412,36 @@ define([
 			} else {
 				// no
 				return 0;
+			}
+		},
+
+		_extractWords: function (s) {
+			// exclude white space
+			s = s.replace("-", " ");
+			s = s.replace(/(^\s*)|(\s*$)/gi, "");
+			s = s.replace(/[ ]{2,}/gi, " ");
+			// exclude newline with a space at beginning
+			s = s.replace(/\n /, "\n");
+			return s.split(" ");
+		},
+
+		_titleHasBadWords: function (inputText, badWords, bonus) {
+			inputText = inputText.toLowerCase();
+			inputText = this._extractWords(inputText);
+
+			if (array.some(inputText, function (currentWord) {
+				var match = false;
+				array.forEach(badWords, function(badWord) {
+					if (currentWord === badWord)
+						match = true;
+				});
+				return match;
+			})) {
+				// yes
+				return 0;
+			} else {
+				// no
+				return bonus;
 			}
 		},
 
