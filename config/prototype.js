@@ -237,13 +237,11 @@ define([
 
 			array.forEach(layers, function (layer) {
 				array.forEach(layer.layers, function(lyr) {
-					console.log(lyr);
 					if (isCustomPopup === false) {
 						if (lyr.popupInfo) {
 							var popupInfo = lyr.popupInfo;
 							var popupDescription = popupInfo.description;
 							if (popupDescription !== null && popupDescription !== undefined) {
-								console.log(popupDescription);
 								if (popupDescription.length > 0) {
 									isCustomPopup = true;
 									score = scoring.PERFORMANCE_POPUPS_CUSTOM;

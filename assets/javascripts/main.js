@@ -469,52 +469,52 @@ require([
 									domConstruct.place(
 											"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
 												//
-													"	<div class='content-container'>" +
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div id='map-mask' class='loader'>" +
-													"					<span class='side side-left'><span class='fill'></span></span>" +
-													"					<span class='side side-right'><span class='fill'></span></span>" +
-													"				</div>" +
-													"				<div id='map'></div>" +
-													"			</div>" +
-													"		</div>" +
+												"	<div class='content-container'>" +
+												"		<div class='row'>" +
+												"			<div class='column-21 pre-3'>" +
+												"				<div id='map-mask' class='loader'>" +
+												"					<span class='side side-left'><span class='fill'></span></span>" +
+												"					<span class='side side-right'><span class='fill'></span></span>" +
+												"				</div>" +
+												"				<div id='map'></div>" +
+												"			</div>" +
+												"		</div>" +
 
-													"		<div class='row'>" +
-													"			<div class='column-21 pre-3'>" +
-													"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-													"			</div>" +
-													"		</div>" +
+												"		<div class='row'>" +
+												"			<div class='column-21 pre-3'>" +
+												"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+												"			</div>" +
+												"		</div>" +
 
 												// Scoring
-													"		<div class='row'>" +
-													"			<div class='column-15 pre-3'>" +
-													"				<div class='current-score-graphic-container'></div>" +
-													"			</div>" +
-													"			<div class='column-2'>" +
-													"				<div class='current-score-number'></div>" +
-													"				<div id='progressBarMarker'></div>" +
-													"			</div>" +
-													"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-													"				<button id='nominate-btn' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
-													"			</div>" +
-													"		</div>" +
+												"		<div class='row'>" +
+												"			<div class='column-15 pre-3'>" +
+												"				<div class='current-score-graphic-container'></div>" +
+												"			</div>" +
+												"			<div class='column-2'>" +
+												"				<div class='current-score-number'></div>" +
+												"				<div id='progressBarMarker'></div>" +
+												"			</div>" +
+												"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+												"				<button id='nominate-btn' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
+												"			</div>" +
+												"		</div>" +
 
 												// Overall Score
-													"		<div class='row'>" +
-													"			<div class='column-15 pre-3'>" +
-													"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-													"			</div>" +
-													"		</div>" +
+												"		<div class='row'>" +
+												"			<div class='column-15 pre-3'>" +
+												"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+												"			</div>" +
+												"		</div>" +
 
 												// Button Group (i.e. sections)
-													"		<div class='row'>" +
-													"			<div class='column-18 pre-3'>" +
-													"				<div id='" + tcID + "'></div>" +
-													"			</div>" +
-													"		</div>" +
-													"	</div>" +
-													"</div>",
+												"		<div class='row'>" +
+												"			<div class='column-18 pre-3'>" +
+												"				<div id='" + tcID + "'></div>" +
+												"			</div>" +
+												"		</div>" +
+												"	</div>" +
+												"</div>",
 											selectedRow.firstElementChild, "last");
 
 									// get overall score node
@@ -590,8 +590,6 @@ require([
 												// initialize the scores
 												initScores(item, portalUser);
 												HAS_PERFORMANCE_CONTENT = true;
-												// update the overall score
-												//updateOverallScore();
 
 												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
 											}
@@ -613,8 +611,6 @@ require([
 										// initialize the scores
 										initScores(item, portalUser);
 										HAS_PERFORMANCE_CONTENT = false;
-										// update the overall score;
-										//updateOverallScore();
 									}
 									on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, categoryNodes, nodeList, titleID, snippetID, descID, detailsNode));
 									on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, categoryNodes, nodeList, item, accessID, creditID, creditsNode));
@@ -745,7 +741,7 @@ require([
 				// section overall score
 				itemDetailsScore = itemThumbnailScore + itemTitleScore + itemSummaryScore + itemDescriptionScore;
 				updateSectionScore(itemDetailsScore, detailsNode, ITEM_DETAILS_MAX_SCORE);
-				updateOverallScore();
+				//updateOverallScore();
 
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {

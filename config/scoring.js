@@ -97,7 +97,6 @@ define({
 	////////////////////////////////////////////
 	// Rules
 	"ITEM_CREDITS_HAS_WORDS" : 7,
-	// Item Use/Credits Parameters
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT" : [],
 
 	// Scores
