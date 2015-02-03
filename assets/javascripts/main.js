@@ -1739,15 +1739,13 @@ require([
 			}
 		}
 
-
-		// validate tags
 		function validateItemTags(tags) {
 			var score = 0;
 			var badWords = scoring.TAGS_PENALTY_WORDS;
 			var nTags = tags.length;
-			if (nTags >= scoring.TAGS_HAS_TAGS) {
+			if (nTags >= scoring.TAGS_MIN_NUM_TAGS) {
 				// at least one tag exist +1
-				score = scoring.TAGS_HAS_TAGS;
+				score = scoring.TAGS_HAS_TAGS_SCORE;
 				// case insensitive
 				var tempTags = [];
 				array.forEach(tags, function (tag) {
@@ -1760,12 +1758,12 @@ require([
 					// FAIL
 				} else {
 					// PASS +2
-					score = score + scoring.TAGS_HAS_NO_BAD_WORDS;
+					score = score + scoring.TAGS_HAS_NO_BAD_WORDS_SCORE;
 				}
 
 				// check if there are more than 3 tags
-				if (nTags > 3) {
-					score = score + scoring.TAGS_HAS_CUSTOM_TAGS_MIN;
+				if (nTags > scoring.TAGS_MIN_COUNT) {
+					score = score + scoring.TAGS_HAS_EXTRA_TAGS_SCORE;
 				}
 				var hasAtlasTag = false;
 				array.forEach(defaults.ATLAS_TAGS, function (atlas_tag) {
@@ -1777,7 +1775,7 @@ require([
 				});
 
 				if (hasAtlasTag) {
-					score = score + scoring.TAGS_HAS_ATLAS_TAGS;
+					score = score + scoring.TAGS_HAS_ATLAS_TAGS_SCORE;
 				}
 			} else {
 				score = 0;
@@ -1803,7 +1801,6 @@ require([
 				html.set(listItemDivNode, item);
 			});
 		}
-
 
 		function createTooltips(nodes, content) {
 			array.forEach(nodes, function (node, i) {
@@ -2046,7 +2043,6 @@ require([
 			return thumbnailUrl;
 		}
 
-
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
 			var average = Math.floor(score / sectionThreshold * 100);
 			var classAttrs = domAttr.get(node, "class");
@@ -2093,16 +2089,16 @@ require([
 		function initScoreMaxValues() {
 			// Details
 			ITEM_THUMBNAIL_MAX_SCORE = scoring.ITEM_THUMBNAIL_NONE_SCORE + scoring.ITEM_THUMBNAIL_CUSTOM + scoring.ITEM_THUMBNAIL_LARGE_SCORE;
-			ITEM_TITLE_MAX_SCORE = scoring.ITEM_TITLE_NO_BAD_WORDS + scoring.ITEM_TITLE_NO_UNDERSCORE + scoring.ITEM_TITLE_MIN_LENGTH + scoring.ITEM_TITLE_NO_ALL_CAPS;
-			ITEM_SUMMARY_MAX_SCORE = scoring.ITEM_SUMMARY_MUST_EXIST + scoring.ITEM_SUMMARY_NO_BAD_WORDS + scoring.ITEM_SUMMARY_NO_UNDERSCORE + scoring.ITEM_SUMMARY_MIN_LENGTH;
-			ITEM_DESC_MAX_SCORE = scoring.ITEM_DESCRIPTION_MUST_EXIST + scoring.ITEM_DESCRIPTION_MIN_LENGTH + scoring.ITEM_DESCRIPTION_LINK;
+			ITEM_TITLE_MAX_SCORE = scoring.ITEM_TITLE_NO_BAD_WORDS_SCORE + scoring.ITEM_TITLE_NO_UNDERSCORE_SCORE + scoring.ITEM_TITLE_MIN_LENGTH_SCORE + scoring.ITEM_TITLE_NO_ALL_CAPS_SCORE;
+			ITEM_SUMMARY_MAX_SCORE = scoring.ITEM_SUMMARY_MUST_EXIST_SCORE + scoring.ITEM_SUMMARY_NO_BAD_WORDS_SCORE + scoring.ITEM_SUMMARY_NO_UNDERSCORE_SCORE + scoring.ITEM_SUMMARY_MIN_LENGTH_SCORE;
+			ITEM_DESC_MAX_SCORE = scoring.ITEM_DESCRIPTION_MUST_EXIST_SCORE + scoring.ITEM_DESCRIPTION_MIN_LENGTH_SCORE + scoring.ITEM_DESCRIPTION_LINK_SCORE;
 			ITEM_DETAILS_MAX_SCORE = ITEM_THUMBNAIL_MAX_SCORE + ITEM_TITLE_MAX_SCORE + ITEM_SUMMARY_MAX_SCORE + ITEM_DESC_MAX_SCORE;
 			// Use/Credits
 			ITEM_CREDIT_MAX_SCORE = scoring.ITEM_CREDITS_HAS_WORDS;
-			ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE = scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK_SCORE;
+			ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE = scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK_SCORE;
 			ITEM_USE_CONSTRAINS_MAX_SCORE = ITEM_CREDIT_MAX_SCORE + ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE;
 			// Tags
-			TAGS_MAX_SCORE = scoring.TAGS_HAS_TAGS + scoring.TAGS_HAS_ATLAS_TAGS + scoring.TAGS_HAS_CUSTOM_TAGS_MIN + scoring.TAGS_HAS_NO_BAD_WORDS;
+			TAGS_MAX_SCORE = scoring.TAGS_HAS_TAGS_SCORE + scoring.TAGS_HAS_ATLAS_TAGS_SCORE + scoring.TAGS_HAS_EXTRA_TAGS_SCORE + scoring.TAGS_HAS_NO_BAD_WORDS_SCORE;
 			// Performance
 			PERFORMANCE_SHARING_MAX_SCORE = scoring.PERFORMANCE_MAX;
 			PERFORMANCE_POPUPS_MAX_SCORE = scoring.PERFORMANCE_POPUPS_ENABLED + scoring.PERFORMANCE_POPUPS_CUSTOM;
@@ -2117,7 +2113,6 @@ require([
 
 			MAX_SCORE = ITEM_DETAILS_MAX_SCORE + ITEM_USE_CONSTRAINS_MAX_SCORE + TAGS_MAX_SCORE + PERFORMANCE_MAX_SCORE + USER_PROFILE_MAX_SCORE;
 		}
-
 
 		function applySort(value) {
 			if (value === "title") {

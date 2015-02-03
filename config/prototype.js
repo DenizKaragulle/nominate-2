@@ -35,7 +35,7 @@ define([
 				thumbnail = item.thumbnail;
 			}
 			if (thumbnail === null || thumbnail === undefined) {
-				score = 0;
+				score = scoring.ITEM_THUMBNAIL_NONE_SCORE;
 			} else {
 				var index = thumbnail.lastIndexOf("/") + 1;
 				var filename = thumbnail.substr(index);
@@ -44,7 +44,7 @@ define([
 				//no-user-thumb.jpg = 0
 				//ago_downloaded.png = 4
 				if (filename === "nullThumbnail.png" || filename === "no-user-thumb.jpg") {
-					score = 0;
+					score = scoring.ITEM_THUMBNAIL_NONE_SCORE;
 				} else if (filename === scoring.NO_THUMBNAIL_FILE_NAME) {
 					score = score + scoring.ITEM_THUMBNAIL_CUSTOM + scoring.ITEM_THUMBNAIL_LARGE_SCORE;
 				} else if (filename !== "nullThumbnail.png" || filename !== "no-user-thumb.jpg") {
@@ -63,11 +63,12 @@ define([
 			var score = 0;
 			var strippedString = itemTitle.replace(/(<([^>]+)>)/ig, "");
 			var nWords = this._getNumWords(strippedString);
+			// validate length
 			if (nWords > scoring.ITEM_TITLE_MIN_LENGTH) {
-				score = scoring.ITEM_TITLE_MIN_LENGTH;
+				score = scoring.ITEM_TITLE_MIN_LENGTH_SCORE;
 			}
-			score = score + this._titleHasBadWords(itemTitle, scoring.ITEM_TITLE_BAD_WORDS, scoring.ITEM_TITLE_NO_BAD_WORDS);
-			score = score + this._hasBadCharacters(itemTitle, "_", scoring.ITEM_TITLE_NO_UNDERSCORE);
+			score = score + this._titleHasBadWords(itemTitle, scoring.ITEM_TITLE_BAD_WORDS, scoring.ITEM_TITLE_NO_BAD_WORDS_SCORE);
+			score = score + this._hasBadCharacters(itemTitle, "_", scoring.ITEM_TITLE_NO_UNDERSCORE_SCORE);
 			score = score + this._isUpperCase(itemTitle);
 			return score;
 		},
@@ -82,14 +83,15 @@ define([
 			if (itemSummary === "" || itemSummary === null) {
 				score = 0;
 			} else {
-				score = scoring.ITEM_SUMMARY_MUST_EXIST;
+				// item summary exist
+				score = scoring.ITEM_SUMMARY_MUST_EXIST_SCORE;
 				var strippedString = itemSummary.replace(/(<([^>]+)>)/ig, "");
 				var nWords = this._getNumWords(strippedString);
 				if (nWords >= scoring.ITEM_SUMMARY_MIN_NUM_WORDS) {
-					score = score + scoring.ITEM_SUMMARY_MIN_LENGTH;
+					score = score + scoring.ITEM_SUMMARY_MIN_LENGTH_SCORE;
 				}
-				score = score + this._hasBadWords(strippedString, scoring.ITEM_SUMMARY_CONTENT, scoring.ITEM_SUMMARY_NO_BAD_WORDS);
-				score = score + this._hasBadCharacters(strippedString, "_", scoring.ITEM_SUMMARY_NO_UNDERSCORE);
+				score = score + this._hasBadWords(strippedString, scoring.ITEM_SUMMARY_BAD_WORDS, scoring.ITEM_SUMMARY_NO_BAD_WORDS_SCORE);
+				score = score + this._hasBadCharacters(strippedString, "_", scoring.ITEM_SUMMARY_NO_UNDERSCORE_SCORE);
 			}
 			return score;
 		},
@@ -101,17 +103,22 @@ define([
 		 */
 		setItemDescriptionScore: function (itemDescription) {
 			var score = 0;
+			// validate existence
 			if (itemDescription === "" || itemDescription === null) {
 				score = 0;
 			} else {
-				score = score + scoring.ITEM_DESCRIPTION_MUST_EXIST;
+				// it exist
+				score = score + scoring.ITEM_DESCRIPTION_MUST_EXIST_SCORE;
+				// strip it
 				var strippedString = itemDescription.replace(/(<([^>]+)>)/ig, "");
+				// get number fo words
 				var nWords = this._getNumWords(strippedString);
+				// validate number of words
 				if (nWords >= scoring.ITEM_DESC_MIN_LENGTH) {
-					score = score + scoring.ITEM_DESCRIPTION_MIN_LENGTH;
+					score = score + scoring.ITEM_DESCRIPTION_MIN_LENGTH_SCORE;
 				}
 				if (itemDescription.search("href") > -1) {
-					score = score + scoring.ITEM_DESCRIPTION_LINK;
+					score = score + scoring.ITEM_DESCRIPTION_LINK_SCORE;
 				}
 			}
 			return score;
@@ -129,10 +136,11 @@ define([
 			} else {
 				var strippedString = itemAccessAndConstraints.replace(/(<([^>]+)>)/ig, "");
 				var nWords = this._getNumWords(strippedString);
+				// validate if it has words
 				if (nWords >= scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS) {
 					score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS_SCORE;
-					if (nWords > 1) {
-						score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS;
+					if (nWords >= scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS) {
+						score = score + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS_SCORE;
 					}
 				}
 				score = score + this._hasBonusWords(strippedString, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS, scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS_SCORE);
@@ -471,7 +479,7 @@ define([
 			if (str === str.toUpperCase()) {
 				return 0;
 			} else {
-				return scoring.ITEM_TITLE_NO_ALL_CAPS;
+				return scoring.ITEM_TITLE_NO_ALL_CAPS_SCORE;
 			}
 		}
 	});

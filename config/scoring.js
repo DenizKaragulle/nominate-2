@@ -42,41 +42,65 @@ define({
 	"ITEM_THUMBNAIL_LARGE_SCORE" : 3,
 	"ITEM_THUMBNAIL_CUSTOM" : 4,
 	"ITEM_THUMBNAIL_NONE_SCORE" : 0,
-	// Title
-	"ITEM_TITLE_NO_BAD_WORDS" : 2,
-	"ITEM_TITLE_BAD_WORDS" : ["copy", "demo", "test", "eval", "_"],
-	"ITEM_TITLE_NO_UNDERSCORE" : 2,
-	"ITEM_TITLE_MIN_LENGTH" : 2,
-	"ITEM_TITLE_NO_ALL_CAPS" : 1,
-	// Summary
-	"ITEM_SUMMARY_MUST_EXIST" : 1,
-	"ITEM_SUMMARY_NO_BAD_WORDS" : 2,
-	"ITEM_SUMMARY_CONTENT" : ["copy", "demo", "eval"],
-	"ITEM_SUMMARY_NO_UNDERSCORE" : 1,
-	"ITEM_SUMMARY_MIN_LENGTH" : 4,
-	// minimum number of words
-	"ITEM_SUMMARY_MIN_NUM_WORDS":10,
-	// Description
-	"ITEM_DESCRIPTION_MUST_EXIST" : 1,
-	"ITEM_DESCRIPTION_MIN_LENGTH" : 5,
-	"ITEM_DESCRIPTION_LINK" : 2,
-	"ITEM_DESC_MIN_LENGTH" : 48,
-	"ITEM_DESC_CONTENT" : [""],
 
 	////////////////////////////////////////////
-	// Use/Credtis
+	// Title
 	////////////////////////////////////////////
-	// Item Use/Credits Scoring
+	// Rules
+	"ITEM_TITLE_BAD_WORDS" : ["copy", "demo", "test", "eval"],
+	"ITEM_TITLE_MIN_LENGTH" : 2,
+	// Scores
+	"ITEM_TITLE_NO_BAD_WORDS_SCORE" : 2,
+	"ITEM_TITLE_NO_UNDERSCORE_SCORE" : 2,
+	"ITEM_TITLE_MIN_LENGTH_SCORE" : 2,
+	"ITEM_TITLE_NO_ALL_CAPS_SCORE" : 1,
+
+	////////////////////////////////////////////
+	// Summary
+	////////////////////////////////////////////
+	// Rules
+	"ITEM_SUMMARY_BAD_WORDS" : ["copy", "demo", "eval"],
+	"ITEM_SUMMARY_MIN_NUM_WORDS":10,
+	// Scores
+	"ITEM_SUMMARY_MUST_EXIST_SCORE" : 1,
+	"ITEM_SUMMARY_MIN_LENGTH_SCORE" : 4,
+	"ITEM_SUMMARY_NO_BAD_WORDS_SCORE" : 2,
+	"ITEM_SUMMARY_NO_UNDERSCORE_SCORE" : 1,
+
+	////////////////////////////////////////////
+	// Description
+	////////////////////////////////////////////
+	// Rules
+	"ITEM_DESC_MIN_LENGTH" : 48,
+	"ITEM_DESC_CONTENT" : [""],
+	// Scores
+	"ITEM_DESCRIPTION_MUST_EXIST_SCORE" : 1,
+	"ITEM_DESCRIPTION_MIN_LENGTH_SCORE" : 5,
+	"ITEM_DESCRIPTION_LINK_SCORE" : 2,
+
+	////////////////////////////////////////////
+	// Access and Use Constraints
+	////////////////////////////////////////////
+	// Rules
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS" : 1,
+	"ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS" : 2,
+	"ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS" : [""],
+
+	// Score
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS_SCORE" : 1,
-	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS" : 3,
-	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS_SCORE" : 2,
-	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK_SCORE" : 1,
+	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS_SCORE" : 4,
+	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS_SCORE" : 0,
+	"ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK_SCORE" : 2,
+
+	////////////////////////////////////////////
+	// Credits
+	////////////////////////////////////////////
+	// Rules
 	"ITEM_CREDITS_HAS_WORDS" : 7,
 	// Item Use/Credits Parameters
-	"ITEM_ACCESS_AND_USE_CONSTRAINTS_MIN_NUM_WORDS" : 2,
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT" : [],
-	"ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS" : ["No Restrictions"],
+
+	// Scores
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS_SCORE" : 2,
 	"ITEM_CREDITS_MIN_NUM_WORDS" : 1,
 	"ITEM_CREDITS_CONTENT" : [],
@@ -84,18 +108,27 @@ define({
 	////////////////////////////////////////////
 	// Tags
 	////////////////////////////////////////////
-	"TAGS_HAS_NO_TAGS" : 0,
-	"TAGS_HAS_TAGS" : 1,
-	"TAGS_HAS_ATLAS_TAGS" : 3,
-	"TAGS_HAS_CUSTOM_TAGS_MIN" : 2,
-	"TAGS_HAS_NO_BAD_WORDS" : 1,
-	// Tags Parameters
+	// Rules
+	"TAGS_MIN_NUM_TAGS" : 1,
 	"TAGS_MIN_COUNT" : 3,
 	"TAGS_PENALTY_WORDS" : ["copy", "demo", "test", "eval"],
+	// Scores
+	"TAGS_HAS_TAGS_SCORE" : 1,
+	"TAGS_HAS_ATLAS_TAGS_SCORE" : 3,
+	"TAGS_HAS_EXTRA_TAGS_SCORE" : 2,
+	"TAGS_HAS_NO_BAD_WORDS_SCORE" : 1,
 
 	////////////////////////////////////////////
 	// Performance
 	////////////////////////////////////////////
+	// Rules
+	// map draw times in seconds
+	"drawTime":{
+		"BEST":2,
+		"BETTER":6,
+		"GOOD":10
+	},
+	// Scores
 	// Performance Parameter
 	"PERFORMANCE_MAX" : 7,
 	// Map draw time (Best)
@@ -105,15 +138,21 @@ define({
 	// Map draw time (Good)
 	"PERFORMANCE_DRAW_TIME_GOOD_SCORE" : 1,
 
-	// Number of map layers
-	"LAYER_COUNT_GOOD_SCORE" : 1,
-	"LAYER_COUNT_BETTER_SCORE" : 4,
-	"LAYER_COUNT_BEST_SCORE" : 7,
-	// Minimum number of layers
+	////////////////////////////////////////////
+	// Layers
+	////////////////////////////////////////////
+	// Rules
 	"LAYER_COUNT_MIN" : 1,
-	// Maximum number of layers
 	"LAYER_COUNT_MAX" : 10,
 
+	// Scores
+	"LAYER_COUNT_BEST_SCORE" : 7,
+	"LAYER_COUNT_BETTER_SCORE" : 4,
+	"LAYER_COUNT_GOOD_SCORE" : 1,
+
+	////////////////////////////////////////////
+	// Popups
+	////////////////////////////////////////////
 	// Custom popup
 	"PERFORMANCE_POPUPS_CUSTOM" : 5,
 	// Default popup
@@ -129,7 +168,11 @@ define({
 	////////////////////////////////////////////
 	// User Profile
 	////////////////////////////////////////////
-	// User Profile scoring
+	// User Profile
+	// Rules
+
+	// User Profile
+	// scoring
 	"USER_PROFILE_HAS_THUMBNAIL" : 5,
 	"USER_PROFILE_HAS_LARGE_THUMBNAIL" : 2,
 	"USER_PROFILE_HAS_FULLNAME_MIN_NUM_WORDS" : 5,
@@ -191,12 +234,5 @@ define({
 			"id":"boundariesAndPlacesCB",
 			"tag":"Boundaries and Places"
 		}
-	],
-
-	// map draw times in seconds
-	"drawTime":{
-		"BEST":2,
-		"BETTER":6,
-		"GOOD":10
-	}
+	]
 });
