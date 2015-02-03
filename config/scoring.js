@@ -96,13 +96,12 @@ define({
 	// Credits
 	////////////////////////////////////////////
 	// Rules
-	"ITEM_CREDITS_HAS_WORDS" : 7,
-	"ITEM_ACCESS_AND_USE_CONSTRAINTS_CONTENT" : [],
-
-	// Scores
-	"ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS_SCORE" : 2,
 	"ITEM_CREDITS_MIN_NUM_WORDS" : 1,
 	"ITEM_CREDITS_CONTENT" : [],
+
+	// Scores
+	"ITEM_CREDITS_MIN_NUM_WORDS_SCORE" : 7,
+	"ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS_SCORE" : 0,
 
 	////////////////////////////////////////////
 	// Tags

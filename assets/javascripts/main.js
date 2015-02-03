@@ -1126,14 +1126,13 @@ require([
 				// load the content
 				loadContent(tags.TAGS_CONTENT);
 
-				var editSaveBtnNode = query(".edit-save-btn")[0],
-						cancelBtnNode = query(".cancel-btn")[0],
+				var editSaveBtnNode = query(".edit-save-btn")[0];
+				var cancelBtnNode = query(".cancel-btn")[0];
 				// nodes
-						tagsScoreNodeContainer = query(".tags-score-gr")[0],
-						tagsScoreNumeratorNode = query(".tags-score-num")[0],
-						tagsScoreDenominatorNode = query(".tags-score-denom")[0],
-				// tooltips
-						tagsTooltipNode = query(".tags-tooltip")[0];
+				var tagsTooltipNode = query(".tags-tooltip")[0];
+				var tagsScoreNodeContainer = query(".tags-score-gr")[0];
+				var tagsScoreNumeratorNode = query(".tags-score-num")[0];
+				var tagsScoreDenominatorNode = query(".tags-score-denom")[0];
 
 				createTooltips([tagsTooltipNode], [tooltipsConfig.TAGS_TOOLTIP_CONTENT]);
 
@@ -1150,6 +1149,7 @@ require([
 				tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 				// section overall score
 				updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
+				updateSectionScoreStyle(itemTagsScore, TAGS_MAX_SCORE, tagsScoreNodeContainer);
 				updateOverallScore();
 
 				// create the existing tags
@@ -1240,8 +1240,6 @@ require([
 							}
 						});
 
-						console.log(tagsDijit.values);
-
 						esriRequest({
 							url:_userItemUrl + "/update",
 							content:{
@@ -1268,6 +1266,7 @@ require([
 										tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 										// section overall score
 										updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
+										updateSectionScoreStyle(itemTagsScore, TAGS_MAX_SCORE, tagsScoreNodeContainer);
 										updateOverallScore();
 
 										// disable living atlas checkboxes
@@ -1304,6 +1303,7 @@ require([
 					tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 					// section overall score
 					updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
+					updateSectionScoreStyle(itemTagsScore, TAGS_MAX_SCORE, tagsScoreNodeContainer);
 					updateOverallScore();
 
 					// disable living atlas checkboxes
@@ -1662,13 +1662,6 @@ require([
 		}
 
 		function updateOverallScore() {
-			console.log("itemDetailsScore: " + itemDetailsScore);
-			console.log("creditsAndAccessScore: " + creditsAndAccessScore);
-			console.log("itemTagsScore: " + itemTagsScore);
-			console.log("performanceScore: " + performanceScore);
-			console.log("userProfileScore: " + userProfileScore);
-			console.log("MAX_SCORE: " + MAX_SCORE);
-
 			var TMP_MAX_SCORE = 0;
 			// update the score
 			//if (HAS_PERFORMANCE_CONTENT) {
@@ -1705,25 +1698,24 @@ require([
 				});
 				dijit.byId("overall-score-graphic").set("value", overAllCurrentScore);
 			}
-			console.log("overAllCurrentScore: " + overAllCurrentScore);
-			console.log("------------------------------------");
 		}
 
 		function updateSectionScore(score, node, max) {
+			console.log("SCORE: " + score);
 			var classAttrs = domAttr.get(node, "class");
 			score = Math.floor(score / max * 100);
 			if (score >= scoring.SCORE_THRESHOLD) {
 				// PASS
 				classAttrs = classAttrs.replace("icon-edit", "active icon-check");
 				domAttr.set(node, "class", classAttrs);
-				domStyle.set(node, "color", "#007ac2");
-				domStyle.set(node, "border", "1px solid #007ac2");
+				domStyle.set(node, "color", scoring.PASS_COLOR);
+				domStyle.set(node, "border", "1px solid " + scoring.PASS_COLOR);
 			} else {
 				// FAIL
 				classAttrs = classAttrs.replace("icon-check", "active icon-edit");
 				domAttr.set(node, "class", classAttrs);
-				domStyle.set(node, "color", "#C86A4A");
-				domStyle.set(node, "border", "1px solid #C86A4A");
+				domStyle.set(node, "color", scoring.FAIL_COLOR);
+				domStyle.set(node, "border", "1px solid " + scoring.FAIL_COLOR);
 			}
 		}
 
@@ -1776,7 +1768,6 @@ require([
 			} else {
 				score = 0;
 			}
-			//console.log("TAGS score: " + score);
 			return score;
 		}
 
@@ -2090,7 +2081,7 @@ require([
 			ITEM_DESC_MAX_SCORE = scoring.ITEM_DESCRIPTION_MUST_EXIST_SCORE + scoring.ITEM_DESCRIPTION_MIN_LENGTH_SCORE + scoring.ITEM_DESCRIPTION_LINK_SCORE;
 			ITEM_DETAILS_MAX_SCORE = ITEM_THUMBNAIL_MAX_SCORE + ITEM_TITLE_MAX_SCORE + ITEM_SUMMARY_MAX_SCORE + ITEM_DESC_MAX_SCORE;
 			// Use/Credits
-			ITEM_CREDIT_MAX_SCORE = scoring.ITEM_CREDITS_HAS_WORDS;
+			ITEM_CREDIT_MAX_SCORE = scoring.ITEM_CREDITS_MIN_NUM_WORDS_SCORE;
 			ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE = scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK_SCORE;
 			ITEM_USE_CONSTRAINS_MAX_SCORE = ITEM_CREDIT_MAX_SCORE + ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE;
 			// Tags

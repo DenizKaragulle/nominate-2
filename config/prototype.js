@@ -161,7 +161,7 @@ define([
 			if (itemCredit === "" || itemCredit === null) {
 				score = 0;
 			} else {
-				score = scoring.ITEM_CREDITS_HAS_WORDS;
+				score = scoring.ITEM_CREDITS_MIN_NUM_WORDS_SCORE;
 			}
 			return score;
 		},
