@@ -152,16 +152,11 @@ define({
 	////////////////////////////////////////////
 	// Popups
 	////////////////////////////////////////////
-	// Custom popup
 	"PERFORMANCE_POPUPS_CUSTOM" : 5,
-	// Default popup
 	"PERFORMANCE_POPUPS_ENABLED" : 2,
 
-	// AGOL item sharing is set to public
-	"PERFORMANCE_SHARING_PUBLIC_SCORE" : 5,
-	// AGOL item sharing is set to org
+	"PERFORMANCE_SHARING_PUBLIC_SCORE" : 7,
 	"PERFORMANCE_SHARING_ORG_SCORE" : 2,
-	// AGOL item sharing is set to private
 	"PERFORMANCE_SHARING_PRIVATE_SCORE" : 0,
 
 	////////////////////////////////////////////
