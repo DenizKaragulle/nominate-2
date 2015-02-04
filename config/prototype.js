@@ -103,14 +103,12 @@ define([
 		 */
 		setItemDescriptionScore:function (itemDescription) {
 			var score = 0;
-			// validate existence
-			if (itemDescription === "" || itemDescription === null) {
+			var strippedString = itemDescription.replace(/(<([^>]+)>)/ig, "").trim();
+			if (this._isValid(strippedString) || strippedString === null) {
 				score = 0;
 			} else {
 				// it exist
 				score = score + scoring.ITEM_DESCRIPTION_MUST_EXIST_SCORE;
-				// strip it
-				var strippedString = itemDescription.replace(/(<([^>]+)>)/ig, "");
 				// get number fo words
 				var nWords = this._getNumWords(strippedString);
 				// validate number of words
@@ -122,6 +120,10 @@ define([
 				}
 			}
 			return score;
+		},
+
+		_isValid:function (str) {
+			return /^\w*$/.test(str);
 		},
 
 		/**
@@ -156,7 +158,7 @@ define([
 		 * @param itemCredit
 		 * @returns {number}
 		 */
-		setCredtisScore:function (itemCredit) {
+		setCreditsScore:function (itemCredit) {
 			var score = 0;
 			if (itemCredit === "" || itemCredit === null) {
 				score = 0;
@@ -222,53 +224,6 @@ define([
 				// basemap case
 				score = 0;
 			}
-
-			return score;
-		},
-
-		/**
-		 *
-		 * @param layers
-		 * @returns {number}
-		 */
-		setPopupScore1:function (layers) {
-			var score = 0;
-			var isCustomPopup = false;
-
-			array.forEach(layers, function (layer) {
-				array.forEach(layer.layers, function (lyr) {
-					if (isCustomPopup === false) {
-						if (lyr.popupInfo) {
-							var popupInfo = lyr.popupInfo;
-							var popupDescription = popupInfo.description;
-							if (popupDescription !== null && popupDescription !== undefined) {
-								if (popupDescription.length > 0) {
-									isCustomPopup = true;
-									score = scoring.PERFORMANCE_POPUPS_CUSTOM;
-								}
-							} else {
-								score = 2;
-							}
-						}
-					}
-				});
-			});
-
-			array.forEach(layers, function (layer) {
-				var popupInfo;
-				if (layer.featureCollection !== undefined) {
-					popupInfo = layer.featureCollection.layers[0].popupInfo;
-					var popupDescription = popupInfo.description;
-					if (popupDescription !== null && popupDescription !== undefined) {
-						if (popupDescription !== null) {
-							isCustomPopup = true;
-							score = scoring.PERFORMANCE_POPUPS_CUSTOM;
-						}
-					} else {
-						score = 2;
-					}
-				}
-			});
 
 			return score;
 		},

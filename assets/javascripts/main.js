@@ -781,6 +781,11 @@ require([
 						itemSummary = query(".edit-summary")[0].value;
 						itemDescription = dijit.byId("description-editor-widget").value;
 
+						// for some reason, cannot upload empty strings, probably issue on my end
+						if (itemDescription.length < 0) {
+							itemDescription = " ";
+						}
+
 						// write to AGOL
 						portalUser.getItem(selectedRowID).then(function (results) {
 							var _userItemUrl = results.userItemUrl;
@@ -966,7 +971,7 @@ require([
 				accessScoreDenominatorNode.innerHTML = ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE;
 
 				// set numerator
-				itemCreditsScore = validator.setCredtisScore(item.accessInformation);
+				itemCreditsScore = validator.setCreditsScore(item.accessInformation);
 				itemAccessAndUseConstraintsScore = validator.setAccessAndUseConstraintsScore(item.licenseInfo);
 				creditsScoreNumeratorNode.innerHTML = itemCreditsScore;
 				accessScoreNumeratorNode.innerHTML = itemAccessAndUseConstraintsScore;
@@ -1050,7 +1055,7 @@ require([
 						}
 
 						// set numerator
-						itemCreditsScore = validator.setCredtisScore(itemCredits);
+						itemCreditsScore = validator.setCreditsScore(itemCredits);
 						itemAccessAndUseConstraintsScore = validator.setAccessAndUseConstraintsScore(accessAndUseConstraints);
 						creditsScoreNumeratorNode.innerHTML = itemCreditsScore;
 						accessScoreNumeratorNode.innerHTML = itemAccessAndUseConstraintsScore;
@@ -1090,7 +1095,7 @@ require([
 					domStyle.set(cancelBtnNode, "display", "none");
 
 					// set numerator
-					itemCreditsScore = validator.setCredtisScore(itemCredits_clean);
+					itemCreditsScore = validator.setCreditsScore(itemCredits_clean);
 					itemAccessAndUseConstraintsScore = validator.setAccessAndUseConstraintsScore(accessAndUseConstraints_clean);
 					creditsScoreNumeratorNode.innerHTML = itemCreditsScore;
 					accessScoreNumeratorNode.innerHTML = itemAccessAndUseConstraintsScore;
@@ -1369,7 +1374,7 @@ require([
 			var popupsNoneNode = query(".performance-popups-none")[0],
 				popupsDefaultNode = query(".performance-popups-default")[0],
 				popupsCustomNode = query(".performance-popups-custom")[0];
-			console.log("popupsScore: " + popupsScore)
+
 			if (popupsScore === 7) {
 				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsDefaultNode, "color", "rgba(0, 122, 194, 0.24)");
@@ -1629,7 +1634,7 @@ require([
 			itemDetailsScore = itemThumbnailScore + itemTitleScore + itemSummaryScore + itemDescriptionScore;
 			setPassFailStyleOnTabNode(itemDetailsScore, detailsNode, ITEM_DETAILS_MAX_SCORE);
 			// use/constrains
-			itemCreditsScore = validator.setCredtisScore(item.accessInformation);
+			itemCreditsScore = validator.setCreditsScore(item.accessInformation);
 			itemAccessAndUseConstraintsScore = validator.setAccessAndUseConstraintsScore(item.licenseInfo);
 			creditsAndAccessScore = itemCreditsScore + itemAccessAndUseConstraintsScore;
 			setPassFailStyleOnTabNode(creditsAndAccessScore, creditsNode, ITEM_USE_CONSTRAINS_MAX_SCORE);
