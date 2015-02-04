@@ -265,12 +265,12 @@ require([
 			});
 			domClass.replace(_tagsNode, "active column-4 tags", "column-4 tags");
 		};
-		performanceNodeClickHandler = function (_categoryNodes, _nodeList, _item, _popUps, _mapDrawTime, _layers, _performanceNode) {
+		performanceNodeClickHandler = function (_categoryNodes, _nodeList, _item, _popUps, _mapDrawTime, _response, _layers, _performanceNode) {
 			destroyNodes(_categoryNodes);
 			array.forEach(nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
 					domClass.replace(node, "column-4", "active column-4");
-					performanceContentPane(_item, popupsScore, _mapDrawTime, _layers);
+					performanceContentPane(_item, popupsScore, _mapDrawTime, _response, _layers);
 				}
 			});
 			domClass.replace(_performanceNode, "active column-4 performance", "column-4 performance");
@@ -568,7 +568,7 @@ require([
 												mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
 												nLayersScore = validator.setNumLayersScore(layers);
 												popupsScore = validator.setPopupScore(response);
-												console.log("popupsScore: " + popupsScore);
+												console.log("getItem - popupsScore: " + popupsScore);
 												sharingScore = validator.setSharingScore(item);
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
 												// set style on performance button
@@ -577,7 +577,7 @@ require([
 												initScores(item, portalUser);
 												HAS_PERFORMANCE_CONTENT = true;
 
-												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, layers, performanceNode));
+												on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, response, layers, performanceNode));
 											}
 										});
 									} else {
@@ -586,7 +586,7 @@ require([
 										// hide the map div
 										domStyle.set("map", "display", "none");
 										//
-										on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", layers, performanceNode));
+										on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", "", layers, performanceNode));
 
 										mapDrawTimeScore = 0;
 										nLayersScore = 0;
@@ -1299,7 +1299,7 @@ require([
 			});
 		}
 
-		function performanceContentPane(item, popupScore, mapDrawTime, layers) {
+		function performanceContentPane(item, popupScore, mapDrawTime, response, layers) {
 			// load the content
 			loadContent(performanceConfig.PERFORMANCE_CONTENT);
 
@@ -1361,6 +1361,7 @@ require([
 				domStyle.set(nLayersBestNode, "color", scoring.PASS_COLOR);
 			}
 
+			popupsScore = validator.setPopupScore(response);
 			// popups
 			var popupsScoreContainerNode = query(".popups-score-gr")[0],
 				popupsNumeratorNode = query(".popups-score-num")[0],
@@ -1368,11 +1369,12 @@ require([
 			var popupsNoneNode = query(".performance-popups-none")[0],
 				popupsDefaultNode = query(".performance-popups-default")[0],
 				popupsCustomNode = query(".performance-popups-custom")[0];
-			if (popupsScore === scoring.PERFORMANCE_POPUPS_ENABLED) {
+			console.log("popupsScore: " + popupsScore)
+			if (popupsScore === 7) {
 				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsDefaultNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsCustomNode, "color", "#005E95");
-			} else if (popupsScore === scoring.PERFORMANCE_POPUPS_CUSTOM) {
+			} else if (popupsScore === 2) {
 				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsDefaultNode, "color", "#005E95");
 				domStyle.set(popupsCustomNode, "color", "rgba(0, 122, 194, 0.24)");

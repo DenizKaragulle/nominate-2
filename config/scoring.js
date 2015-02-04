@@ -153,7 +153,11 @@ define({
 	////////////////////////////////////////////
 	"PERFORMANCE_POPUPS_CUSTOM" : 5,
 	"PERFORMANCE_POPUPS_ENABLED" : 2,
+	"PERFORMANCE_POPUPS_DISABLED_SCORE" : 0,
 
+	////////////////////////////////////////////
+	// Sharing
+	////////////////////////////////////////////
 	"PERFORMANCE_SHARING_PUBLIC_SCORE" : 7,
 	"PERFORMANCE_SHARING_ORG_SCORE" : 2,
 	"PERFORMANCE_SHARING_PRIVATE_SCORE" : 0,

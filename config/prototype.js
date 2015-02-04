@@ -275,31 +275,36 @@ define([
 
 		setPopupScore:function (response) {
 			var score = 0;
-			if (response.itemInfo.itemData) {
-				console.log(response.itemInfo.itemData);
-				var operationalLayers = response.itemInfo.itemData.operationalLayers;
+			var itemData = response.itemInfo.itemData;
+			if (itemData) {
+				var operationalLayers = itemData.operationalLayers;
 				if (operationalLayers) {
 					if (operationalLayers.length < 1) {
 						// POPUPS ARE DISABLED
 						score = 0;
 					} else {
 						array.forEach(operationalLayers, function (ol) {
+							//console.log(ol);
 							if (ol.popupInfo) {
 								score = 2;
-								//console.log("OPERATIONAL LAYER POPUP");
+								// check if has description
 								if (ol.popupInfo.description) {
 									//console.log("CUSTOM OL POPUP (DESCRIPTION)");
 									score = 7;
 								}
 
+								// check if has media infos
 								if (ol.popupInfo.mediaInfos) {
 									if (ol.popupInfo.mediaInfos.length > 1) {
 										//console.log("CUSTOM OL POPUP (MEDIA INFOS)");
 										score = 7;
 									}
 								}
+							}
 
-								array.forEach(ol.layers, function(lyr) {
+							// check if sub layers have description/media infos
+							array.forEach(ol.layers, function (lyr) {
+								if (lyr.popupInfo !== undefined) {
 									if (lyr.popupInfo.description) {
 										//console.log("CUSTOM OL POPUP (DESCRIPTION)");
 										score = 7;
@@ -311,8 +316,8 @@ define([
 											score = 7;
 										}
 									}
-								});
-							}
+								}
+							});
 						});
 
 						var featureCollection = operationalLayers.featureCollection;
@@ -323,14 +328,11 @@ define([
 								//console.log("FEATURE COLLECTION NO POPUPS");
 								score = 2;
 							}
-						} else {
-							//console.log("DEFAULT POPUP");
-							score = 2;
 						}
 					}
 				}
 
-				var layers = response.itemInfo.itemData.layers;
+				var layers = itemData.layers;
 				if (layers) {
 					if (layers.length < 1) {
 						// POPUPS ARE DISABLED
