@@ -78,6 +78,20 @@ define({
 		}
 	],
 
+	"THUMBNAIL_IMAGE_SIZES" : {
+		"PROFILE":[150, 150],
+		"SMALL":[200, 133],
+		"LARGE":[286, 190],
+		"XLARGE":[450, 300]
+	},
+
+	"UPDATE_ITEMS" : {
+		"PROFILE":[],
+		"SMALL":[],
+		"LARGE":[],
+		"XLARGE":[]
+	},
+
 	// map draw times in seconds
 	"drawTime": {
 		"GOOD": 10,

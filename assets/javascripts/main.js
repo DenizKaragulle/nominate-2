@@ -188,20 +188,6 @@ require([
 	//
 	var validator = null;
 
-	var imageSizes = {
-		"PROFILE":[150, 150],
-		"SMALL":[200, 133],
-		"LARGE":[286, 190],
-		"XLARGE":[450, 300]
-	};
-
-	var updatedItems = {
-		"PROFILE":[],
-		"SMALL":[],
-		"LARGE":[],
-		"XLARGE":[]
-	};
-
 	ready(function () {
 
 		run();
@@ -580,9 +566,9 @@ require([
 
 												// set performance scores
 												mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
-												console.log("MAP DRAW TIME SCORE: " + mapDrawTimeScore);
 												nLayersScore = validator.setNumLayersScore(layers);
-												popupsScore = validator.setPopupScore(layers);
+												popupsScore = validator.setPopupScore(response);
+												console.log("popupsScore: " + popupsScore);
 												sharingScore = validator.setSharingScore(item);
 												performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
 												// set style on performance button
@@ -1844,7 +1830,7 @@ require([
 					imgNode.onload = function () {
 						msgPane.innerHTML = "Valid file selected";
 						put(dialogContent, "div.imageSizeLabel", lang.replace("Image size: {0}px by {1}px", [this.width, this.height]));
-						if ((this.width === imageSizes[imageSizeName][0]) && (this.height === imageSizes[imageSizeName][1])) {
+						if ((this.width === defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName][0]) && (this.height === defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName][1])) {
 							domClass.remove(uploadThumbBtn.domNode, "dijitHidden");
 							// upload button selected
 							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
@@ -1855,7 +1841,7 @@ require([
 										itemStore.put(userItem);
 										domAttr.set(query(".item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
 										domAttr.set(query(".expanded-item-thumbnail-" + selectedRowID)[0], "src", userItem.thumbnailUrl);
-										updatedItems[imageSizeName].push(item.id);
+										defaults.UPDATE_ITEMS[imageSizeName].push(item.id);
 										msgPane.innerHTML = "Item updated with thumbnail";
 										validator.setThumbnailScore(userItem);
 										updateOverallScore();
@@ -1870,7 +1856,7 @@ require([
 								}));
 							}));
 						} else {
-							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", imageSizes[imageSizeName]);
+							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName]);
 							//domClass.remove(fileInput, "dijitHidden");
 						}
 					};
@@ -1923,7 +1909,7 @@ require([
 					imgNode.onload = function () {
 						msgPane.innerHTML = "Valid file selected";
 						put(dialogContent, "div.imageSizeLabel", lang.replace("Image size: {0}px by {1}px", [this.width, this.height]));
-						if ((this.width === imageSizes[imageSizeName][0]) && (this.height === imageSizes[imageSizeName][1])) {
+						if ((this.width === defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName][0]) && (this.height === defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName][1])) {
 							domClass.remove(uploadThumbBtn.domNode, "dijitHidden");
 							// upload button selected
 							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
@@ -1951,7 +1937,7 @@ require([
 								}));
 							}));
 						} else {
-							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", imageSizes[imageSizeName]);
+							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName]);
 							//domClass.remove(fileInput, "dijitHidden");
 						}
 					};
