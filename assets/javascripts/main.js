@@ -1196,7 +1196,7 @@ require([
 						// prepopulate the widget with values from the list
 						tagsDijit.prepopulate(tagStore.data);
 
-						on(tagsDijit._inputTextBox, "keyup", function (evt) {
+						/*on(tagsDijit._inputTextBox, "keyup", function (evt) {
 							newTag = "";
 							if (keys.ENTER === evt.keyCode) {
 								newTag = tagsDijit.values[tagsDijit.values.length - 1];
@@ -1218,42 +1218,51 @@ require([
 									dijit.byId(widgetId).setAttribute("checked", false);
 								}
 							});
-						});
+						});*/
 					} else {
 						// SAVE mode
 						var _userItemUrl = item.userItemUrl;
 						array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
-							if (newTag !== undefined) {
-								if (atlasTag.tag.toUpperCase() === newTag.toUpperCase()) {
-									var widgetId = atlasTag.id + selectedRowID;
-									dijit.byId(widgetId).setAttribute("checked", true);
-								}
+							var widgetId = atlasTag.id + selectedRowID;
+							if (array.some(tagsDijit.values, function (tag) {
+								//console.log("tag: " + tag + "\t\tatlasTag: " + atlasTag.tag);
+								return tag === atlasTag.tag;
+							})) {
+								//console.log("TRUE");
+								dijit.byId(widgetId).setAttribute("checked", true);
+							} else {
+								//console.log("FALSE");
+								dijit.byId(widgetId).setAttribute("checked", false);
 							}
 						});
+						tagStore.data = [];
+						tagStore.data = tagsDijit.values;
+						tagsDijit.clearTags();
+						tagsDijit.prepopulate(tagStore.data);
 
 						esriRequest({
 							url:_userItemUrl + "/update",
 							content:{
 								f:"json",
-								tags:"" + tagsDijit.values
+								tags:"" + tagStore.data
 							}
 						}, {
 							usePost:true
 						}).then(function (response) {
 									if (response.success) {
 										if (dijit.byId("tag-widget")) {
-											itemTags_clean = tagsDijit.values;
+											itemTags_clean = tagStore.data;
 											domConstruct.create("div", {
 												class:"existing-tags"
 											}, query(".tag-container")[0], "first");
-											tagsDijit.addStyledTags(tagsDijit.values, query(".existing-tags")[0]);
+											tagsDijit.addStyledTags(tagStore.data, query(".existing-tags")[0]);
 											dijit.byId("tag-widget").destroy();
 											domConstruct.create("div", {
 												id:"tag-widget"
 											}, query(".tag-container")[0], "first");
 										}
 										// set the numerator and update score
-										itemTagsScore = validateItemTags(tagsDijit.values);
+										itemTagsScore = validateItemTags(tagStore.data);
 										tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 										// section overall score
 										updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
@@ -2194,6 +2203,102 @@ require([
 		}
 
 		function addCheckbox(itemTags, id, atlasTag) {
+			//console.log(id);
+			//console.log(itemTags);
+			//console.log(atlasTag);
+
+			var _checked = false;
+			array.forEach(itemTags, function (tag) {
+				if (tag === atlasTag) {
+					_checked = true;
+				}
+			});
+
+			var checkBox = new CheckBox({
+				name:"checkbox",
+				disabled:true,
+				value:atlasTag,
+				checked:_checked,
+				onChange:function (b) {
+					var value = this.value;
+					console.log(value);
+					if (b) {
+						// CHECKED
+						// iterate through the tag store
+						if (array.some(tagStore.data, function (tag) {
+							return tag === value;
+						})) {
+							//
+						} else {
+							// no match, add it to the store
+							tagStore.data.push(value);
+						}
+						tagsDijit.clearTags();
+						tagsDijit.prepopulate(tagStore.data);
+					} else {
+						// UNCHECKED
+						console.log(value);
+						console.log(tagStore.data);
+						var index = tagStore.data.indexOf(value);
+						console.log(index);
+						if (index > -1) {
+							tagStore.data.splice(index, 1);
+							console.log(tagStore.data);
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						}
+					}
+				}
+			}, id).startup();
+
+			/*var checkBox;
+			if (array.some(itemTags, function (tag) {
+				return tag.toUpperCase() === atlasTag.toUpperCase();
+			})) {
+				// Check = TRUE
+				checkBox = new CheckBox({
+					name:"checkBox",
+					disabled:true,
+					value:atlasTag,
+					checked:true,
+					onChange:function (b) {
+						if (this.checked) {
+							tagStore.data.push(this.get("value"));
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						} else {
+							var position = array.indexOf(tagStore.data, this.value);
+							tagStore.data.splice(position, 1);
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						}
+					}
+				}, id).startup();
+			} else {
+				// Check = FALSE
+				checkBox = new CheckBox({
+					name:"checkBox",
+					disabled:true,
+					value:atlasTag,
+					checked:false,
+					onChange:function (b) {
+						if (this.checked) {
+							tagStore.data.push(this.get("value"));
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						} else {
+							var position = array.indexOf(tagStore.data, this.value);
+							tagStore.data.splice(position, 1);
+							tagsDijit.clearTags();
+							tagsDijit.prepopulate(tagStore.data);
+						}
+					}
+				}, id).startup();
+			}*/
+			checkBoxID_values.push(id);
+		}
+
+		/*function addCheckbox(itemTags, id, atlasTag) {
 			var checkBox;
 			if (array.some(itemTags, function (tag) {
 				return tag.toUpperCase() === atlasTag.toUpperCase();
@@ -2239,7 +2344,7 @@ require([
 				}, id).startup();
 			}
 			checkBoxID_values.push(id);
-		}
+		}*/
 
 		function toggleCheckboxes(checkBoxID_values, attr, value) {
 			// enable/disable living atlas checkboxes
