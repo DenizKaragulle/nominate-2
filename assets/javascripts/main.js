@@ -308,51 +308,10 @@ require([
             on(portal, "ready", function (p) {
                 on(dom.byId(SIGNIN_BUTTON_ID), "click", signIn);
 
-                on(searchInputNode, "keydown", function (event) {
-                    switch (event.keyCode) {
-                        case keys.ENTER:
-                            searchBtnClickHandler(event);
-                            console.log("enter has been pressed");
-                            break;
-                        default:
-                            console.log("some other key: " + event.keyCode);
-                    }
-                });
-
-                on(query(".filter-list"), "click", function (event) {
-                    var checkedListItem = query(".filter-check");
-                    domAttr.set(checkedListItem, "class", "filter-list");
-                    domClass.remove(checkedListItem[0], "icon-check filter-check");
-                    domStyle.set(checkedListItem, "margin-left", "20px");
-                    query(".filter-list").style("margin-left", "20px");
-                    domAttr.set(this, "class", "filter-list icon-check filter-check");
-                    domStyle.set(this, "margin-left", "2px");
-
-                    var target = domAttr.get(this, "data-value");
-                    applyFilter(target);
-                });
-
-                on(query(".sort-items"), "click", function (event) {
-                    var checkedListItem = query(".icon-check");
-                    domAttr.set(checkedListItem, "class", "sort-items");
-                    domClass.remove(checkedListItem[0], "icon-check");
-                    domStyle.set(checkedListItem, "margin-left", "20px");
-                    query(".sort-items").style("margin-left", "20px");
-                    domAttr.set(this, "class", "sort-items icon-check");
-                    domStyle.set(this, "margin-left", "2px");
-
-                    var target = domAttr.get(this, "data-value");
-                    applySort(target);
-                });
-            });
-
-            on(query(".icon-help")[0], "click", function () {
-                var helpDialog = new Dialog({
-                    title: "HELP",
-                    content: "<div>Not implemented yet</div>",
-                    style: "width: 300px"
-                });
-                helpDialog.show();
+                on(searchInputNode, "keydown", searchItemsClickHandler);
+                on(query(".filter-list"), "click", filterItemsClickHandler);
+                on(query(".sort-items"), "click", sortItemsClickHandler);
+				on(query(".icon-help")[0], "click", helpBtnClickHandler);
             });
         }
 
@@ -644,6 +603,49 @@ require([
                 });
             });
         }
+
+		function searchItemsClickHandler(event) {
+			switch (event.keyCode) {
+				case keys.ENTER:
+					searchBtnClickHandler(event);
+					break;
+				default:
+					//console.log("some other key: " + event.keyCode);
+			}
+		}
+
+		function filterItemsClickHandler() {
+			var checkedListItem = query(".filter-check");
+			domAttr.set(checkedListItem, "class", "filter-list");
+			domClass.remove(checkedListItem[0], "icon-check filter-check");
+			domStyle.set(checkedListItem, "margin-left", "20px");
+			query(".filter-list").style("margin-left", "20px");
+			domAttr.set(this, "class", "filter-list icon-check filter-check");
+			domStyle.set(this, "margin-left", "2px");
+			var target = domAttr.get(this, "data-value");
+			applyFilter(target);
+		}
+
+		function sortItemsClickHandler() {
+			var checkedListItem = query(".icon-check");
+			domAttr.set(checkedListItem, "class", "sort-items");
+			domClass.remove(checkedListItem[0], "icon-check");
+			domStyle.set(checkedListItem, "margin-left", "20px");
+			query(".sort-items").style("margin-left", "20px");
+			domAttr.set(this, "class", "sort-items icon-check");
+			domStyle.set(this, "margin-left", "2px");
+			var target = domAttr.get(this, "data-value");
+			applySort(target);
+		}
+
+		function helpBtnClickHandler() {
+			var helpDialog = new Dialog({
+				title:"HELP",
+				content:"<div>Not implemented yet</div>",
+				style:"width: 300px"
+			});
+			helpDialog.show();
+		}
 
 
         function detailsContentPane(selectedRowID, titleID, snippetID, descID) {
@@ -2244,7 +2246,6 @@ require([
                 checked: _checked,
                 onChange: function (b) {
                     var value = this.value;
-                    console.log(value);
                     if (b) {
                         // CHECKED
                         // iterate through the tag store
@@ -2260,114 +2261,17 @@ require([
                         tagsDijit.prepopulate(tagStore.data);
                     } else {
                         // UNCHECKED
-                        console.log(value);
-                        console.log(tagStore.data);
                         var index = tagStore.data.indexOf(value);
-                        console.log(index);
                         if (index > -1) {
                             tagStore.data.splice(index, 1);
-                            console.log(tagStore.data);
                             tagsDijit.clearTags();
                             tagsDijit.prepopulate(tagStore.data);
                         }
                     }
                 }
             }, id).startup();
-
-            /*var checkBox;
-             if (array.some(itemTags, function (tag) {
-             return tag.toUpperCase() === atlasTag.toUpperCase();
-             })) {
-             // Check = TRUE
-             checkBox = new CheckBox({
-             name:"checkBox",
-             disabled:true,
-             value:atlasTag,
-             checked:true,
-             onChange:function (b) {
-             if (this.checked) {
-             tagStore.data.push(this.get("value"));
-             tagsDijit.clearTags();
-             tagsDijit.prepopulate(tagStore.data);
-             } else {
-             var position = array.indexOf(tagStore.data, this.value);
-             tagStore.data.splice(position, 1);
-             tagsDijit.clearTags();
-             tagsDijit.prepopulate(tagStore.data);
-             }
-             }
-             }, id).startup();
-             } else {
-             // Check = FALSE
-             checkBox = new CheckBox({
-             name:"checkBox",
-             disabled:true,
-             value:atlasTag,
-             checked:false,
-             onChange:function (b) {
-             if (this.checked) {
-             tagStore.data.push(this.get("value"));
-             tagsDijit.clearTags();
-             tagsDijit.prepopulate(tagStore.data);
-             } else {
-             var position = array.indexOf(tagStore.data, this.value);
-             tagStore.data.splice(position, 1);
-             tagsDijit.clearTags();
-             tagsDijit.prepopulate(tagStore.data);
-             }
-             }
-             }, id).startup();
-             }*/
             checkBoxID_values.push(id);
         }
-
-        /*function addCheckbox(itemTags, id, atlasTag) {
-         var checkBox;
-         if (array.some(itemTags, function (tag) {
-         return tag.toUpperCase() === atlasTag.toUpperCase();
-         })) {
-         // Check = TRUE
-         checkBox = new CheckBox({
-         name:"checkBox",
-         disabled:true,
-         value:atlasTag,
-         checked:true,
-         onChange:function (b) {
-         if (this.checked) {
-         tagStore.data.push(this.get("value"));
-         tagsDijit.clearTags();
-         tagsDijit.prepopulate(tagStore.data);
-         } else {
-         var position = array.indexOf(tagStore.data, this.value);
-         tagStore.data.splice(position, 1);
-         tagsDijit.clearTags();
-         tagsDijit.prepopulate(tagStore.data);
-         }
-         }
-         }, id).startup();
-         } else {
-         // Check = FALSE
-         checkBox = new CheckBox({
-         name:"checkBox",
-         disabled:true,
-         value:atlasTag,
-         checked:false,
-         onChange:function (b) {
-         if (this.checked) {
-         tagStore.data.push(this.get("value"));
-         tagsDijit.clearTags();
-         tagsDijit.prepopulate(tagStore.data);
-         } else {
-         var position = array.indexOf(tagStore.data, this.value);
-         tagStore.data.splice(position, 1);
-         tagsDijit.clearTags();
-         tagsDijit.prepopulate(tagStore.data);
-         }
-         }
-         }, id).startup();
-         }
-         checkBoxID_values.push(id);
-         }*/
 
         function toggleCheckboxes(checkBoxID_values, attr, value) {
             // enable/disable living atlas checkboxes

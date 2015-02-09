@@ -103,7 +103,12 @@ define([
 		 */
 		setItemDescriptionScore:function (itemDescription) {
 			var score = 0;
-			var strippedString = itemDescription.replace(/(<([^>]+)>)/ig, "").trim();
+			var strippedString = null;
+			if (itemDescription !== null) {
+				strippedString = itemDescription.replace(/(<([^>]+)>)/ig, "").trim();
+			} else {
+				score = 0;
+			}
 			if (this._isValid(strippedString) || strippedString === null) {
 				score = 0;
 			} else {
