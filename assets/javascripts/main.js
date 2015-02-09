@@ -1391,7 +1391,7 @@ require([
                 // NO LAYERS
                 domStyle.set(nLayersGoodNode, "color", "rgba(0, 122, 194, 0.24)");
                 domStyle.set(nLayersBetterNode, "color", "rgba(0, 122, 194, 0.24)");
-                domStyle.set(nLayersBestNode, "color", scoring.PASS_COLOR);
+                domStyle.set(nLayersBestNode, "color", "rgba(0, 122, 194, 0.24)");
             }
 
             popupsScore = validator.setPopupScore(response);
