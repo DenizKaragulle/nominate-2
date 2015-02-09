@@ -227,7 +227,7 @@ define([
 
 			if (nLayers < 1) {
 				// basemap case
-				score = 0;
+				score = scoring.LAYER_COUNT_BEST_SCORE;
 			}
 
 			return score;
