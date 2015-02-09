@@ -262,6 +262,24 @@ define([
 								}
 							}
 
+							if (ol.featureCollection) {
+								array.forEach(ol.featureCollection.layers, function (lyr) {
+									if (lyr.popupInfo !== undefined) {
+										if (lyr.popupInfo.description) {
+											//console.log("CUSTOM OL POPUP (DESCRIPTION)");
+											score = 7;
+										}
+
+										if (lyr.popupInfo.mediaInfos) {
+											if (lyr.popupInfo.mediaInfos.length > 1) {
+												//console.log("CUSTOM OL POPUP (MEDIA INFOS)");
+												score = 7;
+											}
+										}
+									}
+								});
+							}
+
 							// check if sub layers have description/media infos
 							array.forEach(ol.layers, function (lyr) {
 								if (lyr.popupInfo !== undefined) {
