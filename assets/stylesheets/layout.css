@@ -302,7 +302,7 @@ table tr {
 }
 
 .description-editor {
-	height: 160px !important;
+	/*height: 160px !important;*/
 }
 
 #access-constraints-editor {

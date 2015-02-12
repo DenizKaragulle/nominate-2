@@ -29,7 +29,7 @@
           <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/index.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.34688348" vertical-offset="576" max-vertical-offset="3240">
+                <state vertical-scroll-proportion="0.33862433" vertical-offset="576" max-vertical-offset="3240">
                   <caret line="64" column="59" selection-start-line="64" selection-start-column="59" selection-end-line="64" selection-end-column="59" />
                   <folding />
                 </state>
@@ -43,7 +43,7 @@
           <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/assets/javascripts/main.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.9274978" vertical-offset="5026" max-vertical-offset="6240">
+                <state vertical-scroll-proportion="0.90587217" vertical-offset="5026" max-vertical-offset="6240">
                   <caret line="2399" column="32" selection-start-line="2399" selection-start-column="32" selection-end-line="2399" selection-end-column="32" />
                   <folding>
                     <element signature="e#5625#7327#0" expanded="false" />
@@ -242,16 +242,13 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="LayoutCode.rearrangeEntriesJavaScript 1.5" value="false" />
+    <property name="FullScreen" value="false" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
-      <method />
-    </configuration>
     <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
       <method />
     </configuration>
-    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" config-file="">
-      <envs />
+    <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
       <method />
     </configuration>
     <configuration default="true" type="JSTestDriver:ConfigurationType" factoryName="JsTestDriver">
@@ -259,6 +256,10 @@
       <setting name="settingsFile" value="" />
       <setting name="serverType" value="INTERNAL" />
       <setting name="preferredDebugBrowser" value="Chrome" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" config-file="">
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
@@ -285,6 +286,9 @@
     <list size="0" />
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="15bb4eaf-8368-45be-8dba-4bc12b754f88" name="Default" comment="" />
@@ -296,7 +300,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="329" y="141" width="2226" height="1291" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -305,18 +309,18 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2496278" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.07256236" sideWeight="0.72310257" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.108188584" sideWeight="0.2768974" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -343,7 +347,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34688348" vertical-offset="576" max-vertical-offset="3240">
+        <state vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="3240">
           <caret line="64" column="59" selection-start-line="64" selection-start-column="59" selection-end-line="64" selection-end-column="59" />
           <folding />
         </state>
@@ -351,7 +355,71 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/assets/javascripts/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9274978" vertical-offset="5026" max-vertical-offset="6240">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6240">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#5625#7327#0" expanded="false" />
+            <element signature="e#7461#7993#0" expanded="false" />
+            <element signature="e#8124#8569#0" expanded="false" />
+            <element signature="e#8688#9308#0" expanded="false" />
+            <element signature="e#9453#9927#0" expanded="false" />
+            <element signature="e#10063#10521#0" expanded="false" />
+            <element signature="e#12052#12698#0" expanded="false" />
+            <element signature="e#12769#13382#0" expanded="false" />
+            <element signature="e#15422#15661#0" expanded="false" />
+            <element signature="e#15710#15786#0" expanded="false" />
+            <element signature="e#15896#16258#0" expanded="false" />
+            <element signature="e#16586#31993#0" expanded="false" />
+            <element signature="e#32225#50023#0" expanded="false" />
+            <element signature="e#50116#60821#0" expanded="false" />
+            <element signature="e#60892#71300#0" expanded="false" />
+            <element signature="e#71391#79065#0" expanded="false" />
+            <element signature="e#79155#91463#0" expanded="false" />
+            <element signature="e#91503#91677#0" expanded="false" />
+            <element signature="e#91725#93540#0" expanded="false" />
+            <element signature="e#93580#95534#0" expanded="false" />
+            <element signature="e#95590#96458#0" expanded="false" />
+            <element signature="e#96523#96807#0" expanded="false" />
+            <element signature="e#96849#98495#0" expanded="false" />
+            <element signature="e#98542#99381#0" expanded="false" />
+            <element signature="e#99431#99758#0" expanded="false" />
+            <element signature="e#99818#104726#0" expanded="false" />
+            <element signature="e#104787#109669#0" expanded="false" />
+            <element signature="e#109724#110893#0" expanded="false" />
+            <element signature="e#110945#111387#0" expanded="false" />
+            <element signature="e#111423#111562#0" expanded="false" />
+            <element signature="e#111598#111864#0" expanded="false" />
+            <element signature="e#111907#112353#0" expanded="false" />
+            <element signature="e#112429#113166#0" expanded="false" />
+            <element signature="e#113205#113517#0" expanded="false" />
+            <element signature="e#113563#114617#0" expanded="false" />
+            <element signature="e#114657#117574#0" expanded="false" />
+            <element signature="e#117610#118430#0" expanded="false" />
+            <element signature="e#120010#121127#0" expanded="false" />
+            <element signature="e#121161#121865#0" expanded="false" />
+            <element signature="e#121957#122095#0" expanded="false" />
+            <element signature="e#122145#122213#0" expanded="false" />
+            <element signature="e#122268#125731#0" expanded="false" />
+            <element signature="e#124127#125681#0" expanded="false" />
+            <element signature="e#125741#127227#0" expanded="false" />
+            <element signature="e#127295#127497#0" expanded="false" />
+            <element signature="e#127529#127795#0" expanded="false" />
+            <marker date="1423451982000" expanded="true" signature="21775:21804" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33862433" vertical-offset="576" max-vertical-offset="3240">
+          <caret line="64" column="59" selection-start-line="64" selection-start-column="59" selection-end-line="64" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/javascripts/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.90587217" vertical-offset="5026" max-vertical-offset="6240">
           <caret line="2399" column="32" selection-start-line="2399" selection-start-column="32" selection-end-line="2399" selection-end-column="32" />
           <folding>
             <element signature="e#5625#7327#0" expanded="false" />
