@@ -2387,52 +2387,6 @@ require([
             domStyle.set(node, "height", height + "px");
         }
 
-        function addCheckbox(itemTags, id, atlasTag) {
-            //console.log(id);
-            //console.log(itemTags);
-            //console.log(atlasTag);
-
-            var _checked = false;
-            array.forEach(itemTags, function (tag) {
-                if (tag === atlasTag) {
-                    _checked = true;
-                }
-            });
-
-            var checkBox = new CheckBox({
-                name: "checkbox",
-                disabled: true,
-                value: atlasTag,
-                checked: _checked,
-                onChange: function (b) {
-                    var value = this.value;
-                    if (b) {
-                        // CHECKED
-                        // iterate through the tag store
-                        if (array.some(tagStore.data, function (tag) {
-                                return tag === value;
-                            })) {
-                            //
-                        } else {
-                            // no match, add it to the store
-                            tagStore.data.push(value);
-                        }
-                        tagsDijit.clearTags();
-                        tagsDijit.prepopulate(tagStore.data);
-                    } else {
-                        // UNCHECKED
-                        var index = tagStore.data.indexOf(value);
-                        if (index > -1) {
-                            tagStore.data.splice(index, 1);
-                            tagsDijit.clearTags();
-                            tagsDijit.prepopulate(tagStore.data);
-                        }
-                    }
-                }
-            }, id).startup();
-            checkBoxID_values.push(id);
-        }
-
         function toggleCheckboxes(checkBoxID_values, attr, value) {
             // enable/disable living atlas checkboxes
             array.forEach((checkBoxID_values), function (id) {
