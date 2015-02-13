@@ -33,7 +33,9 @@ define({
 			'		<div class="column-18">' +
 			'			<div class="column-9">' +
 			'				<div class="section-header">Select at least one of the following categories</div>' +
-			'				<div id="tagCategories"></div>' +
+			'				<div id="tagCategories">' +
+			'					<div id="tree"></div>' +
+			'				</div>' +
 			'			</div>' +
 			'			<div class="column-9 pre-2">' +
 			'				<div class="section-header">Add custom tags</div>' +

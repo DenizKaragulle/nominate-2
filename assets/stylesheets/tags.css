@@ -1,0 +1,33 @@
+/* Container that holds the Atlas tag categories/Tree */
+#tagCategories {
+	height: 350px;
+	width: 300px;
+	overflow-y: scroll;
+	background-color: rgb(253, 253, 253);
+}
+
+/* Tree modifications */
+span.dijitTreeContent > span.dijitInline.dijitIcon.dijitTreeIcon.dijitFolderClosed {
+	display: none !important;
+}
+
+span.dijitTreeContent.dijitTreeContentExpanded > span.dijitInline.dijitIcon.dijitTreeIcon.dijitFolderOpened {
+	display: none !important;
+}
+
+span.dijitInline.dijitIcon.dijitTreeIcon.dijitLeaf {
+	display: none !important;
+}
+
+.dijitTreeLabel {
+	margin-left: -5px !important;
+}
+
+#treeContainer {
+	height: 350px !important;
+	overflow-y: scroll;
+}
+
+.expand-collapse-tree-btns {
+	margin-top: 10px;
+}

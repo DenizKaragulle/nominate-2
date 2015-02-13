@@ -4,7 +4,6 @@ require([
     "dojo/_base/fx",
     "dojo/_base/lang",
     "put-selector/put",
-    "dojo/store/Memory",
     "dgrid/extensions/Pagination",
     "dgrid/OnDemandGrid",
     "dijit/Dialog",
@@ -16,8 +15,13 @@ require([
     "dijit/form/Button",
     "dijit/form/CheckBox",
     "dijit/ProgressBar",
+	"dijit/registry",
+	"dijit/Tree",
+	"dijit/tree/ForestStoreModel",
+	"dijit/tree/ObjectStoreModel",
     "dijit/Tooltip",
     "dojo/aspect",
+	"dojo/data/ItemFileReadStore",
     "dojo/date",
     "dojo/Deferred",
     "dojo/dom",
@@ -29,7 +33,10 @@ require([
     "dojo/keys",
     "dojo/number",
     "dojo/on",
+	"dojo/parser",
+	"dojo/ready",
     "dojo/query",
+	"dojo/store/Memory",
     "dojo/string",
     "esri/arcgis/Portal",
     "esri/arcgis/OAuthInfo",
@@ -40,8 +47,6 @@ require([
     "esri/layers/ArcGISImageServiceLayer",
     "esri/map",
     "esri/request",
-    "dojo/parser",
-    "dojo/ready",
     "config/defaults",
     "config/details",
     "config/credits",
@@ -51,9 +56,11 @@ require([
     "config/tooltips",
     "config/scoring",
     "config/prototype",
-    "esri/dijit/Tags",
+    /*"esri/dijit/Tags",*/
+	"config/CustomTagsWidget",
     "dojo/NodeList-traverse"
-], function (array, declare, fx, lang, put, Memory, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, Tooltip, aspect, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, query, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, parser, ready, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Prototype, Tags) {
+], function (array, declare, fx, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox,
+			 ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, Tooltip, aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Prototype, CustomTagsWidget) {
 
     parser.parse();
 
@@ -180,9 +187,10 @@ require([
     var userDescriptionScore = 0;
     //
     var checkBoxID_values = [];
-    var tagStore;
-    var tagsDijit;
-    var newTag;
+    var tagStore = null;
+	var atlasTagStore = null;
+    //var tagsDijit;
+	var customTagsWidget = null;
     //
     var HAS_PERFORMANCE_CONTENT = false;
     //
@@ -1136,129 +1144,278 @@ require([
                 // load the content
                 loadContent(tags.TAGS_CONTENT);
 
+				// nodes
                 var editSaveBtnNode = query(".edit-save-btn")[0];
                 var cancelBtnNode = query(".cancel-btn")[0];
-                // nodes
                 var tagsTooltipNode = query(".tags-tooltip")[0];
                 var tagsScoreNodeContainer = query(".tags-score-gr")[0];
                 var tagsScoreNumeratorNode = query(".tags-score-num")[0];
                 var tagsScoreDenominatorNode = query(".tags-score-denom")[0];
-
+				// tooltips
                 createTooltips([tagsTooltipNode], [tooltipsConfig.TAGS_TOOLTIP_CONTENT]);
 
                 // tags
                 var itemTags = item.tags;
                 var itemTags_clean = itemTags;
 
+				// validate score
+                itemTagsScore = validateItemTags(itemTags);
+				// set numerator
+                tagsScoreNumeratorNode.innerHTML = itemTagsScore;
                 // set denominator
                 tagsScoreDenominatorNode.innerHTML = TAGS_MAX_SCORE;
-
-                // set the numerator and update score
-                //itemTagsScore = validateTags(itemTagsScore, itemTags, tagsScoreNodeContainer, tagsScoreNumeratorNode, scoring.TAGS_PENALTY_WORDS);
-                itemTagsScore = validateItemTags(itemTags);
-                tagsScoreNumeratorNode.innerHTML = itemTagsScore;
-                // section overall score
+                // update section score
                 updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
+				// update section score style
                 updateSectionScoreStyle(itemTagsScore, TAGS_MAX_SCORE, tagsScoreNodeContainer);
+				// update overall score
                 updateOverallScore();
 
-                // create the existing tags
-                domConstruct.create("div", {class: "existing-tags"}, query(".tag-container")[0], "first");
+                // create the existing tags (un-editable)
+                domConstruct.create("div", {
+					class: "existing-tags"
+				}, query(".tag-container")[0], "first");
                 styleTags(itemTags, query(".existing-tags")[0]);
 
-                // create the Living Atlas checkboxes/categories
-                array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
-                    domConstruct.place("<div><input id='" + atlasTag.id + selectedRowID + "' /> " + atlasTag.tag + "</div>", dom.byId("tagCategories"), "last");
-                    addCheckbox(itemTags, atlasTag.id + selectedRowID, atlasTag.tag);
-                });
-
-                // tags store
+                // existing tags store
                 tagStore = new Memory({
-                    idProperty: 'tag',
+                    idProperty: "tag",
                     data: [].concat(itemTags)
                 });
+				// atlas tags store
+				atlasTagStore = new Memory({
+					data: [
+						{ id: "categories", name: "" },
+						{ id: "basemapsCategory", name: "Basemaps", type: "parent", parent: "categories"},
+						{ id: "esriBasemapsCB", name: "Esri Basemaps", parent: "basemapsCategory", path: ["categories", "basemapsCategory"] },
+						{ id: "partnerBasemapsCB", name: "Partner Basemaps", parent: "basemapsCategory", path: ["categories", "basemapsCategory"] },
+						{ id: "userBasemapsCB", name: "User Basemaps", parent: "basemapsCategory", path: ["categories", "basemapsCategory"] },
+
+						{ id: "imageryCategory", name: "Imagery", type: "parent", parent: "categories"},
+						{ id: "eventImageryCB", name: "Event Imagery", parent: "imageryCategory", path: ["categories", "imageryCategory"] },
+						{ id: "basemapsImageryCB", name: "Basemaps Imagery", parent: "imageryCategory", path: ["categories", "imageryCategory"] },
+						{ id: "multispectralImageryCB", name: "Multi-spectral Imagery", parent: "imageryCategory", path: ["categories", "imageryCategory"] },
+						{ id: "temporalImageryCB", name: "Temporal Imagery", parent: "imageryCategory", path: ["categories", "imageryCategory"] },
+
+						{ id: "demographicsCategory", name: "Demographics", type: "parent", parent: "categories"},
+						{ id: "ageCB", name: "Age", parent: "demographicsCategory", path: ["categories", "demographicsCategory"]  },
+						{ id: "householdsCB", name: "Households", parent: "demographicsCategory", path: ["categories", "demographicsCategory"]  },
+						{ id: "incomeCB", name: "Income", parent: "demographicsCategory", path: ["categories", "demographicsCategory"]  },
+						{ id: "maritalStatusCB", name: "Marital Status", parent: "demographicsCategory", path: ["categories", "demographicsCategory"]  },
+						{ id: "populationCB", name: "Population", parent: "demographicsCategory", path: ["categories", "demographicsCategory"]  },
+						{ id: "raceCB", name: "Race", parent: "demographicsCategory", path: ["categories", "demographicsCategory"]  },
+
+						{ id: "lifestyleCategory", name: "Lifestyle", type: "parent", parent: "categories"},
+						{ id: "atRiskCB", name: "At Risk", parent: "lifestyleCategory", path: ["categories", "lifestyleCategory"]  },
+						{ id: "behaviorsCB", name: "Behaviors", parent: "lifestyleCategory", path: ["categories", "lifestyleCategory"]  },
+						{ id: "businessAndJobsCB", name: "Business and Jobs", parent: "lifestyleCategory", path: ["categories", "lifestyleCategory"]  },
+						{ id: "housingCB", name: "Housing", parent: "lifestyleCategory", path: ["categories", "lifestyleCategory"]  },
+						{ id: "povertyCB", name: "Poverty", parent: "lifestyleCategory", path: ["categories", "lifestyleCategory"]  },
+						{ id: "spendingCB", name: "Spending", parent: "lifestyleCategory", path: ["categories", "lifestyleCategory"]  },
+
+						{ id: "landscapeCategory", name: "Landscape", type: "parent", parent: "categories"},
+						{ id: "climateCB", name: "Climate", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "ecologyCB", name: "Ecology", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "speciesBiologyCB", name: "Species Biology", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "ecologicalDisturbanceCB", name: "Ecological Disturbance", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "elevationCB", name: "Elevation", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "environmentalImpactCB", name: "Environmental Impact", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "landCoverCB", name: "Land Cover", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "naturalHazardsCB", name: "Natural Hazards", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "oceansCB", name: "Oceans", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "soilsGeologyCB", name: "Soils/Geology", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "subsurfaceCB", name: "Subsurface", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "waterCB", name: "Water", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+						{ id: "weatherCB", name: "Weather", parent: "landscapeCategory", path: ["categories", "landscapeCategory"] },
+
+						{ id: "earthObservationsCategory", name: "Earth Observations ", type: "parent", parent: "categories"},
+						{ id: "earthObservationsCB", name: "Earth Observations", parent: "earthObservationsCategory", path: ["categories", "earthObservationsCategory"] },
+
+						{ id: "urbanSystemsCategory", name: "Urban Systems", type: "parent", parent: "categories"},
+						{ id: "citiesCB", name: "3D Cities", parent: "urbanSystemsCategory", path: ["categories", "urbanSystemsCategory"] },
+						{ id: "movementCB", name: "Movement", parent: "urbanSystemsCategory", path: ["categories", "urbanSystemsCategory"] },
+						{ id: "parcelsCB", name: "Parcels", parent: "urbanSystemsCategory", path: ["categories", "urbanSystemsCategory"] },
+						{ id: "peopleCB", name: "People", parent: "urbanSystemsCategory", path: ["categories", "urbanSystemsCategory"] },
+						{ id: "planningCB", name: "Planning", parent: "urbanSystemsCategory", path: ["categories", "urbanSystemsCategory"] },
+						{ id: "publicCB", name: "Public", parent: "urbanSystemsCategory", path: ["categories", "urbanSystemsCategory"] },
+						{ id: "workCB", name: "Work", parent: "urbanSystemsCategory", path: ["categories", "urbanSystemsCategory"] },
+
+						{ id: "transportationCategory", name: "Transportation ", type: "parent", parent: "categories"},
+						{ id: "locationsCB", name: "Locators", parent: "transportationCategory", path: ["categories", "transportationCategory"] },
+						{ id: "networkCB", name: "Network", parent: "transportationCategory", path: ["categories", "transportationCategory"] },
+						{ id: "trafficCB", name: "Traffic", parent: "transportationCategory", path: ["categories", "transportationCategory"] },
+						{ id: "transportationCB", name: "Transportation", parent: "transportationCategory", path: ["categories", "transportationCategory"] },
+
+						{ id: "boundariesAndPlacesCategory", name: "Boundaries and Places", type: "parent", parent: "categories"},
+						{ id: "boundariesCB", name: "Boundaries", parent: "boundariesAndPlacesCategory", path: ["categories", "boundariesAndPlacesCategory"] },
+						{ id: "placesCB", name: "Places", parent: "boundariesAndPlacesCategory", path: ["categories", "boundariesAndPlacesCategory"] },
+
+						{ id: "historicalMapsCategory", name: "Historical Maps ", type: "parent", parent: "categories"},
+						{ id: "historicalMapsCB", name: "Historical Maps", parent: "historicalMapsCategory" },
+
+						{ id: "storyMapsCategory", name: "Story Maps", type: "parent", parent: "categories"},
+						{ id: "architectureAndDesignCB", name: "Architecture and Design", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "businessCB", name: "Business", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "conservationAndSustainabilityCB", name: "Conservation and Sustainability", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "cultureCB", name: "Culture", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "destinationsCB", name: "Destinations", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "eventsAndDisastersCB", name: "Events and Disasters", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "historyCB", name: "History", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "infrastructureAndPlanningCB", name: "Infrastructure and Planning", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "natureAndEnvironmentCB", name: "Nature and Environment", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "oceansStoryMapsCB", name: "Oceans ", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "parksAndRecreationCB", name: "Parks and Recreation", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "peopleAndHealthCB", name: "People and Health", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "publicArtCB", name: "Public Art", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "scienceAndTechnologyCB", name: "Science and Technology", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "sportsAndEntertainmentCB", name: "Sports and Entertainment", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+						{ id: "traveloguesCB", name: "Travelogues", parent: "storyMapsCategory", path: ["categories", "storyMapsCategory"] },
+					],
+
+					// Returns all direct children of this widget
+					getChildren: function (object) {
+						return this.query({
+							parent: object.id
+						});
+					}
+				});
+
+				// destroy the Tags dijit and the Tree dijit
+				if (customTagsWidget) {
+					dijit.byId("tag-widget").destroy();
+					customTagsWidget = null;
+					dijit.byId("tags-tree").destroy();
+				}
+				// tags dijit
+				customTagsWidget = new CustomTagsWidget({
+					placeholder: "Add tag(s)",
+					noDataMsg: "No results found.",
+					matchParam: "all",
+					idProperty: "tag",
+					gridId: "grid1",
+					filterId: "filter1",
+					minWidth: "300px",
+					maxWidth: "400px",
+					store: tagStore
+				}, "tag-widget");
+				customTagsWidget.prepopulate(tagStore.data);
+				// hide dijit until editing mode
+				domStyle.set("tag-widget", "display", "none");
+
+				// Create the model
+				var treeModel = new ObjectStoreModel({
+					store: atlasTagStore,
+					query: {
+						id: "categories"
+					},
+					// Overridable function to tell if an item has or may have children.
+					// Controls whether or not +/- expando icon is shown.
+					mayHaveChildren: function (object) {
+						return "type" in object;
+					}
+				});
+
+				// Create the Tree.
+				var tree = new Tree({
+					id: "tags-tree",
+					model: treeModel,
+					showRoot: false,
+					_createTreeNode: function (args) {
+						var tnode = new dijit._TreeNode(args);
+						tnode.labelNode.innerHTML = args.item.name;
+						if (args.item.parent !== "categories") {
+							var cb = new CheckBox({
+								id: args.item.name,
+								value: args.item.name,
+								disabled: true,
+								onChange: function (selected) {
+									var tagLabel = this.value;
+									if (selected) {
+										if (tagStore.data.indexOf(tagLabel) === -1) {
+											tagStore.data.push(tagLabel);
+										}
+									} else {
+										tagStore.data.splice(tagStore.data.indexOf(tagLabel), 1);
+									}
+									customTagsWidget.clearTags();
+									customTagsWidget.prepopulate(tagStore.data);
+								}
+							});
+							cb.placeAt(tnode.labelNode, "first");
+							checkBoxID_values.push(args.item.name);
+						}
+						return tnode;
+					},
+					onLoad: function () {
+						//console.log("LOADED");
+						updateTreePath(tree, treeModel, customTagsWidget.values);
+					},
+					onClick: function (item, node, evt) {
+						//console.log(item);
+					},
+					onOpen: function (item, node) {
+						var name = item.name;
+						if (editSaveBtnNode.innerHTML === " EDIT ") {
+							toggleCheckboxes(checkBoxID_values, "disabled", true);
+						} else {
+							toggleCheckboxes(checkBoxID_values, "disabled", false);
+						}
+
+						if (registry.byId(name)) {
+							registry.byId(name).set("checked", true);
+						}
+					}
+				});
+				tree.placeAt("tree");
+				tree.startup();
+
+				aspect.after(tree, "onOpen", function (item) {
+					var lastValueAdded = customTagsWidget.values[customTagsWidget.values.length - 1];
+					if (registry.byId(lastValueAdded)) {
+						registry.byId(lastValueAdded).set("checked", true);
+					}
+				});
+
+				/*on(query(".expandBtn")[0], "click", function (event) {
+					tree.expandAll();
+				});
+
+				on(query(".collapseBtn")[0], "click", function (event) {
+					tree.collapseAll();
+				});*/
+
+				customTagsWidget.on("deletenode", function (tag) {
+					if (registry.byId(tag)) {
+						// deleting an Atlas Tag
+						registry.byId(tag).set("checked", false);
+					} else {
+						// deleting a custom tag
+						tagStore.data.splice(tagStore.data.indexOf(tag), 1);
+					}
+				});
+
+				customTagsWidget.on("addnode", function (tag) {
+					if (tagStore.data.indexOf(tag) === -1) {
+						tagStore.data.push(tag);
+					}
+					// expand tree if needed
+					updateTreePath(tree, treeModel, customTagsWidget.values);
+				});
 
                 on(editSaveBtnNode, "click", function () {
                     if (editSaveBtnNode.innerHTML === " EDIT ") {
                         // EDIT mode
                         updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
                         // remove non-editing tag nodes
-                        domConstruct.empty(query(".existing-tags")[0]);
-
+                        // domConstruct.empty(query(".existing-tags")[0]);
+						domStyle.set(query(".existing-tags")[0], "display", "none");
+						// display the tags dijit
+						domStyle.set("tag-widget", "display", "block");
                         // enable living atlas checkboxes
                         toggleCheckboxes(checkBoxID_values, "disabled", false);
-
-                        if (dijit.byId("tag-widget")) {
-                            // destroy the Tags Dijit if it exists
-                            itemTags_clean = tagsDijit.values;
-                            dijit.byId("tag-widget").destroy();
-                            //domConstruct.create("div", { id:"tag-widget" }, query(".tag-container")[0], "first");
-                        } else {
-                            if (tagsDijit !== undefined) {
-                                tagStore = new Memory({
-                                    idProperty: 'tag',
-                                    data: [].concat(itemTags_clean)
-                                });
-                            }
-                        }
-                        tagsDijit = new Tags({
-                            placeholder: 'Add tag(s)',
-                            noDataMsg: 'No results found.',
-                            matchParam: 'all',
-                            idProperty: 'tag',
-                            gridId: 'grid1',
-                            filterId: 'filter1',
-                            minWidth: '300px',
-                            maxWidth: '400px',
-                            store: tagStore
-                        }, "tag-widget");
-                        // prepopulate the widget with values from the list
-                        tagsDijit.prepopulate(tagStore.data);
-
-                        /*on(tagsDijit._inputTextBox, "keyup", function (evt) {
-                         newTag = "";
-                         if (keys.ENTER === evt.keyCode) {
-                         newTag = tagsDijit.values[tagsDijit.values.length - 1];
-
-                         array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
-                         if (atlasTag.tag.toUpperCase() === newTag.toUpperCase()) {
-                         var widgetId = atlasTag.id + selectedRowID;
-                         dijit.byId(widgetId).setAttribute("checked", true);
-                         }
-                         });
-                         }
-                         });
-
-                         on(query(".select2-search-choice-close"), "click", function (evt) {
-                         var removeTag = evt.target.parentNode.title;
-                         array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
-                         if (atlasTag.tag.toUpperCase() === removeTag.toUpperCase()) {
-                         var widgetId = atlasTag.id + selectedRowID;
-                         dijit.byId(widgetId).setAttribute("checked", false);
-                         }
-                         });
-                         });*/
                     } else {
                         // SAVE mode
                         var _userItemUrl = item.userItemUrl;
-                        array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
-                            var widgetId = atlasTag.id + selectedRowID;
-                            if (array.some(tagsDijit.values, function (tag) {
-                                    //console.log("tag: " + tag + "\t\tatlasTag: " + atlasTag.tag);
-                                    return tag === atlasTag.tag;
-                                })) {
-                                //console.log("TRUE");
-                                dijit.byId(widgetId).setAttribute("checked", true);
-                            } else {
-                                //console.log("FALSE");
-                                dijit.byId(widgetId).setAttribute("checked", false);
-                            }
-                        });
-                        tagStore.data = [];
-                        tagStore.data = tagsDijit.values;
-                        tagsDijit.clearTags();
-                        tagsDijit.prepopulate(tagStore.data);
-
                         esriRequest({
                             url: _userItemUrl + "/update",
                             content: {
@@ -1269,17 +1426,11 @@ require([
                             usePost: true
                         }).then(function (response) {
                             if (response.success) {
-                                if (dijit.byId("tag-widget")) {
-                                    itemTags_clean = tagStore.data;
-                                    domConstruct.create("div", {
-                                        class: "existing-tags"
-                                    }, query(".tag-container")[0], "first");
-                                    tagsDijit.addStyledTags(tagStore.data, query(".existing-tags")[0]);
-                                    dijit.byId("tag-widget").destroy();
-                                    domConstruct.create("div", {
-                                        id: "tag-widget"
-                                    }, query(".tag-container")[0], "first");
-                                }
+								itemTags_clean = tagStore.data;
+								domConstruct.empty(query(".existing-tags")[0]);
+								styleTags(tagStore.data, query(".existing-tags")[0]);
+								domStyle.set(query(".existing-tags")[0], "display", "block");
+								domStyle.set("tag-widget", "display", "none");
                                 // set the numerator and update score
                                 itemTagsScore = validateItemTags(tagStore.data);
                                 tagsScoreNumeratorNode.innerHTML = itemTagsScore;
@@ -1299,23 +1450,8 @@ require([
                 });
 
                 on(cancelBtnNode, "click", function () {
-                    newTag = "";
-                    if (dijit.byId("tag-widget")) {
-                        domConstruct.create("div", {
-                            class: "existing-tags"
-                        }, query(".tag-container")[0], "first");
-                        tagsDijit.addStyledTags(itemTags_clean, query(".existing-tags")[0]);
-
-                        dijit.byId("tag-widget").destroy();
-                        domConstruct.create("div", {
-                            id: "tag-widget"
-                        }, query(".tag-container")[0], "first");
-
-                        tagStore = new Memory({
-                            idProperty: 'tag',
-                            data: [].concat(itemTags_clean)
-                        });
-                    }
+					domStyle.set(query(".existing-tags")[0], "display", "block");
+					domStyle.set("tag-widget", "display", "none");
 
                     // set the numerator and update score
                     itemTagsScore = validateItemTags(itemTags_clean);
@@ -1324,7 +1460,6 @@ require([
                     updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
                     updateSectionScoreStyle(itemTagsScore, TAGS_MAX_SCORE, tagsScoreNodeContainer);
                     updateOverallScore();
-
                     // disable living atlas checkboxes
                     toggleCheckboxes(checkBoxID_values, "disabled", true);
                     updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
@@ -1816,6 +1951,31 @@ require([
             });
         }
 
+		function updateTreePath(tree, treeModel, userTags) {
+			var tagPaths = [];
+			// iterate over the user tags from AGOL
+			array.forEach(userTags, function (tag) {
+				// iterate over each of the atlas tags
+				array.forEach(treeModel.store.data, function (atlasTag) {
+					// check if there is a match
+					if (tag === atlasTag.name) {
+						// check if it's not a parent/root node
+						if (atlasTag.path) {
+							// add the id and the tag's path to the list of paths
+							atlasTag.path.push(atlasTag.id);
+							tagPaths.push(atlasTag.path);
+							// check the check box
+							if (registry.byId(tag)) {
+								registry.byId(tag).set("checked", true);
+							}
+						}
+					}
+				});
+			});
+			tree.set('paths', tagPaths);
+		}
+
+
         function createTooltips(nodes, content) {
             array.forEach(nodes, function (node, i) {
                 var userDescriptionTooltip = new Tooltip({
@@ -2276,7 +2436,9 @@ require([
         function toggleCheckboxes(checkBoxID_values, attr, value) {
             // enable/disable living atlas checkboxes
             array.forEach((checkBoxID_values), function (id) {
-                dijit.byId(id).setAttribute(attr, value);
+				if (dijit.byId(id)) {
+					dijit.byId(id).setAttribute(attr, value);
+				}
             });
         }
 
