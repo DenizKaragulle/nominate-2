@@ -30,6 +30,7 @@ require([
     "dojo/dom-construct",
     "dojo/dom-style",
     "dojo/html",
+	"dojo/json",
     "dojo/keys",
     "dojo/number",
     "dojo/on",
@@ -55,12 +56,17 @@ require([
     "config/profile",
     "config/tooltips",
     "config/scoring",
-    "config/prototype",
+    "config/validator",
     /*"esri/dijit/Tags",*/
 	"config/CustomTagsWidget",
     "dojo/NodeList-traverse"
-], function (array, declare, fx, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox,
-			 ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, Tooltip, aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Prototype, CustomTagsWidget) {
+], function (array, declare, fx, lang,
+			 put, Pagination, OnDemandGrid,
+			 Dialog, Editor,
+			 LinkDialog, TextColor, ViewSource, FontChoice,
+			 Button, CheckBox,
+			 ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, Tooltip,
+			 aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget) {
 
     parser.parse();
 
@@ -93,7 +99,6 @@ require([
     var helpButtonNode = "";
     var nominateBtnNode = null;
     var progressBarNode = "";
-    var categoryNodes = [];
     // div dimensions
     var COLLAPSE_ROW_HEIGHT = 125;
     var EXPAND_ROW_HEIGHT = 900;
@@ -110,6 +115,7 @@ require([
     var TAB_CONTAINER_TAGS = "tags-";
     var TAB_CONTAINER_USERNAME = "username-";
     var TAB_CONTAINER_USERDESCRIPTION = "userdesc-";
+	var NOMINATE_BTN_ID = "nominate-btn-";
 
     var portalUrl;
     var portal;
@@ -203,9 +209,9 @@ require([
         renderRow = function (object, data, cell) {
             var itemTitle = object.title;
             var thumbnailUrl = formatThumbnailUrl(object);
-            var type = validateStr(object.type);
+            var type = validator.validateStr(object.type);
             var modifiedDate = formatDate(object.modified);
-            var views = validateStr(object.numViews);
+            var views = validator.validateStr(object.numViews);
             var access = object.access;
             var randomStatus = Math.floor((Math.random() * 4) + 0);
 
@@ -238,19 +244,16 @@ require([
             cell.appendChild(n);
         };
 
-        detailsNodeClickHandler = function (selectedRowID, _categoryNodes, _nodeList, _titleID, _snippetID, _descID, _detailsNode) {
-            destroyNodes(_categoryNodes);
+        detailsNodeClickHandler = function (selectedRowID, _nodeList, _titleID, _snippetID, _descID, _detailsNode) {
             array.forEach(_nodeList, function (node) {
                 if (domClass.contains(node, "active")) {
-                    console.log("CALLING detailsContentPane");
                     domClass.replace(node, "column-4", "active column-4");
                     detailsContentPane(selectedRowID, _titleID, _snippetID, _descID);
                 }
             });
             domClass.replace(_detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
         };
-        creditsNodeClickHandler = function (selectedRowID, _categoryNodes, _nodeList, _item, _accessID, _creditID, _creditsNode) {
-            destroyNodes(_categoryNodes);
+        creditsNodeClickHandler = function (selectedRowID, _nodeList, _item, _accessID, _creditID, _creditsNode) {
             array.forEach(_nodeList, function (node) {
                 if (domClass.contains(node, "active")) {
                     domClass.replace(node, "column-4", "active column-4");
@@ -259,12 +262,7 @@ require([
             });
             domClass.replace(_creditsNode, "active column-4 credits", "column-4 credits");
         };
-        tagsNodeClickHandler = function (_selectedRowID, _categoryNodes, _nodeList, _categoryID, _tagsID, _tagsNode) {
-            destroyNodes(categoryNodes);
-            categoryNodes = [];
-            array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
-                categoryNodes.push(atlasTag.id + previousSelectedRowID);
-            });
+        tagsNodeClickHandler = function (_selectedRowID, _nodeList, _categoryID, _tagsID, _tagsNode) {
             array.forEach(_nodeList, function (node) {
                 if (domClass.contains(node, "active")) {
                     domClass.replace(node, "column-4", "active column-4");
@@ -273,8 +271,7 @@ require([
             });
             domClass.replace(_tagsNode, "active column-4 tags", "column-4 tags");
         };
-        performanceNodeClickHandler = function (_categoryNodes, _nodeList, _item, _popUps, _mapDrawTime, _response, _layers, _performanceNode) {
-            destroyNodes(_categoryNodes);
+        performanceNodeClickHandler = function (_nodeList, _item, _popUps, _mapDrawTime, _response, _layers, _performanceNode) {
             array.forEach(nodeList, function (node) {
                 if (domClass.contains(node, "active")) {
                     domClass.replace(node, "column-4", "active column-4");
@@ -283,8 +280,7 @@ require([
             });
             domClass.replace(_performanceNode, "active column-4 performance", "column-4 performance");
         };
-        profileNodeClickHandler = function (_selectedRowID, _categoryNodes, _nodeList, _userNameID, _userDescriptionID, _profileNode) {
-            destroyNodes(_categoryNodes);
+        profileNodeClickHandler = function (_selectedRowID, _nodeList, _userNameID, _userDescriptionID, _profileNode) {
             array.forEach(_nodeList, function (node) {
                 if (domClass.contains(node, "active")) {
                     domClass.replace(node, "column-4", "active column-4");
@@ -327,17 +323,20 @@ require([
             portal.signIn().then(function (user) {
                 // update the header row
                 updateHeader();
-
+				// Represents a registered user of the Portal.
                 portalUser = portal.getPortalUser();
+				// The username for the user.
                 owner = portalUser.username;
+				// The url to the thumbnail image for the user.
                 portalUserThumbnailUrl = portalUser.thumbnailUrl;
+				// If user has no thumbnail, apply the default thumbnail for a user
                 if (portalUserThumbnailUrl === null) {
                     portalUserThumbnailUrl = "https://cdn.arcgis.com/cdn/5777/js/arcgisonline/css/images/no-user-thumb.jpg";
                 }
-
-                validator = new Prototype();
+				// load the validation rules
+                validator = new Validator();
                 validator.startup();
-
+				// query the user's items
                 var params = {
                     q: "owner:" + owner,
                     num: 1000
@@ -356,7 +355,7 @@ require([
                     domAttr.set(ribbonHeaderNumItemsNode, "class", "icon-stack");
 
                     if (numItems > 0) {
-                        // dgrid columns
+                        // dGrid columns
                         var dgridColumns = [
                             {
                                 label: "",
@@ -364,10 +363,11 @@ require([
                                 renderCell: renderRow
                             }
                         ];
+						// dGrid item store
                         itemStore = new Memory({
                             data: result.results
                         });
-                        // dgrid
+                        // dGrid
                         dgrid = new (declare([OnDemandGrid, Pagination]))({
                             store: itemStore,
                             rowsPerPage: 6,
@@ -379,7 +379,7 @@ require([
                         }, "dgrid");
                         dgrid.startup();
 
-                        // set the maximum score values for each section and overall max score
+                        // set the maximum possible scores for each section and the overall possible maximum score for all the sections combined
                         initScoreMaxValues();
 
                         // item title click handler
@@ -390,16 +390,12 @@ require([
                             selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
                             // get row width
                             var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
-                            // set row height
+                            // set row height (expand the row)
                             domStyle.set(selectedRow, "height", "600px");
 
                             if (previousSelectedRow) {
                                 // collapse the previously selected row height
                                 updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
-                                categoryNodes = [];
-                                array.forEach(defaults.ATLAS_TAGS, function (atlasTag) {
-                                    categoryNodes.push(atlasTag.id + previousSelectedRowID);
-                                });
                                 domConstruct.destroy(EXPANDED_ROW_NAME + previousSelectedRowID);
                                 if (previousSelectedRowID === selectedRowID) {
                                     previousSelectedRowID = "";
@@ -428,6 +424,7 @@ require([
                                 var tagsID = TAB_CONTAINER_TAGS + selectedRowID;
                                 var userNameID = TAB_CONTAINER_USERNAME + selectedRowID;
                                 var userDescriptionID = TAB_CONTAINER_USERDESCRIPTION + selectedRowID;
+								var nominateBtnID = NOMINATE_BTN_ID + selectedRowID;
 
                                 portalUser.getItem(selectedRowID).then(function (item) {
                                     domConstruct.place(
@@ -460,7 +457,7 @@ require([
                                         "				<div id='progressBarMarker'></div>" +
                                         "			</div>" +
                                         "			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-                                        "				<button id='nominate-btn' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
+                                        "				<button id='" + nominateBtnID + "' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
                                         "			</div>" +
                                         "		</div>" +
 
@@ -486,13 +483,15 @@ require([
                                     // get progress bar node
                                     progressBarNode = query(".current-score-graphic-container")[0];
                                     // nominate button node
-                                    nominateBtnNode = dom.byId("nominate-btn");
+                                    nominateBtnNode = dom.byId(nominateBtnID);
 
                                     nominateBtnDialog = new Dialog({
                                         title: "Nominate Item",
                                         content: '<div class="dialog-container">' +
                                         '	<div class="row">' +
-                                        '		<div class = "column-24" >Not implemented yet...<\/div>' +
+                                        '		<div class = "column-24" >' +
+										'			<div>' + nominateBtnID + '</div>' +
+										'		<\/div>' +
                                         '	<\/div>' +
                                             /*'	<div class="row">' +
                                              '		<div class = "column-5" >Score<\/div>' +
@@ -511,6 +510,7 @@ require([
                                     });
 
                                     nominateBtnClickHandler = on(nominateBtnNode, "click", function () {
+
                                         nominateBtnDialog.show();
                                     });
 
@@ -518,13 +518,7 @@ require([
                                     initContentButtonGroup(tcID);
 
                                     // initialize content area with details data
-                                    destroyNodes(categoryNodes);
-                                    //array.forEach(nodeList, function (node) {
-                                    //	if (domClass.contains(node, "active")) {
-                                    //		domClass.replace(node, "column-4", "active column-4");
                                     detailsContentPane(selectedRowID, titleID, snippetID, descID);
-                                    //	}
-                                    //});
                                     domClass.replace(detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
 
                                     if (item.type === "Web Map") {
@@ -546,7 +540,6 @@ require([
                                                 mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
                                                 nLayersScore = validator.setNumLayersScore(layers);
                                                 popupsScore = validator.setPopupScore(response);
-                                                console.log("getItem - popupsScore: " + popupsScore);
                                                 sharingScore = validator.setSharingScore(item);
                                                 performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
                                                 // set style on performance button
@@ -555,7 +548,7 @@ require([
                                                 initScores(item, portalUser);
                                                 HAS_PERFORMANCE_CONTENT = true;
 
-                                                on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, popupsScore, mapDrawTime, response, layers, performanceNode));
+                                                on(performanceNode, "click", lang.partial(performanceNodeClickHandler, nodeList, item, popupsScore, mapDrawTime, response, layers, performanceNode));
                                             }
                                         });
                                     } else {
@@ -564,7 +557,7 @@ require([
                                         // hide the map div
                                         domStyle.set("map", "display", "none");
                                         //
-                                        on(performanceNode, "click", lang.partial(performanceNodeClickHandler, categoryNodes, nodeList, item, "", "", "", layers, performanceNode));
+                                        on(performanceNode, "click", lang.partial(performanceNodeClickHandler, nodeList, item, "", "", "", layers, performanceNode));
 
                                         mapDrawTimeScore = 0;
                                         nLayersScore = 0;
@@ -576,10 +569,10 @@ require([
                                         initScores(item, portalUser);
                                         HAS_PERFORMANCE_CONTENT = false;
                                     }
-                                    on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, categoryNodes, nodeList, titleID, snippetID, descID, detailsNode));
-                                    on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, categoryNodes, nodeList, item, accessID, creditID, creditsNode));
-                                    on(tagsNode, "click", lang.partial(tagsNodeClickHandler, selectedRowID, categoryNodes, nodeList, categoryID, tagsID, tagsNode));
-                                    on(profileNode, "click", lang.partial(profileNodeClickHandler, selectedRowID, categoryNodes, nodeList, userNameID, userDescriptionID, profileNode));
+                                    on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, nodeList, titleID, snippetID, descID, detailsNode));
+                                    on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, nodeList, item, accessID, creditID, creditsNode));
+                                    on(tagsNode, "click", lang.partial(tagsNodeClickHandler, selectedRowID, nodeList, categoryID, tagsID, tagsNode));
+                                    on(profileNode, "click", lang.partial(profileNodeClickHandler, selectedRowID, nodeList, userNameID, userDescriptionID, profileNode));
 
                                     // overall score graphic
                                     if (dijit.byId("overall-score-graphic")) {
@@ -606,8 +599,8 @@ require([
                             }
                         });
                     } else {
-                        console.log("no results");
-                    }
+						console.log("USER HAS NO ITEMS");
+					}
                 });
             });
         }
@@ -659,13 +652,13 @@ require([
         function detailsContentPane(selectedRowID, titleID, snippetID, descID) {
             portalUser.getItem(selectedRowID).then(function (item) {
                 // item title
-                var itemTitle = validateStr(item.title);
+                var itemTitle = validator.validateStr(item.title);
                 var itemTitle_clean = itemTitle;
                 // item summary
-                var itemSummary = validateStr(item.snippet);
+                var itemSummary = validator.validateStr(item.snippet);
                 var itemSummary_clean = itemSummary;
                 // item description
-                var itemDescription = validateStr(item.description);
+                var itemDescription = validator.validateStr(item.description);
                 var itemDescription_clean = itemDescription;
                 // thumbnail url
                 var thumbnailUrl = formatThumbnailUrl(item);
@@ -955,9 +948,9 @@ require([
 
         function useCreditsContentPane(selectedRowID, accessAndUseConstraintsID, creditID) {
             portalUser.getItem(selectedRowID).then(function (item) {
-                var itemCredits = validateStr(item.accessInformation),
+                var itemCredits = validator.validateStr(item.accessInformation),
                     itemCredits_clean = itemCredits,
-                    accessAndUseConstraints = validateStr(item.licenseInfo),
+                    accessAndUseConstraints = validator.validateStr(item.licenseInfo),
                     accessAndUseConstraints_clean = accessAndUseConstraints;
 
                 // load the content
@@ -1013,6 +1006,10 @@ require([
                         domAttr.set(editSaveBtnNode, "innerHTML", " SAVE ");
                         domStyle.set(cancelBtnNode, "display", "block");
                         // credits
+						if (itemCredits === "<span></span>") {
+							itemCredits = "";
+						}
+
                         domConstruct.empty(itemCreditsNode);
                         domConstruct.create("input", {
                             class: "edit-credits",
@@ -1047,6 +1044,17 @@ require([
 
                         portalUser.getItem(selectedRowID).then(function (results) {
                             var _userItemUrl = results.userItemUrl;
+
+							if (itemCredits.length === 0) {
+								//console.log("itemCredits: " + itemCredits);
+								//console.log("itemCredits: " + JSON.stringify(itemCredits).trim());
+								itemCredits = "<span></span>";
+							}
+
+							if (accessAndUseConstraints.length === 0) {
+								accessAndUseConstraints=  "<span></span>";
+							}
+
                             esriRequest({
                                 url: _userItemUrl + "/update",
                                 content: {
@@ -1594,10 +1602,10 @@ require([
         function loadProfileContentPane(selectedRowID, _userNameID, _userDescriptionID) {
             portalUser.getItem(selectedRowID).then(function (item) {
                 // item full name
-                var _userFullName = validateStr(portalUser.fullName);
+                var _userFullName = validator.validateStr(portalUser.fullName);
                 var _userFullName_clean = _userFullName;
                 // item user description
-                var _userDescription = validateStr(portalUser.description);
+                var _userDescription = validator.validateStr(portalUser.description);
                 var _userDescription_clean = _userDescription;
                 // item user thumbnail
                 var _userThumbnailUrl = portalUserThumbnailUrl;
@@ -1863,7 +1871,6 @@ require([
         }
 
         function updateSectionScore(score, node, max) {
-            console.log("SCORE: " + score);
             var classAttrs = domAttr.get(node, "class");
             score = Math.floor(score / max * 100);
             if (score >= scoring.SCORE_THRESHOLD) {
@@ -2187,14 +2194,6 @@ require([
             return deferred.promise;
         }
 
-        function validateStr(str) {
-            if (str === null || "") {
-                return "";
-            } else {
-                return str;
-            }
-        }
-
         function formatDate(date) {
             var d = new Date(date);
             var month = defaults.MONTHS[d.getMonth()];
@@ -2332,33 +2331,6 @@ require([
             portal.queryItems(params).then(function (result) {
                 itemStore.data = result.results;
                 dgrid.refresh();
-            });
-        }
-
-        function destroyNodes(_categoryNodes) {
-            //
-            if (dijit.byId("access-constraints-editor")) {
-                dijit.byId("access-constraints-editor").destroy();
-            }
-            if (dijit.byId("description-editor")) {
-                dijit.byId("description-editor").destroy();
-            }
-
-            if (dijit.byId("update-thumbnail-dialog")) {
-                dijit.byId("update-thumbnail-dialog").destroy();
-            }
-
-            //if (dijit.byId("overall-score-graphic")) {
-            //	dijit.byId("overall-score-graphic").destroy();
-            //}
-            if (dijit.byId(TAB_CONTAINER_LICENSE + previousSelectedRowID))
-                dijit.byId(TAB_CONTAINER_LICENSE + previousSelectedRowID).destroy();
-            if (dijit.byId(TAB_CONTAINER_DESC + previousSelectedRowID))
-                dijit.byId(TAB_CONTAINER_DESC + previousSelectedRowID).destroy();
-            domConstruct.destroy(query(".additional-tags")[0]);
-            array.forEach(_categoryNodes, function (category) {
-                if (dijit.byId(category))
-                    dijit.byId(category).destroy();
             });
         }
 
