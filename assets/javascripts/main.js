@@ -43,11 +43,15 @@ require([
     "esri/arcgis/OAuthInfo",
     "esri/IdentityManager",
     "esri/arcgis/utils",
+	"esri/Color",
     "esri/config",
+	"esri/geometry/Point",
+	"esri/graphic",
     "esri/layers/FeatureLayer",
     "esri/layers/ArcGISImageServiceLayer",
     "esri/map",
     "esri/request",
+	"esri/symbols/SimpleMarkerSymbol",
     "config/defaults",
     "config/details",
     "config/credits",
@@ -66,12 +70,17 @@ require([
 			 LinkDialog, TextColor, ViewSource, FontChoice,
 			 Button, CheckBox,
 			 ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, Tooltip,
-			 aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, config, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget) {
+			 aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON,
+			 keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId,
+			 arcgisUtils, Color, config, Point, Graphic,
+			 FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, SimpleMarkerSymbol,
+			 defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget) {
 
     parser.parse();
 
     var map;
     var layers;
+	var nominateAdminFL = null;
     //
     var dgrid;
     var itemStore;
@@ -207,18 +216,21 @@ require([
         run();
 
         renderRow = function (object, data, cell) {
+			// item title
             var itemTitle = object.title;
+			// thumbnail url
             var thumbnailUrl = formatThumbnailUrl(object);
+			// item type
             var type = validator.validateStr(object.type);
+			// item last modified
             var modifiedDate = formatDate(object.modified);
+			// item number of views
             var views = validator.validateStr(object.numViews);
+			// item access
             var access = object.access;
+			// item status ("NOMINATED", "IN REVIEW", "ACCEPTED")
             var randomStatus = Math.floor((Math.random() * 4) + 0);
-
             var status = defaults.CURRENT_STATUS[randomStatus].label;
-            var statusLabel = defaults.CURRENT_STATUS[randomStatus].label;
-            var statusColor = defaults.CURRENT_STATUS[randomStatus].color;
-            var statusClass = defaults.CURRENT_STATUS[randomStatus].class;
 
             var n = domConstruct.create("div", {
                 innerHTML: '<div class="row">' +
@@ -375,12 +387,24 @@ require([
                             pagingTextBox: false,
                             firstLastArrows: true,
                             columns: dgridColumns,
-                            showHeader: false
+                            showHeader: false,
+							noDataMessage: 'No results found.'
                         }, "dgrid");
-                        dgrid.startup();
+						dgrid.startup();
+
+						dgrid.on("dgrid-refresh-complete", function (event) {
+							console.log(event);
+						});
 
                         // set the maximum possible scores for each section and the overall possible maximum score for all the sections combined
                         initScoreMaxValues();
+
+						nominateAdminFL = new FeatureLayer(defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
+						on(nominateAdminFL, "edits-complete", function (complete) {
+							if (complete.adds[0].success) {
+								console.log("SUCCESS");
+							}
+						});
 
                         // item title click handler
                         on(dgrid.domNode, ".item-title:click", function (event) {
@@ -487,12 +511,13 @@ require([
 
                                     nominateBtnDialog = new Dialog({
                                         title: "Nominate Item",
-                                        content: '<div class="dialog-container">' +
-                                        '	<div class="row">' +
-                                        '		<div class = "column-24" >' +
-										'			<div>' + nominateBtnID + '</div>' +
-										'		<\/div>' +
-                                        '	<\/div>' +
+                                        content:
+												'<div class="dialog-container">' +
+                                      	 	 	'	<div class="row">' +
+                                        		'		<div class = "column-24" >' +
+												'			<div>' + nominateBtnID + '</div>' +
+												'		<\/div>' +
+                                       			'	<\/div>' +
                                             /*'	<div class="row">' +
                                              '		<div class = "column-5" >Score<\/div>' +
                                              '		<div class = "column-19 nominated-item-score" ><\/div>' +
@@ -509,10 +534,39 @@ require([
                                         style: "width: 300px"
                                     });
 
-                                    nominateBtnClickHandler = on(nominateBtnNode, "click", function () {
-
-                                        nominateBtnDialog.show();
-                                    });
+                                    /*nominateBtnClickHandler = on(nominateBtnNode, "click", function () {
+										portalUser.getItem(selectedRowID).then(function (item) {
+											//nominateBtnDialog.show();
+											var nominationDate = new Date();
+											var pt = new Point({ "x":-13024380.422813008, "y":4028802.0261344062, "spatialReference":{ " wkid":102100 }});
+											var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
+											var attr = {
+												"itemID": item.id,
+												"itemOwnerID": item.owner,
+												"ContactEmail": portalUser.email,
+												"ContactPhone": "",
+												"OnineStatus":"",
+												"NominatedDate": nominationDate,
+												"LastContactDate":"",
+												"LastContactComments":"",
+												"AcceptedDate":"",
+												"FlaggedDate":"",
+												"RemovedDate":"",
+												"OriginalNominatedDate": nominationDate,
+												"OriginalAcceptedDate":"",
+												"InitialContactDate":"",
+												"CreationDate":"",
+												"Creator":"",
+												"EditDate":"",
+												"Editor":"",
+												"itemName": item.name,
+												"itemURL": item.url
+											};
+											var graphic = new Graphic(pt, sms, attr);
+											//nominateAdminFL.applyEdits([graphic], null, null);
+											console.log("WHAT");
+										});
+                                    });*/
 
                                     // create button group
                                     initContentButtonGroup(tcID);
@@ -1832,15 +1886,7 @@ require([
         }
 
         function updateOverallScore() {
-            var TMP_MAX_SCORE = 0;
-            // update the score
-            //if (HAS_PERFORMANCE_CONTENT) {
-            TMP_MAX_SCORE = MAX_SCORE;
             overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / MAX_SCORE * 100);
-            //} else {
-            //	TMP_MAX_SCORE = MAX_SCORE - PERFORMANCE_MAX_SCORE;
-            //	overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / TMP_MAX_SCORE * 100);
-            //}
             var classAttrs = domAttr.get(nominateBtnNode, "class");
             if (overAllCurrentScore >= scoring.SCORE_THRESHOLD) {
                 // PASS
@@ -1848,7 +1894,46 @@ require([
                 classAttrs = classAttrs.replace("disabled", "enabled");
                 domAttr.set(nominateBtnNode, "class", classAttrs);
                 nominateBtnClickHandler = on(nominateBtnNode, "click", function () {
-                    nominateBtnDialog.show();
+                    //nominateBtnDialog.show();
+					portalUser.getItem(selectedRowID).then(function (item) {
+						console.log(item);
+						var dateTime = new Date();
+						var nominationDate = (dateTime.getMonth() + 1) + "/"
+								+ dateTime.getDate() + "/"
+								+ dateTime.getFullYear() + " @ "
+								+ dateTime.getHours() + ":"
+								+ dateTime.getMinutes() + ":"
+								+ dateTime.getSeconds();
+
+						var pt = new Point({ "x":-13024380.422813008, "y":4028802.0261344062, "spatialReference":{ " wkid":102100 }});
+						var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
+						var attr = {
+							"Latitude": "4028802.0261344062",
+							"Longitude": "-13024380.422813008",
+							"itemID":item.id,
+							"itemOwnerID":item.owner,
+							"ContactEmail":portalUser.email,
+							"ContactPhone":"",
+							"OnineStatus":"In Review",
+							"NominatedDate":nominationDate,
+							"LastContactDate":"",
+							"LastContactComments":"",
+							"AcceptedDate":"",
+							"FlaggedDate":"",
+							"RemovedDate":"",
+							"OriginalNominatedDate":nominationDate,
+							"OriginalAcceptedDate":"",
+							"InitialContactDate":"",
+							"CreationDate":"",
+							"Creator":"",
+							"EditDate":"",
+							"Editor":"",
+							"itemName":item.title,
+							"itemURL":item.itemUrl
+						};
+						var graphic = new Graphic(pt, sms, attr);
+						nominateAdminFL.applyEdits([graphic], null, null);
+					});
                 });
             } else {
                 // FAIL
