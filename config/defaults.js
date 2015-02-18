@@ -137,20 +137,10 @@ define({
 	//Enter the url to the proxy if needed by the application. See the 'Using the proxy page' help topic for details
 	//http://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html
 	"proxyurl": "",
-	//Example of a template specific property. If your template had several color schemes
-	//you could define the default here and setup configuration settings to allow users to choose a different
-	//color theme.
-	"theme": "blue",
+
 	"bingKey": "", //Enter the url to your organizations bing maps key if you want to use bing basemaps
 	//Defaults to arcgis.com. Set this value to your portal or organization host name.
 	"sharinghost": location.protocol + "//" + "www.arcgis.com",
-	"units": null,
-	//This option demonstrates how to handle additional custom url parameters. For example
-	//if you want users to be able to specify lat/lon coordinates that define the map's center or
-	//specify an alternate basemap via a url parameter.
-	"urlItems": [
-		"theme" // example param. ?theme=<my theme>
-	],
 
 	"CURRENT_STATUS": [
 		{
@@ -165,22 +155,5 @@ define({
 		{
 			"label": "<img src='assets/images/ThumbsUp_Blue.png' class='status-thumbnail'/><h4 style='color:#0079C1'> ACCEPTED </h4>"
 		}
-	],
-
-	"helperServices": {
-		"geometry": {
-			"url": null
-		},
-		"printTask": {
-			"url": null
-		},
-		"elevationSync": {
-			"url": null
-		},
-		"geocode": [
-			{
-				"url": null
-			}
-		]
-	}
+	]
 });

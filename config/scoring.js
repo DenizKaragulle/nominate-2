@@ -184,9 +184,9 @@ define({
 	"USER_NAME_CONTENT" : ["_"],
 	"USER_DESCRIPTION_MIN_NUM_WORDS" : 20,
 	"USER_DESCRIPTION_CONTENT" : [],
-	"USER_DESCRIPTION_BONUS_WORDS" : [],
+	"USER_DESCRIPTION_BONUS_WORDS" : []
 
-	"ATLAS_TAGS":[
+	/*"ATLAS_TAGS":[
 		{
 			"id":"basemapsCB",
 			"tag":"Basemaps"
@@ -231,5 +231,5 @@ define({
 			"id":"boundariesAndPlacesCB",
 			"tag":"Boundaries and Places"
 		}
-	]
+	]*/
 });
