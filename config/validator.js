@@ -13,7 +13,7 @@ define([
 
 		},
 
-		startup:function () {
+		startup: function () {
 			this.instance = 1;
 		},
 
@@ -144,7 +144,7 @@ define([
 		 * @param itemAccessAndConstraints
 		 * @returns {number}
 		 */
-		setAccessAndUseConstraintsScore:function (itemAccessAndConstraints) {
+		setAccessAndUseConstraintsScore: function (itemAccessAndConstraints) {
 			var score = 0;
 			if (itemAccessAndConstraints === "" || itemAccessAndConstraints === "<span></span>" || itemAccessAndConstraints === null) {
 				score = 0;
@@ -171,7 +171,7 @@ define([
 		 * @param itemCredit
 		 * @returns {number}
 		 */
-		setCreditsScore:function (itemCredit) {
+		setCreditsScore: function (itemCredit) {
 			var score = 0;
 			if (itemCredit === "" || itemCredit === "<span></span>" || itemCredit === null) {
 				score = 0;
@@ -186,7 +186,7 @@ define([
 		 * @param val
 		 * @returns {*}
 		 */
-		setMapDrawTimeScore:function (val) {
+		setMapDrawTimeScore: function (val) {
 			var score = 0;
 			var temp = (val / 1000) % 60;
 			var seconds = number.format(temp, {
@@ -212,7 +212,7 @@ define([
 		 * @param layers
 		 * @returns {*}
 		 */
-		setNumLayersScore:function (layers) {
+		setNumLayersScore: function (layers) {
 			var score = 0,
 					nLayers = 0;
 			if (layers !== undefined) {
@@ -241,7 +241,7 @@ define([
 			return score;
 		},
 
-		setPopupScore:function (response) {
+		setPopupScore: function (response) {
 			var score = 0;
 			var itemData = response.itemInfo.itemData;
 			if (itemData) {
@@ -359,7 +359,7 @@ define([
 		 * @param item
 		 * @returns {*}
 		 */
-		setSharingScore:function (item) {
+		setSharingScore: function (item) {
 			var score = 0,
 					sharing = item.access;
 			if (sharing === "private") {
@@ -377,7 +377,7 @@ define([
 		 * @param userName
 		 * @returns {number}
 		 */
-		setUserProfileFullNameScore:function (userName) {
+		setUserProfileFullNameScore: function (userName) {
 			var score = 0;
 			if (userName === "" || userName === null) {
 				score = 0;
@@ -396,7 +396,7 @@ define([
 		 * @param userDescription
 		 * @returns {number}
 		 */
-		setUserDescriptionScore:function (userDescription) {
+		setUserDescriptionScore: function (userDescription) {
 			var score = 0;
 			if (userDescription === "" || userDescription === null) {
 				score = 0;
@@ -430,11 +430,11 @@ define([
 		},
 
 
-		_extractEmails:function (text) {
+		_extractEmails: function (text) {
 			return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
 		},
 
-		_hasUrl:function (str, bonus) {
+		_hasUrl: function (str, bonus) {
 			var pattern = new RegExp("((?:(http|https|Http|Https|rtsp|Rtsp):\\/\\/(?:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\'\\(\\)"
 					+ "\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-zA-Z0-9\\$\\-\\_"
 					+ "\\.\\+\\!\\*\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?"
@@ -480,7 +480,7 @@ define([
 			}
 		},
 
-		_getNumWords:function (s) {
+		_getNumWords: function (s) {
 			// exclude white space
 			s = s.replace(/(^\s*)|(\s*$)/gi, "");
 			s = s.replace(/[ ]{2,}/gi, " ");
@@ -489,7 +489,7 @@ define([
 			return s.split(" ").length;
 		},
 
-		_hasBonusWords:function (inputText, bonusWords, bonus) {
+		_hasBonusWords: function (inputText, bonusWords, bonus) {
 			inputText = inputText.toLowerCase();
 			if (array.some(bonusWords, function (bonusWord) {
 				bonusWord = bonusWord.toLowerCase();
@@ -503,7 +503,7 @@ define([
 			}
 		},
 
-		_extractWords:function (s) {
+		_extractWords: function (s) {
 			// exclude white space
 			s = s.replace("-", " ");
 			s = s.replace(/(^\s*)|(\s*$)/gi, "");
@@ -513,13 +513,11 @@ define([
 			return s.split(" ");
 		},
 
-		_titleHasBadWords:function (inputText, badWords, bonus) {
+		_titleHasBadWords: function (inputText, badWords, bonus) {
 			inputText = inputText.toLowerCase();
 			inputText = this._extractWords(inputText);
 
 			if (array.some(inputText, function (currentWord) {
-				console.log(inputText + "\t\t" + currentWord);
-				console.log(badWords);
 				var match = false;
 				array.forEach(badWords, function (badWord) {
 					if (currentWord === badWord)
@@ -528,16 +526,14 @@ define([
 				return match;
 			})) {
 				// bonus
-				console.log("NO BONUS");
 				return 0;
 			} else {
 				// no bonus
-				console.log("BONUS");
 				return bonus;
 			}
 		},
 
-		_hasBadWords:function (inputText, badWords, bonus) {
+		_hasBadWords: function (inputText, badWords, bonus) {
 			inputText = inputText.toLowerCase();
 			if (array.some(badWords, function (badWord) {
 				badWord = badWord.toLowerCase();
