@@ -363,6 +363,102 @@ require([
 					ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
 					domAttr.set(ribbonHeaderNumItemsNode, "class", "icon-stack");
 
+					atlasTagStore = new Memory({
+					data:[
+						{ id:"categories", name:"" },
+						{ id:"basemapsCategory", name:"Basemaps", type:"parent", parent:"categories"},
+						{ id:"esriBasemapsCB", name:"Esri Basemaps", parent:"basemapsCategory", path:["categories", "basemapsCategory"] },
+						{ id:"partnerBasemapsCB", name:"Partner Basemaps", parent:"basemapsCategory", path:["categories", "basemapsCategory"] },
+						{ id:"userBasemapsCB", name:"User Basemaps", parent:"basemapsCategory", path:["categories", "basemapsCategory"] },
+
+						{ id:"imageryCategory", name:"Imagery", type:"parent", parent:"categories"},
+						{ id:"eventImageryCB", name:"Event Imagery", parent:"imageryCategory", path:["categories", "imageryCategory"] },
+						{ id:"basemapsImageryCB", name:"Basemaps Imagery", parent:"imageryCategory", path:["categories", "imageryCategory"] },
+						{ id:"multispectralImageryCB", name:"Multi-spectral Imagery", parent:"imageryCategory", path:["categories", "imageryCategory"] },
+						{ id:"temporalImageryCB", name:"Temporal Imagery", parent:"imageryCategory", path:["categories", "imageryCategory"] },
+
+						{ id:"demographicsCategory", name:"Demographics", type:"parent", parent:"categories"},
+						{ id:"ageCB", name:"Age", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
+						{ id:"householdsCB", name:"Households", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
+						{ id:"incomeCB", name:"Income", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
+						{ id:"maritalStatusCB", name:"Marital Status", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
+						{ id:"populationCB", name:"Population", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
+						{ id:"raceCB", name:"Race", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
+
+						{ id:"lifestyleCategory", name:"Lifestyle", type:"parent", parent:"categories"},
+						{ id:"atRiskCB", name:"At Risk", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
+						{ id:"behaviorsCB", name:"Behaviors", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
+						{ id:"businessAndJobsCB", name:"Business and Jobs", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
+						{ id:"housingCB", name:"Housing", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
+						{ id:"povertyCB", name:"Poverty", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
+						{ id:"spendingCB", name:"Spending", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
+
+						{ id:"landscapeCategory", name:"Landscape", type:"parent", parent:"categories"},
+						{ id:"climateCB", name:"Climate", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"ecologyCB", name:"Ecology", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"speciesBiologyCB", name:"Species Biology", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"ecologicalDisturbanceCB", name:"Ecological Disturbance", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"elevationCB", name:"Elevation", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"environmentalImpactCB", name:"Environmental Impact", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"landCoverCB", name:"Land Cover", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"naturalHazardsCB", name:"Natural Hazards", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"oceansCB", name:"Oceans", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"soilsGeologyCB", name:"Soils/Geology", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"subsurfaceCB", name:"Subsurface", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"waterCB", name:"Water", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+						{ id:"weatherCB", name:"Weather", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
+
+						{ id:"earthObservationsCategory", name:"Earth Observations ", type:"parent", parent:"categories"},
+						{ id:"earthObservationsCB", name:"Earth Observations", parent:"earthObservationsCategory", path:["categories", "earthObservationsCategory"] },
+
+						{ id:"urbanSystemsCategory", name:"Urban Systems", type:"parent", parent:"categories"},
+						{ id:"citiesCB", name:"3D Cities", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
+						{ id:"movementCB", name:"Movement", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
+						{ id:"parcelsCB", name:"Parcels", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
+						{ id:"peopleCB", name:"People", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
+						{ id:"planningCB", name:"Planning", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
+						{ id:"publicCB", name:"Public", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
+						{ id:"workCB", name:"Work", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
+
+						{ id:"transportationCategory", name:"Transportation ", type:"parent", parent:"categories"},
+						{ id:"locationsCB", name:"Locators", parent:"transportationCategory", path:["categories", "transportationCategory"] },
+						{ id:"networkCB", name:"Network", parent:"transportationCategory", path:["categories", "transportationCategory"] },
+						{ id:"trafficCB", name:"Traffic", parent:"transportationCategory", path:["categories", "transportationCategory"] },
+						{ id:"transportationCB", name:"Transportation", parent:"transportationCategory", path:["categories", "transportationCategory"] },
+
+						{ id:"boundariesAndPlacesCategory", name:"Boundaries and Places", type:"parent", parent:"categories"},
+						{ id:"boundariesCB", name:"Boundaries", parent:"boundariesAndPlacesCategory", path:["categories", "boundariesAndPlacesCategory"] },
+						{ id:"placesCB", name:"Places", parent:"boundariesAndPlacesCategory", path:["categories", "boundariesAndPlacesCategory"] },
+
+						{ id:"historicalMapsCategory", name:"Historical Maps ", type:"parent", parent:"categories"},
+						{ id:"historicalMapsCB", name:"Historical Maps", parent:"historicalMapsCategory" },
+
+						{ id:"storyMapsCategory", name:"Story Maps", type:"parent", parent:"categories"},
+						{ id:"architectureAndDesignCB", name:"Architecture and Design", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"businessCB", name:"Business", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"conservationAndSustainabilityCB", name:"Conservation and Sustainability", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"cultureCB", name:"Culture", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"destinationsCB", name:"Destinations", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"eventsAndDisastersCB", name:"Events and Disasters", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"historyCB", name:"History", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"infrastructureAndPlanningCB", name:"Infrastructure and Planning", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"natureAndEnvironmentCB", name:"Nature and Environment", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"oceansStoryMapsCB", name:"Oceans ", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"parksAndRecreationCB", name:"Parks and Recreation", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"peopleAndHealthCB", name:"People and Health", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"publicArtCB", name:"Public Art", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"scienceAndTechnologyCB", name:"Science and Technology", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"sportsAndEntertainmentCB", name:"Sports and Entertainment", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+						{ id:"traveloguesCB", name:"Travelogues", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
+					],
+
+					// Returns all direct children of this widget
+					getChildren:function (object) {
+						return this.query({
+							parent:object.id
+						});
+					}
+				});
 
 					loadNominatedItemContent().then(function (results) {
 						nominatedItems = results;
@@ -393,7 +489,8 @@ require([
 							}, "dgrid");
 							dgrid.startup();
 
-							// set the maximum possible scores for each section and the overall possible maximum score for all the sections combined
+							// set the maximum possible scores for each section and the overall possible maximum score
+							// for all the sections combined
 							initScoreMaxValues();
 
 							nominateAdminFL = new FeatureLayer(defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
@@ -401,7 +498,7 @@ require([
 								if (complete.adds[0].success) {
 									var itemStatusNode = query(".item-nomination-status-" + selectedRowID)[0];
 									domConstruct.place(defaults.CURRENT_STATUS[1].label, itemStatusNode, "replace");
-									// update the collection of nominated items
+									// update the client-side collection of nominated items
 									loadNominatedItemContent().then(function (results) {
 										nominatedItems = results;
 									});
@@ -1207,7 +1304,7 @@ require([
 					data:[].concat(itemTags)
 				});
 				// atlas tags store
-				atlasTagStore = new Memory({
+				/*atlasTagStore = new Memory({
 					data:[
 						{ id:"categories", name:"" },
 						{ id:"basemapsCategory", name:"Basemaps", type:"parent", parent:"categories"},
@@ -1302,7 +1399,7 @@ require([
 							parent:object.id
 						});
 					}
-				});
+				});*/
 
 				// destroy the Tags dijit and the Tree dijit
 				if (customTagsWidget) {
@@ -1964,8 +2061,11 @@ require([
 		}
 
 		function validateItemTags(tags) {
+			// set the initial score to 0
 			var score = 0;
+			// words that will deduct points
 			var badWords = scoring.TAGS_PENALTY_WORDS;
+			// number of tags
 			var nTags = tags.length;
 			if (nTags >= scoring.TAGS_MIN_NUM_TAGS) {
 				// at least one tag exist +1
@@ -1981,7 +2081,7 @@ require([
 				})) {
 					// FAIL
 				} else {
-					// PASS +2
+					// PASS
 					score = score + scoring.TAGS_HAS_NO_BAD_WORDS_SCORE;
 				}
 
@@ -1989,10 +2089,11 @@ require([
 				if (nTags > scoring.TAGS_MIN_COUNT) {
 					score = score + scoring.TAGS_HAS_EXTRA_TAGS_SCORE;
 				}
+
 				var hasAtlasTag = false;
-				array.forEach(defaults.ATLAS_TAGS, function (atlas_tag) {
-					array.forEach(tempTags, function (tag) {
-						if (tag === atlas_tag.tag.toLowerCase()) {
+				array.forEach(atlasTagStore.data, function (atlasTag) {
+					array.forEach(tags, function (tag) {
+						if (tag === atlasTag.name) { //atlasTag.tag.toLowerCase()) {
 							hasAtlasTag = true;
 						}
 					});
@@ -2000,10 +2101,12 @@ require([
 
 				if (hasAtlasTag) {
 					score = score + scoring.TAGS_HAS_ATLAS_TAGS_SCORE;
+					console.log("+3")
 				}
 			} else {
 				score = 0;
 			}
+			console.log(score);
 			return score;
 		}
 

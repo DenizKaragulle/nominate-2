@@ -121,10 +121,10 @@ define({
 	////////////////////////////////////////////
 	// Rules
 	// map draw times in seconds
-	"drawTime":{
-		"BEST":2,
-		"BETTER":6,
-		"GOOD":10
+	"drawTime": {
+		"BEST": 2,
+		"BETTER": 6,
+		"GOOD": 10
 	},
 	// Scores
 	// Performance Parameter
@@ -185,51 +185,4 @@ define({
 	"USER_DESCRIPTION_MIN_NUM_WORDS" : 20,
 	"USER_DESCRIPTION_CONTENT" : [],
 	"USER_DESCRIPTION_BONUS_WORDS" : []
-
-	/*"ATLAS_TAGS":[
-		{
-			"id":"basemapsCB",
-			"tag":"Basemaps"
-		},
-		{
-			"id":"lifestylesCB",
-			"tag":"Lifestyle"
-		},
-		{
-			"id":"urbanSystemsCB",
-			"tag":"Urban Systems"
-		},
-		{
-			"id":"historicalMapsCB",
-			"tag":"Historical maps"
-		},
-		{
-			"id":"imageryCB",
-			"tag":"Imagery"
-		},
-		{
-			"id":"landscapeCB",
-			"tag":"Landscape"
-		},
-		{
-			"id":"transportationCB",
-			"tag":"Transportation"
-		},
-		{
-			"id":"storyMapsCB",
-			"tag":"Story Maps"
-		},
-		{
-			"id":"demographgicsCB",
-			"tag":"Demographics"
-		},
-		{
-			"id":"earthObservationsCB",
-			"tag":"Earth Observations"
-		},
-		{
-			"id":"boundariesAndPlacesCB",
-			"tag":"Boundaries and Places"
-		}
-	]*/
 });

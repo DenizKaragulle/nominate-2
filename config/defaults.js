@@ -31,53 +31,6 @@ define({
 
 	"MONTHS": [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
 
-	"ATLAS_TAGS": [
-		{
-			"id": "basemapsCB",
-			"tag": "Basemaps"
-		},
-		{
-			"id": "lifestylesCB",
-			"tag": "Lifestyle"
-		},
-		{
-			"id": "urbanSystemsCB",
-			"tag": "Urban Systems"
-		},
-		{
-			"id": "historicalMapsCB",
-			"tag": "Historical maps"
-		},
-		{
-			"id": "imageryCB",
-			"tag": "Imagery"
-		},
-		{
-			"id": "landscapeCB",
-			"tag": "Landscape"
-		},
-		{
-			"id": "transportationCB",
-			"tag": "Transportation"
-		},
-		{
-			"id": "storyMapsCB",
-			"tag": "Story Maps"
-		},
-		{
-			"id": "demographgicsCB",
-			"tag": "Demographics"
-		},
-		{
-			"id": "earthObservationsCB",
-			"tag": "Earth Observations"
-		},
-		{
-			"id": "boundariesAndPlacesCB",
-			"tag": "Boundaries and Places"
-		}
-	],
-
 	"THUMBNAIL_IMAGE_SIZES" : {
 		"PROFILE":[150, 150],
 		"SMALL":[200, 133],
