@@ -140,9 +140,10 @@ table tr {
 	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
 
+/* Current Overall Score label */
 .current-score-number {
 	margin-top: -25px;
-	font-size: 2.7em;
+	font-size: 2.0em;
 	color: #C86A4A;
 	letter-spacing: 2px;
 	-webkit-font-smoothing: antialiased;
@@ -179,14 +180,16 @@ table tr {
 	margin-left: -80px;
 	position: inherit;
 	top: -20px;
+	opacity: 0.65;
 }
 
 .current-overall-gr-number {
+	color: #005E95;
 	font-size: 1.8em;
 	position: absolute;
 	margin-left: -10px;
 	bottom: 30px;
-	color: #005E95;
+	opacity: 0.65;
 }
 
 /* drop down sort/filter */
@@ -446,7 +449,7 @@ table tr {
 	margin-right: 7px !important;
 }
 
-/* Porgressbar */
+/* Progressbar */
 .dijitProgressBarTile {
 	background: none !important;
 	background-color: #005E95 !important;
@@ -478,4 +481,9 @@ table tr {
 
 .dialog-cancel-btn {
 	float: right;
+}
+
+/* Selected tab background color */
+.btn-group a:hover, .btn-group a.active {
+  background-color: #dddddd !important;
 }

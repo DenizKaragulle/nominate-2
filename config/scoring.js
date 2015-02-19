@@ -18,17 +18,10 @@ define({
 	// Overall scoring threshold
 	////////////////////////////////////////////////////////////////////
 	"SCORE_THRESHOLD" : 80,
-	// Overall scoring graphic properties
 
 	////////////////////////////////////////////////////////////////////
-	// Item Details Section scoring graphic properties
+	// Scoring PASS/FAIL colors
 	////////////////////////////////////////////////////////////////////
-	// maximum score
-	"SECTION_MAX" : 10,
-	// minimum score
-	"SECTION_MIN" : 0,
-	// minimum required to pass
-	"SECTION_PASSING" : 8,
 	// passing color
 	"PASS_COLOR" : "#005E95",
 	// failing color
@@ -60,7 +53,7 @@ define({
 	////////////////////////////////////////////
 	// Rules
 	"ITEM_SUMMARY_BAD_WORDS" : ["copy", "demo", "eval"],
-	"ITEM_SUMMARY_MIN_NUM_WORDS":10,
+	"ITEM_SUMMARY_MIN_NUM_WORDS": 10,
 	// Scores
 	"ITEM_SUMMARY_MUST_EXIST_SCORE" : 1,
 	"ITEM_SUMMARY_MIN_LENGTH_SCORE" : 4,
@@ -77,6 +70,8 @@ define({
 	"ITEM_DESCRIPTION_MUST_EXIST_SCORE" : 1,
 	"ITEM_DESCRIPTION_MIN_LENGTH_SCORE" : 5,
 	"ITEM_DESCRIPTION_LINK_SCORE" : 2,
+
+
 
 	////////////////////////////////////////////
 	// Access and Use Constraints
@@ -103,18 +98,20 @@ define({
 	"ITEM_CREDITS_MIN_NUM_WORDS_SCORE" : 7,
 	"ITEM_ACCESS_AND_USE_CONSTRAINTS_BONUS_WORDS_SCORE" : 0,
 
+
+
 	////////////////////////////////////////////
 	// Tags
 	////////////////////////////////////////////
 	// Rules
-	"TAGS_MIN_NUM_TAGS" : 1,
-	"TAGS_MIN_COUNT" : 3,
+	"TAGS_MIN_NUM_TAGS" : 3,
 	"TAGS_PENALTY_WORDS" : ["copy", "demo", "test", "eval"],
 	// Scores
-	"TAGS_HAS_TAGS_SCORE" : 1,
+	"TAGS_HAS_TAGS_SCORE" : 3,
 	"TAGS_HAS_ATLAS_TAGS_SCORE" : 3,
-	"TAGS_HAS_EXTRA_TAGS_SCORE" : 2,
 	"TAGS_HAS_NO_BAD_WORDS_SCORE" : 1,
+
+
 
 	////////////////////////////////////////////
 	// Performance

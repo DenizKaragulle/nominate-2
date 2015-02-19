@@ -56,6 +56,7 @@ require([
 	"config/details",
 	"config/credits",
 	"config/tags",
+	"config/tagUtils",
 	"config/performance",
 	"config/profile",
 	"config/tooltips",
@@ -65,7 +66,7 @@ require([
 	"config/CustomTagsWidget",
 	"config/uiUtils",
 	"dojo/NodeList-traverse"
-], function (array, declare, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Point, Graphic, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget, UserInterfaceUtils) {
+], function (array, declare, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Point, Graphic, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol, defaults, details, credits, tags, TagUtils, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget, UserInterfaceUtils) {
 
 	parser.parse();
 
@@ -202,6 +203,7 @@ require([
 	//
 	var validator = null;
 	var userInterfaceUtils = null;
+	var tagUtils = null;
 	//
 	var nominatedItems = [];
 
@@ -332,8 +334,18 @@ require([
 
 		function signIn() {
 			portal.signIn().then(function (user) {
+				// load the validation rules
+				validator = new Validator();
+				validator.startup();
+				// user interface utility methods
+				userInterfaceUtils = new UserInterfaceUtils();
+				userInterfaceUtils.startup();
+				// tag utility methods
+				tagUtils = new TagUtils();
+				tagUtils.startup();
+				
 				// update the header row
-				updateHeader();
+				userInterfaceUtils.updateHeader();
 				// Represents a registered user of the Portal.
 				portalUser = portal.getPortalUser();
 				// The username for the user.
@@ -344,12 +356,6 @@ require([
 				if (portalUserThumbnailUrl === null) {
 					portalUserThumbnailUrl = "https://cdn.arcgis.com/cdn/5777/js/arcgisonline/css/images/no-user-thumb.jpg";
 				}
-				// load the validation rules
-				validator = new Validator();
-				validator.startup();
-
-				userInterfaceUtils = new UserInterfaceUtils();
-				userInterfaceUtils.startup();
 
 				// query the user's items
 				// TODO What about more than maximum allowable returned items
@@ -552,7 +558,7 @@ require([
 
 													// set performance scores
 													mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
-													nLayersScore = validator.setNumLayersScore(layers);
+													nLayersScore = validator.setNumLayersScore(response);
 													popupsScore = validator.setPopupScore(response);
 													sharingScore = validator.setSharingScore(item);
 													performanceScore = mapDrawTimeScore + nLayersScore + popupsScore + sharingScore;
@@ -1198,7 +1204,7 @@ require([
 				var itemTags_clean = itemTags;
 
 				// validate score
-				itemTagsScore = validateItemTags(itemTags);
+				itemTagsScore = validator.validateItemTags(itemTags);
 				// set numerator
 				tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 				// set denominator
@@ -1214,7 +1220,7 @@ require([
 				domConstruct.create("div", {
 					class:"existing-tags"
 				}, query(".tag-container")[0], "first");
-				styleTags(itemTags, query(".existing-tags")[0]);
+				tagUtils.styleTags(itemTags, query(".existing-tags")[0]);
 
 				// existing tags store
 				tagStore = new Memory({
@@ -1290,7 +1296,7 @@ require([
 					},
 					onLoad:function () {
 						//console.log("LOADED");
-						updateTreePath(tree, treeModel, customTagsWidget.values);
+						tagUtils.updateTreePath(tree, treeModel, customTagsWidget.values);
 					},
 					onClick:function (item, node, evt) {
 						//console.log(item);
@@ -1298,9 +1304,9 @@ require([
 					onOpen:function (item, node) {
 						var name = item.name;
 						if (editSaveBtnNode.innerHTML === " EDIT ") {
-							toggleCheckboxes(checkBoxID_values, "disabled", true);
+							userInterfaceUtils.toggleCheckboxes(checkBoxID_values, "disabled", true);
 						} else {
-							toggleCheckboxes(checkBoxID_values, "disabled", false);
+							userInterfaceUtils.toggleCheckboxes(checkBoxID_values, "disabled", false);
 						}
 
 						if (registry.byId(name)) {
@@ -1341,7 +1347,7 @@ require([
 						tagStore.data.push(tag);
 					}
 					// expand tree if needed
-					updateTreePath(tree, treeModel, customTagsWidget.values);
+					tagUtils.updateTreePath(tree, treeModel, customTagsWidget.values);
 				});
 
 				on(editSaveBtnNode, "click", function () {
@@ -1354,7 +1360,7 @@ require([
 						// display the tags dijit
 						domStyle.set("tag-widget", "display", "block");
 						// enable living atlas checkboxes
-						toggleCheckboxes(checkBoxID_values, "disabled", false);
+						userInterfaceUtils.toggleCheckboxes(checkBoxID_values, "disabled", false);
 					} else {
 						// SAVE mode
 						var _userItemUrl = item.userItemUrl;
@@ -1370,11 +1376,11 @@ require([
 									if (response.success) {
 										itemTags_clean = tagStore.data;
 										domConstruct.empty(query(".existing-tags")[0]);
-										styleTags(tagStore.data, query(".existing-tags")[0]);
+										tagUtils.styleTags(tagStore.data, query(".existing-tags")[0]);
 										domStyle.set(query(".existing-tags")[0], "display", "block");
 										domStyle.set("tag-widget", "display", "none");
 										// set the numerator and update score
-										itemTagsScore = validateItemTags(tagStore.data);
+										itemTagsScore = validator.validateItemTags(tagStore.data);
 										tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 										// section overall score
 										updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
@@ -1382,7 +1388,7 @@ require([
 										updateOverallScore();
 
 										// disable living atlas checkboxes
-										toggleCheckboxes(checkBoxID_values, "disabled", true);
+										userInterfaceUtils.toggleCheckboxes(checkBoxID_values, "disabled", true);
 										userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 									} else {
 										console.log("ERROR");
@@ -1396,14 +1402,14 @@ require([
 					domStyle.set("tag-widget", "display", "none");
 
 					// set the numerator and update score
-					itemTagsScore = validateItemTags(itemTags_clean);
+					itemTagsScore = validator.validateItemTags(itemTags_clean);
 					tagsScoreNumeratorNode.innerHTML = itemTagsScore;
 					// section overall score
 					updateSectionScore(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 					updateSectionScoreStyle(itemTagsScore, TAGS_MAX_SCORE, tagsScoreNodeContainer);
 					updateOverallScore();
 					// disable living atlas checkboxes
-					toggleCheckboxes(checkBoxID_values, "disabled", true);
+					userInterfaceUtils.toggleCheckboxes(checkBoxID_values, "disabled", true);
 					userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 				});
 			});
@@ -1483,13 +1489,13 @@ require([
 			if (popupsScore === 7) {
 				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsDefaultNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(popupsCustomNode, "color", "#005E95");
+				domStyle.set(popupsCustomNode, "color", scoring.PASS_COLOR);
 			} else if (popupsScore === 2) {
 				domStyle.set(popupsNoneNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(popupsDefaultNode, "color", "#005E95");
+				domStyle.set(popupsDefaultNode, "color", scoring.PASS_COLOR);
 				domStyle.set(popupsCustomNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else {
-				domStyle.set(popupsNoneNode, "color", "#005E95");
+				domStyle.set(popupsNoneNode, "color", scoring.PASS_COLOR);
 				domStyle.set(popupsDefaultNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(popupsCustomNode, "color", "rgba(0, 122, 194, 0.24)");
 			}
@@ -1503,19 +1509,19 @@ require([
 					sharingBestNode = query(".performance-sharing-best")[0];
 			if (sharingScore === scoring.PERFORMANCE_SHARING_PRIVATE_SCORE) {
 				// GOOD
-				domStyle.set(sharingGoodNode, "color", "#005E95");
+				domStyle.set(sharingGoodNode, "color", scoring.PASS_COLOR);
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else if (sharingScore === scoring.PERFORMANCE_SHARING_ORG_SCORE) {
 				// BETTER
 				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(sharingBetterNode, "color", "#005E95");
+				domStyle.set(sharingBetterNode, "color", scoring.PASS_COLOR);
 				domStyle.set(sharingBestNode, "color", "rgba(0, 122, 194, 0.24)");
 			} else {
 				// BEST
 				domStyle.set(sharingGoodNode, "color", "rgba(0, 122, 194, 0.24)");
 				domStyle.set(sharingBetterNode, "color", "rgba(0, 122, 194, 0.24)");
-				domStyle.set(sharingBestNode, "color", "#005E95");
+				domStyle.set(sharingBestNode, "color", scoring.PASS_COLOR);
 			}
 
 			// set the numerators
@@ -1750,7 +1756,7 @@ require([
 			creditsAndAccessScore = itemCreditsScore + itemAccessAndUseConstraintsScore;
 			setPassFailStyleOnTabNode(creditsAndAccessScore, creditsNode, ITEM_USE_CONSTRAINS_MAX_SCORE);
 			// tags
-			itemTagsScore = validateItemTags(item.tags);
+			itemTagsScore = validator.validateItemTags(item.tags);
 			setPassFailStyleOnTabNode(itemTagsScore, tagsNode, TAGS_MAX_SCORE);
 			// performance
 			//
@@ -1788,7 +1794,7 @@ require([
 			}
 
 			// update the overall score label
-			currentOverallScoreNode.innerHTML = overAllCurrentScore;
+			currentOverallScoreNode.innerHTML = overAllCurrentScore + "/100";
 			if (dijit.byId("overall-score-graphic") !== undefined) {
 				dijit.byId("overall-score-graphic").update({
 					value:overAllCurrentScore
@@ -1879,97 +1885,6 @@ require([
 			} else {
 				domClass.replace(node, "score-graphic-fail", "score-graphic-pass");
 			}
-		}
-
-		function validateItemTags(tags) {
-			// set the initial score to 0
-			var score = 0;
-			// words that will deduct points
-			var badWords = scoring.TAGS_PENALTY_WORDS;
-			// number of tags
-			var nTags = tags.length;
-			if (nTags >= scoring.TAGS_MIN_NUM_TAGS) {
-				// at least one tag exist +1
-				score = scoring.TAGS_HAS_TAGS_SCORE;
-				// case insensitive
-				var tempTags = [];
-				array.forEach(tags, function (tag) {
-					tempTags.push(tag.toLowerCase());
-				});
-				// check if any tags are bad words
-				if (array.some(badWords, function (badWord) {
-					return tempTags.indexOf(badWord.toLowerCase()) !== -1;
-				})) {
-					// FAIL
-				} else {
-					// PASS
-					score = score + scoring.TAGS_HAS_NO_BAD_WORDS_SCORE;
-				}
-
-				// check if there are more than 3 tags
-				if (nTags > scoring.TAGS_MIN_COUNT) {
-					score = score + scoring.TAGS_HAS_EXTRA_TAGS_SCORE;
-				}
-
-				// check for atlas tags
-				var hasAtlasTag = false;
-				array.forEach(atlasTagStore.data, function (atlasTag) {
-					array.forEach(tags, function (tag) {
-						if (tag === atlasTag.name) { //atlasTag.tag.toLowerCase()) {
-							hasAtlasTag = true;
-						}
-					});
-				});
-
-				if (hasAtlasTag) {
-					score = score + scoring.TAGS_HAS_ATLAS_TAGS_SCORE;
-				}
-			} else {
-				score = 0;
-			}
-			return score;
-		}
-
-		function styleTags(tags, srcNodeRef) {
-			domClass.add(dom.byId(srcNodeRef), 'select2-container select2-container-multi');
-			var list = domConstruct.create('ul', null, dom.byId(srcNodeRef));
-			// add style to the list of tags
-			domClass.add(list, 'select2-choices');
-			domStyle.set(list, 'border', 'none');
-			array.forEach(tags, function (item, i) {
-				var listItemNode = domConstruct.create('li', null, list);
-				domStyle.set(listItemNode, 'padding', '3px 5px 3px 5px');
-				// add style to new tag
-				domClass.add(listItemNode, 'select2-search-resultSet');
-				var listItemDivNode = domConstruct.create('div', {
-					title:item
-				}, listItemNode);
-				html.set(listItemDivNode, item);
-			});
-		}
-
-		function updateTreePath(tree, treeModel, userTags) {
-			var tagPaths = [];
-			// iterate over the user tags from AGOL
-			array.forEach(userTags, function (tag) {
-				// iterate over each of the atlas tags
-				array.forEach(treeModel.store.data, function (atlasTag) {
-					// check if there is a match
-					if (tag === atlasTag.name) {
-						// check if it's not a parent/root node
-						if (atlasTag.path) {
-							// add the id and the tag's path to the list of paths
-							atlasTag.path.push(atlasTag.id);
-							tagPaths.push(atlasTag.path);
-							// check the check box
-							if (registry.byId(tag)) {
-								registry.byId(tag).set("checked", true);
-							}
-						}
-					}
-				});
-			});
-			tree.set('paths', tagPaths);
 		}
 
 		function uploadItemThumbnail(item, imageSizeName) {
@@ -2181,7 +2096,7 @@ require([
 			} else {
 				classAttrs = classAttrs.replace("icon-check", "icon-edit");
 				domAttr.set(node, "class", classAttrs);
-				domStyle.set(node, "color", "#C86A4A");
+				domStyle.set(node, "color", scoring.FAIL_COLOR);
 				domStyle.set(node, "border", "1px solid #C86A4A");
 			}
 		}
@@ -2225,7 +2140,7 @@ require([
 			ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE = scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_MIN_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_BONUS_WORDS_SCORE + scoring.ITEM_ACCESS_AND_USE_CONSTRAINTS_HAS_VALID_LINK_SCORE;
 			ITEM_USE_CONSTRAINS_MAX_SCORE = ITEM_CREDIT_MAX_SCORE + ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE;
 			// Tags
-			TAGS_MAX_SCORE = scoring.TAGS_HAS_TAGS_SCORE + scoring.TAGS_HAS_ATLAS_TAGS_SCORE + scoring.TAGS_HAS_EXTRA_TAGS_SCORE + scoring.TAGS_HAS_NO_BAD_WORDS_SCORE;
+			TAGS_MAX_SCORE = scoring.TAGS_HAS_TAGS_SCORE + scoring.TAGS_HAS_ATLAS_TAGS_SCORE + scoring.TAGS_HAS_NO_BAD_WORDS_SCORE;
 			// Performance
 			PERFORMANCE_SHARING_MAX_SCORE = scoring.PERFORMANCE_MAX;
 			PERFORMANCE_POPUPS_MAX_SCORE = scoring.PERFORMANCE_POPUPS_ENABLED + scoring.PERFORMANCE_POPUPS_CUSTOM;
@@ -2285,31 +2200,6 @@ require([
 			portal.queryItems(params).then(function (result) {
 				itemStore.data = result.results;
 				dgrid.refresh();
-			});
-		}
-
-		function updateHeader() {
-			// homepage header message
-			signInNode.innerHTML = "";
-			//var headerRow = query(".intro").closest(".column-24");
-			//domClass.replace(headerRow[0], "column-19", "column-24");
-			domStyle.set(searchInputNode, "display", "block");
-			domStyle.set(dropdownSortNode, "display", "block");
-			domStyle.set(dropdownItemFilterNode, "display", "block");
-			domStyle.set(helpButtonNode, "display", "block");
-
-			var signInRow = query(".sign-in-row")[0];
-			domStyle.set(signInRow, "display", "none");
-			var gridPanel = dom.byId("dgrid");
-			domStyle.set(gridPanel, "display", "block");
-		}
-
-		function toggleCheckboxes(checkBoxID_values, attr, value) {
-			// enable/disable living atlas checkboxes
-			array.forEach((checkBoxID_values), function (id) {
-				if (dijit.byId(id)) {
-					dijit.byId(id).setAttribute(attr, value);
-				}
 			});
 		}
 

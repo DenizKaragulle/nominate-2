@@ -43,7 +43,7 @@ define({
 
 	"ACCESS_TOOLTIP_CONTENT":'<div class="tooltip-style">' +
 			'<p>The idea: Communicate any access and use constraints required by your organization or by the data provider.</p>' +
-			'<p>The score: points awarded for having more than one word here. Also rewarded: text that includes a hyperlink (to more detailed information explaining the constraints more fully). “No restrictions” in the text also gives extra points.</p>' +
+			'<p>The score: points awarded for having more than one word here. Also rewarded: text that includes a hyperlink (to more detailed information explaining the constraints more fully).</p>' +
 			'</div>',
 
 	// TAGS

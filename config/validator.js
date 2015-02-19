@@ -2,8 +2,9 @@ define([
 	"dojo/_base/array",
 	"dojo/_base/declare",
 	"dojo/number",
+	"config/defaults",
 	"config/scoring"
-], function (array, declare, number, scoring) {
+], function (array, declare, number, defaults, scoring) {
 
 	return declare(null, {
 
@@ -181,6 +182,57 @@ define([
 			return score;
 		},
 
+
+		/**
+		 *
+		 * @param tags
+		 * @return {Number}
+		 */
+		validateItemTags: function (tags) {
+			// set the initial score to 0
+			var score = 0;
+			// words that should not be included
+			var badWords = scoring.TAGS_PENALTY_WORDS;
+			// number of tags
+			var nTags = tags.length;
+			if (nTags > scoring.TAGS_MIN_NUM_TAGS) {
+				// at least one tag exist +3
+				score = scoring.TAGS_HAS_TAGS_SCORE;
+				// case insensitive
+				var tempTags = [];
+				array.forEach(tags, function (tag) {
+					tempTags.push(tag.toLowerCase());
+				});
+				// check if any tags are bad words
+				if (array.some(badWords, function (badWord) {
+					return tempTags.indexOf(badWord.toLowerCase()) !== -1;
+				})) {
+					// FAIL
+				} else {
+					// PASS
+					score = score + scoring.TAGS_HAS_NO_BAD_WORDS_SCORE;
+				}
+			} else {
+				score = 0;
+			}
+
+			// check for atlas tags
+			var hasAtlasTag = false;
+			array.forEach(defaults.TAGS_STORE, function (atlasTag) {
+				array.forEach(tags, function (tag) {
+					if (tag === atlasTag.name) { //atlasTag.tag.toLowerCase()) {
+						hasAtlasTag = true;
+					}
+				});
+			});
+
+			if (hasAtlasTag) {
+				score = score + scoring.TAGS_HAS_ATLAS_TAGS_SCORE;
+			}
+
+			return score;
+		},
+
 		/**
 		 *
 		 * @param val
@@ -190,7 +242,7 @@ define([
 			var score = 0;
 			var temp = (val / 1000) % 60;
 			var seconds = number.format(temp, {
-				places:5
+				places: 5
 			});
 
 			if (seconds < scoring.drawTime.GOOD) {
@@ -212,30 +264,35 @@ define([
 		 * @param layers
 		 * @returns {*}
 		 */
-		setNumLayersScore: function (layers) {
-			var score = 0,
-					nLayers = 0;
-			if (layers !== undefined) {
-				nLayers = layers.length;
+		setNumLayersScore: function (response) {
+			var score = 0;
+			var nOperationalLayers = 0;
+			// array of basemap layers
+			var basemapLayers = response.itemInfo.itemData.baseMap.baseMapLayers;
+			// array of operational layers
+			var operationalLayers = response.itemInfo.itemData.operationalLayers;
 
-				if (nLayers === scoring.LAYER_COUNT_MIN) {
+			if (operationalLayers !== undefined) {
+				nOperationalLayers = operationalLayers.length;
+
+				if (nOperationalLayers === scoring.LAYER_COUNT_MIN) {
 					score = scoring.LAYER_COUNT_BEST_SCORE;
 				}
 
-				if (nLayers > scoring.LAYER_COUNT_MIN && nLayers <= scoring.LAYER_COUNT_MAX) {
+				if (nOperationalLayers > scoring.LAYER_COUNT_MIN && nOperationalLayers <= scoring.LAYER_COUNT_MAX) {
 					score = scoring.LAYER_COUNT_BETTER_SCORE;
 				}
 
-				if (nLayers > scoring.LAYER_COUNT_MAX) {
+				if (nOperationalLayers > scoring.LAYER_COUNT_MAX) {
 					score = scoring.LAYER_COUNT_GOOD_SCORE;
 				}
 			} else {
 				score = 0;
 			}
 
-			if (nLayers < 1) {
-				// basemap case
-				score = 0;
+			if (basemapLayers.length > 0 && nOperationalLayers === 0) {
+				// There are no operational layers, only a basemap
+				score = scoring.LAYER_COUNT_BEST_SCORE;
 			}
 
 			return score;

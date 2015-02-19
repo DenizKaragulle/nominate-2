@@ -22,6 +22,15 @@ define([
 			//this.instance = 1;
 		},
 
+		toggleCheckboxes: function (checkBoxID_values, attr, value) {
+			// enable/disable living atlas checkboxes
+			array.forEach((checkBoxID_values), function (id) {
+				if (dijit.byId(id)) {
+					dijit.byId(id).setAttribute(attr, value);
+				}
+			});
+		},
+
 		createTooltips: function (nodes, content) {
 			array.forEach(nodes, function (node, i) {
 				var userDescriptionTooltip = new Tooltip({
@@ -73,6 +82,26 @@ define([
 				thumbnailUrl = location.protocol + "//" + location.hostname + location.pathname + "assets/images/nullThumbnail.png";
 			}
 			return thumbnailUrl;
+		},
+
+		updateHeader: function () {
+			// homepage header message
+			query(".intro")[0].innerHTML = "";
+
+			var searchInputNode = query(".search-items")[0];
+			var dropdownSortNode = query(".dropdown-item-sort")[0];
+			var dropdownItemFilterNode = query(".dropdown-item-filter")[0];
+			var helpButtonNode = query(".help-button")[0];
+
+			domStyle.set(searchInputNode, "display", "block");
+			domStyle.set(dropdownSortNode, "display", "block");
+			domStyle.set(dropdownItemFilterNode, "display", "block");
+			domStyle.set(helpButtonNode, "display", "block");
+
+			var signInRow = query(".sign-in-row")[0];
+			domStyle.set(signInRow, "display", "none");
+			var gridPanel = dom.byId("dgrid");
+			domStyle.set(gridPanel, "display", "block");
 		}
 	});
 });
