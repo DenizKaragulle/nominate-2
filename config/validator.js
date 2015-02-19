@@ -382,8 +382,11 @@ define([
 			if (userName === "" || userName === null) {
 				score = 0;
 			} else {
-				score = score + scoring.USER_PROFILE_HAS_FULLNAME_MIN_NUM_WORDS;
-				score = score + this._hasBadCharacters(userName, "_", scoring.USER_PROFILE_FULLNAME_HAS_NO_UNDERSCORE);
+				var nWords = this._getNumWords(userName);
+				if (nWords >= scoring.USER_NAME_MIN_NUM_WORDS) {
+					score = score + scoring.USER_PROFILE_HAS_FULLNAME_MIN_NUM_WORDS_SCORE;
+				}
+				score = score + this._hasBadCharacters(userName, "_", scoring.USER_PROFILE_FULLNAME_HAS_NO_UNDERSCORE_SCORE);
 			}
 			return score;
 		},
