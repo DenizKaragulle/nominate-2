@@ -518,6 +518,8 @@ define([
 			inputText = this._extractWords(inputText);
 
 			if (array.some(inputText, function (currentWord) {
+				console.log(inputText + "\t\t" + currentWord);
+				console.log(badWords);
 				var match = false;
 				array.forEach(badWords, function (badWord) {
 					if (currentWord === badWord)
@@ -525,10 +527,12 @@ define([
 				});
 				return match;
 			})) {
-				// yes
+				// bonus
+				console.log("NO BONUS");
 				return 0;
 			} else {
-				// no
+				// no bonus
+				console.log("BONUS");
 				return bonus;
 			}
 		},
