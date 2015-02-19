@@ -1,7 +1,6 @@
 require([
 	"dojo/_base/array",
 	"dojo/_base/declare",
-	"dojo/_base/fx",
 	"dojo/_base/lang",
 	"put-selector/put",
 	"dgrid/extensions/Pagination",
@@ -66,7 +65,7 @@ require([
 	"config/CustomTagsWidget",
 	"config/uiUtils",
 	"dojo/NodeList-traverse"
-], function (array, declare, fx, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Point, Graphic, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget, UserInterfaceUtils) {
+], function (array, declare, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Point, Graphic, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol, defaults, details, credits, tags, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget, UserInterfaceUtils) {
 
 	parser.parse();
 
@@ -214,11 +213,11 @@ require([
 			// item title
 			var itemTitle = object.title;
 			// thumbnail url
-			var thumbnailUrl = formatThumbnailUrl(object);
+			var thumbnailUrl = userInterfaceUtils.formatThumbnailUrl(object);
 			// item type
 			var type = validator.validateStr(object.type);
 			// item last modified
-			var modifiedDate = formatDate(object.modified);
+			var modifiedDate = userInterfaceUtils.formatDate(object.modified);
 			// item number of views
 			var views = validator.validateStr(object.numViews);
 			// item access
@@ -439,18 +438,18 @@ require([
 
 								if (previousSelectedRow) {
 									// collapse the previously selected row height
-									updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
+									userInterfaceUtils.updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
 									domConstruct.destroy(EXPANDED_ROW_NAME + previousSelectedRowID);
 									if (previousSelectedRowID === selectedRowID) {
 										previousSelectedRowID = "";
 										previousSelectedRow = null;
 									} else {
 										// expand selected row height
-										updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
+										userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
 										previousSelectedRow = selectedRow;
 									}
 								} else {
-									updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
+									userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
 									previousSelectedRow = selectedRow;
 								}
 
@@ -549,7 +548,7 @@ require([
 												if (map.loaded) {
 													mapDrawComplete = performance.now();
 													var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-													fadeLoader();
+													userInterfaceUtils.fadeLoader();
 
 													// set performance scores
 													mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
@@ -568,7 +567,7 @@ require([
 											});
 										} else {
 											// fade the loader
-											fadeLoader();
+											userInterfaceUtils.fadeLoader();
 											// hide the map div
 											domStyle.set("map", "display", "none");
 											//
@@ -693,7 +692,7 @@ require([
 				var itemDescription = validator.validateStr(item.description);
 				var itemDescription_clean = itemDescription;
 				// thumbnail url
-				var thumbnailUrl = formatThumbnailUrl(item);
+				var thumbnailUrl = userInterfaceUtils.formatThumbnailUrl(item);
 				var thumbnailUrl_clean = thumbnailUrl;
 
 				// load the content
@@ -779,7 +778,7 @@ require([
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// EDIT clicked
 						// update EDIT/SAVE button
-						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
+						userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
 						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "pointer");
 
 						// update thumbnail
@@ -854,7 +853,7 @@ require([
 											itemTitle_clean = itemTitle;
 											itemSummary_clean = itemSummary;
 											itemDescription_clean = itemDescription;
-											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+											userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 											// set numerator
 											itemThumbnailScore = validator.setThumbnailScore(results);
 											itemTitleScore = validator.setItemTitleScore(itemTitle);
@@ -1222,103 +1221,6 @@ require([
 					idProperty:"tag",
 					data:[].concat(itemTags)
 				});
-				// atlas tags store
-				/*atlasTagStore = new Memory({
-					data:[
-						{ id:"categories", name:"" },
-						{ id:"basemapsCategory", name:"Basemaps", type:"parent", parent:"categories"},
-						{ id:"esriBasemapsCB", name:"Esri Basemaps", parent:"basemapsCategory", path:["categories", "basemapsCategory"] },
-						{ id:"partnerBasemapsCB", name:"Partner Basemaps", parent:"basemapsCategory", path:["categories", "basemapsCategory"] },
-						{ id:"userBasemapsCB", name:"User Basemaps", parent:"basemapsCategory", path:["categories", "basemapsCategory"] },
-
-						{ id:"imageryCategory", name:"Imagery", type:"parent", parent:"categories"},
-						{ id:"eventImageryCB", name:"Event Imagery", parent:"imageryCategory", path:["categories", "imageryCategory"] },
-						{ id:"basemapsImageryCB", name:"Basemaps Imagery", parent:"imageryCategory", path:["categories", "imageryCategory"] },
-						{ id:"multispectralImageryCB", name:"Multi-spectral Imagery", parent:"imageryCategory", path:["categories", "imageryCategory"] },
-						{ id:"temporalImageryCB", name:"Temporal Imagery", parent:"imageryCategory", path:["categories", "imageryCategory"] },
-
-						{ id:"demographicsCategory", name:"Demographics", type:"parent", parent:"categories"},
-						{ id:"ageCB", name:"Age", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
-						{ id:"householdsCB", name:"Households", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
-						{ id:"incomeCB", name:"Income", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
-						{ id:"maritalStatusCB", name:"Marital Status", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
-						{ id:"populationCB", name:"Population", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
-						{ id:"raceCB", name:"Race", parent:"demographicsCategory", path:["categories", "demographicsCategory"]  },
-
-						{ id:"lifestyleCategory", name:"Lifestyle", type:"parent", parent:"categories"},
-						{ id:"atRiskCB", name:"At Risk", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
-						{ id:"behaviorsCB", name:"Behaviors", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
-						{ id:"businessAndJobsCB", name:"Business and Jobs", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
-						{ id:"housingCB", name:"Housing", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
-						{ id:"povertyCB", name:"Poverty", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
-						{ id:"spendingCB", name:"Spending", parent:"lifestyleCategory", path:["categories", "lifestyleCategory"]  },
-
-						{ id:"landscapeCategory", name:"Landscape", type:"parent", parent:"categories"},
-						{ id:"climateCB", name:"Climate", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"ecologyCB", name:"Ecology", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"speciesBiologyCB", name:"Species Biology", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"ecologicalDisturbanceCB", name:"Ecological Disturbance", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"elevationCB", name:"Elevation", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"environmentalImpactCB", name:"Environmental Impact", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"landCoverCB", name:"Land Cover", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"naturalHazardsCB", name:"Natural Hazards", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"oceansCB", name:"Oceans", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"soilsGeologyCB", name:"Soils/Geology", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"subsurfaceCB", name:"Subsurface", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"waterCB", name:"Water", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-						{ id:"weatherCB", name:"Weather", parent:"landscapeCategory", path:["categories", "landscapeCategory"] },
-
-						{ id:"earthObservationsCategory", name:"Earth Observations ", type:"parent", parent:"categories"},
-						{ id:"earthObservationsCB", name:"Earth Observations", parent:"earthObservationsCategory", path:["categories", "earthObservationsCategory"] },
-
-						{ id:"urbanSystemsCategory", name:"Urban Systems", type:"parent", parent:"categories"},
-						{ id:"citiesCB", name:"3D Cities", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
-						{ id:"movementCB", name:"Movement", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
-						{ id:"parcelsCB", name:"Parcels", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
-						{ id:"peopleCB", name:"People", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
-						{ id:"planningCB", name:"Planning", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
-						{ id:"publicCB", name:"Public", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
-						{ id:"workCB", name:"Work", parent:"urbanSystemsCategory", path:["categories", "urbanSystemsCategory"] },
-
-						{ id:"transportationCategory", name:"Transportation ", type:"parent", parent:"categories"},
-						{ id:"locationsCB", name:"Locators", parent:"transportationCategory", path:["categories", "transportationCategory"] },
-						{ id:"networkCB", name:"Network", parent:"transportationCategory", path:["categories", "transportationCategory"] },
-						{ id:"trafficCB", name:"Traffic", parent:"transportationCategory", path:["categories", "transportationCategory"] },
-						{ id:"transportationCB", name:"Transportation", parent:"transportationCategory", path:["categories", "transportationCategory"] },
-
-						{ id:"boundariesAndPlacesCategory", name:"Boundaries and Places", type:"parent", parent:"categories"},
-						{ id:"boundariesCB", name:"Boundaries", parent:"boundariesAndPlacesCategory", path:["categories", "boundariesAndPlacesCategory"] },
-						{ id:"placesCB", name:"Places", parent:"boundariesAndPlacesCategory", path:["categories", "boundariesAndPlacesCategory"] },
-
-						{ id:"historicalMapsCategory", name:"Historical Maps ", type:"parent", parent:"categories"},
-						{ id:"historicalMapsCB", name:"Historical Maps", parent:"historicalMapsCategory" },
-
-						{ id:"storyMapsCategory", name:"Story Maps", type:"parent", parent:"categories"},
-						{ id:"architectureAndDesignCB", name:"Architecture and Design", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"businessCB", name:"Business", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"conservationAndSustainabilityCB", name:"Conservation and Sustainability", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"cultureCB", name:"Culture", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"destinationsCB", name:"Destinations", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"eventsAndDisastersCB", name:"Events and Disasters", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"historyCB", name:"History", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"infrastructureAndPlanningCB", name:"Infrastructure and Planning", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"natureAndEnvironmentCB", name:"Nature and Environment", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"oceansStoryMapsCB", name:"Oceans ", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"parksAndRecreationCB", name:"Parks and Recreation", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"peopleAndHealthCB", name:"People and Health", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"publicArtCB", name:"Public Art", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"scienceAndTechnologyCB", name:"Science and Technology", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"sportsAndEntertainmentCB", name:"Sports and Entertainment", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-						{ id:"traveloguesCB", name:"Travelogues", parent:"storyMapsCategory", path:["categories", "storyMapsCategory"] },
-					],
-
-					// Returns all direct children of this widget
-					getChildren:function (object) {
-						return this.query({
-							parent:object.id
-						});
-					}
-				});*/
 
 				// destroy the Tags dijit and the Tree dijit
 				if (customTagsWidget) {
@@ -1445,7 +1347,7 @@ require([
 				on(editSaveBtnNode, "click", function () {
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// EDIT mode
-						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
+						userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
 						// remove non-editing tag nodes
 						// domConstruct.empty(query(".existing-tags")[0]);
 						domStyle.set(query(".existing-tags")[0], "display", "none");
@@ -1481,7 +1383,7 @@ require([
 
 										// disable living atlas checkboxes
 										toggleCheckboxes(checkBoxID_values, "disabled", true);
-										updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+										userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 									} else {
 										console.log("ERROR");
 									}
@@ -1502,7 +1404,7 @@ require([
 					updateOverallScore();
 					// disable living atlas checkboxes
 					toggleCheckboxes(checkBoxID_values, "disabled", true);
-					updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+					userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 				});
 			});
 		}
@@ -1709,7 +1611,7 @@ require([
 					if (editSaveBtnNode.innerHTML === " EDIT ") {
 						// "EDIT" clicked
 						// update EDIT/SAVE button
-						updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
+						userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " SAVE ", cancelBtnNode, "block");
 						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "pointer");
 
 						// update user full name
@@ -1770,7 +1672,7 @@ require([
 											_userFullName_clean = _userFullName;
 											_userDescription_clean = _userDescription;
 
-											updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
+											userInterfaceUtils.updateEditSaveButton(editSaveBtnNode, " EDIT ", cancelBtnNode, "none");
 
 											// score content
 											userThumbnailScore = 0;//setUserProfileThumbnailScore()
@@ -2268,28 +2170,6 @@ require([
 			return deferred.promise;
 		}
 
-		function formatDate(date) {
-			var d = new Date(date);
-			var month = defaults.MONTHS[d.getMonth()];
-			if (d.isNaN) {
-				return "";
-			} else {
-				return month + " " + d.getDate() + ", " + d.getFullYear();
-			}
-		}
-
-		function formatThumbnailUrl(obj) {
-			var thumbnailUrl = "";
-			if (obj.largeThumbnail !== null) {
-				thumbnailUrl = obj.largeThumbnail;
-			} else if (obj.thumbnailUrl !== null) {
-				thumbnailUrl = obj.thumbnailUrl;
-			} else {
-				thumbnailUrl = location.protocol + "//" + location.hostname + location.pathname + "assets/images/nullThumbnail.png";
-			}
-			return thumbnailUrl;
-		}
-
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
 			var average = Math.floor(score / sectionThreshold * 100);
 			var classAttrs = domAttr.get(node, "class");
@@ -2424,15 +2304,6 @@ require([
 			domStyle.set(gridPanel, "display", "block");
 		}
 
-		function updateEditSaveButton(_editSaveBtnNode, _label, _cancelBtnNode, _display) {
-			domAttr.set(_editSaveBtnNode, "innerHTML", _label);
-			domStyle.set(_cancelBtnNode, "display", _display);
-		}
-
-		function updateNodeHeight(node, height) {
-			domStyle.set(node, "height", height + "px");
-		}
-
 		function toggleCheckboxes(checkBoxID_values, attr, value) {
 			// enable/disable living atlas checkboxes
 			array.forEach((checkBoxID_values), function (id) {
@@ -2440,16 +2311,6 @@ require([
 					dijit.byId(id).setAttribute(attr, value);
 				}
 			});
-		}
-
-		function fadeLoader() {
-			var loaderNode = dom.byId("map-mask");
-			domStyle.set(loaderNode, "opacity", "1");
-			var fadeArgs = {
-				node:"map-mask",
-				duration:1000
-			};
-			fx.fadeOut(fadeArgs).play();
 		}
 
 		function searchBtnClickHandler(event) {
