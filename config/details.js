@@ -34,9 +34,12 @@ define({
 			"		<div class='column-2'>" +
 			"			<div class='section-header'>Thumbnail</div>" +
 			"		</div>" +
-			"		<div class='column-16'>" +
+			"		<div class='column-3'>" +
 			"			<img class='expanded-item-thumbnail thumbnailUrl' src=''>" +
 			"			<div class='edit-thumbnail-msg'>Click thumbnail to change image.</div>" +
+			"		</div>" +
+			"		<div class='column-13'>" +
+			"			<div class='icon-external-link open-item-icon' title='Open this item in ArcGIS Online'></div>" +
 			"		</div>" +
 			"		<div class='column-2'>" +
 			"			<button class='btn custom-btn edit-save-btn'> EDIT </button>" +

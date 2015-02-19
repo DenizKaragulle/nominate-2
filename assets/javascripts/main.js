@@ -54,6 +54,7 @@ require([
 	"esri/symbols/SimpleMarkerSymbol",
 	"config/defaults",
 	"config/details",
+	"config/gridUtils",
 	"config/credits",
 	"config/tags",
 	"config/tagUtils",
@@ -66,7 +67,7 @@ require([
 	"config/CustomTagsWidget",
 	"config/uiUtils",
 	"dojo/NodeList-traverse"
-], function (array, declare, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Point, Graphic, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol, defaults, details, credits, tags, TagUtils, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget, UserInterfaceUtils) {
+], function (array, declare, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Point, Graphic, FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol, defaults, details, GridUtils, credits, tags, TagUtils, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator, CustomTagsWidget, UserInterfaceUtils) {
 
 	parser.parse();
 
@@ -201,6 +202,7 @@ require([
 	//
 	var HAS_PERFORMANCE_CONTENT = false;
 	//
+	var gridUtils = null;
 	var validator = null;
 	var userInterfaceUtils = null;
 	var tagUtils = null;
@@ -275,11 +277,11 @@ require([
 			});
 			domClass.replace(_creditsNode, "active column-4 credits", "column-4 credits");
 		};
-		tagsNodeClickHandler = function (_selectedRowID, _nodeList, _categoryID, _tagsID, _tagsNode) {
+		tagsNodeClickHandler = function (_selectedRowID, _nodeList, _tagsNode) {
 			array.forEach(_nodeList, function (node) {
 				if (domClass.contains(node, "active")) {
 					domClass.replace(node, "column-4", "active column-4");
-					tagsContentPane(_selectedRowID, _categoryID, _tagsID);
+					tagsContentPane(_selectedRowID);
 				}
 			});
 			domClass.replace(_tagsNode, "active column-4 tags", "column-4 tags");
@@ -324,7 +326,6 @@ require([
 
 			on(portal, "ready", function (p) {
 				on(dom.byId(SIGNIN_BUTTON_ID), "click", signIn);
-
 				on(searchInputNode, "keydown", searchItemsClickHandler);
 				on(query(".filter-list"), "click", filterItemsClickHandler);
 				on(query(".sort-items"), "click", sortItemsClickHandler);
@@ -343,7 +344,7 @@ require([
 				// tag utility methods
 				tagUtils = new TagUtils();
 				tagUtils.startup();
-				
+
 				// update the header row
 				userInterfaceUtils.updateHeader();
 				// Represents a registered user of the Portal.
@@ -412,6 +413,9 @@ require([
 							}, "dgrid");
 							dgrid.startup();
 
+							gridUtils = new GridUtils(portal, dgrid);
+							gridUtils.startup();
+
 							// initialize the maximum possible scores for each section and the overall possible maximum score
 							// for all the sections combined
 							initScoreMaxValues();
@@ -419,13 +423,15 @@ require([
 							nominateAdminFL = new FeatureLayer(defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
 							on(nominateAdminFL, "edits-complete", function (complete) {
 								if (complete.adds[0].success) {
-									// update the status of the item
+									// update the status label of the item in the dGrid to "Nominated"
 									var itemStatusNode = query(".item-nomination-status-" + selectedRowID)[0];
 									domConstruct.place(defaults.CURRENT_STATUS[1].label, itemStatusNode, "replace");
 									// update the client-side collection of nominated items
 									loadNominatedItemContent().then(function (results) {
 										nominatedItems = results;
 									});
+									// set the "Nominate" button to disabled
+									userInterfaceUtils.disableNominateButton(nominateBtnNode);
 								} else {
 									console.debug("ERROR: ", complete);
 								}
@@ -469,8 +475,8 @@ require([
 									var snippetID = TAB_CONTAINER_SNIPPET + selectedRowID;
 									var accessID = TAB_CONTAINER_LICENSE + selectedRowID;
 									var creditID = TAB_CONTAINER_CREDITS + selectedRowID;
-									var categoryID = TAB_CONTAINER_CATEGORY + selectedRowID;
-									var tagsID = TAB_CONTAINER_TAGS + selectedRowID;
+									//var categoryID = TAB_CONTAINER_CATEGORY + selectedRowID;
+									//var tagsID = TAB_CONTAINER_TAGS + selectedRowID;
 									var userNameID = TAB_CONTAINER_USERNAME + selectedRowID;
 									var userDescriptionID = TAB_CONTAINER_USERDESCRIPTION + selectedRowID;
 									var nominateBtnID = NOMINATE_BTN_ID + selectedRowID;
@@ -591,7 +597,7 @@ require([
 										}
 										on(detailsNode, "click", lang.partial(detailsNodeClickHandler, selectedRowID, nodeList, titleID, snippetID, descID, detailsNode));
 										on(creditsNode, "click", lang.partial(creditsNodeClickHandler, selectedRowID, nodeList, item, accessID, creditID, creditsNode));
-										on(tagsNode, "click", lang.partial(tagsNodeClickHandler, selectedRowID, nodeList, categoryID, tagsID, tagsNode));
+										on(tagsNode, "click", lang.partial(tagsNodeClickHandler, selectedRowID, nodeList, tagsNode));
 										on(profileNode, "click", lang.partial(profileNodeClickHandler, selectedRowID, nodeList, userNameID, userDescriptionID, profileNode));
 
 										// overall score graphic
@@ -618,11 +624,7 @@ require([
 									});
 								}
 							});
-						} else {
-							console.log("USER HAS NO ITEMS");
 						}
-
-
 					});
 				});
 			});
@@ -661,7 +663,7 @@ require([
 			domAttr.set(this, "class", "filter-list icon-check filter-check");
 			domStyle.set(this, "margin-left", "2px");
 			var target = domAttr.get(this, "data-value");
-			applyFilter(target);
+			gridUtils.applyFilter(target);
 		}
 
 		function sortItemsClickHandler() {
@@ -673,7 +675,7 @@ require([
 			domAttr.set(this, "class", "sort-items icon-check");
 			domStyle.set(this, "margin-left", "2px");
 			var target = domAttr.get(this, "data-value");
-			applySort(target);
+			gridUtils.applySort(target);
 		}
 
 		function helpBtnClickHandler() {
@@ -708,6 +710,7 @@ require([
 				var editSaveBtnNode = query(".edit-save-btn")[0],
 						cancelBtnNode = query(".cancel-btn")[0],
 						itemThumbnailNode = query(".thumbnailUrl")[0],
+						itemOpenLinkNode = query(".open-item-icon")[0],
 						itemTitleNode = query(".title-textbox")[0],
 						itemSummaryNode = query(".summary-textbox")[0],
 						itemDescriptionNode = query(".description-editor")[0],
@@ -752,6 +755,11 @@ require([
 				//tooltips
 				userInterfaceUtils.createTooltips([itemThumbnailTooltipNode, itemTitleTooltipNode, itemSummaryTooltipNode, itemDescriptionTooltipNode],
 						[tooltipsConfig.ITEM_THUMBNAIL_TOOLTIP_CONTENT, tooltipsConfig.ITEM_TITLE_TOOLTIP_CONTENT, tooltipsConfig.ITEM_SUMMARY_TOOLTIP_CONTENT, tooltipsConfig.ITEM_DESCRIPTION_TOOLTIP_CONTENT]);
+
+				// open item link
+				on(itemOpenLinkNode, "click", function () {
+					window.open("http://www.arcgis.com/home/item.html?id=" + item.id, "_blank");
+				});
 
 				// set denominator
 				thumbnailScoreDenominatorNode.innerHTML = ITEM_THUMBNAIL_MAX_SCORE;
@@ -1183,7 +1191,7 @@ require([
 			});
 		}
 
-		function tagsContentPane(_selectedRowID, categoryID, tagsID) {
+		function tagsContentPane(_selectedRowID) {
 			checkBoxID_values = [];
 			portalUser.getItem(_selectedRowID).then(function (item) {
 				// load the content
@@ -1772,17 +1780,27 @@ require([
 		}
 
 		function updateOverallScore() {
-			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / MAX_SCORE * 100);
+			overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / MAX_SCORE * scoring.MAXIMUM_SCORE);
 			var classAttrs = domAttr.get(nominateBtnNode, "class");
 			if (overAllCurrentScore >= scoring.SCORE_THRESHOLD) {
 				// PASS
+				// set the overall score color to pass
 				domStyle.set(currentOverallScoreNode, "color", scoring.PASS_COLOR);
-				classAttrs = classAttrs.replace("disabled", "enabled");
-				domAttr.set(nominateBtnNode, "class", classAttrs);
-				nominateBtnClickHandler = on(nominateBtnNode, "click", function () {
-					//nominateBtnDialog.show();
-					isItemNominated(selectedRowID).then(nominate);
-				});
+				if (array.some(nominatedItems.features, function (feature) {
+					return selectedRowID === feature.attributes.itemID;
+				})) {
+					// Item has been already nominated
+					userInterfaceUtils.disableNominateButton(nominateBtnNode);
+				} else {
+					// Item has not been nominated
+					// enable the "Nominate" button
+					userInterfaceUtils.enableNominateButton(nominateBtnNode);
+					// add the event handler for the "Nominate" button
+					nominateBtnClickHandler = on(nominateBtnNode, "click", function () {
+						//nominateBtnDialog.show();
+						isItemNominated(selectedRowID).then(nominate);
+					});
+				}
 			} else {
 				// FAIL
 				domStyle.set(currentOverallScoreNode, "color", scoring.FAIL_COLOR);
@@ -1794,7 +1812,7 @@ require([
 			}
 
 			// update the overall score label
-			currentOverallScoreNode.innerHTML = overAllCurrentScore + "/100";
+			currentOverallScoreNode.innerHTML = overAllCurrentScore + "/" + scoring.MAXIMUM_SCORE;
 			if (dijit.byId("overall-score-graphic") !== undefined) {
 				dijit.byId("overall-score-graphic").update({
 					value:overAllCurrentScore
@@ -1863,7 +1881,7 @@ require([
 
 		function updateSectionScore(score, node, max) {
 			var classAttrs = domAttr.get(node, "class");
-			score = Math.floor(score / max * 100);
+			score = Math.floor(score / max * scoring.MAXIMUM_SCORE);
 			if (score >= scoring.SCORE_THRESHOLD) {
 				// PASS
 				classAttrs = classAttrs.replace("icon-edit", "active icon-check");
@@ -1880,7 +1898,7 @@ require([
 		}
 
 		function updateSectionScoreStyle(itemScore, max, node) {
-			if ((itemScore / max * 100) >= scoring.SCORE_THRESHOLD) {
+			if ((itemScore / max * scoring.MAXIMUM_SCORE) >= scoring.SCORE_THRESHOLD) {
 				domClass.replace(node, "score-graphic-pass", "score-graphic-fail");
 			} else {
 				domClass.replace(node, "score-graphic-fail", "score-graphic-pass");
@@ -2086,7 +2104,7 @@ require([
 		}
 
 		function setPassFailStyleOnTabNode(score, node, sectionThreshold) {
-			var average = Math.floor(score / sectionThreshold * 100);
+			var average = Math.floor(score / sectionThreshold * scoring.MAXIMUM_SCORE);
 			var classAttrs = domAttr.get(node, "class");
 			if (average >= scoring.SCORE_THRESHOLD) {
 				classAttrs = classAttrs.replace("icon-edit", "icon-check");
@@ -2156,54 +2174,7 @@ require([
 			MAX_SCORE = ITEM_DETAILS_MAX_SCORE + ITEM_USE_CONSTRAINS_MAX_SCORE + TAGS_MAX_SCORE + PERFORMANCE_MAX_SCORE + USER_PROFILE_MAX_SCORE;
 		}
 
-		function applySort(value) {
-			if (value === "title") {
-				dgrid.set("sort", value, false);
-			} else if (value === "type") {
-				dgrid.set("sort", value, false);
-				dgrid.set('sort', [
-					{attribute:value, descending:false},
-					{attribute:"title", descending:false}
-				]);
-			} else if (value === "numViews") {
-				dgrid.set("sort", value, true);
-			} else if (value === "modified") {
-				dgrid.set("sort", value, true);
-			} else if (value === "status") {
-				//dgrid.set("sort", value, true);
-			} else if (value === "access") {
-				dgrid.set("sort", value, false);
-			} else {
-				dgrid.set("sort", value);
-			}
-		}
-
-		function applyFilter(value) {
-			var params = {};
-			if (value === "all-items") {
-				params = {
-					q:"owner:" + owner,
-					num:1000
-				};
-			} else if (value === "Web Map") {
-				params = {
-					q:"owner:" + owner + ' Web Map -type:"web mapping application" -type:"Layer Package" (type:"Project Package" OR type:"Windows Mobile Package" OR type:"Map Package" OR type:"Basemap Package" OR type:"Mobile Basemap Package" OR type:"Mobile Map Package" OR type:"Pro Map" OR type:"Project Package" OR type:"Web Map" OR type:"CityEngine Web Scene" OR type:"Map Document" OR type:"Globe Document" OR type:"Scene Document" OR type:"Published Map" OR type:"Explorer Map" OR type:"ArcPad Package" OR type:"Map Template") -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"  -type:"Code Attachment" -type:"Featured Items" -type:"Symbol Set" -type:"Color Set" -type:"Windows Viewer Add In" -type:"Windows Viewer Configuration"',
-					num:1000
-				};
-			} else {
-				params = {
-					q:"owner:" + owner + " type: " + value,
-					num:1000
-				};
-			}
-
-			portal.queryItems(params).then(function (result) {
-				itemStore.data = result.results;
-				dgrid.refresh();
-			});
-		}
-
-		function searchBtnClickHandler(event) {
+		function searchBtnClickHandler() {
 			var searchInputNode = query(".search-input-text-box")[0];
 			var searchQueryParams = searchInputNode.value;
 			var queryParams = {

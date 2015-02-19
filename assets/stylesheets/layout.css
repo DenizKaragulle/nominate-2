@@ -487,3 +487,13 @@ table tr {
 .btn-group a:hover, .btn-group a.active {
   background-color: #dddddd !important;
 }
+
+/* Open item in new page link icon */
+.open-item-icon {
+	margin-left: -15px;
+	margin-top: -5px;
+}
+
+.open-item-icon:hover {
+	cursor: pointer;
+}

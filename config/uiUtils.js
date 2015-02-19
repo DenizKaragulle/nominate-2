@@ -102,6 +102,18 @@ define([
 			domStyle.set(signInRow, "display", "none");
 			var gridPanel = dom.byId("dgrid");
 			domStyle.set(gridPanel, "display", "block");
+		},
+
+		disableNominateButton: function (btnNode) {
+			var classAttrs = domAttr.get(btnNode, "class");
+			classAttrs = classAttrs.replace("enabled", "disabled");
+			domAttr.set(btnNode, "class", classAttrs);
+		},
+
+		enableNominateButton: function (btnNode) {
+			var classAttrs = domAttr.get(btnNode, "class");
+			classAttrs = classAttrs.replace("disabled", "enabled");
+			domAttr.set(btnNode, "class", classAttrs);
 		}
 	});
 });
