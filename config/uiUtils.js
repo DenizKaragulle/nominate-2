@@ -8,7 +8,7 @@ define([
 	"dojo/dom-style",
 	"dojo/query",
 	"config/defaults"
-], function (Tooltip, array, declare, dom, fx, domAttr, domStyle, query, defaults) {
+], function (Tooltip, array, declare, fx, dom, domAttr, domStyle, query, defaults) {
 
 	return declare(null, {
 
