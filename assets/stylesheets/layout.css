@@ -491,7 +491,8 @@ table tr {
 /* Open item in new page link icon */
 .open-item-icon {
 	margin-left: -15px;
-	margin-top: -5px;
+	margin-top: -2px;
+	font-size: 1.8em;
 }
 
 .open-item-icon:hover {
