@@ -5,14 +5,18 @@ define([
 	"dojo/_base/fx",
 	"dojo/dom",
 	"dojo/dom-attr",
+	"dojo/dom-class",
+	"dojo/dom-construct",
 	"dojo/dom-style",
 	"dojo/query",
-	"config/defaults"
-], function (Tooltip, array, declare, fx, dom, domAttr, domStyle, query, defaults) {
+	"config/defaults",
+	"config/scoring"
+], function (Tooltip, array, declare, fx, dom, domAttr, domClass, domConstruct, domStyle, query, defaults, scoring) {
 
 	return declare(null, {
 
 		instance: null,
+		nominateBtnNode: null,
 
 		constructor: function () {
 
@@ -20,6 +24,12 @@ define([
 
 		startup: function () {
 			//this.instance = 1;
+		},
+
+		loadContent : function (content) {
+			domConstruct.destroy("section-content");
+			var node = query(".content-container")[0];
+			domConstruct.place(content, node, "last");
 		},
 
 		toggleCheckboxes: function (checkBoxID_values, attr, value) {
@@ -47,15 +57,15 @@ define([
 			var loaderNode = dom.byId("map-mask");
 			domStyle.set(loaderNode, "opacity", "1");
 			var fadeArgs = {
-				node:"map-mask",
-				duration:1000
+				node: "map-mask",
+				duration: 1000
 			};
 			fx.fadeOut(fadeArgs).play();
 		},
 
-		updateEditSaveButton: function (_editSaveBtnNode, _label, _cancelBtnNode, _display) {
-			domAttr.set(_editSaveBtnNode, "innerHTML", _label);
-			domStyle.set(_cancelBtnNode, "display", _display);
+		updateEditSaveButton: function (editSaveBtnNode, label, cancelBtnNode, display) {
+			domAttr.set(editSaveBtnNode, "innerHTML", label);
+			domStyle.set(cancelBtnNode, "display", display);
 		},
 
 		updateNodeHeight: function (node, height) {
@@ -114,6 +124,37 @@ define([
 			var classAttrs = domAttr.get(btnNode, "class");
 			classAttrs = classAttrs.replace("disabled", "enabled");
 			domAttr.set(btnNode, "class", classAttrs);
+		},
+
+		initPassingMarker: function (progressBarNode) {
+			domConstruct.place("<div class='current-score-passing-marker'>" +
+					"<span class='current-overall-gr-number'> " + scoring.SCORE_THRESHOLD + "</span>" +
+					"<span class='current-overall-gr-label'>required score</span>" +
+					"</div>", progressBarNode, "before");
+		},
+
+		updateSectionScoreStyle: function (itemScore, max, node) {
+			if ((itemScore / max * scoring.MAXIMUM_SCORE) >= scoring.SCORE_THRESHOLD) {
+				domClass.replace(node, "score-graphic-pass", "score-graphic-fail");
+			} else {
+				domClass.replace(node, "score-graphic-fail", "score-graphic-pass");
+			}
+		},
+
+		setPassFailStyleOnTabNode: function (score, node, sectionThreshold) {
+			var average = Math.floor(score / sectionThreshold * scoring.MAXIMUM_SCORE);
+			var classAttrs = domAttr.get(node, "class");
+			if (average >= scoring.SCORE_THRESHOLD) {
+				classAttrs = classAttrs.replace("icon-edit", "icon-check");
+				domAttr.set(node, "class", classAttrs);
+				domStyle.set(node, "color", "#007ac2");
+				domStyle.set(node, "border", "1px solid #007ac2");
+			} else {
+				classAttrs = classAttrs.replace("icon-check", "icon-edit");
+				domAttr.set(node, "class", classAttrs);
+				domStyle.set(node, "color", scoring.FAIL_COLOR);
+				domStyle.set(node, "border", "1px solid #C86A4A");
+			}
 		}
 	});
 });
