@@ -209,5 +209,7 @@ define({
 		{ id: "scienceAndTechnologyCB", name: "Science and Technology", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
 		{ id: "sportsAndEntertainmentCB", name: "Sports and Entertainment", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
 		{ id: "traveloguesCB", name: "Travelogues", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
-	]
+	],
+
+	"NOMINATED_SUCCESS_DIALOG" : "Thank you, this item is now in the queue for review. Someone will be in contact via email associated with your user ID.<\/div>"
 });

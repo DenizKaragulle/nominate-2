@@ -155,6 +155,11 @@ define([
 				domStyle.set(node, "color", scoring.FAIL_COLOR);
 				domStyle.set(node, "border", "1px solid #C86A4A");
 			}
+		},
+
+		setNodeContent: function (str, content) {
+			var node = query(str)[0];
+			node.innerHTML = content;
 		}
 	});
 });

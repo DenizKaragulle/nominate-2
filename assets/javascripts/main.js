@@ -92,7 +92,6 @@ require([
 	var previousSelectedRow;
 	var previousSelectedRowID;
 	// Nodes
-	var signInNode = "";
 	var detailsNode = "";
 	var creditsNode = "";
 	var tagsNode = "";
@@ -100,8 +99,6 @@ require([
 	var profileNode = "";
 	var nodeList = [];
 
-	var ribbonHeaderTitle = "";
-	var ribbonHeaderUser = "";
 	var ribbonHeaderNumItemsNode = "";
 	var searchInputNode = "";
 	var dropdownSortNode = "";
@@ -273,15 +270,15 @@ require([
 		};
 
 		function run() {
+			// user interface utility methods
+			userInterfaceUtils = new UserInterfaceUtils();
+			userInterfaceUtils.startup();
 			// sign in node
-			signInNode = query(".intro")[0];
-			// homepage header message
-			signInNode.innerHTML = defaults.INTRO_TEXT_1;
+			userInterfaceUtils.setNodeContent(".intro", defaults.INTRO_TEXT_1);
+
 			// ribbon header
-			ribbonHeaderTitle = query(".ribbon-header-title")[0];
-			ribbonHeaderUser = query(".ribbon-header-user")[0];
 			ribbonHeaderNumItemsNode = dom.byId("ribbon-header-num-items");
-			ribbonHeaderTitle.innerHTML = defaults.HEADER_TEXT_PUBLIC;
+			userInterfaceUtils.setNodeContent(".ribbon-header-title", defaults.HEADER_TEXT_PUBLIC);
 
 			searchInputNode = query(".search-items")[0];
 			dropdownSortNode = query(".dropdown-item-sort")[0];
@@ -309,9 +306,6 @@ require([
 				// load the validation rules
 				validator = new Validator();
 				validator.startup();
-				// user interface utility methods
-				userInterfaceUtils = new UserInterfaceUtils();
-				userInterfaceUtils.startup();
 				// tag utility methods
 				tagUtils = new TagUtils();
 				tagUtils.startup();
@@ -336,10 +330,12 @@ require([
 				portal.queryItems(params).then(function (result) {
 					// total number of items
 					var numItems = result.total;
+
 					// update the ribbon header
 					domAttr.set(query(".ribbon-header-title").parent()[0], "class", "");
-					ribbonHeaderTitle.innerHTML = defaults.HEADER_BLOCK_PRIVATE;
-					ribbonHeaderUser.innerHTML = " (" + portalUtils.portalUser.fullName + " - " + owner + ")";
+					userInterfaceUtils.setNodeContent(".ribbon-header-title", defaults.HEADER_BLOCK_PRIVATE);
+					var hdrUserNameText = " (" + portalUtils.portalUser.fullName + " - " + owner + ")";
+					userInterfaceUtils.setNodeContent(".ribbon-header-user", hdrUserNameText);
 					ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
 					domAttr.set(ribbonHeaderNumItemsNode, "class", "icon-stack");
 
@@ -1882,7 +1878,7 @@ require([
 						title: results.features[results.features.length - 1].attributes.itemName,
 						content:'<div class="dialog-container">' +
 								'	<div class="row">' +
-								'		<div class = "column-24" >Thank you, this item is now in the queue for review. Someone will be in contact via email associated with your user ID.<\/div>' +
+								'		<div class = "column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
 								'	<\/div>' +
 								'<\/div>',
 						style:"width: 300px"
