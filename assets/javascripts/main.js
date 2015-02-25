@@ -68,6 +68,7 @@ require([
 	"config/uiUtils",
 	"config/portalUtils",
 	"config/scoringUtils",
+	"config/nominateUtils",
 	"dojo/NodeList-traverse"
 ], function (array, declare, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox,
 			 ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, date, Deferred,
@@ -75,13 +76,12 @@ require([
 			 Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Point, Graphic,
 			 FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol, defaults, details,
 			 GridUtils, credits, tags, TagUtils, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator,
-			 CustomTagsWidget, UserInterfaceUtils, PortalUtils, ScoringUtils) {
+			 CustomTagsWidget, UserInterfaceUtils, PortalUtils, ScoringUtils, NominateUtils) {
 
 	parser.parse();
 
 	var map;
 	var layers;
-	var nominateAdminFL = null;
 	//
 	var dgrid;
 	var itemStore;
@@ -120,7 +120,6 @@ require([
 	var TAB_CONTAINER_CREDITS = "credits-";
 	var TAB_CONTAINER_USERNAME = "username-";
 	var TAB_CONTAINER_USERDESCRIPTION = "userdesc-";
-	var NOMINATE_BTN_ID = "nominate-btn-";
 
 	var rowID = null;
 	var tcID = null;
@@ -131,7 +130,6 @@ require([
 	var creditID = null;
 	var userNameID = null;
 	var userDescriptionID = null;
-	var nominateBtnID = null;
 
 	var portalUrl;
 	var portal;
@@ -149,7 +147,6 @@ require([
 	var performanceNodeClickHandler;
 	var profileNodeClickHandler;
 	var nominateBtnClickHandler = null;
-	var nominateBtnDialog = null;
 	// Overall score
 	//
 	var currentOverallScoreNode;
@@ -171,8 +168,7 @@ require([
 	var userInterfaceUtils = null;
 	var tagUtils = null;
 	var scoringUtils = null;
-	//
-	var nominatedItems = [];
+	var nominateUtils = null;
 
 	ready(function () {
 
@@ -193,7 +189,7 @@ require([
 			var access = object.access;
 			// item status ("NOMINATED", "UNDER REVIEW", "ACCEPTED")
 			var status = "";
-			array.forEach(nominatedItems.features, function (feature) {
+			array.forEach(nominateUtils.nominatedItems.features, function (feature) {
 				if (object.id === feature.attributes.itemID) {
 					status = defaults.CURRENT_STATUS[1].label;
 				}
@@ -270,6 +266,8 @@ require([
 		};
 
 		function run() {
+			// nominate item utility methods
+			nominateUtils = NominateUtils(defaults);
 			// user interface utility methods
 			userInterfaceUtils = new UserInterfaceUtils();
 			userInterfaceUtils.startup();
@@ -351,8 +349,8 @@ require([
 						}
 					});
 
-					loadNominatedItemsInMemory().then(function (results) {
-						nominatedItems = results;
+					nominateUtils.loadNominatedItemsInMemory().then(function (results) {
+						nominateUtils.nominatedItems = results;
 
 						if (numItems > 0) {
 							// dGrid columns
@@ -387,10 +385,8 @@ require([
 							// for all the sections combined
 							//scoringUtils.initScoreMaxValues();
 
-							// FS used to hold status of items
-							nominateAdminFL = new FeatureLayer(defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
 							// "Nominate" button edits-complete handler
-							on(nominateAdminFL, "edits-complete", nominateCompleteHandler);
+							on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", nominateCompleteHandler);
 
 							// item title click handler
 							on(dgrid.domNode, ".item-title:click", function (event) {
@@ -432,7 +428,7 @@ require([
 									creditID = TAB_CONTAINER_CREDITS + selectedRowID;
 									userNameID = TAB_CONTAINER_USERNAME + selectedRowID;
 									userDescriptionID = TAB_CONTAINER_USERDESCRIPTION + selectedRowID;
-									nominateBtnID = NOMINATE_BTN_ID + selectedRowID;
+									nominateUtils.nominateBtnID = nominateUtils.NOMINATE_BTN_ID + selectedRowID;
 
 									portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
 										domConstruct.place(
@@ -465,7 +461,7 @@ require([
 														"				<div id='progressBarMarker'></div>" +
 														"			</div>" +
 														"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-														"				<button id='" + nominateBtnID + "' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
+														"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
 														"			</div>" +
 														"		</div>" +
 
@@ -491,7 +487,7 @@ require([
 										// get progress bar node
 										progressBarNode = query(".current-score-graphic-container")[0];
 										// nominate button node
-										nominateBtnNode = dom.byId(nominateBtnID);
+										nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
 
 										// create button group
 										initContentButtonGroup(tcID);
@@ -581,20 +577,6 @@ require([
 					});
 				});
 			});
-		}
-
-		function loadNominatedItemsInMemory() {
-			var deferred = new Deferred();
-			var query = new Query();
-			query.returnGeometry = false;
-			query.outFields = ["*"];
-			// TODO more than 2000?
-			query.where = "1=1";
-			var queryTask = new QueryTask(defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
-			queryTask.execute(query).then(function (results) {
-				deferred.resolve(results);
-			});
-			return deferred.promise;
 		}
 
 		function filterItemsClickHandler() {
@@ -1774,7 +1756,7 @@ require([
 				// PASS
 				// set the overall score color to pass
 				domStyle.set(currentOverallScoreNode, "color", scoring.PASS_COLOR);
-				if (array.some(nominatedItems.features, function (feature) {
+				if (array.some(nominateUtils.nominatedItems.features, function (feature) {
 					return selectedRowID === feature.attributes.itemID;
 				})) {
 					// Item has been already nominated
@@ -1848,7 +1830,7 @@ require([
 						"itemURL":item.itemUrl
 					};
 					var graphic = new Graphic(pt, sms, attr);
-					nominateAdminFL.applyEdits([graphic], null, null);
+					nominateUtils.nominateAdminFeatureLayer.applyEdits([graphic], null, null);
 				});
 			}
 		}
@@ -1872,8 +1854,8 @@ require([
 				var itemStatusNode = query(".item-nomination-status-" + selectedRowID)[0];
 				domConstruct.place(defaults.CURRENT_STATUS[1].label, itemStatusNode, "replace");
 				// update the client-side collection of nominated items
-				loadNominatedItemsInMemory().then(function (results) {
-					nominatedItems = results;
+				nominateUtils.loadNominatedItemsInMemory().then(function (results) {
+					nominateUtils.nominatedItems = results;
 					var nominateBtnDialog = new Dialog({
 						title: results.features[results.features.length - 1].attributes.itemName,
 						content:'<div class="dialog-container">' +
@@ -1887,7 +1869,6 @@ require([
 				});
 				// set the "Nominate" button to disabled
 				userInterfaceUtils.disableNominateButton(nominateBtnNode);
-
 			} else {
 				console.debug("ERROR: ", complete);
 			}
