@@ -266,8 +266,6 @@ require([
 		};
 
 		function run() {
-			// nominate item utility methods
-			nominateUtils = NominateUtils(defaults);
 			// user interface utility methods
 			userInterfaceUtils = new UserInterfaceUtils();
 			userInterfaceUtils.startup();
@@ -297,6 +295,8 @@ require([
 
 		function portalSignInHandler() {
 			portal.signIn().then(function (user) {
+				// nominate item utility methods
+				nominateUtils = NominateUtils(defaults);
 				portalUtils = new PortalUtils(portal);
 				// scoring
 				scoringUtils = new ScoringUtils();
