@@ -297,6 +297,7 @@ require([
 			portal.signIn().then(function (user) {
 				// nominate item utility methods
 				nominateUtils = NominateUtils(defaults);
+
 				portalUtils = new PortalUtils(portal);
 				// scoring
 				scoringUtils = new ScoringUtils();
