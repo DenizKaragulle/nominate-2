@@ -19,7 +19,6 @@ define([
 
 		instance : null,
 		defaults : null,
-		portalUtils: null,
 
 		NOMINATE_BTN_ID : null,
 		nominateBtnID : null,
@@ -29,10 +28,8 @@ define([
 		nominateAdminFeatureLayer : null,
 		nominateBtnNode : null,
 
-		constructor: function (defaults, portalUtils) {
+		constructor: function (defaults) {
 			this.defaults = defaults;
-			this.portalUtils = portalUtils;
-			console.log(this.portalUtils);
 
 			this.NOMINATE_BTN_ID = "nominate-btn-";
 			this.nominateBtnID = "";

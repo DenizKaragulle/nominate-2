@@ -62,7 +62,7 @@ define({
 			"			</div>" +
 			"		</div>" +
 			"		<div class='column-2'>" +
-			"			<div class='section-header'>Title</div>" +
+			"			<div class='section-header title-attr-label'>Title</div>" +
 			"		</div>" +
 			"		<div class='column-15'>" +
 			"			<div class='title-textbox'></div>" +

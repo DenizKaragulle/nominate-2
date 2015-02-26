@@ -54,6 +54,7 @@ require([
 	"esri/symbols/SimpleMarkerSymbol",
 	"config/defaults",
 	"config/details",
+	"config/detailsUtils",
 	"config/gridUtils",
 	"config/credits",
 	"config/tags",
@@ -74,8 +75,8 @@ require([
 			 ProgressBar, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, date, Deferred,
 			 dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query,
 			 Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Point, Graphic,
-			 FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol, defaults, details,
-			 GridUtils, credits, tags, TagUtils, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator,
+			 FeatureLayer, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, SimpleMarkerSymbol,
+			 defaults, details, DetailsUtils, GridUtils, credits, tags, TagUtils, performanceConfig, profileConfig, tooltipsConfig, scoring, Validator,
 			 CustomTagsWidget, UserInterfaceUtils, PortalUtils, ScoringUtils, NominateUtils) {
 
 	parser.parse();
@@ -169,6 +170,7 @@ require([
 	var tagUtils = null;
 	var scoringUtils = null;
 	var nominateUtils = null;
+	var detailsUtils = null;
 
 	ready(function () {
 
@@ -226,7 +228,7 @@ require([
 					detailsContentPane();
 				}
 			});
-			domClass.replace(detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
+			domClass.replace(detailsNode, "active column-4 details", "column-4 details");
 		};
 		creditsNodeClickHandler = function (nodeList, creditsNode) {
 			array.forEach(nodeList, function (node) {
@@ -495,7 +497,7 @@ require([
 
 										// initialize content area with details data
 										detailsContentPane();
-										domClass.replace(detailsNode, "active column-4 details-tab-node", "column-4 details-tab-node");
+										domClass.replace(detailsNode, "active column-4 details", "column-4 details");
 
 										if (item.type === "Web Map") {
 											var mapDrawBegin = performance.now();
@@ -942,6 +944,10 @@ require([
 				updateSectionScore(scoringUtils.itemDetailsScore, detailsNode, scoringUtils.ITEM_DETAILS_MAX_SCORE);
 				updateOverallScore();
 			});
+
+
+			var titleNode = query(".title-attr-label")[0];
+			detailsUtils = new DetailsUtils(item, titleNode);
 		}
 		// END DETAILS
 
@@ -2095,7 +2101,7 @@ require([
 			domConstruct.place(
 					'<div class="row btn-group-container">' +
 							'	<div class="btn-group column-24 icon-edit-btn-group">' +
-							'		<a class="column-4 details-tab-node icon-edit"> ' + defaults.DETAILS + '</a>' +
+							'		<a class="column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
 							'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
 							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
 							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
@@ -2103,7 +2109,7 @@ require([
 							'	</div>' +
 							'</div>', id, "last");
 
-			detailsNode = query(".details-tab-node")[0];
+			detailsNode = query(".details")[0];
 			creditsNode = query(".credits")[0];
 			tagsNode = query(".tags")[0];
 			performanceNode = query(".performance")[0];

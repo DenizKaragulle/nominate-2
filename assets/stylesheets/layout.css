@@ -498,3 +498,8 @@ table tr {
 .open-item-icon:hover {
 	cursor: pointer;
 }
+
+/* hover class */
+.hoverClass {
+	cursor: pointer;
+}
