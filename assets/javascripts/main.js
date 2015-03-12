@@ -153,7 +153,15 @@ require([
 			var status = "";
 			array.forEach(nominateUtils.nominatedItems.features, function (feature) {
 				if (object.id === feature.attributes.itemID) {
-					status = defaults.CURRENT_STATUS[1].label;
+					if (feature.attributes["OnineStatus"] === "") {
+						status = defaults.CURRENT_STATUS[0].label;
+					} else if (feature.attributes["OnineStatus"] === defaults.STATUS_NOMINATED) {
+						status = defaults.CURRENT_STATUS[1].label;
+					} else if (feature.attributes["OnineStatus"] === defaults.STATUS_UNDER_REVIEW) {
+						status = defaults.CURRENT_STATUS[2].label;
+					} else if (feature.attributes["OnineStatus"] === defaults.STATUS_ACCEPTED) {
+						status = defaults.CURRENT_STATUS[3].label;
+					}
 				}
 			});
 
@@ -312,10 +320,17 @@ require([
 										// new item has been nominated
 										if (complete.adds.length > 0) {
 											if (complete.adds[0].success) {
-												// update the dom node for the item's status
-												var itemStatusNode = query(".item-nomination-status-" + nominateUtils.selectedID)[0];
+												// selected item ID
+												var selectedID = nominateUtils.selectedID;
+												console.log(selectedID);
+												// item status (NOMINATED)
+												var nodeLabel = defaults.CURRENT_STATUS[1].label;
+												// status node
+												var itemStatusNode = query(".item-nomination-status-" + selectedID)[0];
 												// update the status label of the item in the dGrid to "Nominated"
-												domConstruct.place(defaults.CURRENT_STATUS[1].label, itemStatusNode, "replace");
+												var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + selectedID + "'>" + nodeLabel + "</div>");
+												domConstruct.place(updatedItemStatusNode, itemStatusNode, "last");
+
 												// update the client-side collection of nominated items
 												nominateUtils.loadNominatedItemsInMemory().then(function (results) {
 													nominateUtils.nominatedItems = results;

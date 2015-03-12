@@ -86,8 +86,6 @@ define([
 		userThumbnailUrl_clean: null,
 
 		constructor: function (item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils, portal, portalUserThumbnailUrl) {
-			//var portalUser = portal.getPortalUser();
-			//console.log(portalUser.fullName);
 			this.validator = validator;
 			this.nominateUtils = nominateUtils;
 			this.userInterfaceUtils = userInterfaceUtils;

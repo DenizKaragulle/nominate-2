@@ -116,7 +116,7 @@ define({
 			"label": "<h4 class='icon-checked icon-red' style='color:#C86A4A'> NOMINATED </h4>"
 		},
 		{
-			"label": "<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h4 style='color:#C86A4A'> IN REVIEW </h4>"
+			"label": "<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h5 style='color:#C86A4A'> UNDER REVIEW </h5>"
 		},
 		{
 			"label": "<img src='assets/images/ThumbsUp_Blue.png' class='status-thumbnail'/><h4 style='color:#0079C1'> ACCEPTED </h4>"
@@ -210,6 +210,10 @@ define({
 		{ id: "sportsAndEntertainmentCB", name: "Sports and Entertainment", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
 		{ id: "traveloguesCB", name: "Travelogues", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] }
 	],
+
+	"STATUS_NOMINATED" : "Nominated",
+	"STATUS_UNDER_REVIEW" : "Under Review",
+	"STATUS_ACCEPTED" : "Accepted",
 
 	"EDIT_BTN_LABEL" : " EDIT ",
 	"SAVE_BTN_LABEL" : " SAVE ",
