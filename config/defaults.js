@@ -220,5 +220,7 @@ define({
 	"ADMIN_MSG_GREETING" : "Hello ",
 	"ADMIN_MSG_INTRO_1" : "Thank you for nominating your item, ",
 	"ADMIN_MSG_INTRO_2" : " or inclusion in the Living Atlas. I have looked at the item today, and have these observations below. Have a look at the observations and suggestions, and email me back with any questions or concerns. When we arrive at a mutual agreement that the item is ready to share, we can immediately add it to the Living Atlas of the World.",
-	"AMDIN_MSG_CLOSING" : "Thanks for nominating this item, and I look forward to reviewing a final version soon!"
+	"AMDIN_MSG_CLOSING" : "Thanks for nominating this item, and I look forward to reviewing a final version soon!",
+
+	"LIVING_ATLAS_EMAIL_ALIAS" : "livingatlas_admins@esri.com"
 });

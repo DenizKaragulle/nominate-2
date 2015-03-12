@@ -36,21 +36,6 @@ define([
 					var userEmail = content.attributes["ContactEmail"];
 					// item name
 					var itemName = content.attributes["itemName"];
-					// Notes
-					var notesThumbnail = this._formatOutput("Item Thumbnail", content.attributes["notesThumbnail"]);
-					var notesTitle = this._formatOutput("Item Title", content.attributes["notesTitle"]);
-					var notesSummary = this._formatOutput("Item Summary", content.attributes["notesSummary"]);
-					var notesDescription = this._formatOutput("Item Description", content.attributes["notesDescription"]);
-					var notesCredits = this._formatOutput("Credits", content.attributes["notesCredits"]);
-					var notesAccessAndUseConstraints = this._formatOutput("Item Access and Use Constraints", content.attributes["notesAccessUseConstraints"]);
-					var notesTags = this._formatOutput("Tags", content.attributes["notesTags"]);
-					var notesDrawTime = this._formatOutput("Map Draw Time", content.attributes["notesDrawTime"]);
-					var notesNumberOfLayers = this._formatOutput("Number of Layers", content.attributes["notesNumberOfLayers"]);
-					var notesPopups = this._formatOutput("Popups", content.attributes["notesPopups"]);
-					var notesSharing = this._formatOutput("Sharing", content.attributes["notesSharing"]);
-					var notesProfileThumbnail = this._formatOutput("User Profile Thumbnail", content.attributes["notesProfileThumbnail"]);
-					var notesProfileFullName = this._formatOutput("User Profile Full Name", content.attributes["notesProfileFullName"]);
-					var notesProfileDesc = this._formatOutput("User Profile Description", content.attributes["notesProfileDesc"]);
 
 					var closingMessage = defaults.AMDIN_MSG_CLOSING;
 
@@ -94,40 +79,40 @@ define([
 					var dialogBody =
 							"<div>" + defaults.ADMIN_MSG_GREETING + userFullName + ", <\/div>" +
 							"<div><p>" + defaults.ADMIN_MSG_INTRO_1 + itemName + defaults.ADMIN_MSG_INTRO_2 + "<\/p><\/div>" +
-							"<div><p>" + notesThumbnail + "<\/p><\/div>" +
-							"<div><p>" + notesTitle + "<\/p><\/div>" +
-							"<div><p>" + notesSummary + "<\/p><\/div>" +
-							"<div><p>" + notesDescription + "<\/p><\/div>" +
-							"<div><p>" + notesCredits + "<\/p><\/div>" +
-							"<div><p>" + notesAccessAndUseConstraints + "<\/p><\/div>" +
-							"<div><p>" + notesTags + "<\/p><\/div>" +
-							"<div><p>" + notesDrawTime + "<\/p><\/div>" +
-							"<div><p>" + notesNumberOfLayers + "<\/p><\/div>" +
-							"<div><p>" + notesPopups + "<\/p><\/div>" +
-							"<div><p>" + notesSharing + "<\/p><\/div>" +
-							"<div><p>" + notesProfileThumbnail + "<\/p><\/div>" +
-							"<div><p>" + notesProfileFullName + "<\/p><\/div>" +
-							"<div><p>" + notesProfileDesc + "<\/p><\/div>" +
+							this._formatOutput("Item Thumbnail", content.attributes["notesThumbnail"], true) +
+							this._formatOutput("Item Title", content.attributes["notesTitle"], true) +
+							this._formatOutput("Item Summary", content.attributes["notesSummary"], true) +
+							this._formatOutput("Item Description", content.attributes["notesDescription"], true) +
+							this._formatOutput("Credits", content.attributes["notesCredits"], true) +
+							this._formatOutput("Item Access and Use Constraints", content.attributes["notesAccessUseConstraints"], true) +
+							this._formatOutput("Tags", content.attributes["notesTags"], true) +
+							this._formatOutput("Map Draw Time", content.attributes["notesDrawTime"], true) +
+							this._formatOutput("Number of Layers", content.attributes["notesNumberOfLayers"], true) +
+							this._formatOutput("Popups", content.attributes["notesPopups"], true) +
+							this._formatOutput("Sharing", content.attributes["notesSharing"], true) +
+							this._formatOutput("User Profile Thumbnail", content.attributes["notesProfileThumbnail"], true) +
+							this._formatOutput("User Profile Full Name", content.attributes["notesProfileFullName"], true) +
+							this._formatOutput("User Profile Description", content.attributes["notesProfileDesc"], true) +
 							"<div><p>" + closingMessage + "<\/p><\/div>";
 
 					// Message in body of email
 					var emailBody =
 							defaults.ADMIN_MSG_GREETING + userFullName + ", %0A" +
 							defaults.ADMIN_MSG_INTRO_1 + itemName + defaults.ADMIN_MSG_INTRO_2 + "%0A%0A" +
-							notesThumbnail + "%0A%0A" +
-							notesTitle + "%0A%0A" +
-							notesSummary + "%0A%0A" +
-							notesDescription + "%0A%0A" +
-							notesCredits + "%0A%0A" +
-							notesAccessAndUseConstraints + "%0A%0A" +
-							notesTags + "%0A%0A" +
-							notesDrawTime + "%0A%0A" +
-							notesNumberOfLayers + "%0A%0A" +
-							notesPopups + "%0A%0A" +
-							notesSharing + "%0A%0A" +
-							notesProfileThumbnail + "%0A%0A" +
-							notesProfileFullName + "%0A%0A" +
-							notesProfileDesc + "%0A%0A" +
+							this._formatOutput("Item Thumbnail", content.attributes["notesThumbnail"], false) +
+							this._formatOutput("Item Title", content.attributes["notesTitle"], false) +
+							this._formatOutput("Item Summary", content.attributes["notesSummary"], false) +
+							this._formatOutput("Item Description", content.attributes["notesDescription"], false) +
+							this._formatOutput("Credits", content.attributes["notesCredits"], false) +
+							this._formatOutput("Item Access and Use Constraints", content.attributes["notesAccessUseConstraints"], false) +
+							this._formatOutput("Tags", content.attributes["notesTags"], false) +
+							this._formatOutput("Map Draw Time", content.attributes["notesDrawTime"], false) +
+							this._formatOutput("Number of Layers", content.attributes["notesNumberOfLayers"], false) +
+							this._formatOutput("Popups", content.attributes["notesPopups"], false) +
+							this._formatOutput("Sharing", content.attributes["notesSharing"], false) +
+							this._formatOutput("User Profile Thumbnail", content.attributes["notesProfileThumbnail"], false) +
+							this._formatOutput("User Profile Full Name", content.attributes["notesProfileFullName"], false) +
+							this._formatOutput("User Profile Description", content.attributes["notesProfileDesc"], false) +
 							closingMessage;
 
 					var emailMsgContainerNode = query(".email-message-container")[0];
@@ -143,7 +128,10 @@ define([
 					}, emailMsgContainerNode, "last");
 
 					on(query(".email-btn-send"), "click", lang.hitch(this, function () {
-						window.location = "mailto:" + userEmail + "?subject=" + itemName + "&body=" + emailBody;
+						window.location = "mailto:" + userEmail +
+								"?cc=" + defaults.LIVING_ATLAS_EMAIL_ALIAS +
+								"?subject=" + itemName +
+								"&body=" + emailBody;
 					}));
 
 					on(query(".email-btn-cancel"), "click", lang.hitch(this, function () {
@@ -154,14 +142,18 @@ define([
 			}));
 		},
 
-		_formatOutput: function (header, str) {
+		_formatOutput: function (header, str, draft) {
 			var output = "";
-			console.log(output);
-			if (str === null || str === "") {
+			if (!str) {
 				output = "";
 			} else {
-				str = string.trim(str);
-				output = "<div>" + header + "<\/div><div>" + str + "<\/div>";
+				if (draft) {
+					//"<div>Item Thumbnail<p>" + notesThumbnail + "<\/p><\/div>" +
+					output = "<div>" + header + "<p>" + string.trim(str) + "<\/p><\/div>";
+				} else {
+					//notesThumbnail + "%0A%0A" +
+					output = header + "%0A" + string.trim(str) + "%0A%0A";
+				}
 			}
 			return output;
 		}
