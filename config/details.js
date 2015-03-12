@@ -1,5 +1,5 @@
 /*
- | Copyright 2014 Esri
+ | Copyright 2015 Esri
  |
  | Licensed under the Apache License, Version 2.0 (the "License");
  | you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ define({
 			"			</div>" +
 			"		</div>" +
 			"		<div class='column-2'>" +
-			"			<div class='section-header'>Thumbnail</div>" +
+			"			<div class='section-header thumbnail-attr-label'>Thumbnail</div>" +
 			"		</div>" +
 			"		<div class='column-3'>" +
 			"			<img class='expanded-item-thumbnail thumbnailUrl' src=''>" +
@@ -44,6 +44,7 @@ define({
 			"		<div class='column-2'>" +
 			"			<button class='btn custom-btn edit-save-btn'> EDIT </button>" +
 			"			<button class='btn custom-btn cancel-btn'> CANCEL </button>" +
+			"			<button class='btn custom-btn email-btn'> EMAIL USER </button>" +
 			"		</div>" +
 			"	</div>" +
 
@@ -84,7 +85,7 @@ define({
 			"			</div>" +
 			"		</div>" +
 			"		<div class='column-2'>" +
-			"			<div class='section-header'>Summary</div>" +
+			"			<div class='section-header summary-attr-label'>Summary</div>" +
 			"		</div>" +
 			"		<div class='column-15'>" +
 			"			<div class='summary-textbox'></div>" +
@@ -106,7 +107,7 @@ define({
 			"			</div>" +
 			"		</div>" +
 			"		<div class='column-2'>" +
-			"			<div class='section-header'>Description</div>" +
+			"			<div class='section-header description-attr-label'>Description</div>" +
 			"		</div>" +
 			"		<div class='column-15'>" +
 			"			<div class='description-editor' style='height: 200px; overflow: auto;'>" +

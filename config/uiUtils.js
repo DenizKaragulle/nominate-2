@@ -1,8 +1,11 @@
 define([
+	"esri/tasks/query",
+	"esri/tasks/QueryTask",
 	"dijit/Tooltip",
 	"dojo/_base/array",
 	"dojo/_base/declare",
 	"dojo/_base/fx",
+	"dojo/Deferred",
 	"dojo/dom",
 	"dojo/dom-attr",
 	"dojo/dom-class",
@@ -11,19 +14,49 @@ define([
 	"dojo/query",
 	"config/defaults",
 	"config/scoring"
-], function (Tooltip, array, declare, fx, dom, domAttr, domClass, domConstruct, domStyle, query, defaults, scoring) {
+], function (Query, QueryTask, Tooltip, array, declare, fx, Deferred, dom, domAttr, domClass, domConstruct, domStyle, query, defaults, scoring) {
 
 	return declare(null, {
 
-		instance: null,
+		// Ribbon header number of items node
+		ribbonHeaderNumItemsNode: null,
+		// "Nominate" button node
 		nominateBtnNode: null,
 
 		constructor: function () {
-
+			this.ribbonHeaderNumItemsNode = dom.byId("ribbon-header-num-items");
+			this.setNodeContent(".intro", defaults.INTRO_TEXT_1);
+			this.setNodeContent(".ribbon-header-title", defaults.HEADER_TEXT_PUBLIC);
 		},
 
-		startup: function () {
-			//this.instance = 1;
+		showNode: function (node) {
+			domStyle.set(node, "display", "block");
+		},
+
+		hideNode : function (node) {
+			if (node) {
+				domStyle.set(node, "display", "none");
+			}
+		},
+
+		setActiveTab: function (newSelectedTab, oldSelectedTab, props) {
+			var _old = domAttr.get(oldSelectedTab, "class").split(" ");
+			var _new = domAttr.get(newSelectedTab, "class").split(" ");
+			var _tmpOld = "";
+			array.forEach(_old, function (attr) {
+				if (attr !== "active") {
+					_tmpOld = _tmpOld + " " + attr;
+				}
+			});
+			domAttr.set(oldSelectedTab, "class", _tmpOld.trim());
+
+			var _tmpNew = "";
+			array.forEach(_new, function (attr) {
+				if (attr !== "active") {
+					_tmpNew = _tmpNew + " " + attr;
+				}
+			});
+			domAttr.set(newSelectedTab, "class", _tmpNew.trim() + " active");
 		},
 
 		loadContent : function (content) {
@@ -160,6 +193,37 @@ define([
 		setNodeContent: function (str, content) {
 			var node = query(str)[0];
 			node.innerHTML = content;
+		},
+
+		updateRibbonHeaderTitle : function () {
+			domAttr.set(query(".ribbon-header-title").parent()[0], "class", "");
+			this.setNodeContent(".ribbon-header-title", defaults.HEADER_BLOCK_PRIVATE);
+		},
+
+		nodeMouseEnterHandler: function (node) {
+			domClass.add(node, "hoverClass");
+		},
+
+		nodeMouseLeaveHandler: function (node) {
+			domClass.remove(node, "hoverClass");
+		},
+
+		/**
+		 *
+		 * @param itemID
+		 * @return {*}
+		 */
+		getFeature: function (itemID) {
+			var deferred = new Deferred();
+			var query = new Query();
+			query.returnGeometry = false;
+			query.outFields = ["*"];
+			query.where = "itemID = '" + itemID + "'";
+			var queryTask = new QueryTask(defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
+			queryTask.execute(query).then(function (results) {
+				deferred.resolve(results);
+			});
+			return deferred.promise;
 		}
 	});
 });

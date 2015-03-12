@@ -1,5 +1,5 @@
 /*
- | Copyright 2014 Esri
+ | Copyright 2015 Esri
  |
  | Licensed under the Apache License, Version 2.0 (the "License");
  | you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ define({
 			'		</div>' +
 
 			'		<div class="column-18">' +
-			'			<div class="section-header">Thumbnail</div>' +
+			'			<div class="section-header profile-thumbnail-attr-label">Thumbnail</div>' +
 			'			<img class="expanded-item-thumbnail profileThumbnailUrl" src="">' +
 			'			<div class="edit-profile-thumbnail-msg">Click thumbnail to change image.</div>' +
 			'		</div>' +
@@ -39,6 +39,7 @@ define({
 			'		<div class="column-2">' +
 			'			<button class="btn custom-btn edit-save-btn"> EDIT </button>' +
 			'			<button class="btn custom-btn cancel-btn"> CANCEL </button>' +
+			'			<button class="btn custom-btn email-btn"> EMAIL USER </button>' +
 			'		</div>' +
 			'	</div>' +
 
@@ -57,7 +58,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="column-17">' +
-			'			<div class="section-header">Name</div>' +
+			'			<div class="section-header full-name-attr-label">Name</div>' +
 			'			<div class="name-textbox"></div>' +
 			'		</div>' +
 			'	</div>' +
@@ -77,7 +78,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="column-17">' +
-			'			<div class="section-header">Description</div>' +
+			'			<div class="section-header user-desc-attr-label">Description</div>' +
 			'			<div class="user-description-textbox"></div>' +
 			'		</div>' +
 			'	</div>' +

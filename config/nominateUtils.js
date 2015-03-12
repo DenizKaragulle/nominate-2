@@ -4,6 +4,7 @@ define([
 	"dojo/_base/declare",
 	"dojo/_base/lang",
 	"dojo/Deferred",
+	"dojo/dom",
 	"dojo/dom-construct",
 	"dojo/query",
 	"esri/Color",
@@ -13,34 +14,39 @@ define([
 	"esri/symbols/SimpleMarkerSymbol",
 	"esri/tasks/query",
 	"esri/tasks/QueryTask"
-], function (Dialog, array, declare, lang, Deferred, domConstruct, query, Color, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, Query, QueryTask) {
+], function (Dialog, array, declare, lang, Deferred, dom, domConstruct, query, Color, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, Query, QueryTask) {
 
 	return declare(null, {
 
-		instance : null,
-		defaults : null,
+		defaults:null,
+		portalUtils:null,
 
-		NOMINATE_BTN_ID : null,
-		nominateBtnID : null,
+		NOMINATE_BTN_ID:null,
+		nominateBtnID:null,
+		nominatedItems:null,
+		nominateAdminFeatureLayer:null,
+		nominateBtnNode:null,
+		nominateBtnClickHandler: null,
 
-		nominatedItems : null,
-		selectedRowID : null,
-		nominateAdminFeatureLayer : null,
-		nominateBtnNode : null,
+		selectedID: null,
 
-		constructor: function (defaults) {
+		constructor:function (defaults, portalUtils) {
 			this.defaults = defaults;
+			this.portalUtils = portalUtils;
 
 			this.NOMINATE_BTN_ID = "nominate-btn-";
 			this.nominateBtnID = "";
 			this.nominatedItems = [];
-			this.selectedRowID = 0;
 			// FS used to hold status of items
 			this.nominateAdminFeatureLayer = new FeatureLayer(this.defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
-			this.nominateBtnNode = {};
+			this.nominateBtnNode = "";
 		},
 
-		loadNominatedItemsInMemory : function () {
+		setSelectedID : function (selectedID) {
+			this.selectedID = selectedID;
+		},
+
+		loadNominatedItemsInMemory:function () {
 			var deferred = new Deferred();
 			var query = new Query();
 			query.returnGeometry = false;
@@ -52,6 +58,66 @@ define([
 				deferred.resolve(results);
 			});
 			return deferred.promise;
+		},
+
+		isItemNominated : function (itemID) {
+			var deferred = new Deferred();
+			var query = new Query();
+			query.returnGeometry = false;
+			query.outFields = ["*"];
+			query.where = "itemID = '" + itemID + "'";
+			var queryTask = new QueryTask(this.defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
+			queryTask.executeForCount(query).then(lang.hitch(this, function (count) {
+				deferred.resolve(count);
+			}));
+			return deferred.promise;
+		},
+
+		nominate:function (count) {
+			if (count < 1) {
+				this.portalUtils.portalUser.getItem(this.nominateUtils.selectedID).then(lang.hitch(this, function (item) {
+					// item had never been nominated
+					var dateTime = new Date();
+					var pt = new Point({
+						"x":-13024380.422813008,
+						"y":4028802.0261344062,
+						"spatialReference":{
+							"wkid":102100
+						}
+					});
+					var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
+					var attr = {
+						"Latitude":"4028802.0261344062",
+						"Longitude":"-13024380.422813008",
+						"itemID":item.id,
+						"itemOwnerID":item.owner,
+						"ContactEmail":this.portalUtils.portalUser.email,
+						"ContactPhone":"",
+						"OnineStatus":"Nominated",
+						"NominatedDate":dateTime,
+						"LastContactDate":"",
+						"LastContactComments":"",
+						"AcceptedDate":"",
+						"FlaggedDate":"",
+						"RemovedDate":"",
+						"OriginalNominatedDate":dateTime,
+						"OriginalAcceptedDate":"",
+						"InitialContactDate":"",
+						"CreationDate":"",
+						"Creator":"",
+						"EditDate":"",
+						"Editor":"",
+						"itemName":item.title,
+						"itemURL":item.itemUrl,
+						"notesThumbnail": "",
+						"notesSummary": "",
+						"notesDescription": "",
+						"notesTitle": ""
+					};
+					var graphic = new Graphic(pt, sms, attr);
+					this.nominateUtils.nominateAdminFeatureLayer.applyEdits([graphic], null, null);
+				}));
+			}
 		}
 	});
 });

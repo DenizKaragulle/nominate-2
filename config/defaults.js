@@ -208,8 +208,17 @@ define({
 		{ id: "publicArtCB", name: "Public Art", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
 		{ id: "scienceAndTechnologyCB", name: "Science and Technology", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
 		{ id: "sportsAndEntertainmentCB", name: "Sports and Entertainment", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
-		{ id: "traveloguesCB", name: "Travelogues", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
+		{ id: "traveloguesCB", name: "Travelogues", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] }
 	],
 
-	"NOMINATED_SUCCESS_DIALOG" : "Thank you, this item is now in the queue for review. Someone will be in contact via email associated with your user ID.<\/div>"
+	"EDIT_BTN_LABEL" : " EDIT ",
+	"SAVE_BTN_LABEL" : " SAVE ",
+
+	"NOMINATED_SUCCESS_DIALOG" : "Thank you, this item is now in the queue for review. Someone will be in contact via email associated with your user ID.<\/div>",
+
+	"ADMIN_MSG_CURATOR_INSTRUCTIONS" : "Review the email below and make final edits. Then <b>hit Send</b>, to place this text in a new email in your email client (Outlook etc.) Of course, you need to hit Send on the actual email.",
+	"ADMIN_MSG_GREETING" : "Hello ",
+	"ADMIN_MSG_INTRO_1" : "Thank you for nominating your item, ",
+	"ADMIN_MSG_INTRO_2" : " or inclusion in the Living Atlas. I have looked at the item today, and have these observations below. Have a look at the observations and suggestions, and email me back with any questions or concerns. When we arrive at a mutual agreement that the item is ready to share, we can immediately add it to the Living Atlas of the World.",
+	"AMDIN_MSG_CLOSING" : "Thanks for nominating this item, and I look forward to reviewing a final version soon!"
 });
