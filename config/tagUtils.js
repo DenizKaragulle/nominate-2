@@ -31,8 +31,7 @@ define([
 	"config/defaults",
 	"config/CustomTagsWidget",
 	"config/adminUtils"
-], function (Color, esriRequest, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, Dialog, focusUtil, CheckBox, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, array, declare, lang, Deferred, dom, domAttr, domClass,
-			 domConstruct, domStyle, html, mouse, on, query, Memory, defaults, CustomTagsWidget, AdminUtils) {
+], function (Color, esriRequest, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, Dialog, focusUtil, CheckBox, registry, Tree, ForestStoreModel, ObjectStoreModel, aspect, ItemFileReadStore, array, declare, lang, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, mouse, on, query, Memory, defaults, CustomTagsWidget, AdminUtils) {
 
 	return declare([AdminUtils], {
 
@@ -91,14 +90,13 @@ define([
 			this.cancelBtnNode = query(".cancel-btn")[0];
 			this.emailUserBtn = query(".email-btn")[0];
 			this.tagsLabelNode = query(".tags-attr-label")[0];
-
 			this.tagsTooltipNode = query(".tags-tooltip")[0];
 			this.tagsScoreNodeContainer = query(".tags-score-gr")[0];
 			this.tagsScoreNumeratorNode = query(".tags-score-num")[0];
 			this.tagsScoreDenominatorNode = query(".tags-score-denom")[0];
+			this.tagsNode = query(".tags")[0];
 
 			this.checkBoxID_values = [];
-			this.tagsNode = query(".tags")[0];
 
 			this.itemTags = item.tags;
 			this.itemTags_clean = this.itemTags;
@@ -121,12 +119,7 @@ define([
 			}, query(".tag-container")[0], "first");
 			this.styleTags(this.itemTags, query(".existing-tags")[0]);
 
-			this.userInterfaceUtils.createTooltips([
-				this.tagsTooltipNode
-			], [
-				this.tooltipsConfig.TAGS_TOOLTIP_CONTENT
-			]);
-
+			this.userInterfaceUtils.createTooltips([this.tagsTooltipNode], [this.tooltipsConfig.TAGS_TOOLTIP_CONTENT]);
 
 			// existing tags store
 			this.tagStore = new Memory({
@@ -189,11 +182,13 @@ define([
 								}
 								if (selected) {
 									if (this.tagStore.data.indexOf(tagLabel) === -1) {
-										this.tagStore.data.push(tagLabel);
+										if (tagLabel !== "")
+											this.tagStore.data.push(tagLabel);
 									}
 								} else {
 									this.tagStore.data.splice(this.tagStore.data.indexOf(tagLabel), 1);
 								}
+								console.log("ONCHANGE");
 								this.customTagsWidget.clearTags();
 								this.customTagsWidget.prepopulate(this.tagStore.data);
 							})

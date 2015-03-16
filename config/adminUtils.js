@@ -132,17 +132,20 @@ define([
 								'<\/div>'
 					}, emailMsgContainerNode, "last");
 
+					// email dialog "SEND" button handler
 					on(query(".email-btn-send"), "click", lang.hitch(this, function () {
 						this.portalUtils.portalUser.getItem(this.selectedID).then(lang.hitch(this, function (item) {
 							var status = defaults.STATUS_UNDER_REVIEW;
 							this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, lang.partial(this._updateItemStatus, status)));
 						}));
+						// mail to
 						window.location = "mailto:" + userEmail +
 								"?cc=" + defaults.LIVING_ATLAS_EMAIL_ALIAS +
 								"?subject=" + itemName +
 								"&body=" + emailBody;
 					}));
 
+					// email dialog "CANCEL" button
 					on(query(".email-btn-cancel"), "click", lang.hitch(this, function () {
 						dijit.byId("emailMessageDialog").destroy();
 					}));
@@ -153,7 +156,6 @@ define([
 
 		_updateItemStatus: function (status, response) {
 			var feature = response.features[0];
-			console.log(feature.attributes["itemID"])
 			var dateTime = new Date();
 			var pt = new Point({
 				"x": -13024380.422813008,
@@ -165,15 +167,17 @@ define([
 			var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
 			var attr = {
 				"FID": feature.attributes.FID,
-				"OnineStatus": status
+				"OnineStatus": status,
+				"NominatedDate": dateTime
 			};
 			var graphic = new Graphic(pt, sms, attr);
 			this.nominateUtils.nominateAdminFeatureLayer.applyEdits(null, [graphic], null);
-			// update the dom node for the item's status
+			// update the dom node for the item's status to "UNDER REVIEW"
 			var itemStatusNode = query(".item-nomination-status-" + feature.attributes["itemID"])[0];
 			var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + feature.attributes["itemID"] + "'>" + defaults.CURRENT_STATUS[2].label + "</div>");
-			// update the status label of the item in the dGrid to "Nominated"
 			domConstruct.place(updatedItemStatusNode, itemStatusNode, "replace");
+			// Enable the "ACCEPT" button
+
 		},
 
 		_formatOutput: function (header, str, draft) {

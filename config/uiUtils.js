@@ -208,11 +208,6 @@ define([
 			domClass.remove(node, "hoverClass");
 		},
 
-		/**
-		 *
-		 * @param itemID
-		 * @return {*}
-		 */
 		getFeature: function (itemID) {
 			var deferred = new Deferred();
 			var query = new Query();

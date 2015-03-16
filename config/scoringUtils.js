@@ -17,67 +17,67 @@ define([
 
 	return declare(null, {
 
-		defaults:null,
-		validator : null,
-		scoring:null,
-		portalUtils:null,
-		nominateUtils:null,
-		userInterfaceUtils:null,
+		defaults: null,
+		validator: null,
+		scoring: null,
+		portalUtils: null,
+		nominateUtils: null,
+		userInterfaceUtils: null,
 
-		selectedID:null,
+		selectedID: null,
 
 		// current overall score
-		overAllCurrentScore:null,
+		overAllCurrentScore: null,
 		// details
-		itemDetailsScore:null,
+		itemDetailsScore: null,
 		// access and user constraints / license info
-		creditsAndAccessScore:null,
-		itemCreditsScore:null,
-		itemAccessAndUseConstraintsScore:null,
+		creditsAndAccessScore: null,
+		itemCreditsScore: null,
+		itemAccessAndUseConstraintsScore: null,
 		// tags
-		itemTagsScore:null,
+		itemTagsScore: null,
 		// performance
-		performanceScore:null,
-		mapDrawTimeScore:null,
-		nLayersScore:null,
-		popupsScore:null,
-		sharingScore:null,
+		performanceScore: null,
+		mapDrawTimeScore: null,
+		nLayersScore: null,
+		popupsScore: null,
+		sharingScore: null,
 		// user profile
-		userProfileScore:null,
-		userThumbnailScore:null,
-		userNameScore:null,
-		userDescriptionScore:null,
+		userProfileScore: null,
+		userThumbnailScore: null,
+		userNameScore: null,
+		userDescriptionScore: null,
 
 
-		overallScoreGraphic:null,
-		progressBarNode:null,
+		overallScoreGraphic: null,
+		progressBarNode: null,
 
-		ITEM_THUMBNAIL_MAX_SCORE:null,
-		ITEM_TITLE_MAX_SCORE:null,
-		ITEM_SUMMARY_MAX_SCORE:null,
-		ITEM_DESC_MAX_SCORE:null,
-		ITEM_DETAILS_MAX_SCORE:null,
+		ITEM_THUMBNAIL_MAX_SCORE: null,
+		ITEM_TITLE_MAX_SCORE: null,
+		ITEM_SUMMARY_MAX_SCORE: null,
+		ITEM_DESC_MAX_SCORE: null,
+		ITEM_DETAILS_MAX_SCORE: null,
 
-		ITEM_CREDIT_MAX_SCORE:null,
-		ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE:null,
-		ITEM_USE_CONSTRAINS_MAX_SCORE:null,
+		ITEM_CREDIT_MAX_SCORE: null,
+		ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE: null,
+		ITEM_USE_CONSTRAINS_MAX_SCORE: null,
 
-		TAGS_MAX_SCORE:null,
+		TAGS_MAX_SCORE: null,
 
-		PERFORMANCE_SHARING_MAX_SCORE:null,
-		PERFORMANCE_POPUPS_MAX_SCORE:null,
-		PERFORMANCE_DRAW_TIME_MAX_SCORE:null,
-		PERFORMANCE_LAYER_COUNT_MAX_SCORE:null,
-		PERFORMANCE_MAX_SCORE:null,
+		PERFORMANCE_SHARING_MAX_SCORE: null,
+		PERFORMANCE_POPUPS_MAX_SCORE: null,
+		PERFORMANCE_DRAW_TIME_MAX_SCORE: null,
+		PERFORMANCE_LAYER_COUNT_MAX_SCORE: null,
+		PERFORMANCE_MAX_SCORE: null,
 
-		USER_PROFILE_THUMBNAIL:null,
-		USER_PROFILE_FULLNAME:null,
-		USER_PROFILE_DESCRIPTION:null,
-		USER_PROFILE_MAX_SCORE:null,
+		USER_PROFILE_THUMBNAIL: null,
+		USER_PROFILE_FULLNAME: null,
+		USER_PROFILE_DESCRIPTION: null,
+		USER_PROFILE_MAX_SCORE: null,
 
-		MAX_SCORE:null,
+		MAX_SCORE: null,
 
-		constructor:function (validator, selectedID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils) {
+		constructor: function (validator, selectedID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils) {
 			this.validator = validator;
 			this.selectedID = selectedID;
 			this.defaults = defaults;
@@ -126,7 +126,7 @@ define([
 		updateScore: function (item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode) {
 			// details
 			this.itemThumbnailScore = this.validator.setThumbnailScore(item);
-			this. validator.setItemTitleScore(item.title);
+			this.validator.setItemTitleScore(item.title);
 			this.itemSummaryScore = this.validator.setItemSummaryScore(item.snippet);
 			this.riptionScore = this.validator.setItemDescriptionScore(item.description);
 			this.itemDetailsScore = this.itemThumbnailScore + this.itemTitleScore + this.itemSummaryScore + this.itemDescriptionScore;
@@ -151,17 +151,17 @@ define([
 			this.updateOverallScore();
 		},
 
-		updateOverallScore:function () {
+		updateOverallScore: function () {
 			this.updateTotalScore(this.itemDetailsScore, this.creditsAndAccessScore, this.itemTagsScore, this.performanceScore, this.userProfileScore, this.MAX_SCORE, this.scoring.MAXIMUM_SCORE);
 			this.updateTotalScoreGraphic(this.overAllCurrentScore);
 		},
 
-		updateTotalScore:function (itemDetailsScore, creditsAndAccessScore, itemTagsScore, performanceScore, userProfileScore, MAX_SCORE, MAXIMUM_SCORE) {
+		updateTotalScore: function (itemDetailsScore, creditsAndAccessScore, itemTagsScore, performanceScore, userProfileScore, MAX_SCORE, MAXIMUM_SCORE) {
 			this.overAllCurrentScore = Math.floor((itemDetailsScore + creditsAndAccessScore + itemTagsScore + performanceScore + userProfileScore) / MAX_SCORE * MAXIMUM_SCORE);
 			query(".current-score-number")[0].innerHTML = this.overAllCurrentScore;
 		},
 
-		updateTotalScoreGraphic:function (totalScore) {
+		updateTotalScoreGraphic: function (totalScore) {
 			//this.nominateUtils.nominateBtnNode = dom.byId(this.nominateUtils.nominateBtnID);
 			var classAttrs = domAttr.get(this.nominateUtils.nominateBtnNode, "class");
 			if (totalScore >= this.scoring.SCORE_THRESHOLD) {
@@ -174,15 +174,20 @@ define([
 				}))) {
 					// Item has been already nominated
 					this.userInterfaceUtils.disableNominateButton(this.nominateUtils.nominateBtnNode);
+					this.userInterfaceUtils.enableNominateButton(this.nominateUtils.acceptBtnNode);
 				} else {
 					// Item has not been nominated
 					// enable the "Nominate" button
 					this.userInterfaceUtils.enableNominateButton(this.nominateUtils.nominateBtnNode);
-					// add the event handler for the "Nominate" button
+					// add the event handler for the "NOMINATE" button
 					this.nominateUtils.nominateBtnClickHandler = on(this.nominateUtils.nominateBtnNode, "click", lang.hitch(this, function () {
 						this.nominateUtils.isItemNominated(this.nominateUtils.selectedID).then(lang.hitch(this, this.nominateUtils.nominate));
 					}));
 				}
+				// add the event handler for the "ACCEPT" button
+				this.nominateUtils.acceptBtnClickHandler = on(this.nominateUtils.acceptBtnNode, "click", lang.hitch(this, function () {
+					this.nominateUtils.isItemNominated(this.nominateUtils.selectedID).then(lang.hitch(this, this.nominateUtils.accept));
+				}));
 			} else {
 				// FAIL
 				domStyle.set(query(".current-score-number")[0], "color", this.scoring.FAIL_COLOR);
@@ -191,19 +196,23 @@ define([
 				if (this.nominateUtils.nominateBtnClickHandler !== null) {
 					this.nominateUtils.nominateBtnClickHandler.remove();
 				}
+
+				if (this.nominateUtils.acceptBtnClickHandler !== null) {
+					this.nominateUtils.acceptBtnClickHandler.remove();
+				}
 			}
 			this.loadTotalScoreGraphic(totalScore, query(".current-score-graphic-container")[0]);
 		},
 
-		loadTotalScoreGraphic:function (totalScore, node) {
+		loadTotalScoreGraphic: function (totalScore, node) {
 			if (dijit.byId("overall-score-graphic") === undefined) {
 				this.overallScoreGraphic = new ProgressBar({
-					id:"overall-score-graphic",
-					style:{
-						"width":"100%",
-						"height":"5px"
+					id: "overall-score-graphic",
+					style: {
+						"width": "100%",
+						"height": "5px"
 					},
-					value:totalScore
+					value: totalScore
 				}).placeAt(node).startup();
 				this.userInterfaceUtils.initPassingMarker(node);
 			} else {
@@ -211,13 +220,13 @@ define([
 			}
 		},
 
-		removeScoreBar:function () {
+		removeScoreBar: function () {
 			if (dijit.byId("overall-score-graphic")) {
 				dijit.byId("overall-score-graphic").destroy();
 			}
 		},
 
-		updateSectionScore:function (score, node, max) {
+		updateSectionScore: function (score, node, max) {
 			var classAttrs = domAttr.get(node, "class");
 			score = Math.floor(score / max * this.scoring.MAXIMUM_SCORE);
 			if (score >= this.scoring.SCORE_THRESHOLD) {

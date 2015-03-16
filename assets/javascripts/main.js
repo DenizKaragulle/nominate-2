@@ -91,6 +91,7 @@ require([
 	var dropdownItemFilterNode = "";
 	var helpButtonNode = "";
 	var nominateBtnNode = null;
+	var acceptBtnNode = null;
 	var progressBarNode = "";
 	// div dimensions
 	var COLLAPSE_ROW_HEIGHT = 125;
@@ -322,10 +323,9 @@ require([
 											if (complete.adds[0].success) {
 												// selected item ID
 												var selectedID = nominateUtils.selectedID;
-												console.log(selectedID);
 												// item status (NOMINATED)
 												var nodeLabel = defaults.CURRENT_STATUS[1].label;
-												// status node
+												// item status node in dGrid
 												var itemStatusNode = query(".item-nomination-status-" + selectedID)[0];
 												// update the status label of the item in the dGrid to "Nominated"
 												var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + selectedID + "'>" + nodeLabel + "</div>");
@@ -345,8 +345,10 @@ require([
 													});
 													nominateBtnDialog.show();
 												});
-												// set the "Nominate" button to disabled
-												this.userInterfaceUtils.disableNominateButton(nominateBtnNode);
+												// disable "NOMINATE" button
+												userInterfaceUtils.disableNominateButton(nominateUtils.nominateBtnNode);
+												// enable "ACCEPT" button
+												userInterfaceUtils.enableNominateButton(nominateUtils.acceptBtnNode);
 											}
 										}
 									});
@@ -389,6 +391,7 @@ require([
 											rowID = EXPANDED_ROW_NAME + selectedRowID;
 											tcID = TAB_CONTAINER_NAME + selectedRowID;
 											nominateUtils.nominateBtnID = nominateUtils.NOMINATE_BTN_ID + selectedRowID;
+											nominateUtils.acceptBtnID = nominateUtils.ACCEPT_BTN_ID + selectedRowID;
 
 											portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
 												domConstruct.place(
@@ -422,6 +425,7 @@ require([
 																"			</div>" +
 																"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
 																"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
+																"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn disabled'> ACCEPT </button>" +
 																"			</div>" +
 																"		</div>" +
 
@@ -446,6 +450,8 @@ require([
 												progressBarNode = query(".current-score-graphic-container")[0];
 												// nominate button node
 												nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
+												// accept button node
+												nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
 
 												// create button group
 												initContentButtonGroup(tcID);
