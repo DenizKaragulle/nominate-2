@@ -237,7 +237,32 @@ define([
 			this.scoringUtils.itemDetailsScore = this.scoringUtils.itemThumbnailScore + this.scoringUtils.itemTitleScore + this.scoringUtils.itemSummaryScore + this.scoringUtils.itemDescriptionScore;
 			this.scoringUtils.updateSectionScore(this.scoringUtils.itemDetailsScore, this.detailsNode, this.scoringUtils.ITEM_DETAILS_MAX_SCORE);
 
+<<<<<<< HEAD
 			console.log(portalUtils.IS_CURATOR);
+=======
+			// only permit nominated items to have notes added by curators
+			this.userInterfaceUtils.getFeature(item.id).then(lang.hitch(this, function (response) {
+				var notesFeature = response.features[0];
+				if (notesFeature) {
+					// admin dialog hover/click listeners
+					on(this.thumbnailLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.thumbnailLabelNode)));
+					on(this.thumbnailLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.thumbnailLabelNode)));
+					on(this.thumbnailLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
+
+					on(this.titleNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.titleNode)));
+					on(this.titleNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.titleNode)));
+					on(this.titleNode, "click", lang.hitch(this, this.adminNodeClickHandler));
+
+					on(this.summaryLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.summaryLabelNode)));
+					on(this.summaryLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.summaryLabelNode)));
+					on(this.summaryLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
+
+					on(this.descriptionLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.descriptionLabelNode)));
+					on(this.descriptionLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.descriptionLabelNode)));
+					on(this.descriptionLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
+				}
+			}));
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 
 			// SAVE/EDIT
 			on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
@@ -447,6 +472,7 @@ define([
 				this.scoringUtils.updateSectionScore(this.scoringUtils.itemDetailsScore, this.detailsNode, this.scoringUtils.ITEM_DETAILS_MAX_SCORE);
 				this.scoringUtils.updateOverallScore();
 			}));
+<<<<<<< HEAD
 
 			if (this.portalUtils.IS_CURATOR) {
 				// only permit nominated items to have notes added by curators
@@ -568,6 +594,100 @@ define([
 					imgNode.src = _file.target.result;
 				});
 			}));
+=======
+			// EMAIL
+			on(this.emailUserBtn, "click", lang.hitch(this, function () {
+				// display final email
+				this.openEmailDialog();
+			}));
+		},
+
+		/**
+		 * Upload the item's thumbnail
+		 *
+		 * @param item
+		 * @param imageSizeName
+		 * @returns {*}
+		 */
+		uploadItemThumbnail: function (item, imageSizeName) {
+			var deferred = new Deferred();
+			var previewDlg = new Dialog({
+				title: item.title,
+				className: "upload-thumbnail-dialog"
+			});
+			previewDlg.show();
+			var dialogContent = put(previewDlg.containerNode, "div.dijitDialogPaneContentArea");
+			var actionBar = put(previewDlg.containerNode, "div.dijitDialogPaneActionBar");
+			var uploadThumbBtn = new Button({
+				label: "Upload Thumbnail"
+			}, put(actionBar, "div"));
+			domClass.add(uploadThumbBtn.domNode, "dijitHidden");
+			var cancelBtn = new Button({
+				label: "Cancel",
+				onClick: lang.hitch(previewDlg, previewDlg.hide)
+			}, put(actionBar, "div"));
+			var msgPane = put(dialogContent, "div.msgPane", "Upload alternate image:");
+			var form = put(dialogContent, "form", {
+				"method": "post",
+				"enctype": "multipart/form-data"
+			});
+			var fileInput = put(form, "input", {
+				type: "file",
+				name: (imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
+			});
+
+			on(fileInput, "change", lang.hitch(this, function (evt) {
+				var imgFile = fileInput.files[0];
+				// The FileReader object lets web applications asynchronously read the contents of files (or raw data
+				// buffers) stored on the user's computer, using File or Blob objects to specify the file or data to read.
+				var reader = new FileReader();
+				// Starts reading the contents of the specified Blob, once finished, the result attribute contains a
+				// data: URL representing the file's data.
+				reader.readAsDataURL(imgFile);
+				// A handler for the load event. This event is triggered each time the reading operation is successfully
+				// completed.
+				reader.onload = lang.hitch(this, function (_file) {
+					domClass.add(fileInput, "dijitHidden");
+					var imgNode = put(dialogContent, "img");
+					//
+					imgNode.onload = lang.hitch(this, function () {
+						msgPane.innerHTML = "Valid file selected";
+						put(dialogContent, "div.imageSizeLabel", lang.replace("Image size: {0}px by {1}px", [imgNode.width, imgNode.height]));
+						console.log(defaults);
+						//
+						if ((imgNode.width === defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName][0]) && (imgNode.height === defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName][1])) {
+							domClass.remove(uploadThumbBtn.domNode, "dijitHidden");
+							// upload button selected
+							uploadThumbBtn.on("click", lang.hitch(this, function (evt) {
+								domClass.add(uploadThumbBtn.domNode, "dijitHidden");
+								this.updateItemThumbnail(item, form).then(lang.hitch(this, function (evt) {
+									this.portalUtils.portalUser.getItem(item.id).then(lang.hitch(this, function (userItem) {
+										// If the store is updated the dGrid is refreshed and the expanded content is lost
+										this.itemStore.put(userItem);
+										domAttr.set(query(".item-thumbnail-" + this.selectedID)[0], "src", userItem.thumbnailUrl);
+										domAttr.set(query(".expanded-item-thumbnail-" + this.selectedID)[0], "src", userItem.thumbnailUrl);
+										defaults.UPDATE_ITEMS[imageSizeName].push(item.id);
+										msgPane.innerHTML = "Item updated with thumbnail";
+										this.validator.setThumbnailScore(userItem);
+										this.scoringUtils.updateOverallScore();
+										previewDlg.hide();
+									}), lang.hitch(this, function (error) {
+										console.warn(error);
+										msgPane.innerHTML = error.message;
+									}));
+								}), lang.hitch(this, function (error) {
+									console.warn(error);
+									msgPane.innerHTML = error.message;
+								}));
+							}));
+						} else {
+							msgPane.innerHTML = lang.replace("Invalid image size; it must be {0}px by {1}px", defaults.THUMBNAIL_IMAGE_SIZES[imageSizeName]);
+							//domClass.remove(fileInput, "dijitHidden");
+						}
+					});
+					imgNode.src = _file.target.result;
+				});
+			}));
 			return deferred.promise;
 		},
 
@@ -600,10 +720,46 @@ define([
 				},
 				handleAs: "json"
 			}).then(deferred.resolve, deferred.reject);
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			return deferred.promise;
 		},
 
 		/**
+<<<<<<< HEAD
+		 * Update the item's thumbnail
+		 *
+		 * @param userItem
+		 * @param form
+		 * @returns {*}
+		 */
+		updateItemThumbnail: function (userItem, form) {
+			// Item
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
+			// profile
+			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
+
+			//console.log(lang.replace("{userItemUrl}/update", userItem));
+			//console.log(lang.replace("{userContentUrl}/update", userItem));
+
+			var deferred = new Deferred();
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/a5662275444c446a92ab2dc3ef131ab3/items/b19c8ecd6b4c4bc8b704c4381950a437/update
+			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
+			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
+			// UPDATE LARGE THUMBNAIL //
+			esriRequest({
+				url: lang.replace("{userItemUrl}/update", userItem),
+				form: form,
+				content: {
+					f: "json"
+				},
+				handleAs: "json"
+			}).then(deferred.resolve, deferred.reject);
+			return deferred.promise;
+		},
+
+		/**
+=======
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 		 * Handle click events on the item's property labels (i.e. Title, Description, Summary, etc)
 		 *
 		 * @param evt

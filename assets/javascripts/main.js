@@ -43,14 +43,23 @@ require([
 	"dojo/query",
 	"dojo/store/Memory",
 	"dojo/string",
+	"dojo/topic",
 	"esri/arcgis/Portal",
 	"esri/arcgis/OAuthInfo",
 	"esri/IdentityManager",
 	"esri/arcgis/utils",
 	"esri/Color",
 	"esri/config",
+<<<<<<< HEAD
 	"esri/map",
 	"esri/request",
+=======
+	"esri/layers/ArcGISImageServiceLayer",
+	"esri/map",
+	"esri/request",
+	"esri/tasks/query",
+	"esri/tasks/QueryTask",
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 	"config/defaults",
 	"config/details",
 	"config/detailsUtils",
@@ -71,7 +80,11 @@ require([
 	"config/scoringUtils",
 	"config/nominateUtils",
 	"dojo/NodeList-traverse"
+<<<<<<< HEAD
 ], function (array, declare, lang, put, Pagination, OnDemandGrid, Dialog, Button, ProgressBar, registry, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, keys, number, on, parser, all, ready, query, Memory, string, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, Map, esriRequest, defaults, details, DetailsUtils, CreditsUtils, ProfileUtils, GridUtils, credits, tags, TagUtils, performanceConfig, PerformanceUtils, profileConfig, tooltipsConfig, scoring, Validator, UserInterfaceUtils, PortalUtils, ScoringUtils, NominateUtils) {
+=======
+], function (array, declare, lang, put, Pagination, OnDemandGrid, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, CheckBox, ProgressBar, registry, date, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, JSON, keys, number, on, parser, ready, query, Memory, string, topic, arcgisPortal, ArcGISOAuthInfo, esriId, arcgisUtils, Color, config, ArcGISImageServiceLayer, Map, esriRequest, Query, QueryTask, defaults, details, DetailsUtils, CreditsUtils, ProfileUtils, GridUtils, credits, tags, TagUtils, performanceConfig, PerformanceUtils, profileConfig, tooltipsConfig, scoring, Validator, UserInterfaceUtils, PortalUtils, ScoringUtils, NominateUtils) {
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 
 	parser.parse();
 
@@ -97,6 +110,11 @@ require([
 	var dropdownSortNode = "";
 	var dropdownItemFilterNode = "";
 	var helpButtonNode = "";
+<<<<<<< HEAD
+=======
+	var nominateBtnNode = null;
+	var acceptBtnNode = null;
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 	var progressBarNode = "";
 	// div dimensions
 	var COLLAPSE_ROW_HEIGHT = 125;
@@ -109,6 +127,10 @@ require([
 	var rowID = null;
 	var tcID = null;
 
+<<<<<<< HEAD
+=======
+	var portalUrl;
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 	var portal;
 	var portalUserThumbnailUrl = "";
 
@@ -251,6 +273,7 @@ require([
 				portalUtils = new PortalUtils(portal);
 				nominateUtils = new NominateUtils(defaults, portalUtils);
 				validator = new Validator();
+<<<<<<< HEAD
 
 				// update the header row
 				userInterfaceUtils.updateHeader();
@@ -365,8 +388,273 @@ require([
 														// enable "ACCEPT" button
 														userInterfaceUtils.enableNominateButton(nominateUtils.acceptBtnNode);
 													}
+=======
+
+				// execute a query against the portal
+				var deferred = null;
+				portal.queryItems(portalUtils.portalQueryParams).then(function (portlaQueryResult) {
+					deferred = new Deferred();
+					deferred.resolve(portlaQueryResult);
+					return deferred.promise;
+				}).then(function (portalItems) {
+							// update the header row
+							userInterfaceUtils.updateHeader();
+							// username for the user.
+							owner = portalUtils.portalUser.username;
+							// url to the thumbnail image for the user.
+							portalUserThumbnailUrl = portalUtils.portalUser.thumbnailUrl;
+							// if user has no thumbnail in the dGrid, user the default thumbnail for a user
+							if (portalUserThumbnailUrl === null) {
+								portalUserThumbnailUrl = "https://cdn.arcgis.com/cdn/5777/js/arcgisonline/css/images/no-user-thumb.jpg";
+							}
+
+							// total number of items
+							var numItems = portalItems.total;
+							// update the ribbon header
+							userInterfaceUtils.updateRibbonHeaderTitle();
+							var hdrUserNameText = " (" + portalUtils.portalUser.fullName + " - " + owner + ")";
+							userInterfaceUtils.setNodeContent(".ribbon-header-user", hdrUserNameText);
+							userInterfaceUtils.ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
+							domAttr.set(userInterfaceUtils.ribbonHeaderNumItemsNode, "class", "icon-stack");
+
+							nominateUtils.loadNominatedItemsInMemory().then(function (results) {
+								nominateUtils.nominatedItems = results;
+
+								if (numItems > 0) {
+									// dGrid columns
+									var dgridColumns = [
+										{
+											label:"",
+											field:"thumbnailUrl",
+											renderCell:renderRow
+										}
+									];
+									// dGrid item store
+									itemStore = new Memory({
+										data:portalItems.results
+									});
+									// dGrid
+									dgrid = new (declare([OnDemandGrid, Pagination]))({
+										store:itemStore,
+										rowsPerPage:6,
+										pagingLinks:true,
+										pagingTextBox:false,
+										firstLastArrows:true,
+										columns:dgridColumns,
+										showHeader:false,
+										noDataMessage:"No results found"
+									}, "dgrid");
+									dgrid.startup();
+
+									gridUtils = new GridUtils(portal, dgrid, userInterfaceUtils);
+									gridUtils.startup();
+
+									// "Nominate" button edits-complete handler
+									on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", function (complete) {
+
+										// curator has added comments to an nominated item
+										if (complete.updates.length > 0) {
+											if (complete.updates[0].success) {
+												dijit.byId("adminDialog").destroy();
+											}
+										}
+
+										// new item has been nominated
+										if (complete.adds.length > 0) {
+											if (complete.adds[0].success) {
+												// selected item ID
+												var selectedID = nominateUtils.selectedID;
+												// item status (NOMINATED)
+												var nodeLabel = defaults.CURRENT_STATUS[1].label;
+												// item status node in dGrid
+												var itemStatusNode = query(".item-nomination-status-" + selectedID)[0];
+												// update the status label of the item in the dGrid to "Nominated"
+												var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + selectedID + "'>" + nodeLabel + "</div>");
+												domConstruct.place(updatedItemStatusNode, itemStatusNode, "last");
+
+												// update the client-side collection of nominated items
+												nominateUtils.loadNominatedItemsInMemory().then(function (results) {
+													nominateUtils.nominatedItems = results;
+													var nominateBtnDialog = new Dialog({
+														title:results.features[results.features.length - 1].attributes.itemName,
+														content:'<div class="dialog-container">' +
+																'	<div class="row">' +
+																'		<div class="column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
+																'	<\/div>' +
+																'<\/div>',
+														style:"width: 300px"
+													});
+													nominateBtnDialog.show();
+												});
+												// disable "NOMINATE" button
+												userInterfaceUtils.disableNominateButton(nominateUtils.nominateBtnNode);
+												// enable "ACCEPT" button
+												userInterfaceUtils.enableNominateButton(nominateUtils.acceptBtnNode);
+											}
+										}
+									});
+
+									// dGrid row click handler
+									on(dgrid.domNode, ".item-title:click", function (event) {
+										// selected row
+										selectedRow = dgrid.row(event).element;
+										// selected row ID
+										selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
+										nominateUtils.setSelectedID(selectedRowID);
+										scoringUtils = new ScoringUtils(validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
+										scoringUtils.removeScoreBar();
+
+										// get row width
+										var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
+										// set row height (expand the row)
+										domStyle.set(selectedRow, "height", "600px");
+
+										if (previousSelectedRow) {
+											// collapse the previously selected row height
+											userInterfaceUtils.updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
+											domConstruct.destroy(EXPANDED_ROW_NAME + previousSelectedRowID);
+											if (previousSelectedRowID === selectedRowID) {
+												previousSelectedRowID = "";
+												previousSelectedRow = null;
+											} else {
+												// expand selected row height
+												userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
+												previousSelectedRow = selectedRow;
+											}
+										} else {
+											userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
+											previousSelectedRow = selectedRow;
+										}
+
+										if (previousSelectedRowID !== selectedRowID && previousSelectedRow !== null) {
+											previousSelectedRowID = selectedRowID;
+											// unique id's
+											rowID = EXPANDED_ROW_NAME + selectedRowID;
+											tcID = TAB_CONTAINER_NAME + selectedRowID;
+											nominateUtils.nominateBtnID = nominateUtils.NOMINATE_BTN_ID + selectedRowID;
+											nominateUtils.acceptBtnID = nominateUtils.ACCEPT_BTN_ID + selectedRowID;
+
+											portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
+												domConstruct.place(
+														"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
+															//
+																"	<div class='content-container'>" +
+																"		<div class='row'>" +
+																"			<div class='column-21 pre-3'>" +
+																"				<div id='map-mask' class='loader'>" +
+																"					<span class='side side-left'><span class='fill'></span></span>" +
+																"					<span class='side side-right'><span class='fill'></span></span>" +
+																"				</div>" +
+																"				<div id='map'></div>" +
+																"			</div>" +
+																"		</div>" +
+
+																"		<div class='row'>" +
+																"			<div class='column-21 pre-3'>" +
+																"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+																"			</div>" +
+																"		</div>" +
+
+															// Scoring
+																"		<div class='row'>" +
+																"			<div class='column-15 pre-3'>" +
+																"				<div class='current-score-graphic-container'></div>" +
+																"			</div>" +
+																"			<div class='column-2'>" +
+																"				<div class='current-score-number'></div>" +
+																"				<div id='progressBarMarker'></div>" +
+																"			</div>" +
+																"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+																"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
+																"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn disabled'> ACCEPT </button>" +
+																"			</div>" +
+																"		</div>" +
+
+															// Overall Score
+																"		<div class='row'>" +
+																"			<div class='column-15 pre-3'>" +
+																"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+																"			</div>" +
+																"		</div>" +
+
+															// Button Group (i.e. sections)
+																"		<div class='row'>" +
+																"			<div class='column-18 pre-3'>" +
+																"				<div id='" + tcID + "'></div>" +
+																"			</div>" +
+																"		</div>" +
+																"	</div>" +
+																"</div>",
+														selectedRow.firstElementChild, "last");
+
+												// get progress bar node
+												progressBarNode = query(".current-score-graphic-container")[0];
+												// nominate button node
+												nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
+												// accept button node
+												nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
+
+												// create button group
+												initContentButtonGroup(tcID);
+
+												// initialize content area with details data
+												detailsContentPane();
+
+												if (item.type === "Web Map") {
+													var mapDrawBegin = performance.now();
+													var mapDrawComplete;
+													// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
+													arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
+														//console.log(response);
+														layers = response.itemInfo.itemData.operationalLayers;
+														map = response.map;
+
+														// make sure map is loaded
+														if (map.loaded) {
+															mapDrawComplete = performance.now();
+															var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+															userInterfaceUtils.fadeLoader();
+
+															// set performance scores
+															scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
+															scoringUtils.nLayersScore = validator.setNumLayersScore(response);
+															scoringUtils.popupsScore = validator.setPopupScore(response);
+															scoringUtils.sharingScore = validator.setSharingScore(item);
+															scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+															// set style on performance button
+															userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
+															// initialize the scores
+															scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+															HAS_PERFORMANCE_CONTENT = true;
+
+															on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
+														}
+													});
+												} else {
+													// fade the loader
+													userInterfaceUtils.fadeLoader();
+													// hide the map div
+													domStyle.set("map", "display", "none");
+													//
+													on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
+
+													scoringUtils.mapDrawTimeScore = 0;
+													scoringUtils.nLayersScore = 0;
+													scoringUtils.popupsScore = 0;
+													scoringUtils.sharingScore = validator.setSharingScore(item);
+													scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+
+													// initialize the scores
+													scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+													HAS_PERFORMANCE_CONTENT = false;
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 												}
+												on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
+												on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
+												on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
+												on(profileNode, "click", lang.partial(profileNodeClickHandler));
 											});
+<<<<<<< HEAD
 
 											// dGrid row click handler
 											on(dgrid.domNode, ".item-title:click", function (event) {
@@ -782,6 +1070,13 @@ require([
 											userInterfaceUtils.hideNode(query(".init-loader")[0]);
 										});
 							}
+=======
+										}
+									});
+								}
+							});
+							userInterfaceUtils.hideNode(query(".init-loader")[0]);
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 						});
 			});
 		}

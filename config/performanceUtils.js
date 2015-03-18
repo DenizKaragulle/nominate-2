@@ -26,6 +26,7 @@ define([
 
 	return declare([AdminUtils], {
 
+<<<<<<< HEAD
 		response:null,
 		layers:null,
 		validator:null,
@@ -51,6 +52,33 @@ define([
 		nominateBtnNode:null,
 
 		constructor:function (response, layers, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils) {
+=======
+		response: null,
+		layers: null,
+		validator: null,
+		nominateUtils: null,
+		userInterfaceUtils: null,
+		scoringUtils: null,
+		scoring: null,
+		tooltipsConfig: null,
+		portalUtils: null,
+
+		selectedID: null,
+
+		editSaveBtnNode: null,
+		cancelBtnNode: null,
+		emailUserBtn: null,
+		drawTimeLabelNode: null,
+		numLayerLabelNode: null,
+		popupsLabelNode: null,
+		sharingLabelNode: null,
+
+		performanceNode: null,
+		currentOverallScoreNode: null,
+		nominateBtnNode: null,
+
+		constructor: function (response, layers, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils) {
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			this.response = response;
 			this.layers = layers;
 			this.validator = validator;
@@ -197,6 +225,7 @@ define([
 			this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.popupsScore, this.scoringUtils.PERFORMANCE_POPUPS_MAX_SCORE, popupsScoreContainerNode);
 			this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.sharingScore, this.scoringUtils.PERFORMANCE_SHARING_MAX_SCORE, sharingContainerNode);
 
+<<<<<<< HEAD
 			if (this.portalUtils.IS_CURATOR) {
 				this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, function (response) {
 					var notesFeature = response.features[0];
@@ -230,6 +259,36 @@ define([
 		},
 
 		adminNodeClickHandler:function (evt) {
+=======
+			this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, function (response) {
+				var notesFeature = response.features[0];
+				if (notesFeature) {
+					on(this.drawTimeLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.drawTimeLabelNode)));
+					on(this.drawTimeLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.drawTimeLabelNode)));
+					on(this.drawTimeLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
+
+					on(this.numLayerLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.numLayerLabelNode)));
+					on(this.numLayerLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.numLayerLabelNode)));
+					on(this.numLayerLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
+
+					on(this.popupsLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.popupsLabelNode)));
+					on(this.popupsLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.popupsLabelNode)));
+					on(this.popupsLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
+
+					on(this.sharingLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.sharingLabelNode)));
+					on(this.sharingLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.sharingLabelNode)));
+					on(this.sharingLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
+				}
+			}));
+
+			on(this.emailUserBtn, "click", lang.hitch(this, function () {
+				// display final email
+				this.openEmailDialog();
+			}));
+		},
+
+		adminNodeClickHandler: function (evt) {
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			var label = evt.target.innerHTML;
 
 			// destroy dijit
@@ -251,15 +310,26 @@ define([
 			}
 		},
 
+<<<<<<< HEAD
 		loadAdminDialog:function (focusedNode) {
+=======
+		loadAdminDialog: function (focusedNode) {
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, function (response) {
 				var feature = response.features[0];
 
 				var adminDialog = new Dialog({
+<<<<<<< HEAD
 					id:"adminDialog",
 					title:"PERFORMANCE Section",
 					class:"details-admin-dialog",
 					onFocus:function () {
+=======
+					id: "adminDialog",
+					title: "PERFORMANCE Section",
+					class: "details-admin-dialog",
+					onFocus: function () {
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 						focusUtil.focus(dom.byId(focusedNode));
 					}
 				});
@@ -297,7 +367,11 @@ define([
 								"		<div class='dialog-label'> Sharing Notes : <\/div>" +
 								"	<\/div>" +
 								"	<div class='column-18'>" +
+<<<<<<< HEAD
 								"		<textarea id='sharingNotesTextArea'>" + feature.attributes.notesSharing + "<\/textarea>" +
+=======
+								"		<textarea id='sharingNotesTextArea'>" + feature.attributes.notesSharing  + "<\/textarea>" +
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 								"	<\/div>" +
 								"<\/div>" +
 
@@ -332,6 +406,7 @@ define([
 			}));
 		},
 
+<<<<<<< HEAD
 		updateAdminDialogNotes:function (mapDrawTimeNotes, numLayersNotes, popupNotes, sharingNotes, response) {
 			var feature = response.features[0];
 			var dateTime = new Date();
@@ -340,16 +415,35 @@ define([
 				"y":4028802.0261344062,
 				"spatialReference":{
 					"wkid":102100
+=======
+		updateAdminDialogNotes: function (mapDrawTimeNotes, numLayersNotes, popupNotes, sharingNotes, response) {
+			var feature = response.features[0];
+			var dateTime = new Date();
+			var pt = new Point({
+				"x": -13024380.422813008,
+				"y": 4028802.0261344062,
+				"spatialReference": {
+					"wkid": 102100
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 				}
 			});
 			var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
 			var attr = {
+<<<<<<< HEAD
 				"FID":feature.attributes.FID,
 				"LastContactComments":dateTime,
 				"notesDrawTime":mapDrawTimeNotes,
 				"notesNumberOfLayers":numLayersNotes,
 				"notesPopups":popupNotes,
 				"notesSharing":sharingNotes
+=======
+				"FID": feature.attributes.FID,
+				"LastContactComments": dateTime,
+				"notesDrawTime": mapDrawTimeNotes,
+				"notesNumberOfLayers": numLayersNotes,
+				"notesPopups": popupNotes,
+				"notesSharing": sharingNotes
+>>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			};
 			var graphic = new Graphic(pt, sms, attr);
 			this.nominateUtils.nominateAdminFeatureLayer.applyEdits(null, [graphic], null);
