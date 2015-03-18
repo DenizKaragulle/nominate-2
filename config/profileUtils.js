@@ -33,7 +33,6 @@ define([
 
 	return declare([AdminUtils], {
 
-<<<<<<< HEAD
 		validator:null,
 		nominateUtils:null,
 		userInterfaceUtils:null,
@@ -87,61 +86,6 @@ define([
 		userThumbnailUrl_clean:null,
 
 		constructor:function (item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils, portal, portalUserThumbnailUrl) {
-=======
-		validator: null,
-		nominateUtils: null,
-		userInterfaceUtils: null,
-		scoringUtils: null,
-		scoring: null,
-		tooltipsConfig: null,
-		portalUtils: null,
-		portalUserThumbnailUrl: null,
-
-		selectedID: null,
-		item: null,
-		userNameID: null,
-		userDescriptionID: null,
-
-		usernameAdminNode: null,
-		currentOverallScoreNode: null,
-		nominateBtnNode: null,
-
-		profileNode: null,
-		editSaveBtnNode: null,
-		cancelBtnNode: null,
-		emailUserBtn: null,
-		profileThumbnailLabelNode: null,
-		userFullNameLabelNode: null,
-		userDescriptionLabelNode: null,
-
-		profileThumbnailNode: null,
-		profileUserFullNameNode: null,
-		profileUserDescriptionNode: null,
-		userThumbnailNodeContainer: null,
-		userThumbnailNumeratorNode: null,
-		userThumbnailDenominatorNode: null,
-		userNameScoreNodeContainer: null,
-		userNameScoreNumeratorNode: null,
-		userNameScoreDenominatorNode: null,
-
-		userDescriptionScoreNodeContainer: null,
-		userDescriptionScoreNumeratorNode: null,
-		userDescriptionScoreDenominatorNode: null,
-
-		profileThumbnailTooltipNode: null,
-		profileFullNameTooltipNode: null,
-		profileDescriptionTooltipNode: null,
-		profileThumbnailListener: null,
-
-		userFullName: null,
-		userFullName_clean: null,
-		userDescription: null,
-		userDescription_clean: null,
-		userThumbnailUrl: null,
-		userThumbnailUrl_clean: null,
-
-		constructor: function (item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils, portal, portalUserThumbnailUrl) {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			this.validator = validator;
 			this.nominateUtils = nominateUtils;
 			this.userInterfaceUtils = userInterfaceUtils;
@@ -202,19 +146,11 @@ define([
 			domAttr.set(this.profileThumbnailNode, "src", this.userThumbnailUrl);
 			domAttr.set(this.profileUserFullNameNode, "id", this.userNameID);
 			domConstruct.create("div", {
-<<<<<<< HEAD
 				innerHTML:this.userFullName
 			}, this.profileUserFullNameNode, "first");
 			domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
 			domConstruct.create("div", {
 				innerHTML:this.userDescription
-=======
-				innerHTML: this.userFullName
-			}, this.profileUserFullNameNode, "first");
-			domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
-			domConstruct.create("div", {
-				innerHTML: this.userDescription
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			}, this.profileUserDescriptionNode, "first");
 
 			this.userInterfaceUtils.createTooltips([
@@ -246,28 +182,6 @@ define([
 			this.scoringUtils.updateSectionScore(this.scoringUtils.userProfileScore, this.profileNode, this.scoringUtils.USER_PROFILE_MAX_SCORE);
 			this.scoringUtils.updateOverallScore();
 
-<<<<<<< HEAD
-=======
-			// only permit nominated items to have notes added by curators
-			this.userInterfaceUtils.getFeature(item.id).then(lang.hitch(this, function (response) {
-				var notesFeature = response.features[0];
-				if (notesFeature) {
-					// admin dialog hover/click listeners
-					on(this.profileThumbnailLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.profileThumbnailLabelNode)));
-					on(this.profileThumbnailLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.profileThumbnailLabelNode)));
-					on(this.profileThumbnailLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-
-					on(this.userFullNameLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.userFullNameLabelNode)));
-					on(this.userFullNameLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.userFullNameLabelNode)));
-					on(this.userFullNameLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-
-					on(this.userDescriptionLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.userDescriptionLabelNode)));
-					on(this.userDescriptionLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.userDescriptionLabelNode)));
-					on(this.userDescriptionLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-				}
-			}));
-
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
 				if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
 					// "EDIT" clicked
@@ -278,13 +192,8 @@ define([
 					// update user full name
 					domConstruct.empty(this.profileUserFullNameNode);
 					domConstruct.create("input", {
-<<<<<<< HEAD
 						class:"edit-user-full-name",
 						value:this.userFullName
-=======
-						class: "edit-user-full-name",
-						value: this.userFullName
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}, this.profileUserFullNameNode, "first");
 					domAttr.set(this.profileUserFullNameNode, "data-dojo-type", "dijit/form/TextBox");
 					domAttr.set(this.profileUserFullNameNode, "id", this.userNameID);
@@ -292,13 +201,8 @@ define([
 					// update user description
 					domConstruct.empty(this.profileUserDescriptionNode);
 					domConstruct.create("input", {
-<<<<<<< HEAD
 						class:"edit-user-description",
 						value:this.userDescription
-=======
-						class: "edit-user-description",
-						value: this.userDescription
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}, this.profileUserDescriptionNode, "first");
 					domAttr.set(this.profileUserDescriptionNode, "data-dojo-type", "dijit/form/TextBox");
 					domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
@@ -323,7 +227,6 @@ define([
 					// write to AGOL
 					this.portalUtils.portalUser.getItem(item.id).then(lang.hitch(this, function (results) {
 						esriRequest({
-<<<<<<< HEAD
 							url:"https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
 							content:{
 								f:"json",
@@ -357,61 +260,18 @@ define([
 								this.scoringUtils.updateOverallScore();
 							}
 						}));
-=======
-							url: "https://www.arcgis.com/sharing/rest/community/users/" + results.owner + "/update",
-							content: {
-								f: "json",
-								fullname: this.userFullName,
-								description: this.userDescription
-							}
-						}, {
-							usePost: true
-						}).then(lang.hitch(this, function (response) {
-									if (response.success) {
-										this.userFullName_clean = this.userFullName;
-										this.userDescription_clean = this.userDescription;
-										this.portalUtils.setUserFullName(this.userFullName);
-										// update the Edit/Save buttons
-										this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.EDIT_BTN_LABEL, this.cancelBtnNode, "none");
-										// update the scoring numerator(s)
-										this.scoringUtils.userThumbnailScore = 0;
-										this.scoringUtils.userNameScore = this.validator.setUserProfileFullNameScore(this.userFullName_clean);
-										this.scoringUtils.userDescriptionScore = this.validator.setUserDescriptionScore(this.userDescription_clean);
-										// update the nodes
-										this.userNameScoreNumeratorNode.innerHTML = this.scoringUtils.userNameScore;
-										this.userDescriptionScoreNumeratorNode.innerHTML = this.scoringUtils.userDescriptionScore;
-
-										// update section style score graphics
-										this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.userNameScore, this.scoringUtils.USER_PROFILE_FULLNAME, this.userNameScoreNodeContainer);
-										this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.userDescriptionScore, this.scoringUtils.USER_PROFILE_DESCRIPTION, this.userDescriptionScoreNodeContainer);
-
-										// section overall score
-										this.scoringUtils.userProfileScore = this.scoringUtils.userThumbnailScore + this.scoringUtils.userNameScore + this.scoringUtils.userDescriptionScore;
-										this.scoringUtils.updateSectionScore(this.scoringUtils.userProfileScore, this.profileNode, this.scoringUtils.USER_PROFILE_MAX_SCORE);
-										this.scoringUtils.updateOverallScore();
-									}
-								}));
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}));
 
 					domConstruct.empty(this.profileUserFullNameNode);
 					domConstruct.create("div", {
-<<<<<<< HEAD
 						innerHTML:this.userFullName
-=======
-						innerHTML: this.userFullName
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}, this.profileUserFullNameNode, "first");
 					domAttr.remove(this.profileUserFullNameNode, "data-dojo-type");
 					domAttr.set(this.profileUserFullNameNode, "id", this.userNameID);
 
 					domConstruct.empty(this.profileUserDescriptionNode);
 					domConstruct.create("div", {
-<<<<<<< HEAD
 						innerHTML:this.userDescription
-=======
-						innerHTML: this.userDescription
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}, this.profileUserDescriptionNode, "first");
 					domAttr.remove(this.profileUserDescriptionNode, "data-dojo-type");
 					domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
@@ -425,22 +285,14 @@ define([
 				domStyle.set(query(".edit-profile-thumbnail-msg")[0], "display", "none");
 				domConstruct.empty(this.profileUserFullNameNode);
 				domConstruct.create("div", {
-<<<<<<< HEAD
 					innerHTML:this.userFullName_clean
-=======
-					innerHTML: this.userFullName_clean
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 				}, this.profileUserFullNameNode, "first");
 				domAttr.remove(this.profileUserFullNameNode, "data-dojo-type");
 				domAttr.set(this.profileUserFullNameNode, "id", this.userNameID);
 
 				domConstruct.empty(this.profileUserDescriptionNode);
 				domConstruct.create("div", {
-<<<<<<< HEAD
 					innerHTML:this.userDescription_clean
-=======
-					innerHTML: this.userDescription_clean
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 				}, this.profileUserDescriptionNode, "first");
 				domAttr.remove(this.profileUserDescriptionNode, "data-dojo-type");
 				domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
@@ -462,7 +314,6 @@ define([
 				this.scoringUtils.updateOverallScore();
 			}));
 
-<<<<<<< HEAD
 			if (this.portalUtils.IS_CURATOR) {
 				// only permit nominated items to have notes added by curators
 				this.userInterfaceUtils.getFeature(item.id).then(lang.hitch(this, function (response) {
@@ -497,26 +348,11 @@ define([
 			var previewDlg = new Dialog({
 				title:"Update Thumbnail",
 				className:"upload-thumbnail-dialog"
-=======
-			on(this.emailUserBtn, "click", lang.hitch(this, function () {
-				// display final email
-				this.openEmailDialog();
-			}));
-
-		},
-
-		uploadUserProfileThumbnail: function (imageSizeName) {
-			var deferred = new Deferred();
-			var previewDlg = new Dialog({
-				title: "Update Thumbnail",
-				className: "upload-thumbnail-dialog"
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			});
 			previewDlg.show();
 			var dialogContent = put(previewDlg.containerNode, "div.dijitDialogPaneContentArea");
 			var actionBar = put(previewDlg.containerNode, "div.dijitDialogPaneActionBar");
 			var uploadThumbBtn = new Button({
-<<<<<<< HEAD
 				label:"Upload Thumbnail"
 			}, put(actionBar, "div"));
 			domClass.add(uploadThumbBtn.domNode, "dijitHidden");
@@ -532,23 +368,6 @@ define([
 			var fileInput = put(form, "input", {
 				type:"file",
 				name:(imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
-=======
-				label: "Upload Thumbnail"
-			}, put(actionBar, "div"));
-			domClass.add(uploadThumbBtn.domNode, "dijitHidden");
-			var cancelBtn = new Button({
-				label: "Cancel",
-				onClick: lang.hitch(previewDlg, previewDlg.hide)
-			}, put(actionBar, "div"));
-			var msgPane = put(dialogContent, "div.msgPane", "Upload alternate image:");
-			var form = put(dialogContent, "form", {
-				"method": "post",
-				"enctype": "multipart/form-data"
-			});
-			var fileInput = put(form, "input", {
-				type: "file",
-				name: (imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			});
 
 			on(fileInput, "change", lang.hitch(this, function (evt) {
@@ -578,7 +397,6 @@ define([
 									previewDlg.hide();
 									if (response) {
 										esriRequest({
-<<<<<<< HEAD
 											url:lang.replace("{url}", this.portalUtils.portalUser),
 											content:{
 												f:"json"
@@ -592,21 +410,6 @@ define([
 											this.portalUserThumbnailUrl = this.portalUserThumbnailUrl + "/" + obj.thumbnail;
 											domAttr.set(query(".profileThumbnailUrl")[0], "src", this.portalUserThumbnailUrl);
 										}));
-=======
-											url: lang.replace("{url}", this.portalUtils.portalUser),
-											content: {
-												f: "json"
-											},
-											handleAs: "json"
-										}).then(lang.hitch(this, function (obj) {
-													console.log(this);
-													this.validator.setThumbnailScore(obj);
-													this.scoringUtils.updateOverallScore();
-													this.portalUserThumbnailUrl = this.portalUserThumbnailUrl.substring(0, this.portalUserThumbnailUrl.lastIndexOf("/"));
-													this.portalUserThumbnailUrl = this.portalUserThumbnailUrl + "/" + obj.thumbnail;
-													domAttr.set(query(".profileThumbnailUrl")[0], "src", this.portalUserThumbnailUrl);
-												}));
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 									}
 								}), lang.hitch(this, function (error) {
 									console.warn(error);
@@ -623,7 +426,6 @@ define([
 			return deferred.promise;
 		},
 
-<<<<<<< HEAD
 		updateUserProfileThumbnail:function (form) {
 			var deferred = new Deferred();
 			esriRequest({
@@ -633,26 +435,11 @@ define([
 					f:"json"
 				},
 				handleAs:"json"
-=======
-		updateUserProfileThumbnail: function (form) {
-			var deferred = new Deferred();
-			esriRequest({
-				url: lang.replace("{url}/update", this.portalUtils.portalUser),
-				form: form,
-				content: {
-					f: "json"
-				},
-				handleAs: "json"
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			}).then(deferred.resolve, deferred.reject);
 			return deferred.promise;
 		},
 
-<<<<<<< HEAD
 		adminNodeClickHandler:function (evt) {
-=======
-		adminNodeClickHandler: function (evt) {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			var label = evt.target.innerHTML;
 
 			// destroy dijit
@@ -672,33 +459,21 @@ define([
 			}
 		},
 
-<<<<<<< HEAD
 		loadAdminDialog:function (focusedNode) {
-=======
-		loadAdminDialog: function (focusedNode) {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, function (response) {
 				var feature = response.features[0];
 
 				var adminDialog = new Dialog({
-<<<<<<< HEAD
 					id:"adminDialog",
 					title:"DETAILS Section",
 					class:"details-admin-dialog",
 					onFocus:function () {
-=======
-					id: "adminDialog",
-					title: "DETAILS Section",
-					class: "details-admin-dialog",
-					onFocus: function () {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 						focusUtil.focus(dom.byId(focusedNode));
 					}
 				});
 
 				adminDialog.set("content",
 						"<div class='row attribute-row'>" +
-<<<<<<< HEAD
 								"	<div class='column-6'>" +
 								"		<div class='dialog-label'> Thumbnail Notes : <\/div>" +
 								"	<\/div>" +
@@ -733,42 +508,6 @@ define([
 								"		<button class='btn item-title-btn-cancel'> Cancel <\/button>" +
 								"	<\/div>" +
 								"<\/div>");
-=======
-						"	<div class='column-6'>" +
-						"		<div class='dialog-label'> Thumbnail Notes : <\/div>" +
-						"	<\/div>" +
-						"	<div class='column-18'>" +
-						"		<textarea id='userThumbnailNotesTextArea'>" + feature.attributes.notesProfileThumbnail + "<\/textarea>" +
-						"	<\/div>" +
-						"<\/div>" +
-
-						"<div class='row attribute-row'>" +
-						"	<div class='column-6'>" +
-						"		<div class='dialog-label'> Title Notes : <\/div>" +
-						"	<\/div>" +
-						"	<div class='column-18'>" +
-						"		<textarea id='userNameNotesTextArea'>" + feature.attributes.notesProfileFullName + "<\/textarea>" +
-						"	<\/div>" +
-						"<\/div>" +
-
-						"<div class='row attribute-row'>" +
-						"	<div class='column-6'>" +
-						"		<div class='dialog-label'> Summary Notes : <\/div>" +
-						"	<\/div>" +
-						"	<div class='column-18'>" +
-						"		<textarea id='userDescNotesTextArea'>" + feature.attributes.notesProfileDesc + "<\/textarea>" +
-						"	<\/div>" +
-						"<\/div>" +
-
-						"<div class='row right dialog-btn-row'>" +
-						"	<div class='column-10'>" +
-						"		<button class='btn item-title-btn-save'> Save <\/button>" +
-						"	<\/div>" +
-						"	<div class='column-3'>" +
-						"		<button class='btn item-title-btn-cancel'> Cancel <\/button>" +
-						"	<\/div>" +
-						"<\/div>");
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 
 				// Dialog SAVE btn
 				on(query(".item-title-btn-save"), "click", lang.hitch(this, function () {
@@ -791,7 +530,6 @@ define([
 			}));
 		},
 
-<<<<<<< HEAD
 		updateAdminDialogNotes:function (userThumbnailNotes, userNameNotes, userDescNotes, response) {
 			var feature = response.features[0];
 			var dateTime = new Date();
@@ -800,33 +538,15 @@ define([
 				"y":4028802.0261344062,
 				"spatialReference":{
 					"wkid":102100
-=======
-		updateAdminDialogNotes: function (userThumbnailNotes, userNameNotes, userDescNotes, response) {
-			var feature = response.features[0];
-			var dateTime = new Date();
-			var pt = new Point({
-				"x": -13024380.422813008,
-				"y": 4028802.0261344062,
-				"spatialReference": {
-					"wkid": 102100
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 				}
 			});
 			var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
 			var attr = {
-<<<<<<< HEAD
 				"FID":feature.attributes.FID,
 				"LastContactComments":dateTime,
 				"notesProfileThumbnail":userThumbnailNotes,
 				"notesProfileFullName":userNameNotes,
 				"notesProfileDesc":userDescNotes
-=======
-				"FID": feature.attributes.FID,
-				"LastContactComments": dateTime,
-				"notesProfileThumbnail": userThumbnailNotes,
-				"notesProfileFullName": userNameNotes,
-				"notesProfileDesc": userDescNotes
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			};
 			var graphic = new Graphic(pt, sms, attr);
 			this.nominateUtils.nominateAdminFeatureLayer.applyEdits(null, [graphic], null);

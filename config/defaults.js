@@ -97,10 +97,7 @@ define({
 
 	"NOMINATE_ADMIN_FEATURE_SERVICE_URL": "https://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/nomcur/FeatureServer/0",
 	"CURATOR_LIST_ADMIN_FEATURE_SERVICE_URL" : "http://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/curlist/FeatureServer/0",
-<<<<<<< HEAD
 	"CURATOR_GROUP_ADMIN_FEATURE_SERVICE_URL" : "http://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/curgroup/FeatureServer/0",
-=======
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 
 	//Default configuration settings for the application. This is where you'll define things like a bing maps key,
 	//default web map, default app color theme and more. These values can be overwritten by template configuration settings and url parameters.

@@ -3,7 +3,6 @@ define([
 	"esri/tasks/QueryTask",
 	"dojo/_base/array",
 	"dojo/_base/declare",
-<<<<<<< HEAD
 	"dojo/_base/lang",
 	"dojo/Deferred",
 	"config/defaults"
@@ -16,34 +15,15 @@ define([
 		portalQueryParams:null,
 		fullName:null,
 		IS_CURATOR:null,
-=======
-	"dojo/Deferred"
-], function (array, declare, Deferred) {
-
-	return declare(null, {
-
-		portal: null,
-		portalUser: null,
-		portalQueryParams: null,
-		fullName : null,
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 
 		constructor:function (portal) {
 			this.portal = portal;
 			this.portalUser = portal.getPortalUser();
 			this.portalQueryParams = {
-<<<<<<< HEAD
 				q:"owner:" + this.portalUser.username,
 				num:100
 			};
 			this.fullName = this.portalUser.fullName;
-=======
-				q: "owner:" + this.portalUser.username,
-				num: 1000
-			};
-			this.fullName = this.portalUser.fullName;
-			console.log("------ PortalUtils -------");
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 		},
 
 		getItem:function (selectedRowID) {
@@ -54,7 +34,6 @@ define([
 			return deferred.promise;
 		},
 
-<<<<<<< HEAD
 		setUserFullName:function (fullName) {
 			this.fullName = fullName;
 		},
@@ -92,10 +71,6 @@ define([
 				}
 			}));
 			return d.promise;
-=======
-		setUserFullName: function (fullName) {
-			this.fullName = fullName;
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 		}
 	});
 });

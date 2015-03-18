@@ -162,13 +162,8 @@ define([
 		},
 
 		updateTotalScoreGraphic: function (totalScore) {
-<<<<<<< HEAD
 			var nominateBtnNode = this.nominateUtils.nominateBtnNode;
 			var classAttrs = domAttr.get(nominateBtnNode, "class");
-=======
-			//this.nominateUtils.nominateBtnNode = dom.byId(this.nominateUtils.nominateBtnID);
-			var classAttrs = domAttr.get(this.nominateUtils.nominateBtnNode, "class");
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			if (totalScore >= this.scoring.SCORE_THRESHOLD) {
 				// PASS
 				// set the overall score color to pass
@@ -178,24 +173,14 @@ define([
 					return this.selectedID === feature.attributes.itemID;
 				}))) {
 					// Item has been already nominated
-<<<<<<< HEAD
 					this.userInterfaceUtils.disableNominateButton(nominateBtnNode);
-=======
-					this.userInterfaceUtils.disableNominateButton(this.nominateUtils.nominateBtnNode);
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					this.userInterfaceUtils.enableNominateButton(this.nominateUtils.acceptBtnNode);
 				} else {
 					// Item has not been nominated
 					// enable the "Nominate" button
-<<<<<<< HEAD
 					this.userInterfaceUtils.enableNominateButton(nominateBtnNode);
 					// add the event handler for the "NOMINATE" button
 					this.nominateUtils.nominateBtnClickHandler = on(nominateBtnNode, "click", lang.hitch(this, function () {
-=======
-					this.userInterfaceUtils.enableNominateButton(this.nominateUtils.nominateBtnNode);
-					// add the event handler for the "NOMINATE" button
-					this.nominateUtils.nominateBtnClickHandler = on(this.nominateUtils.nominateBtnNode, "click", lang.hitch(this, function () {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 						this.nominateUtils.isItemNominated(this.nominateUtils.selectedID).then(lang.hitch(this, this.nominateUtils.nominate));
 					}));
 				}
@@ -207,11 +192,7 @@ define([
 				// FAIL
 				domStyle.set(query(".current-score-number")[0], "color", this.scoring.FAIL_COLOR);
 				classAttrs = classAttrs.replace("enabled", "disabled");
-<<<<<<< HEAD
 				domAttr.set(nominateBtnNode, "class", classAttrs);
-=======
-				domAttr.set(this.nominateUtils.nominateBtnNode, "class", classAttrs);
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 				if (this.nominateUtils.nominateBtnClickHandler !== null) {
 					this.nominateUtils.nominateBtnClickHandler.remove();
 				}

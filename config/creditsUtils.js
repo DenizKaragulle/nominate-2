@@ -27,7 +27,6 @@ define([
 	"dijit/form/Button",
 	"config/defaults",
 	"config/adminUtils"
-<<<<<<< HEAD
 ], function (Color, esriRequest, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, array, declare, lang, dom, domAttr, domClass, domConstruct, domStyle, html, mouse, on, query, Dialog, focusUtil, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, defaults, AdminUtils) {
 
 	return declare([AdminUtils], {
@@ -67,48 +66,6 @@ define([
 		accessScoreDenominatorNode:null,
 
 		constructor:function (item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils) {
-=======
-], function (Color, esriRequest, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, array, declare, lang, dom, domAttr, domClass, domConstruct,
-			 domStyle, html, mouse, on, query, Dialog, focusUtil, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, defaults, AdminUtils) {
-
-	return declare([AdminUtils], {
-
-		validator: null,
-		nominateUtils: null,
-		userInterfaceUtils: null,
-		scoringUtils: null,
-		scoring: null,
-		tooltipsConfig: null,
-		portalUtils: null,
-
-		selectedID: null,
-
-		itemCredits: null,
-		itemCredits_clean: null,
-		accessAndUseConstraints: null,
-		accessAndUseConstraints_clean: null,
-
-		creditsNode: null,
-
-		editSaveBtnNode: null,
-		cancelBtnNode: null,
-		emailUserBtn: null,
-		creditsLabelNode: null,
-		accessAndUseConstraintsLabelNode: null,
-
-		accessConstraintsTooltipNode: null,
-		creditsTooltipNode: null,
-		itemCreditsNode: null,
-		accessAndUseConstraintsEditorNode: null,
-		creditsScoreNodeContainer: null,
-		creditsScoreNumeratorNode: null,
-		creditsScoreDenominatorNode: null,
-		accessScoreNodeContainer: null,
-		accessScoreNumeratorNode: null,
-		accessScoreDenominatorNode: null,
-
-		constructor: function (item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils) {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			this.validator = validator;
 			this.nominateUtils = nominateUtils;
 			this.userInterfaceUtils = userInterfaceUtils;
@@ -154,11 +111,7 @@ define([
 
 			domAttr.set(query(".creditsID-textbox")[0], "id", this.creditsID);
 			domConstruct.create("div", {
-<<<<<<< HEAD
 				innerHTML:this.itemCredits
-=======
-				innerHTML: this.itemCredits
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			}, query(".creditsID-textbox")[0], "first");
 
 			domAttr.set(query(".accessAndUseConstraintsEditor")[0], "id", this.licenseID);
@@ -191,23 +144,6 @@ define([
 			this.scoringUtils.updateSectionScore(this.scoringUtils.creditsAndAccessScore, this.creditsNode, this.scoringUtils.ITEM_USE_CONSTRAINS_MAX_SCORE);
 			this.scoringUtils.updateOverallScore();
 
-<<<<<<< HEAD
-=======
-			// only permit nominated items to have notes added by curators
-			this.userInterfaceUtils.getFeature(item.id).then(lang.hitch(this, function (response) {
-				var notesFeature = response.features[0];
-				if (notesFeature) {
-					on(this.creditsLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.creditsLabelNode)));
-					on(this.creditsLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.creditsLabelNode)));
-					on(this.creditsLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-
-					on(this.accessAndUseConstraintsLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.accessAndUseConstraintsLabelNode)));
-					on(this.accessAndUseConstraintsLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.accessAndUseConstraintsLabelNode)));
-					on(this.accessAndUseConstraintsLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-				}
-			}));
-
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			// SAVE/EDIT
 			on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
 				if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
@@ -220,13 +156,8 @@ define([
 
 					domConstruct.empty(this.itemCreditsNode);
 					domConstruct.create("input", {
-<<<<<<< HEAD
 						class:"edit-credits",
 						value:this.itemCredits
-=======
-						class: "edit-credits",
-						value: this.itemCredits
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}, this.itemCreditsNode, "first");
 					domAttr.set(this.itemCreditsNode, "data-dojo-type", "dijit/form/TextBox");
 					domAttr.set(this.itemCreditsNode, "id", this.creditsID);
@@ -236,7 +167,6 @@ define([
 						dijit.byId("access-editor-widget").destroy();
 						domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
 						domConstruct.create("div", {
-<<<<<<< HEAD
 							id:"access-editor-widget",
 							innerHTML:this.accessAndUseConstraints
 						}, this.accessAndUseConstraintsEditorNode, "first");
@@ -244,15 +174,6 @@ define([
 					var accessUseConstraintsEditor = new Editor({
 						plugins:defaults.EDITOR_PLUGINS,
 						innerHTML:this.accessAndUseConstraints
-=======
-							id: "access-editor-widget",
-							innerHTML: this.accessAndUseConstraints
-						}, this.accessAndUseConstraintsEditorNode, "first");
-					}
-					var accessUseConstraintsEditor = new Editor({
-						plugins: defaults.EDITOR_PLUGINS,
-						innerHTML: this.accessAndUseConstraints
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}, dom.byId("access-editor-widget"));
 					accessUseConstraintsEditor.startup();
 				} else {
@@ -262,11 +183,7 @@ define([
 
 					domConstruct.empty(this.itemCreditsNode);
 					domConstruct.create("div", {
-<<<<<<< HEAD
 						innerHTML:this.itemCredits
-=======
-						innerHTML: this.itemCredits
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}, this.itemCreditsNode, "first");
 					domAttr.remove(this.itemCreditsNode, "data-dojo-type");
 					domAttr.set(this.itemCreditsNode, "id", this.creditsID);
@@ -283,7 +200,6 @@ define([
 						}
 
 						esriRequest({
-<<<<<<< HEAD
 							url:_userItemUrl + "/update",
 							content:{
 								f:"json",
@@ -300,24 +216,6 @@ define([
 								this.itemCredits_clean = this.itemCredits;
 							}
 						}));
-=======
-							url: _userItemUrl + "/update",
-							content: {
-								f: "json",
-								licenseInfo: this.accessAndUseConstraints,
-								accessInformation: this.itemCredits
-							}
-						}, {
-							usePost: true
-						}).then(lang.hitch(this, function (response) {
-									if (response.success) {
-										domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
-										domStyle.set(this.cancelBtnNode, "display", "none");
-										this.accessAndUseConstraints_clean = this.accessAndUseConstraints;
-										this.itemCredits_clean = this.itemCredits;
-									}
-								}));
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}));
 
 					if (dijit.byId("access-editor-widget")) {
@@ -326,11 +224,7 @@ define([
 
 					domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
 					domConstruct.create("div", {
-<<<<<<< HEAD
 						id:"access-editor-widget"
-=======
-						id: "access-editor-widget"
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}, this.accessAndUseConstraintsEditorNode, "first");
 
 					if (this.accessAndUseConstraints === "") {
@@ -358,11 +252,7 @@ define([
 			on(this.cancelBtnNode, "click", lang.hitch(this, function () {
 				domConstruct.empty(this.itemCreditsNode);
 				domConstruct.create("div", {
-<<<<<<< HEAD
 					innerHTML:this.itemCredits_clean
-=======
-					innerHTML: this.itemCredits_clean
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 				}, this.itemCreditsNode, "first");
 				domAttr.remove(this.itemCreditsNode, "data-dojo-type");
 				domAttr.set(this.itemCreditsNode, "id", this.creditsID);
@@ -373,11 +263,7 @@ define([
 
 				domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
 				domConstruct.create("div", {
-<<<<<<< HEAD
 					id:"access-editor-widget"
-=======
-					id: "access-editor-widget"
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 				}, this.accessAndUseConstraintsEditorNode, "first");
 
 				if (this.accessAndUseConstraints === "") {
@@ -403,7 +289,6 @@ define([
 				this.scoringUtils.updateSectionScore(this.scoringUtils.creditsAndAccessScore, this.creditsNode, this.scoringUtils.ITEM_USE_CONSTRAINS_MAX_SCORE);
 				this.scoringUtils.updateOverallScore();
 			}));
-<<<<<<< HEAD
 
 			if (this.portalUtils.IS_CURATOR) {
 				// only permit nominated items to have notes added by curators
@@ -431,16 +316,6 @@ define([
 		},
 
 		adminNodeClickHandler:function (evt) {
-=======
-			// EMAIL
-			on(this.emailUserBtn, "click", lang.hitch(this, function () {
-				// display final email
-				this.openEmailDialog();
-			}));
-		},
-
-		adminNodeClickHandler: function (evt) {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			var label = evt.target.innerHTML;
 
 			// destroy dijit
@@ -458,26 +333,15 @@ define([
 			}
 		},
 
-<<<<<<< HEAD
 		loadAdminDialog:function (focusedNode) {
-=======
-		loadAdminDialog: function (focusedNode) {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, function (response) {
 				var feature = response.features[0];
 
 				var adminDialog = new Dialog({
-<<<<<<< HEAD
 					id:"adminDialog",
 					title:"USE/CREDITS Section",
 					class:"details-admin-dialog",
 					onFocus:function () {
-=======
-					id: "adminDialog",
-					title: "USE/CREDITS Section",
-					class: "details-admin-dialog",
-					onFocus: function () {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 						focusUtil.focus(dom.byId(focusedNode));
 					}
 				});
@@ -531,7 +395,6 @@ define([
 			}));
 		},
 
-<<<<<<< HEAD
 		updateAdminDialogNotes:function (itemCreditsNotes, itemAccessAndUseConstraintsNotes, response) {
 			var feature = response.features[0];
 			var dateTime = new Date();
@@ -540,31 +403,14 @@ define([
 				"y":4028802.0261344062,
 				"spatialReference":{
 					"wkid":102100
-=======
-		updateAdminDialogNotes: function (itemCreditsNotes, itemAccessAndUseConstraintsNotes, response) {
-			var feature = response.features[0];
-			var dateTime = new Date();
-			var pt = new Point({
-				"x": -13024380.422813008,
-				"y": 4028802.0261344062,
-				"spatialReference": {
-					"wkid": 102100
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 				}
 			});
 			var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
 			var attr = {
-<<<<<<< HEAD
 				"FID":feature.attributes.FID,
 				"LastContactComments":dateTime,
 				"notesCredits":itemCreditsNotes,
 				"notesAccessUseConstraints":itemAccessAndUseConstraintsNotes
-=======
-				"FID": feature.attributes.FID,
-				"LastContactComments": dateTime,
-				"notesCredits": itemCreditsNotes,
-				"notesAccessUseConstraints": itemAccessAndUseConstraintsNotes
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			};
 			var graphic = new Graphic(pt, sms, attr);
 			this.nominateUtils.nominateAdminFeatureLayer.applyEdits(null, [graphic], null);

@@ -113,11 +113,7 @@ define([
 						"OriginalNominatedDate": dateTime,
 						"OriginalAcceptedDate": "",
 						"InitialContactDate": "",
-<<<<<<< HEAD
 						"CreationDate": dateTime,
-=======
-						"CreationDate": "",
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 						"Creator": "",
 						"EditDate": "",
 						"Editor": "",
@@ -148,7 +144,6 @@ define([
 		accept: function (count) {
 			// check if the item has even been nominated
 			if (count > 0) {
-<<<<<<< HEAD
 				var status = this.defaults.STATUS_ACCEPTED;
 				this.nominateUtils.getFeature(this.nominateUtils.selectedID).then(lang.hitch(this, lang.partial(this.nominateUtils.updateItemStatus, this.defaults.CURRENT_STATUS[3].label, status)));
 			}
@@ -202,12 +197,6 @@ define([
 			var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + feature.attributes["itemID"] + "'>" + label + "</div>");
 			domConstruct.place(updatedItemStatusNode, itemStatusNode, "replace");
 			// Enable the "ACCEPT" button
-=======
-				this.portalUtils.portalUser.getItem(this.nominateUtils.selectedID).then(lang.hitch(this, function (item) {
-					console.log(item);
-				}));
-			}
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 		}
 	});
 });

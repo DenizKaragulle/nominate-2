@@ -25,7 +25,6 @@ define([
 
 	return declare(null, {
 
-<<<<<<< HEAD
 		validator:null,
 		selectedItemID:null,
 		defaults:null,
@@ -35,16 +34,6 @@ define([
 		},
 
 		openEmailDialog:function () {
-=======
-		validator: null,
-		selectedItemID: null,
-		defaults: null,
-		userInterfaceUtils: null,
-
-		constructor: function () { },
-
-		openEmailDialog: function () {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, function (response) {
 				if (response.features[0]) {
 					var content = response.features[0];
@@ -58,17 +47,10 @@ define([
 
 					// Dialog
 					var itemTitleDialog = new Dialog({
-<<<<<<< HEAD
 						id:"emailMessageDialog",
 						title:"Email draft",
 						class:"admin-editing-dialog",
 						onFocus:function () {
-=======
-						id: "emailMessageDialog",
-						title: "Email draft",
-						class: "admin-editing-dialog",
-						onFocus: function () {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 							focusUtil.focus(query(".email-btn-send")[0]);
 						}
 					});
@@ -76,7 +58,6 @@ define([
 					// dialog displayed to curators
 					itemTitleDialog.set("content",
 							'<div class="container">' +
-<<<<<<< HEAD
 									'	<div class="row">' +
 									'		<div class="column-24">' +
 									'			<div class="panel default compact" style="margin-bottom: 5px;">' +
@@ -99,35 +80,10 @@ define([
 									'	<\/div>' +
 									'	<\/div>' +
 									'<\/div>');
-=======
-							'	<div class="row">' +
-							'		<div class="column-24">' +
-							'			<div class="panel default compact" style="margin-bottom: 5px;">' +
-							'				<h5>Email to: <b>' + userFullName + '</b><\/h5>' +
-							'				<p>'  + defaults.ADMIN_MSG_CURATOR_INSTRUCTIONS +'<\/p>' +
-							'			<\/div>' +
-							'		<\/div>' +
-							'	<\/div>' +
-							'	<div class="row">' +
-							'		<div class="column-24">' +
-							'			<div class="email-message-container"><\/div>' +
-							'		<\/div>' +
-							'	<div class="row right dialog-btn-row">' +
-							'		<div class="column-11">' +
-							'			<button class="btn email-btn-cancel"> Cancel <\/button>' +
-							'		<\/div>' +
-							'		<div class="column-13">' +
-							'			<button class="btn icon-email email-btn-send"> Send <\/button>' +
-							'		<\/div>' +
-							'	<\/div>' +
-							'	<\/div>' +
-							'<\/div>');
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 
 					// Curator message
 					var dialogBody =
 							"<div>" + defaults.ADMIN_MSG_GREETING + userFullName + ", <\/div>" +
-<<<<<<< HEAD
 									"<div><p>" + defaults.ADMIN_MSG_INTRO_1 + itemName + defaults.ADMIN_MSG_INTRO_2 + "<\/p><\/div>" +
 									this._formatOutput("Item Thumbnail", content.attributes["notesThumbnail"], true) +
 									this._formatOutput("Item Title", content.attributes["notesTitle"], true) +
@@ -144,29 +100,10 @@ define([
 									this._formatOutput("User Profile Full Name", content.attributes["notesProfileFullName"], true) +
 									this._formatOutput("User Profile Description", content.attributes["notesProfileDesc"], true) +
 									"<div><p>" + closingMessage + "<\/p><\/div>";
-=======
-							"<div><p>" + defaults.ADMIN_MSG_INTRO_1 + itemName + defaults.ADMIN_MSG_INTRO_2 + "<\/p><\/div>" +
-							this._formatOutput("Item Thumbnail", content.attributes["notesThumbnail"], true) +
-							this._formatOutput("Item Title", content.attributes["notesTitle"], true) +
-							this._formatOutput("Item Summary", content.attributes["notesSummary"], true) +
-							this._formatOutput("Item Description", content.attributes["notesDescription"], true) +
-							this._formatOutput("Credits", content.attributes["notesCredits"], true) +
-							this._formatOutput("Item Access and Use Constraints", content.attributes["notesAccessUseConstraints"], true) +
-							this._formatOutput("Tags", content.attributes["notesTags"], true) +
-							this._formatOutput("Map Draw Time", content.attributes["notesDrawTime"], true) +
-							this._formatOutput("Number of Layers", content.attributes["notesNumberOfLayers"], true) +
-							this._formatOutput("Popups", content.attributes["notesPopups"], true) +
-							this._formatOutput("Sharing", content.attributes["notesSharing"], true) +
-							this._formatOutput("User Profile Thumbnail", content.attributes["notesProfileThumbnail"], true) +
-							this._formatOutput("User Profile Full Name", content.attributes["notesProfileFullName"], true) +
-							this._formatOutput("User Profile Description", content.attributes["notesProfileDesc"], true) +
-							"<div><p>" + closingMessage + "<\/p><\/div>";
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 
 					// Message in body of email
 					var emailBody =
 							defaults.ADMIN_MSG_GREETING + userFullName + ", %0A" +
-<<<<<<< HEAD
 									defaults.ADMIN_MSG_INTRO_1 + itemName + defaults.ADMIN_MSG_INTRO_2 + "%0A%0A" +
 									this._formatOutput("Item Thumbnail", content.attributes["notesThumbnail"], false) +
 									this._formatOutput("Item Title", content.attributes["notesTitle"], false) +
@@ -187,29 +124,6 @@ define([
 					var emailMsgContainerNode = query(".email-message-container")[0];
 					domConstruct.create("div", {
 						innerHTML:'<div class="row custom-row-style">' +
-=======
-							defaults.ADMIN_MSG_INTRO_1 + itemName + defaults.ADMIN_MSG_INTRO_2 + "%0A%0A" +
-							this._formatOutput("Item Thumbnail", content.attributes["notesThumbnail"], false) +
-							this._formatOutput("Item Title", content.attributes["notesTitle"], false) +
-							this._formatOutput("Item Summary", content.attributes["notesSummary"], false) +
-							this._formatOutput("Item Description", content.attributes["notesDescription"], false) +
-							this._formatOutput("Credits", content.attributes["notesCredits"], false) +
-							this._formatOutput("Item Access and Use Constraints", content.attributes["notesAccessUseConstraints"], false) +
-							this._formatOutput("Tags", content.attributes["notesTags"], false) +
-							this._formatOutput("Map Draw Time", content.attributes["notesDrawTime"], false) +
-							this._formatOutput("Number of Layers", content.attributes["notesNumberOfLayers"], false) +
-							this._formatOutput("Popups", content.attributes["notesPopups"], false) +
-							this._formatOutput("Sharing", content.attributes["notesSharing"], false) +
-							this._formatOutput("User Profile Thumbnail", content.attributes["notesProfileThumbnail"], false) +
-							this._formatOutput("User Profile Full Name", content.attributes["notesProfileFullName"], false) +
-							this._formatOutput("User Profile Description", content.attributes["notesProfileDesc"], false) +
-							closingMessage;
-
-					var emailMsgContainerNode = query(".email-message-container")[0];
-					domConstruct.create("div", {
-						innerHTML:
-								'<div class="row custom-row-style">' +
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 								'	<div class="column-24">' +
 								'		<div class="panel white">' +
 								'			<p>' + dialogBody + '<\/p>' +
@@ -222,7 +136,6 @@ define([
 					on(query(".email-btn-send"), "click", lang.hitch(this, function () {
 						this.portalUtils.portalUser.getItem(this.selectedID).then(lang.hitch(this, function (item) {
 							var status = defaults.STATUS_UNDER_REVIEW;
-<<<<<<< HEAD
 							this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, lang.partial(this.nominateUtils.updateItemStatus, status, this.defaults.CURRENT_STATUS[2].label)));
 						}));
 						var link = "mailto:" + userEmail +
@@ -230,15 +143,6 @@ define([
 								"&subject=" + itemName +
 								"&body=" + emailBody;
 						window.location.href = link;
-=======
-							this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, lang.partial(this._updateItemStatus, status)));
-						}));
-						// mail to
-						window.location = "mailto:" + userEmail +
-								"?cc=" + defaults.LIVING_ATLAS_EMAIL_ALIAS +
-								"?subject=" + itemName +
-								"&body=" + emailBody;
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 					}));
 
 					// email dialog "CANCEL" button
@@ -250,37 +154,7 @@ define([
 			}));
 		},
 
-<<<<<<< HEAD
 		_formatOutput:function (header, str, draft) {
-=======
-		_updateItemStatus: function (status, response) {
-			var feature = response.features[0];
-			var dateTime = new Date();
-			var pt = new Point({
-				"x": -13024380.422813008,
-				"y": 4028802.0261344062,
-				"spatialReference": {
-					"wkid": 102100
-				}
-			});
-			var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
-			var attr = {
-				"FID": feature.attributes.FID,
-				"OnineStatus": status,
-				"NominatedDate": dateTime
-			};
-			var graphic = new Graphic(pt, sms, attr);
-			this.nominateUtils.nominateAdminFeatureLayer.applyEdits(null, [graphic], null);
-			// update the dom node for the item's status to "UNDER REVIEW"
-			var itemStatusNode = query(".item-nomination-status-" + feature.attributes["itemID"])[0];
-			var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + feature.attributes["itemID"] + "'>" + defaults.CURRENT_STATUS[2].label + "</div>");
-			domConstruct.place(updatedItemStatusNode, itemStatusNode, "replace");
-			// Enable the "ACCEPT" button
-
-		},
-
-		_formatOutput: function (header, str, draft) {
->>>>>>> 9edef40c989e7189242228381b4d2a74e0843637
 			var output = "";
 			if (!str) {
 				output = "";
