@@ -1,3 +1,10 @@
+/* */
+.init-loader {
+	margin-left: 45%;
+	margin-top: 20%;
+	display: none;
+}
+
 /* the map */
 #map {
 	width: 100%;
@@ -228,6 +235,10 @@ table tr {
 
 .sign-in {
 
+}
+
+.ribbon-header-buttons {
+	margin-top: 40px !important;
 }
 
 .search-items, .dropdown-item-sort, .dropdown-item-filter, .help-button {
@@ -468,6 +479,10 @@ table tr {
 /* Nominate button dialog */
 .dialog-container {
 	margin: 5px;
+	color: #333;
+	-webkit-font-smoothing: antialiased;
+	font-size: 0.9em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
 }
 
 .dialog-btn-container {
@@ -485,7 +500,7 @@ table tr {
 
 /* Selected tab background color */
 .btn-group a:hover, .btn-group a.active {
-  background-color: #dddddd !important;
+	background-color: #dddddd !important;
 }
 
 /* Open item in new page link icon */
@@ -502,4 +517,52 @@ table tr {
 /* hover class */
 .hoverClass {
 	cursor: pointer;
+}
+
+/* */
+.attribute-row {
+	margin-bottom: 15px;
+}
+
+.details-admin-dialog {
+	height: 400px;
+	width: 600px;
+	color: #333;
+	-webkit-font-smoothing: antialiased;
+	font-size: 0.9em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+}
+
+.dijitDialogPaneContent {
+	height: 100%;
+}
+
+.dialog-btn-row {
+	/*top: 50px;*/
+}
+
+.dialog-label {
+	color: #707070;
+	margin-top: 5px;
+}
+
+.custom-row-style {
+	margin-bottom: 10px;
+}
+
+/* */
+#emailMessageDialog {
+	color: #333;
+	-webkit-font-smoothing: antialiased;
+	font-size: 0.95em;
+	font-family: 'Avenir LT W01 65 Medium', Arial, Helvetica, sans-serif;
+
+}
+
+.email-btn {
+	margin-top: 10px;
+}
+
+.accept-item-btn {
+	margin-top: 10px;
 }

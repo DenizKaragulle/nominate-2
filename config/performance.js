@@ -1,5 +1,5 @@
 /*
- | Copyright 2014 Esri
+ | Copyright 2015 Esri
  |
  | Licensed under the Apache License, Version 2.0 (the "License");
  | you may not use this file except in compliance with the License.
@@ -30,6 +30,9 @@ define({
 			'		<div class="column-1">' +
 			'			<div class="section-header performance-text">BEST</div>' +
 			'		</div>' +
+			'		<div class="column-2 pre-6">' +
+			'			<button class="btn custom-btn email-btn"> EMAIL USER </button>' +
+			'		</div>' +
 			'	</div>' +
 
 			// MAP DRAW TIME
@@ -47,7 +50,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="column-4">' +
-			'			<h2 class="icon-loading icon-blue"><span style="font-size: 0.5em;">draw time</span></h2>' +
+			'			<h2 class="icon-loading icon-blue draw-time-attr-label"><span style="font-size: 0.5em;">draw time</span></h2>' +
 			'		</div>' +
 			'		<div class="column-3">' +
 			'			<div class="section-header performance-text performance-text-very-slow">very slow</div>' +
@@ -75,7 +78,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="column-4">' +
-			'			<h2 class="icon-stack icon-blue"><span style="font-size: 0.5em;">number of map layers</span></h2>' +
+			'			<h2 class="icon-stack icon-blue num-layers-attr-label"><span style="font-size: 0.5em;">number of map layers</span></h2>' +
 			'		</div>' +
 			'		<div class="column-3">' +
 			'			<div class="section-header performance-text num-layers-good">more than 10</div>' +
@@ -103,7 +106,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="column-4">' +
-			'			<h2 class="icon-comment icon-blue"><span style="font-size: 0.5em;">pop ups</span></h2>' +
+			'			<h2 class="icon-comment icon-blue popups-attr-label"><span style="font-size: 0.5em;">pop ups</span></h2>' +
 			'		</div>' +
 			'		<div class="column-3">' +
 			'			<div class="section-header performance-text performance-popups-none">no popups</div>' +
@@ -131,7 +134,7 @@ define({
 			'			</div>' +
 			'		</div>' +
 			'		<div class="column-4">' +
-			'			<h2 class="icon-share icon-blue"><span style="font-size: 0.5em;">sharing</span></h2>' +
+			'			<h2 class="icon-share icon-blue sharing-attr-label"><span style="font-size: 0.5em;">sharing</span></h2>' +
 			'		</div>' +
 			'		<div class="column-3">' +
 			'			<div class="section-header performance-text performance-sharing-good">not shared</div>' +

@@ -1,3 +1,5 @@
+/*global define,location */
+/*jslint sloppy:true */
 /*
  | Copyright 2014 Esri
  |
@@ -94,6 +96,8 @@ define({
 	],
 
 	"NOMINATE_ADMIN_FEATURE_SERVICE_URL": "https://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/nomcur/FeatureServer/0",
+	"CURATOR_LIST_ADMIN_FEATURE_SERVICE_URL" : "http://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/curlist/FeatureServer/0",
+	"CURATOR_GROUP_ADMIN_FEATURE_SERVICE_URL" : "http://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/curgroup/FeatureServer/0",
 
 	//Default configuration settings for the application. This is where you'll define things like a bing maps key,
 	//default web map, default app color theme and more. These values can be overwritten by template configuration settings and url parameters.
@@ -116,7 +120,7 @@ define({
 			"label": "<h4 class='icon-checked icon-red' style='color:#C86A4A'> NOMINATED </h4>"
 		},
 		{
-			"label": "<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h4 style='color:#C86A4A'> IN REVIEW </h4>"
+			"label": "<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h5 style='color:#C86A4A'> UNDER REVIEW </h5>"
 		},
 		{
 			"label": "<img src='assets/images/ThumbsUp_Blue.png' class='status-thumbnail'/><h4 style='color:#0079C1'> ACCEPTED </h4>"
@@ -208,8 +212,23 @@ define({
 		{ id: "publicArtCB", name: "Public Art", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
 		{ id: "scienceAndTechnologyCB", name: "Science and Technology", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
 		{ id: "sportsAndEntertainmentCB", name: "Sports and Entertainment", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
-		{ id: "traveloguesCB", name: "Travelogues", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] },
+		{ id: "traveloguesCB", name: "Travelogues", parent: "storyMapsCategory", path:["categories", "storyMapsCategory"] }
 	],
 
-	"NOMINATED_SUCCESS_DIALOG" : "Thank you, this item is now in the queue for review. Someone will be in contact via email associated with your user ID.<\/div>"
+	"STATUS_NOMINATED" : "Nominated",
+	"STATUS_UNDER_REVIEW" : "Under Review",
+	"STATUS_ACCEPTED" : "Accepted",
+
+	"EDIT_BTN_LABEL" : " EDIT ",
+	"SAVE_BTN_LABEL" : " SAVE ",
+
+	"NOMINATED_SUCCESS_DIALOG" : "Thank you, this item is now in the queue for review. Someone will be in contact via email associated with your user ID.<\/div>",
+
+	"ADMIN_MSG_CURATOR_INSTRUCTIONS" : "Review the email below and make final edits. Then <b>hit Send</b>, to place this text in a new email in your email client (Outlook etc.) Of course, you need to hit Send on the actual email.",
+	"ADMIN_MSG_GREETING" : "Hello ",
+	"ADMIN_MSG_INTRO_1" : "Thank you for nominating your item, ",
+	"ADMIN_MSG_INTRO_2" : " or inclusion in the Living Atlas. I have looked at the item today, and have these observations below. Have a look at the observations and suggestions, and email me back with any questions or concerns. When we arrive at a mutual agreement that the item is ready to share, we can immediately add it to the Living Atlas of the World.",
+	"AMDIN_MSG_CLOSING" : "Thanks for nominating this item, and I look forward to reviewing a final version soon!",
+
+	"LIVING_ATLAS_EMAIL_ALIAS" : "livingatlas_admins@esri.com"
 });

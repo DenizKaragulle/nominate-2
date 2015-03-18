@@ -1,5 +1,5 @@
 /*
- | Copyright 2014 Esri
+ | Copyright 2015 Esri
  |
  | Licensed under the Apache License, Version 2.0 (the "License");
  | you may not use this file except in compliance with the License.
@@ -31,13 +31,14 @@ define({
 			"			</div>" +
 			"		</div>" +
 			"		<div class='column-17'>" +
-			"			<div class='section-header'>Credits</div>" +
+			"			<div class='section-header credits-attr-label'>Credits</div>" +
 			"			<div class='creditsID-textbox'></div>" +
 			"		</div>" +
 
 			"		<div class='column-2 pre-1'>" +
 			"			<button class='btn custom-btn edit-save-btn'> EDIT </button>" +
 			"			<button class='btn custom-btn cancel-btn'> CANCEL </button>" +
+			"			<button class='btn custom-btn email-btn'> EMAIL USER </button>" +
 			"		</div>" +
 			"	</div>" +
 
@@ -55,7 +56,7 @@ define({
 			"			</div>" +
 			"		</div>" +
 			"		<div class='column-17'>" +
-			"			<div class='section-header'>Access and Use Constraints</div>" +
+			"			<div class='section-header access-and-use-constraints-label'>Access and Use Constraints</div>" +
 			"			<div class='accessAndUseConstraintsEditor' style='height: 200px; overflow: auto;'>" +
 			"				<div id='access-editor-widget'></div>" +
 			"			</div>" +

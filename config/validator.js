@@ -8,14 +8,8 @@ define([
 
 	return declare(null, {
 
-		instance:null,
-
 		constructor:function () {
 
-		},
-
-		startup: function () {
-			this.instance = 1;
 		},
 
 		validateStr: function (str) {
