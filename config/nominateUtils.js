@@ -69,6 +69,20 @@ define([
 			return deferred.promise;
 		},
 
+		getItemStatus: function (itemID) {
+			var deferred = new Deferred();
+			var query = new Query();
+			query.returnGeometry = false;
+			query.outFields = ["*"];
+			query.where = "itemID = '" + itemID + "'";
+			var queryTask = new QueryTask(this.defaults.NOMINATE_ADMIN_FEATURE_SERVICE_URL);
+			queryTask.execute(query).then(lang.hitch(this, function (count) {
+				deferred.resolve(count);
+			}));
+			return deferred.promise;
+		},
+
+		// TODO Duplicate code
 		isItemNominated: function (itemID) {
 			var deferred = new Deferred();
 			var query = new Query();
@@ -146,6 +160,7 @@ define([
 			if (count > 0) {
 				var status = this.defaults.STATUS_ACCEPTED;
 				this.nominateUtils.getFeature(this.nominateUtils.selectedID).then(lang.hitch(this, lang.partial(this.nominateUtils.updateItemStatus, this.defaults.CURRENT_STATUS[3].label, status)));
+				this.userInterfaceUtils.disableNominateButton(this.nominateUtils.acceptBtnNode);
 			}
 		},
 

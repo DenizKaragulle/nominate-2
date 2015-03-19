@@ -226,6 +226,7 @@ define([
 			} else {
 				domStyle.set(query(".email-btn")[0], "display", "none");
 				domStyle.set(this.nominateUtils.acceptBtnNode, "display", "none");
+				domStyle.set(this.editSaveBtnNode, "display", "block");
 			}
 		},
 

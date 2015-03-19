@@ -18,6 +18,7 @@ define([
 	return declare(null, {
 
 		defaults: null,
+		userProfile: null,
 		validator: null,
 		scoring: null,
 		portalUtils: null,
@@ -77,7 +78,8 @@ define([
 
 		MAX_SCORE: null,
 
-		constructor: function (validator, selectedID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils) {
+		constructor: function (userProfile, validator, selectedID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils) {
+			this.userProfile = userProfile;
 			this.validator = validator;
 			this.selectedID = selectedID;
 			this.defaults = defaults;
@@ -141,12 +143,14 @@ define([
 			this.userInterfaceUtils.setPassFailStyleOnTabNode(this.itemTagsScore, tagsNode, this.TAGS_MAX_SCORE);
 			// performance
 			this.userInterfaceUtils.setPassFailStyleOnTabNode(this.performanceScore, performanceNode, this.PERFORMANCE_MAX_SCORE);
+
 			// user profile
 			this.userThumbnailScore = 7;//validator.setThumbnailScore(portalUtils.portalUser);
-			this.userNameScore = this.validator.setUserProfileFullNameScore(this.portalUtils.portalUser.fullName);
-			this.userDescriptionScore = this.validator.setUserDescriptionScore(this.portalUtils.portalUser.description);
+			this.userNameScore = this.validator.setUserProfileFullNameScore(this.userProfile.fullName/*this.portalUtils.portalUser.fullName*/);
+			this.userDescriptionScore = this.validator.setUserDescriptionScore(this.userProfile.description/*this.portalUtils.portalUser.description*/);
 			this.userProfileScore = this.userThumbnailScore + this.userNameScore + this.userDescriptionScore;
 			this.userInterfaceUtils.setPassFailStyleOnTabNode(this.userProfileScore, profileNode, this.USER_PROFILE_MAX_SCORE);
+
 			// update the overall score and score graphic
 			this.updateOverallScore();
 		},
@@ -170,13 +174,19 @@ define([
 				domStyle.set(query(".current-score-number")[0], "color", this.scoring.PASS_COLOR);
 				//
 				if (array.some(this.nominateUtils.nominatedItems.features, lang.hitch(this, function (feature) {
+					// check the status
+					if (this.selectedID === feature.attributes.itemID) {
+						if (feature.attributes["OnineStatus"] === "Accepted") {
+							this.userInterfaceUtils.disableNominateButton(this.nominateUtils.acceptBtnNode);
+						}
+					}
 					return this.selectedID === feature.attributes.itemID;
 				}))) {
-					// Item has been already nominated
+					// NOMINATED
 					this.userInterfaceUtils.disableNominateButton(nominateBtnNode);
-					this.userInterfaceUtils.enableNominateButton(this.nominateUtils.acceptBtnNode);
+					//this.userInterfaceUtils.enableNominateButton(this.nominateUtils.acceptBtnNode);
 				} else {
-					// Item has not been nominated
+					// NOT NOMINATED
 					// enable the "Nominate" button
 					this.userInterfaceUtils.enableNominateButton(nominateBtnNode);
 					// add the event handler for the "NOMINATE" button
@@ -184,7 +194,7 @@ define([
 						this.nominateUtils.isItemNominated(this.nominateUtils.selectedID).then(lang.hitch(this, this.nominateUtils.nominate));
 					}));
 				}
-				// add the event handler for the "ACCEPT" button
+				// add the event handler for the "ACCEPT" button (curator can accept at any time)
 				this.nominateUtils.acceptBtnClickHandler = on(this.nominateUtils.acceptBtnNode, "click", lang.hitch(this, function () {
 					this.nominateUtils.isItemNominated(this.nominateUtils.selectedID).then(lang.hitch(this, this.nominateUtils.accept));
 				}));

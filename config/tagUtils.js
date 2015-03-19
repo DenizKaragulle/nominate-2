@@ -43,6 +43,7 @@ define([
 		tooltipsConfig:null,
 		portalUtils:null,
 
+		selectedID:null,
 		customTagsWidget:null,
 		checkBoxID_values:[],
 		tagStore:null,
@@ -74,6 +75,8 @@ define([
 			this.scoring = scoring;
 			this.tooltipsConfig = tooltipsConfig;
 			this.portalUtils = portalUtils;
+
+			this.selectedID = item.id;
 
 			this.atlasTagStore = new Memory({
 				data:defaults.TAGS_STORE,
@@ -249,67 +252,6 @@ define([
 				this.updateTreePath(this.tree, this.treeModel, this.customTagsWidget.values);
 			}));
 
-			on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
-				if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
-					// EDIT mode
-					this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.SAVE_BTN_LABEL, this.cancelBtnNode, "block");
-					// remove non-editing tag nodes
-					// domConstruct.empty(query(".existing-tags")[0]);
-					domStyle.set(query(".existing-tags")[0], "display", "none");
-					// display the tags dijit
-					domStyle.set("tag-widget", "display", "block");
-					// enable living atlas checkboxes
-					this.userInterfaceUtils.toggleCheckboxes(this.checkBoxID_values, "disabled", false);
-				} else {
-					// SAVE mode
-					var _userItemUrl = item.userItemUrl;
-					esriRequest({
-						url:_userItemUrl + "/update",
-						content:{
-							f:"json",
-							tags:"" + this.tagStore.data
-						}
-					}, {
-						usePost:true
-					}).then(lang.hitch(this, function (response) {
-						if (response.success) {
-							this.itemTags_clean = this.tagStore.data;
-							domConstruct.empty(query(".existing-tags")[0]);
-							this.styleTags(this.tagStore.data, query(".existing-tags")[0]);
-							domStyle.set(query(".existing-tags")[0], "display", "block");
-							domStyle.set("tag-widget", "display", "none");
-							// set the numerator and update score
-							this.scoringUtils.itemTagsScore = this.validator.validateItemTags(this.tagStore.data);
-							this.tagsScoreNumeratorNode.innerHTML = this.scoringUtils.itemTagsScore;
-							// section overall score
-							this.scoringUtils.updateSectionScore(this.scoringUtils.itemTagsScore, this.tagsNode, this.scoringUtils.TAGS_MAX_SCORE);
-							this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemTagsScore, this.scoringUtils.TAGS_MAX_SCORE, this.tagsScoreNodeContainer);
-							this.scoringUtils.updateOverallScore();
-
-							// disable living atlas checkboxes
-							this.userInterfaceUtils.toggleCheckboxes(this.checkBoxID_values, "disabled", true);
-							this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.EDIT_BTN_LABEL, this.cancelBtnNode, "none");
-						}
-					}));
-				}
-			}));
-
-			on(this.cancelBtnNode, "click", lang.hitch(this, function () {
-				domStyle.set(query(".existing-tags")[0], "display", "block");
-				domStyle.set("tag-widget", "display", "none");
-
-				// set the numerator and update score
-				this.scoringUtils.itemTagsScore = this.validator.validateItemTags(this.itemTags_clean);
-				this.tagsScoreNumeratorNode.innerHTML = this.scoringUtils.itemTagsScore;
-				// section overall score
-				this.scoringUtils.updateSectionScore(this.scoringUtils.itemTagsScore, this.tagsNode, this.scoringUtils.TAGS_MAX_SCORE);
-				this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemTagsScore, this.scoringUtils.TAGS_MAX_SCORE, this.tagsScoreNodeContainer);
-				this.scoringUtils.updateOverallScore();
-				// disable living atlas checkboxes
-				this.userInterfaceUtils.toggleCheckboxes(this.checkBoxID_values, "disabled", true);
-				this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.EDIT_BTN_LABEL, this.cancelBtnNode, "none");
-			}));
-
 			if (this.portalUtils.IS_CURATOR) {
 				// only permit nominated items to have notes added by curators
 				this.userInterfaceUtils.getFeature(item.id).then(lang.hitch(this, function (response) {
@@ -327,6 +269,68 @@ define([
 			} else {
 				domStyle.set(query(".email-btn")[0], "display", "none");
 				domStyle.set(this.nominateUtils.acceptBtnNode, "display", "none");
+				domStyle.set(this.editSaveBtnNode, "display", "block");
+
+				on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
+					if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
+						// EDIT mode
+						this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.SAVE_BTN_LABEL, this.cancelBtnNode, "block");
+						// remove non-editing tag nodes
+						// domConstruct.empty(query(".existing-tags")[0]);
+						domStyle.set(query(".existing-tags")[0], "display", "none");
+						// display the tags dijit
+						domStyle.set("tag-widget", "display", "block");
+						// enable living atlas checkboxes
+						this.userInterfaceUtils.toggleCheckboxes(this.checkBoxID_values, "disabled", false);
+					} else {
+						// SAVE mode
+						var _userItemUrl = item.userItemUrl;
+						esriRequest({
+							url:_userItemUrl + "/update",
+							content:{
+								f:"json",
+								tags:"" + this.tagStore.data
+							}
+						}, {
+							usePost:true
+						}).then(lang.hitch(this, function (response) {
+							if (response.success) {
+								this.itemTags_clean = this.tagStore.data;
+								domConstruct.empty(query(".existing-tags")[0]);
+								this.styleTags(this.tagStore.data, query(".existing-tags")[0]);
+								domStyle.set(query(".existing-tags")[0], "display", "block");
+								domStyle.set("tag-widget", "display", "none");
+								// set the numerator and update score
+								this.scoringUtils.itemTagsScore = this.validator.validateItemTags(this.tagStore.data);
+								this.tagsScoreNumeratorNode.innerHTML = this.scoringUtils.itemTagsScore;
+								// section overall score
+								this.scoringUtils.updateSectionScore(this.scoringUtils.itemTagsScore, this.tagsNode, this.scoringUtils.TAGS_MAX_SCORE);
+								this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemTagsScore, this.scoringUtils.TAGS_MAX_SCORE, this.tagsScoreNodeContainer);
+								this.scoringUtils.updateOverallScore();
+
+								// disable living atlas checkboxes
+								this.userInterfaceUtils.toggleCheckboxes(this.checkBoxID_values, "disabled", true);
+								this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.EDIT_BTN_LABEL, this.cancelBtnNode, "none");
+							}
+						}));
+					}
+				}));
+
+				on(this.cancelBtnNode, "click", lang.hitch(this, function () {
+					domStyle.set(query(".existing-tags")[0], "display", "block");
+					domStyle.set("tag-widget", "display", "none");
+
+					// set the numerator and update score
+					this.scoringUtils.itemTagsScore = this.validator.validateItemTags(this.itemTags_clean);
+					this.tagsScoreNumeratorNode.innerHTML = this.scoringUtils.itemTagsScore;
+					// section overall score
+					this.scoringUtils.updateSectionScore(this.scoringUtils.itemTagsScore, this.tagsNode, this.scoringUtils.TAGS_MAX_SCORE);
+					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemTagsScore, this.scoringUtils.TAGS_MAX_SCORE, this.tagsScoreNodeContainer);
+					this.scoringUtils.updateOverallScore();
+					// disable living atlas checkboxes
+					this.userInterfaceUtils.toggleCheckboxes(this.checkBoxID_values, "disabled", true);
+					this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.EDIT_BTN_LABEL, this.cancelBtnNode, "none");
+				}));
 			}
 		},
 

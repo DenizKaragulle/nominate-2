@@ -144,152 +144,6 @@ define([
 			this.scoringUtils.updateSectionScore(this.scoringUtils.creditsAndAccessScore, this.creditsNode, this.scoringUtils.ITEM_USE_CONSTRAINS_MAX_SCORE);
 			this.scoringUtils.updateOverallScore();
 
-			// SAVE/EDIT
-			on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
-				if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
-					domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.SAVE_BTN_LABEL);
-					domStyle.set(this.cancelBtnNode, "display", "block");
-					// credits
-					if (this.itemCredits === "<span></span>") {
-						this.itemCredits = "";
-					}
-
-					domConstruct.empty(this.itemCreditsNode);
-					domConstruct.create("input", {
-						class:"edit-credits",
-						value:this.itemCredits
-					}, this.itemCreditsNode, "first");
-					domAttr.set(this.itemCreditsNode, "data-dojo-type", "dijit/form/TextBox");
-					domAttr.set(this.itemCreditsNode, "id", this.creditsID);
-
-					// access and user constraints
-					if (dijit.byId("access-editor-widget")) {
-						dijit.byId("access-editor-widget").destroy();
-						domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
-						domConstruct.create("div", {
-							id:"access-editor-widget",
-							innerHTML:this.accessAndUseConstraints
-						}, this.accessAndUseConstraintsEditorNode, "first");
-					}
-					var accessUseConstraintsEditor = new Editor({
-						plugins:defaults.EDITOR_PLUGINS,
-						innerHTML:this.accessAndUseConstraints
-					}, dom.byId("access-editor-widget"));
-					accessUseConstraintsEditor.startup();
-				} else {
-					// credits
-					this.itemCredits = query(".edit-credits")[0].value;
-					this.accessAndUseConstraints = dijit.byId("access-editor-widget").value;
-
-					domConstruct.empty(this.itemCreditsNode);
-					domConstruct.create("div", {
-						innerHTML:this.itemCredits
-					}, this.itemCreditsNode, "first");
-					domAttr.remove(this.itemCreditsNode, "data-dojo-type");
-					domAttr.set(this.itemCreditsNode, "id", this.creditsID);
-
-					this.portalUtils.portalUser.getItem(item.id).then(lang.hitch(this, function (results) {
-						var _userItemUrl = results.userItemUrl;
-
-						if (this.itemCredits.length === 0) {
-							this.itemCredits = "<span></span>";
-						}
-
-						if (this.accessAndUseConstraints.length === 0) {
-							this.accessAndUseConstraints = "<span></span>";
-						}
-
-						esriRequest({
-							url:_userItemUrl + "/update",
-							content:{
-								f:"json",
-								licenseInfo:this.accessAndUseConstraints,
-								accessInformation:this.itemCredits
-							}
-						}, {
-							usePost:true
-						}).then(lang.hitch(this, function (response) {
-							if (response.success) {
-								domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
-								domStyle.set(this.cancelBtnNode, "display", "none");
-								this.accessAndUseConstraints_clean = this.accessAndUseConstraints;
-								this.itemCredits_clean = this.itemCredits;
-							}
-						}));
-					}));
-
-					if (dijit.byId("access-editor-widget")) {
-						dijit.byId("access-editor-widget").destroy();
-					}
-
-					domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
-					domConstruct.create("div", {
-						id:"access-editor-widget"
-					}, this.accessAndUseConstraintsEditorNode, "first");
-
-					if (this.accessAndUseConstraints === "") {
-						domConstruct.place("<span></span>", "access-editor-widget", "first");
-					} else {
-						domConstruct.place("<span>" + this.accessAndUseConstraints + "</span>", "access-editor-widget", "first");
-					}
-
-					// set numerator
-					this.scoringUtils.itemCreditsScore = this.validator.setCreditsScore(this.itemCredits);
-					this.scoringUtils.itemAccessAndUseConstraintsScore = this.validator.setAccessAndUseConstraintsScore(this.accessAndUseConstraints);
-					this.creditsScoreNumeratorNode.innerHTML = this.scoringUtils.itemCreditsScore;
-					this.accessScoreNumeratorNode.innerHTML = this.scoringUtils.itemAccessAndUseConstraintsScore;
-
-					// update section style score graphics
-					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemCreditsScore, this.scoringUtils.ITEM_CREDIT_MAX_SCORE, this.creditsScoreNodeContainer);
-					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemAccessAndUseConstraintsScore, this.scoringUtils.ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE, this.accessScoreNodeContainer);
-
-					this.scoringUtils.creditsAndAccessScore = this.scoringUtils.itemCreditsScore + this.scoringUtils.itemAccessAndUseConstraintsScore;
-					this.scoringUtils.updateSectionScore(this.scoringUtils.creditsAndAccessScore, this.creditsNode, this.scoringUtils.ITEM_USE_CONSTRAINS_MAX_SCORE);
-					this.scoringUtils.updateOverallScore();
-				}
-			}));
-			// CANCEL
-			on(this.cancelBtnNode, "click", lang.hitch(this, function () {
-				domConstruct.empty(this.itemCreditsNode);
-				domConstruct.create("div", {
-					innerHTML:this.itemCredits_clean
-				}, this.itemCreditsNode, "first");
-				domAttr.remove(this.itemCreditsNode, "data-dojo-type");
-				domAttr.set(this.itemCreditsNode, "id", this.creditsID);
-
-				if (dijit.byId("access-editor-widget")) {
-					dijit.byId("access-editor-widget").destroy();
-				}
-
-				domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
-				domConstruct.create("div", {
-					id:"access-editor-widget"
-				}, this.accessAndUseConstraintsEditorNode, "first");
-
-				if (this.accessAndUseConstraints === "") {
-					domConstruct.place("<span></span>", "access-editor-widget", "first");
-				} else {
-					domConstruct.place("<span>" + this.accessAndUseConstraints_clean + "</span>", "access-editor-widget", "first");
-				}
-
-				domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
-				domStyle.set(this.cancelBtnNode, "display", "none");
-
-				// set numerator
-				this.scoringUtils.itemCreditsScore = this.validator.setCreditsScore(this.itemCredits_clean);
-				this.scoringUtils.itemAccessAndUseConstraintsScore = this.validator.setAccessAndUseConstraintsScore(this.accessAndUseConstraints_clean);
-				this.creditsScoreNumeratorNode.innerHTML = this.scoringUtils.itemCreditsScore;
-				this.accessScoreNumeratorNode.innerHTML = this.scoringUtils.itemAccessAndUseConstraintsScore;
-
-				// update section style score graphics
-				this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemCreditsScore, this.scoringUtils.ITEM_CREDIT_MAX_SCORE, this.creditsScoreNodeContainer);
-				this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemAccessAndUseConstraintsScore, this.scoringUtils.ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE, this.accessScoreNodeContainer);
-
-				this.scoringUtils.creditsAndAccessScore = this.scoringUtils.itemCreditsScore + this.scoringUtils.itemAccessAndUseConstraintsScore;
-				this.scoringUtils.updateSectionScore(this.scoringUtils.creditsAndAccessScore, this.creditsNode, this.scoringUtils.ITEM_USE_CONSTRAINS_MAX_SCORE);
-				this.scoringUtils.updateOverallScore();
-			}));
-
 			if (this.portalUtils.IS_CURATOR) {
 				// only permit nominated items to have notes added by curators
 				this.userInterfaceUtils.getFeature(item.id).then(lang.hitch(this, function (response) {
@@ -312,6 +166,152 @@ define([
 			} else {
 				domStyle.set(query(".email-btn")[0], "display", "none");
 				domStyle.set(this.nominateUtils.acceptBtnNode, "display", "none");
+				domStyle.set(this.editSaveBtnNode, "display", "block");
+
+				on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
+					if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
+						domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.SAVE_BTN_LABEL);
+						domStyle.set(this.cancelBtnNode, "display", "block");
+						// credits
+						if (this.itemCredits === "<span></span>") {
+							this.itemCredits = "";
+						}
+
+						domConstruct.empty(this.itemCreditsNode);
+						domConstruct.create("input", {
+							class:"edit-credits",
+							value:this.itemCredits
+						}, this.itemCreditsNode, "first");
+						domAttr.set(this.itemCreditsNode, "data-dojo-type", "dijit/form/TextBox");
+						domAttr.set(this.itemCreditsNode, "id", this.creditsID);
+
+						// access and user constraints
+						if (dijit.byId("access-editor-widget")) {
+							dijit.byId("access-editor-widget").destroy();
+							domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
+							domConstruct.create("div", {
+								id:"access-editor-widget",
+								innerHTML:this.accessAndUseConstraints
+							}, this.accessAndUseConstraintsEditorNode, "first");
+						}
+						var accessUseConstraintsEditor = new Editor({
+							plugins:defaults.EDITOR_PLUGINS,
+							innerHTML:this.accessAndUseConstraints
+						}, dom.byId("access-editor-widget"));
+						accessUseConstraintsEditor.startup();
+					} else {
+						// credits
+						this.itemCredits = query(".edit-credits")[0].value;
+						this.accessAndUseConstraints = dijit.byId("access-editor-widget").value;
+
+						domConstruct.empty(this.itemCreditsNode);
+						domConstruct.create("div", {
+							innerHTML:this.itemCredits
+						}, this.itemCreditsNode, "first");
+						domAttr.remove(this.itemCreditsNode, "data-dojo-type");
+						domAttr.set(this.itemCreditsNode, "id", this.creditsID);
+
+						this.portalUtils.portalUser.getItem(item.id).then(lang.hitch(this, function (results) {
+							var _userItemUrl = results.userItemUrl;
+
+							if (this.itemCredits.length === 0) {
+								this.itemCredits = "<span></span>";
+							}
+
+							if (this.accessAndUseConstraints.length === 0) {
+								this.accessAndUseConstraints = "<span></span>";
+							}
+
+							esriRequest({
+								url:_userItemUrl + "/update",
+								content:{
+									f:"json",
+									licenseInfo:this.accessAndUseConstraints,
+									accessInformation:this.itemCredits
+								}
+							}, {
+								usePost:true
+							}).then(lang.hitch(this, function (response) {
+								if (response.success) {
+									domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
+									domStyle.set(this.cancelBtnNode, "display", "none");
+									this.accessAndUseConstraints_clean = this.accessAndUseConstraints;
+									this.itemCredits_clean = this.itemCredits;
+								}
+							}));
+						}));
+
+						if (dijit.byId("access-editor-widget")) {
+							dijit.byId("access-editor-widget").destroy();
+						}
+
+						domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
+						domConstruct.create("div", {
+							id:"access-editor-widget"
+						}, this.accessAndUseConstraintsEditorNode, "first");
+
+						if (this.accessAndUseConstraints === "") {
+							domConstruct.place("<span></span>", "access-editor-widget", "first");
+						} else {
+							domConstruct.place("<span>" + this.accessAndUseConstraints + "</span>", "access-editor-widget", "first");
+						}
+
+						// set numerator
+						this.scoringUtils.itemCreditsScore = this.validator.setCreditsScore(this.itemCredits);
+						this.scoringUtils.itemAccessAndUseConstraintsScore = this.validator.setAccessAndUseConstraintsScore(this.accessAndUseConstraints);
+						this.creditsScoreNumeratorNode.innerHTML = this.scoringUtils.itemCreditsScore;
+						this.accessScoreNumeratorNode.innerHTML = this.scoringUtils.itemAccessAndUseConstraintsScore;
+
+						// update section style score graphics
+						this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemCreditsScore, this.scoringUtils.ITEM_CREDIT_MAX_SCORE, this.creditsScoreNodeContainer);
+						this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemAccessAndUseConstraintsScore, this.scoringUtils.ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE, this.accessScoreNodeContainer);
+
+						this.scoringUtils.creditsAndAccessScore = this.scoringUtils.itemCreditsScore + this.scoringUtils.itemAccessAndUseConstraintsScore;
+						this.scoringUtils.updateSectionScore(this.scoringUtils.creditsAndAccessScore, this.creditsNode, this.scoringUtils.ITEM_USE_CONSTRAINS_MAX_SCORE);
+						this.scoringUtils.updateOverallScore();
+					}
+				}));
+
+				on(this.cancelBtnNode, "click", lang.hitch(this, function () {
+					domConstruct.empty(this.itemCreditsNode);
+					domConstruct.create("div", {
+						innerHTML:this.itemCredits_clean
+					}, this.itemCreditsNode, "first");
+					domAttr.remove(this.itemCreditsNode, "data-dojo-type");
+					domAttr.set(this.itemCreditsNode, "id", this.creditsID);
+
+					if (dijit.byId("access-editor-widget")) {
+						dijit.byId("access-editor-widget").destroy();
+					}
+
+					domAttr.remove(this.accessAndUseConstraintsEditorNode, "id");
+					domConstruct.create("div", {
+						id:"access-editor-widget"
+					}, this.accessAndUseConstraintsEditorNode, "first");
+
+					if (this.accessAndUseConstraints === "") {
+						domConstruct.place("<span></span>", "access-editor-widget", "first");
+					} else {
+						domConstruct.place("<span>" + this.accessAndUseConstraints_clean + "</span>", "access-editor-widget", "first");
+					}
+
+					domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
+					domStyle.set(this.cancelBtnNode, "display", "none");
+
+					// set numerator
+					this.scoringUtils.itemCreditsScore = this.validator.setCreditsScore(this.itemCredits_clean);
+					this.scoringUtils.itemAccessAndUseConstraintsScore = this.validator.setAccessAndUseConstraintsScore(this.accessAndUseConstraints_clean);
+					this.creditsScoreNumeratorNode.innerHTML = this.scoringUtils.itemCreditsScore;
+					this.accessScoreNumeratorNode.innerHTML = this.scoringUtils.itemAccessAndUseConstraintsScore;
+
+					// update section style score graphics
+					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemCreditsScore, this.scoringUtils.ITEM_CREDIT_MAX_SCORE, this.creditsScoreNodeContainer);
+					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemAccessAndUseConstraintsScore, this.scoringUtils.ITEM_ACCESS_AND_USE_CONSTRAINTS_MAX_SCORE, this.accessScoreNodeContainer);
+
+					this.scoringUtils.creditsAndAccessScore = this.scoringUtils.itemCreditsScore + this.scoringUtils.itemAccessAndUseConstraintsScore;
+					this.scoringUtils.updateSectionScore(this.scoringUtils.creditsAndAccessScore, this.creditsNode, this.scoringUtils.ITEM_USE_CONSTRAINS_MAX_SCORE);
+					this.scoringUtils.updateOverallScore();
+				}));
 			}
 		},
 

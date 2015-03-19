@@ -566,3 +566,26 @@ table tr {
 .accept-item-btn {
 	margin-top: 10px;
 }
+
+.edit-save-btn {
+	display: none;
+}
+
+/* SEARCH input */
+.search-input-text-box {
+	height: 35px;
+	border: none;
+	background-color: #4997D2 !important;
+}
+
+.cancel-search-button {
+	left: 240px !important;
+	margin-top: -25px !important;
+	opacity: 0.6;
+	z-index: 100;
+}
+
+.cancel-search-button:hover {
+	cursor: pointer;
+	opacity: 1.0;
+}

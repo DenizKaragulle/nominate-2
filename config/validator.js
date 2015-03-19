@@ -67,7 +67,7 @@ define([
 			var strippedString = itemTitle.replace(/(<([^>]+)>)/ig, "");
 			var nWords = this._getNumWords(strippedString);
 			// validate length
-			if (nWords > scoring.ITEM_TITLE_MIN_LENGTH) {
+			if (nWords >= scoring.ITEM_TITLE_MIN_LENGTH) {
 				score = scoring.ITEM_TITLE_MIN_LENGTH_SCORE;
 			}
 			score = score + this._titleHasBadWords(itemTitle, scoring.ITEM_TITLE_BAD_WORDS, scoring.ITEM_TITLE_NO_BAD_WORDS_SCORE);

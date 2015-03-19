@@ -95,6 +95,8 @@ define({
 		"viewSource"
 	],
 
+	"SHARING_COMMUNITY_URL" : "https://www.arcgis.com/sharing/rest/community/users/",
+
 	"NOMINATE_ADMIN_FEATURE_SERVICE_URL": "https://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/nomcur/FeatureServer/0",
 	"CURATOR_LIST_ADMIN_FEATURE_SERVICE_URL" : "http://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/curlist/FeatureServer/0",
 	"CURATOR_GROUP_ADMIN_FEATURE_SERVICE_URL" : "http://services1.arcgis.com/4yjifSiIG17X0gW4/arcgis/rest/services/curgroup/FeatureServer/0",

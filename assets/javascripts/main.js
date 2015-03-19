@@ -96,7 +96,7 @@ require([
 	var searchInputNode = "";
 	var dropdownSortNode = "";
 	var dropdownItemFilterNode = "";
-	var helpButtonNode = "";
+	//var helpButtonNode = "";
 	var progressBarNode = "";
 	// div dimensions
 	var COLLAPSE_ROW_HEIGHT = 125;
@@ -156,7 +156,6 @@ require([
 			// item status ("NOMINATED", "UNDER REVIEW", "ACCEPTED")
 			var status = "";
 			array.forEach(nominateUtils.nominatedItems.features, function (feature) {
-				console.debug("OnlineStatus", feature.attributes["OnineStatus"]);
 				if (object.id === feature.attributes.itemID) {
 					if (feature.attributes["OnineStatus"] === "") {
 						status = defaults.CURRENT_STATUS[0].label;
@@ -226,7 +225,7 @@ require([
 			searchInputNode = query(".search-items")[0];
 			dropdownSortNode = query(".dropdown-item-sort")[0];
 			dropdownItemFilterNode = query(".dropdown-item-filter")[0];
-			helpButtonNode = query(".help-button")[0];
+			/*helpButtonNode = query(".help-button")[0];*/
 
 			portal = new arcgisPortal.Portal(defaults.sharinghost);
 
@@ -235,7 +234,7 @@ require([
 				on(searchInputNode, "keydown", searchItemsClickHandler);
 				on(query(".filter-list"), "click", filterItemsClickHandler);
 				on(query(".sort-items"), "click", sortItemsClickHandler);
-				on(query(".icon-help")[0], "click", helpBtnClickHandler);
+				/*on(query(".icon-help")[0], "click", helpBtnClickHandler);*/
 			}));
 		}
 
@@ -287,12 +286,9 @@ require([
 								portalUtils.IS_CURATOR = true;
 								var process = nominateUtils.loadNominatedItemsInMemory();
 								process.then(lang.hitch(this, function (items) {
-									console.debug("NOMINATED ITEM ID's", items.features);
 									portalUtils.queryPortal(items.features).then(lang.hitch(this, function (response) {
 										all(response).then(lang.hitch(this, function (results) {
-											console.debug("RESULTS", results);
 											nominateUtils.nominatedItems = items;
-											console.debug("nominateUtils.nominatedItems", nominateUtils.nominatedItems);
 											var numItems = results.length;
 											// update the ribbon header
 											userInterfaceUtils.updateRibbonHeaderTitle();
@@ -321,13 +317,13 @@ require([
 
 											// "Nominate" button edits-complete handler
 											on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", function (complete) {
-
+												console.debug("complete", complete);
 												// curator has added comments to an nominated item
 												if (complete.updates.length > 0) {
 													if (complete.updates[0].success) {
+														// update the list
 														nominateUtils.loadNominatedItemsInMemory().then(function (results) {
 															nominateUtils.nominatedItems = results;
-															console.log(nominateUtils.nominatedItems);
 														});
 														dijit.byId("adminDialog").destroy();
 													}
@@ -375,8 +371,6 @@ require([
 												// selected row ID
 												selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
 												nominateUtils.setSelectedID(selectedRowID);
-												scoringUtils = new ScoringUtils(validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
-												scoringUtils.removeScoreBar();
 
 												// get row width
 												var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
@@ -408,124 +402,140 @@ require([
 													nominateUtils.nominateBtnID = nominateUtils.NOMINATE_BTN_ID + selectedRowID;
 													nominateUtils.acceptBtnID = nominateUtils.ACCEPT_BTN_ID + selectedRowID;
 
+													// get item details
 													portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
-														domConstruct.place(
-																"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
-																	//
-																		"	<div class='content-container'>" +
-																		"		<div class='row'>" +
-																		"			<div class='column-21 pre-3'>" +
-																		"				<div id='map-mask' class='loader'>" +
-																		"					<span class='side side-left'><span class='fill'></span></span>" +
-																		"					<span class='side side-right'><span class='fill'></span></span>" +
-																		"				</div>" +
-																		"				<div id='map'></div>" +
-																		"			</div>" +
-																		"		</div>" +
+														// get the item's owner details
+														portalUtils.getItemUserProfileContent(item).then(function (userProfile) {
+															// get details about the nominated item
+															nominateUtils.getItemStatus(selectedRowID).then(function (nominatedItem) {
+																scoringUtils = new ScoringUtils(userProfile, validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
+																scoringUtils.removeScoreBar();
 
-																		"		<div class='row'>" +
-																		"			<div class='column-21 pre-3'>" +
-																		"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-																		"			</div>" +
-																		"		</div>" +
+																domConstruct.place(
+																		"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
+																			//
+																				"	<div class='content-container'>" +
+																				"		<div class='row'>" +
+																				"			<div class='column-21 pre-3'>" +
+																				"				<div id='map-mask' class='loader'>" +
+																				"					<span class='side side-left'><span class='fill'></span></span>" +
+																				"					<span class='side side-right'><span class='fill'></span></span>" +
+																				"				</div>" +
+																				"				<div id='map'></div>" +
+																				"			</div>" +
+																				"		</div>" +
 
-																	// Scoring
-																		"		<div class='row'>" +
-																		"			<div class='column-15 pre-3'>" +
-																		"				<div class='current-score-graphic-container'></div>" +
-																		"			</div>" +
-																		"			<div class='column-2'>" +
-																		"				<div class='current-score-number'></div>" +
-																		"				<div id='progressBarMarker'></div>" +
-																		"			</div>" +
-																		"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-																		"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled' style='display:none;'> NOMINATE </button>" +
-																		"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn enabled'> ACCEPT </button>" +
-																		"			</div>" +
-																		"		</div>" +
+																				"		<div class='row'>" +
+																				"			<div class='column-21 pre-3'>" +
+																				"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+																				"			</div>" +
+																				"		</div>" +
 
-																	// Overall Score
-																		"		<div class='row'>" +
-																		"			<div class='column-15 pre-3'>" +
-																		"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-																		"			</div>" +
-																		"		</div>" +
+																			// Scoring
+																				"		<div class='row'>" +
+																				"			<div class='column-15 pre-3'>" +
+																				"				<div class='current-score-graphic-container'></div>" +
+																				"			</div>" +
+																				"			<div class='column-2'>" +
+																				"				<div class='current-score-number'></div>" +
+																				"				<div id='progressBarMarker'></div>" +
+																				"			</div>" +
+																				"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+																				"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled' style='display:none;'> NOMINATE </button>" +
+																				"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn enabled'> ACCEPT </button>" +
+																				"			</div>" +
+																				"		</div>" +
 
-																	// Button Group (i.e. sections)
-																		"		<div class='row'>" +
-																		"			<div class='column-18 pre-3'>" +
-																		"				<div id='" + tcID + "'></div>" +
-																		"			</div>" +
-																		"		</div>" +
-																		"	</div>" +
-																		"</div>",
-																selectedRow.firstElementChild, "last");
+																			// Overall Score
+																				"		<div class='row'>" +
+																				"			<div class='column-15 pre-3'>" +
+																				"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+																				"			</div>" +
+																				"		</div>" +
 
-														// get progress bar node
-														progressBarNode = query(".current-score-graphic-container")[0];
-														// nominate button node
-														nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
-														// accept button node
-														nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
+																			// Button Group (i.e. sections)
+																				"		<div class='row'>" +
+																				"			<div class='column-18 pre-3'>" +
+																				"				<div id='" + tcID + "'></div>" +
+																				"			</div>" +
+																				"		</div>" +
+																				"	</div>" +
+																				"</div>",
+																		selectedRow.firstElementChild, "last");
 
-														// create button group
-														initContentButtonGroup(tcID);
+																// get progress bar node
+																progressBarNode = query(".current-score-graphic-container")[0];
+																// nominate button node
+																nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
+																// accept button node
+																nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
 
-														// initialize content area with details data
-														detailsContentPane();
+																// get the item's status
+																if (nominatedItem.features[0].attributes["OnineStatus"] === defaults.STATUS_ACCEPTED) {
+																	// disable accepted button
+																	userInterfaceUtils.disableNominateButton(nominateUtils.acceptBtnNode);
+																}
 
-														if (item.type === "Web Map") {
-															var mapDrawBegin = performance.now();
-															var mapDrawComplete;
-															// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
-															arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
-																//console.log(response);
-																layers = response.itemInfo.itemData.operationalLayers;
-																map = response.map;
+																// create button group
+																initContentButtonGroup(tcID);
 
-																// make sure map is loaded
-																if (map.loaded) {
-																	mapDrawComplete = performance.now();
-																	var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+																// initialize content area with details data
+																detailsContentPane();
+
+																if (item.type === "Web Map") {
+																	var mapDrawBegin = performance.now();
+																	var mapDrawComplete;
+																	// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
+																	arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
+																		//console.log(response);
+																		layers = response.itemInfo.itemData.operationalLayers;
+																		map = response.map;
+
+																		// make sure map is loaded
+																		if (map.loaded) {
+																			mapDrawComplete = performance.now();
+																			var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+																			userInterfaceUtils.fadeLoader();
+
+																			// set performance scores
+																			scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
+																			scoringUtils.nLayersScore = validator.setNumLayersScore(response);
+																			scoringUtils.popupsScore = validator.setPopupScore(response);
+																			scoringUtils.sharingScore = validator.setSharingScore(item);
+																			scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+																			// set style on performance button
+																			userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
+																			// initialize the scores
+																			scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+																			HAS_PERFORMANCE_CONTENT = true;
+
+																			on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
+																		}
+																	});
+																} else {
+																	// fade the loader
 																	userInterfaceUtils.fadeLoader();
+																	// hide the map div
+																	domStyle.set("map", "display", "none");
+																	//
+																	on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
 
-																	// set performance scores
-																	scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
-																	scoringUtils.nLayersScore = validator.setNumLayersScore(response);
-																	scoringUtils.popupsScore = validator.setPopupScore(response);
+																	scoringUtils.mapDrawTimeScore = 0;
+																	scoringUtils.nLayersScore = 0;
+																	scoringUtils.popupsScore = 0;
 																	scoringUtils.sharingScore = validator.setSharingScore(item);
 																	scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
-																	// set style on performance button
-																	userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
+
 																	// initialize the scores
 																	scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																	HAS_PERFORMANCE_CONTENT = true;
-
-																	on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
+																	HAS_PERFORMANCE_CONTENT = false;
 																}
+																on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
+																on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
+																on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
+																on(profileNode, "click", lang.partial(profileNodeClickHandler));
 															});
-														} else {
-															// fade the loader
-															userInterfaceUtils.fadeLoader();
-															// hide the map div
-															domStyle.set("map", "display", "none");
-															//
-															on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
-
-															scoringUtils.mapDrawTimeScore = 0;
-															scoringUtils.nLayersScore = 0;
-															scoringUtils.popupsScore = 0;
-															scoringUtils.sharingScore = validator.setSharingScore(item);
-															scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
-
-															// initialize the scores
-															scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-															HAS_PERFORMANCE_CONTENT = false;
-														}
-														on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
-														on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
-														on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
-														on(profileNode, "click", lang.partial(profileNodeClickHandler));
+														});
 													}); // END getItem
 												} // END if
 											}); // END dGrid click
@@ -574,7 +584,6 @@ require([
 
 												// "Nominate" button edits-complete handler
 												on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", function (complete) {
-
 													// curator has added comments to an nominated item
 													if (complete.updates.length > 0) {
 														if (complete.updates[0].success) {
@@ -624,8 +633,6 @@ require([
 													// selected row ID
 													selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
 													nominateUtils.setSelectedID(selectedRowID);
-													scoringUtils = new ScoringUtils(validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
-													scoringUtils.removeScoreBar();
 
 													// get row width
 													var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
@@ -658,127 +665,132 @@ require([
 														nominateUtils.acceptBtnID = nominateUtils.ACCEPT_BTN_ID + selectedRowID;
 
 														portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
-															domConstruct.place(
-																	"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
-																		//
-																			"	<div class='content-container'>" +
-																			"		<div class='row'>" +
-																			"			<div class='column-21 pre-3'>" +
-																			"				<div id='map-mask' class='loader'>" +
-																			"					<span class='side side-left'><span class='fill'></span></span>" +
-																			"					<span class='side side-right'><span class='fill'></span></span>" +
-																			"				</div>" +
-																			"				<div id='map'></div>" +
-																			"			</div>" +
-																			"		</div>" +
+															portalUtils.getItemUserProfileContent(item).then(function (userProfile) {
+																scoringUtils = new ScoringUtils(userProfile, validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
+																scoringUtils.removeScoreBar();
 
-																			"		<div class='row'>" +
-																			"			<div class='column-21 pre-3'>" +
-																			"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-																			"			</div>" +
-																			"		</div>" +
+																domConstruct.place(
+																		"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
+																			//
+																				"	<div class='content-container'>" +
+																				"		<div class='row'>" +
+																				"			<div class='column-21 pre-3'>" +
+																				"				<div id='map-mask' class='loader'>" +
+																				"					<span class='side side-left'><span class='fill'></span></span>" +
+																				"					<span class='side side-right'><span class='fill'></span></span>" +
+																				"				</div>" +
+																				"				<div id='map'></div>" +
+																				"			</div>" +
+																				"		</div>" +
 
-																		// Scoring
-																			"		<div class='row'>" +
-																			"			<div class='column-15 pre-3'>" +
-																			"				<div class='current-score-graphic-container'></div>" +
-																			"			</div>" +
-																			"			<div class='column-2'>" +
-																			"				<div class='current-score-number'></div>" +
-																			"				<div id='progressBarMarker'></div>" +
-																			"			</div>" +
-																			"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-																			"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
-																			"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn disabled' style='display: none;'> ACCEPT </button>" +
-																			"			</div>" +
-																			"		</div>" +
+																				"		<div class='row'>" +
+																				"			<div class='column-21 pre-3'>" +
+																				"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+																				"			</div>" +
+																				"		</div>" +
 
-																		// Overall Score
-																			"		<div class='row'>" +
-																			"			<div class='column-15 pre-3'>" +
-																			"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-																			"			</div>" +
-																			"		</div>" +
+																			// Scoring
+																				"		<div class='row'>" +
+																				"			<div class='column-15 pre-3'>" +
+																				"				<div class='current-score-graphic-container'></div>" +
+																				"			</div>" +
+																				"			<div class='column-2'>" +
+																				"				<div class='current-score-number'></div>" +
+																				"				<div id='progressBarMarker'></div>" +
+																				"			</div>" +
+																				"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+																				"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
+																				"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn disabled' style='display: none;'> ACCEPT </button>" +
+																				"			</div>" +
+																				"		</div>" +
 
-																		// Button Group (i.e. sections)
-																			"		<div class='row'>" +
-																			"			<div class='column-18 pre-3'>" +
-																			"				<div id='" + tcID + "'></div>" +
-																			"			</div>" +
-																			"		</div>" +
-																			"	</div>" +
-																			"</div>",
-																	selectedRow.firstElementChild, "last");
+																			// Overall Score
+																				"		<div class='row'>" +
+																				"			<div class='column-15 pre-3'>" +
+																				"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+																				"			</div>" +
+																				"		</div>" +
 
-															// get progress bar node
-															progressBarNode = query(".current-score-graphic-container")[0];
-															// nominate button node
-															nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
-															// accept button node
-															nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
+																			// Button Group (i.e. sections)
+																				"		<div class='row'>" +
+																				"			<div class='column-18 pre-3'>" +
+																				"				<div id='" + tcID + "'></div>" +
+																				"			</div>" +
+																				"		</div>" +
+																				"	</div>" +
+																				"</div>",
+																		selectedRow.firstElementChild, "last");
 
-															// create button group
-															initContentButtonGroup(tcID);
+																// get progress bar node
+																progressBarNode = query(".current-score-graphic-container")[0];
+																// nominate button node
+																nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
+																// accept button node
+																nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
 
-															// initialize content area with details data
-															detailsContentPane();
+																// create button group
+																initContentButtonGroup(tcID);
 
-															if (item.type === "Web Map") {
-																var mapDrawBegin = performance.now();
-																var mapDrawComplete;
-																// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
-																arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
-																	//console.log(response);
-																	layers = response.itemInfo.itemData.operationalLayers;
-																	map = response.map;
+																// initialize content area with details data
+																detailsContentPane();
 
-																	// make sure map is loaded
-																	if (map.loaded) {
-																		mapDrawComplete = performance.now();
-																		var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-																		userInterfaceUtils.fadeLoader();
+																if (item.type === "Web Map") {
+																	var mapDrawBegin = performance.now();
+																	var mapDrawComplete;
+																	// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
+																	arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
+																		//console.log(response);
+																		layers = response.itemInfo.itemData.operationalLayers;
+																		map = response.map;
 
-																		// set performance scores
-																		scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
-																		scoringUtils.nLayersScore = validator.setNumLayersScore(response);
-																		scoringUtils.popupsScore = validator.setPopupScore(response);
-																		scoringUtils.sharingScore = validator.setSharingScore(item);
-																		scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
-																		// set style on performance button
-																		userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
-																		// initialize the scores
-																		scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																		HAS_PERFORMANCE_CONTENT = true;
+																		// make sure map is loaded
+																		if (map.loaded) {
+																			mapDrawComplete = performance.now();
+																			var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+																			userInterfaceUtils.fadeLoader();
 
-																		on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
-																	}
-																});
-															} else {
-																// fade the loader
-																userInterfaceUtils.fadeLoader();
-																// hide the map div
-																domStyle.set("map", "display", "none");
-																//
-																on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
+																			// set performance scores
+																			scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
+																			scoringUtils.nLayersScore = validator.setNumLayersScore(response);
+																			scoringUtils.popupsScore = validator.setPopupScore(response);
+																			scoringUtils.sharingScore = validator.setSharingScore(item);
+																			scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+																			// set style on performance button
+																			userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
+																			// initialize the scores
+																			scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+																			HAS_PERFORMANCE_CONTENT = true;
 
-																scoringUtils.mapDrawTimeScore = 0;
-																scoringUtils.nLayersScore = 0;
-																scoringUtils.popupsScore = 0;
-																scoringUtils.sharingScore = validator.setSharingScore(item);
-																scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+																			on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
+																		}
+																	});
+																} else {
+																	// fade the loader
+																	userInterfaceUtils.fadeLoader();
+																	// hide the map div
+																	domStyle.set("map", "display", "none");
+																	//
+																	on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
 
-																// initialize the scores
-																scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																HAS_PERFORMANCE_CONTENT = false;
-															}
-															on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
-															on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
-															on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
-															on(profileNode, "click", lang.partial(profileNodeClickHandler));
+																	scoringUtils.mapDrawTimeScore = 0;
+																	scoringUtils.nLayersScore = 0;
+																	scoringUtils.popupsScore = 0;
+																	scoringUtils.sharingScore = validator.setSharingScore(item);
+																	scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+
+																	// initialize the scores
+																	scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+																	HAS_PERFORMANCE_CONTENT = false;
+																}
+																on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
+																on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
+																on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
+																on(profileNode, "click", lang.partial(profileNodeClickHandler));
+															});
 														}); // END getItem
 													} // END if
 												}); // END dGrid click
-											}); // loadNominatedItemsInMemory
+											}); // END loadNominatedItemsInMemory
 											userInterfaceUtils.hideNode(query(".init-loader")[0]);
 										});
 							}
@@ -810,14 +822,14 @@ require([
 			gridUtils.applySort(target);
 		}
 
-		function helpBtnClickHandler() {
-			var helpDialog = new Dialog({
-				title:"HELP",
-				content:"<div>Not implemented yet</div>",
-				style:"width: 300px"
-			});
-			helpDialog.show();
-		}
+		/*function helpBtnClickHandler() {
+		 var helpDialog = new Dialog({
+		 title:"HELP",
+		 content:"<div>Not implemented yet</div>",
+		 style:"width: 300px"
+		 });
+		 helpDialog.show();
+		 }*/
 
 		function searchItemsClickHandler(event) {
 			switch (event.keyCode) {

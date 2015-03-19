@@ -1,4 +1,5 @@
 define([
+	"esri/request",
 	"esri/tasks/query",
 	"esri/tasks/QueryTask",
 	"dojo/_base/array",
@@ -6,7 +7,7 @@ define([
 	"dojo/_base/lang",
 	"dojo/Deferred",
 	"config/defaults"
-], function (Query, QueryTask, array, declare, lang, Deferred, defaults) {
+], function (esriRequest, Query, QueryTask, array, declare, lang, Deferred, defaults) {
 
 	return declare(null, {
 
@@ -62,7 +63,6 @@ define([
 					num:100
 				};
 				this.portal.queryItems(params).then(function (result) {
-					console.debug(result.results[0]);
 					deferred.resolve(result.results[0]);
 				});
 				defs.push(deferred.promise);
@@ -71,6 +71,20 @@ define([
 				}
 			}));
 			return d.promise;
+		},
+
+		getItemUserProfileContent:function (item) {
+			var deferred = new Deferred();
+			esriRequest({
+				url: defaults.SHARING_COMMUNITY_URL + item.owner,
+				content:{
+					f:"json"
+				},
+				handleAs:"json"
+			}).then(lang.hitch(this, function (obj) {
+				deferred.resolve(obj);
+			}));
+			return deferred.promise;
 		}
 	});
 });

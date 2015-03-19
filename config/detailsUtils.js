@@ -30,80 +30,78 @@ define([
 	"dijit/form/Textarea",
 	"config/defaults",
 	"config/adminUtils"
-], function (put, Color, esriRequest, Point, Graphic, FeatureLayer, SimpleMarkerSymbol,
-			 array, declare, lang, Deferred, dom, domAttr, domClass, domConstruct,
-			 domStyle, html, mouse, on, query, Dialog, focusUtil, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, Textarea, defaults, AdminUtils) {
+], function (put, Color, esriRequest, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, array, declare, lang, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, mouse, on, query, Dialog, focusUtil, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, Textarea, defaults, AdminUtils) {
 
 	return declare([AdminUtils], {
 
-		itemStore: null,
-		validator: null,
-		nominateUtils: null,
-		userInterfaceUtils: null,
-		scoringUtils: null,
-		scoring: null,
-		tooltipsConfig: null,
-		portalUtils: null,
+		itemStore:null,
+		validator:null,
+		nominateUtils:null,
+		userInterfaceUtils:null,
+		scoringUtils:null,
+		scoring:null,
+		tooltipsConfig:null,
+		portalUtils:null,
 
-		selectedID: null,
-		item: null,
-		titleID: null,
-		snippetID: null,
-		descID: null,
+		selectedID:null,
+		item:null,
+		titleID:null,
+		snippetID:null,
+		descID:null,
 
-		currentOverallScoreNode: null,
-		nominateBtnNode: null,
+		currentOverallScoreNode:null,
+		nominateBtnNode:null,
 
-		detailsNode: null,
-		editSaveBtnNode: null,
-		cancelBtnNode: null,
-		emailUserBtn: null,
-		thumbnailLabelNode: null,
-		titleNode: null,
-		summaryLabelNode: null,
-		descriptionLabelNode: null,
+		detailsNode:null,
+		editSaveBtnNode:null,
+		cancelBtnNode:null,
+		emailUserBtn:null,
+		thumbnailLabelNode:null,
+		titleNode:null,
+		summaryLabelNode:null,
+		descriptionLabelNode:null,
 
-		itemThumbnailNode: null,
-		itemOpenLinkNode: null,
-		itemTitleNode: null,
-		itemSummaryNode: null,
-		itemDescriptionNode: null,
+		itemThumbnailNode:null,
+		itemOpenLinkNode:null,
+		itemTitleNode:null,
+		itemSummaryNode:null,
+		itemDescriptionNode:null,
 		// tooltip nodes
-		itemThumbnailTooltipNode: null,
-		itemTitleTooltipNode: null,
-		itemSummaryTooltipNode: null,
-		itemDescriptionTooltipNode: null,
+		itemThumbnailTooltipNode:null,
+		itemTitleTooltipNode:null,
+		itemSummaryTooltipNode:null,
+		itemDescriptionTooltipNode:null,
 		// sections scores
-		thumbnailScoreNodeContainer: null,
-		thumbnailScoreNumeratorNode: null,
-		thumbnailScoreDenominatorNode: null,
-		titleScoreNodeContainer: null,
-		titleScoreNumeratorNode: null,
-		titleScoreDenominatorNode: null,
-		summaryScoreNodeContainer: null,
-		summaryScoreNumeratorNode: null,
-		summaryScoreDenominatorNode: null,
-		descScoreNodeContainer: null,
-		descScoreNumeratorNode: null,
-		descScoreDenominatorNode: null,
-		itemThumbnailListener: null,
+		thumbnailScoreNodeContainer:null,
+		thumbnailScoreNumeratorNode:null,
+		thumbnailScoreDenominatorNode:null,
+		titleScoreNodeContainer:null,
+		titleScoreNumeratorNode:null,
+		titleScoreDenominatorNode:null,
+		summaryScoreNodeContainer:null,
+		summaryScoreNumeratorNode:null,
+		summaryScoreDenominatorNode:null,
+		descScoreNodeContainer:null,
+		descScoreNumeratorNode:null,
+		descScoreDenominatorNode:null,
+		itemThumbnailListener:null,
 
 		// item title
-		itemTitle: null,
-		itemTitle_clean: null,
+		itemTitle:null,
+		itemTitle_clean:null,
 		// item summary
-		itemSummary: null,
-		itemSummary_clean: null,
+		itemSummary:null,
+		itemSummary_clean:null,
 		// item description
-		itemDescription: null,
-		itemDescription_clean: null,
+		itemDescription:null,
+		itemDescription_clean:null,
 		// thumbnail url
-		thumbnailUrl: null,
-		thumbnailUrl_clean: null,
+		thumbnailUrl:null,
+		thumbnailUrl_clean:null,
 
-		detailsAdminDialog: null,
+		detailsAdminDialog:null,
 
-		constructor: function (item, itemStore, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils) {
+		constructor:function (item, itemStore, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils) {
 			this.validator = validator;
 			this.itemStore = itemStore;
 			this.nominateUtils = nominateUtils;
@@ -177,13 +175,13 @@ define([
 			// set the title
 			domAttr.set(this.itemTitleNode, "id", this.titleID);
 			domConstruct.create("div", {
-				innerHTML: this.itemTitle
+				innerHTML:this.itemTitle
 			}, this.itemTitleNode, "first");
 			// set the summary
 			domAttr.set(this.itemSummaryNode, "id", this.snippetID);
 			domAttr.set(this.itemSummaryNode, "value", this.itemSummary);
 			domConstruct.create("div", {
-				innerHTML: this.itemSummary
+				innerHTML:this.itemSummary
 			}, this.itemSummaryNode, "first");
 			// set the description
 			domAttr.set(this.itemDescriptionNode, "id", this.descID);
@@ -237,137 +235,202 @@ define([
 			this.scoringUtils.itemDetailsScore = this.scoringUtils.itemThumbnailScore + this.scoringUtils.itemTitleScore + this.scoringUtils.itemSummaryScore + this.scoringUtils.itemDescriptionScore;
 			this.scoringUtils.updateSectionScore(this.scoringUtils.itemDetailsScore, this.detailsNode, this.scoringUtils.ITEM_DETAILS_MAX_SCORE);
 
-			console.log(portalUtils.IS_CURATOR);
+			if (this.portalUtils.IS_CURATOR) {
+				// only permit nominated items to have notes added by curators
+				this.userInterfaceUtils.getFeature(item.id).then(lang.hitch(this, function (response) {
+					var notesFeature = response.features[0];
+					if (notesFeature) {
+						// admin dialog hover/click listeners
+						on(this.thumbnailLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.thumbnailLabelNode)));
+						on(this.thumbnailLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.thumbnailLabelNode)));
+						on(this.thumbnailLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
 
-			// SAVE/EDIT
-			on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
-				if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
-					// EDIT clicked
-					// update EDIT/SAVE button
-					this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.SAVE_BTN_LABEL, this.cancelBtnNode, "block");
-					domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "pointer");
+						on(this.titleNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.titleNode)));
+						on(this.titleNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.titleNode)));
+						on(this.titleNode, "click", lang.hitch(this, this.adminNodeClickHandler));
 
-					// update thumbnail
-					domStyle.set(query(".edit-thumbnail-msg")[0], "display", "block");
+						on(this.summaryLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.summaryLabelNode)));
+						on(this.summaryLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.summaryLabelNode)));
+						on(this.summaryLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
 
-					// update title
-					domConstruct.empty(this.itemTitleNode);
-					domConstruct.create("input", {
-						class: "edit-title",
-						value: this.itemTitle
-					}, this.itemTitleNode, "first");
-					domAttr.set(this.itemTitleNode, "data-dojo-type", "dijit/form/TextBox");
-					domAttr.set(this.itemTitleNode, "id", this.titleID);
-
-					// update summary
-					domConstruct.empty(this.itemSummaryNode);
-					domConstruct.create("input", {
-						class: "edit-summary",
-						value: this.itemSummary
-					}, this.itemSummaryNode, "first");
-					domAttr.set(this.itemSummaryNode, "data-dojo-type", "dijit/form/TextBox");
-					domAttr.set(this.itemSummaryNode, "id", this.snippetID);
-
-					// update description
-					if (dijit.byId("description-editor-widget")) {
-						dijit.byId("description-editor-widget").destroy();
-						domAttr.remove(this.itemDescriptionNode, "id");
-						domConstruct.create("div", {
-							id: "description-editor-widget",
-							innerHTML: this.itemDescription
-						}, this.itemDescriptionNode, "first");
+						on(this.descriptionLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.descriptionLabelNode)));
+						on(this.descriptionLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.descriptionLabelNode)));
+						on(this.descriptionLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
 					}
+				}));
+				// EMAIL
+				on(this.emailUserBtn, "click", lang.hitch(this, function () {
+					// display final email
+					this.openEmailDialog();
+				}));
+			} else {
+				domStyle.set(query(".email-btn")[0], "display", "none");
+				domStyle.set(this.nominateUtils.acceptBtnNode, "display", "none");
+				domStyle.set(this.editSaveBtnNode, "display", "block");
 
-					// create the Editor for the description
-					var descriptionEditor = new Editor({
-						plugins: defaults.EDITOR_PLUGINS,
-						innerHTML: this.itemDescription
-					}, dom.byId("description-editor-widget"));
-					descriptionEditor.startup();
+				on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
+					if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
+						// EDIT clicked
+						// update EDIT/SAVE button
+						this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.SAVE_BTN_LABEL, this.cancelBtnNode, "block");
+						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "pointer");
 
-					// update thumbnail
-					this.itemThumbnailListener = on(query(".expanded-item-thumbnail"), "click", lang.hitch(this, function (event) {
-						this.portalUtils.portalUser.getItem(this.selectedID).then(lang.hitch(this, function (userItem) {
-							this.uploadItemThumbnail(userItem, "SMALL");
+						// update thumbnail
+						domStyle.set(query(".edit-thumbnail-msg")[0], "display", "block");
+
+						// update title
+						domConstruct.empty(this.itemTitleNode);
+						domConstruct.create("input", {
+							class:"edit-title",
+							value:this.itemTitle
+						}, this.itemTitleNode, "first");
+						domAttr.set(this.itemTitleNode, "data-dojo-type", "dijit/form/TextBox");
+						domAttr.set(this.itemTitleNode, "id", this.titleID);
+
+						// update summary
+						domConstruct.empty(this.itemSummaryNode);
+						domConstruct.create("input", {
+							class:"edit-summary",
+							value:this.itemSummary
+						}, this.itemSummaryNode, "first");
+						domAttr.set(this.itemSummaryNode, "data-dojo-type", "dijit/form/TextBox");
+						domAttr.set(this.itemSummaryNode, "id", this.snippetID);
+
+						// update description
+						if (dijit.byId("description-editor-widget")) {
+							dijit.byId("description-editor-widget").destroy();
+							domAttr.remove(this.itemDescriptionNode, "id");
+							domConstruct.create("div", {
+								id:"description-editor-widget",
+								innerHTML:this.itemDescription
+							}, this.itemDescriptionNode, "first");
+						}
+
+						// create the Editor for the description
+						var descriptionEditor = new Editor({
+							plugins:defaults.EDITOR_PLUGINS,
+							innerHTML:this.itemDescription
+						}, dom.byId("description-editor-widget"));
+						descriptionEditor.startup();
+
+						// update thumbnail
+						this.itemThumbnailListener = on(query(".expanded-item-thumbnail"), "click", lang.hitch(this, function (event) {
+							this.portalUtils.portalUser.getItem(this.selectedID).then(lang.hitch(this, function (userItem) {
+								this.uploadItemThumbnail(userItem, "SMALL");
+							}));
 						}));
-					}));
-				} else {
-					this.itemThumbnailListener.remove();
+					} else {
+						this.itemThumbnailListener.remove();
 
-					// SAVE clicked
-					this.itemTitle = query(".edit-title")[0].value;
-					this.itemSummary = query(".edit-summary")[0].value;
-					this.itemDescription = dijit.byId("description-editor-widget").value;
+						// SAVE clicked
+						this.itemTitle = query(".edit-title")[0].value;
+						this.itemSummary = query(".edit-summary")[0].value;
+						this.itemDescription = dijit.byId("description-editor-widget").value;
 
-					// for some reason, cannot upload empty strings, probably issue on my end
-					if (this.itemDescription.length < 0) {
-						this.itemDescription = " ";
+						// for some reason, cannot upload empty strings, probably issue on my end
+						if (this.itemDescription.length < 0) {
+							this.itemDescription = " ";
+						}
+
+						// write to AGOL
+						this.portalUtils.portalUser.getItem(item.id).then(lang.hitch(this, function (results) {
+							var _userItemUrl = results.userItemUrl;
+							esriRequest({
+								url:_userItemUrl + "/update",
+								content:{
+									f:"json",
+									title:this.itemTitle,
+									snippet:this.itemSummary,
+									description:this.itemDescription
+								}
+							}, {
+								usePost:true
+							}).then(lang.hitch(this, function (response) {
+								if (response.success) {
+									// update the title
+									html.set(query(".title-" + item.id)[0], this.itemTitle);
+									this.itemTitle_clean = this.itemTitle;
+									this.itemSummary_clean = this.itemSummary;
+									this.itemDescription_clean = this.itemDescription;
+									// update the Edit/Save buttons
+									this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.EDIT_BTN_LABEL, this.cancelBtnNode, "none");
+									// update the scoring numerator(s)
+									this.scoringUtils.itemThumbnailScore = this.validator.setThumbnailScore(results);
+									this.scoringUtils.itemTitleScore = this.validator.setItemTitleScore(this.itemTitle);
+									this.scoringUtils.itemSummaryScore = this.validator.setItemSummaryScore(this.itemSummary);
+									this.scoringUtils.itemDescriptionScore = this.validator.setItemDescriptionScore(this.itemDescription);
+									// update the nodes
+									this.thumbnailScoreNumeratorNode.innerHTML = this.scoringUtils.itemThumbnailScore;
+									this.titleScoreNumeratorNode.innerHTML = this.scoringUtils.itemTitleScore;
+									this.summaryScoreNumeratorNode.innerHTML = this.scoringUtils.itemSummaryScore;
+									this.descScoreNumeratorNode.innerHTML = this.scoringUtils.itemDescriptionScore;
+
+									// update section style score graphics
+									this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemThumbnailScore, this.scoringUtils.ITEM_THUMBNAIL_MAX_SCORE, this.thumbnailScoreNodeContainer);
+									this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemTitleScore, this.scoringUtils.ITEM_TITLE_MAX_SCORE, this.titleScoreNodeContainer);
+									this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemSummaryScore, this.scoringUtils.ITEM_SUMMARY_MAX_SCORE, this.summaryScoreNodeContainer);
+									this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemDescriptionScore, this.scoringUtils.ITEM_DESC_MAX_SCORE, this.descScoreNodeContainer);
+
+									// section overall score
+									this.scoringUtils.itemDetailsScore = this.scoringUtils.itemThumbnailScore + this.scoringUtils.itemTitleScore + this.scoringUtils.itemSummaryScore + this.scoringUtils.itemDescriptionScore;
+									this.scoringUtils.updateSectionScore(this.scoringUtils.itemDetailsScore, this.detailsNode, this.scoringUtils.ITEM_DETAILS_MAX_SCORE);
+									this.scoringUtils.updateOverallScore();
+								}
+							}));
+						}));
+
+						// update thumbnail
+						domStyle.set(query(".edit-thumbnail-msg")[0], "display", "none");
+						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
+
+						// update the title
+						domConstruct.empty(this.itemTitleNode);
+						domConstruct.create("div", {
+							innerHTML:this.itemTitle
+						}, this.itemTitleNode, "first");
+						domAttr.remove(this.itemTitleNode, "data-dojo-type");
+						domAttr.set(this.itemTitleNode, "id", this.titleID);
+
+						// update the summary
+						domConstruct.empty(this.itemSummaryNode);
+						domConstruct.create("div", {
+							innerHTML:this.itemSummary
+						}, this.itemSummaryNode, "first");
+						domAttr.remove(this.itemSummaryNode, "data-dojo-type");
+						domAttr.set(this.itemSummaryNode, "id", this.snippetID);
+
+						// update the description
+						// empty the contents
+						if (dijit.byId("description-editor-widget")) {
+							dijit.byId("description-editor-widget").destroy();
+							domAttr.remove(this.itemDescriptionNode, "id");
+							domConstruct.create("div", {
+								id:"description-editor-widget",
+								innerHTML:this.itemDescription
+							}, this.itemDescriptionNode, "first");
+						}
+
+						if (this.itemDescription === "") {
+							domConstruct.place("<span></span>", "description-editor-widget", "first");
+						}
 					}
+				}));
 
-					// write to AGOL
-					this.portalUtils.portalUser.getItem(item.id).then(lang.hitch(this, function (results) {
-						var _userItemUrl = results.userItemUrl;
-						esriRequest({
-							url: _userItemUrl + "/update",
-							content: {
-								f: "json",
-								title: this.itemTitle,
-								snippet: this.itemSummary,
-								description: this.itemDescription
-							}
-						}, {
-							usePost: true
-						}).then(lang.hitch(this, function (response) {
-									if (response.success) {
-										// update the title
-										html.set(query(".title-" + item.id)[0], this.itemTitle);
-										this.itemTitle_clean = this.itemTitle;
-										this.itemSummary_clean = this.itemSummary;
-										this.itemDescription_clean = this.itemDescription;
-										// update the Edit/Save buttons
-										this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.EDIT_BTN_LABEL, this.cancelBtnNode, "none");
-										// update the scoring numerator(s)
-										this.scoringUtils.itemThumbnailScore = this.validator.setThumbnailScore(results);
-										this.scoringUtils.itemTitleScore = this.validator.setItemTitleScore(this.itemTitle);
-										this.scoringUtils.itemSummaryScore = this.validator.setItemSummaryScore(this.itemSummary);
-										this.scoringUtils.itemDescriptionScore = this.validator.setItemDescriptionScore(this.itemDescription);
-										// update the nodes
-										this.thumbnailScoreNumeratorNode.innerHTML = this.scoringUtils.itemThumbnailScore;
-										this.titleScoreNumeratorNode.innerHTML = this.scoringUtils.itemTitleScore;
-										this.summaryScoreNumeratorNode.innerHTML = this.scoringUtils.itemSummaryScore;
-										this.descScoreNumeratorNode.innerHTML = this.scoringUtils.itemDescriptionScore;
-
-										// update section style score graphics
-										this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemThumbnailScore, this.scoringUtils.ITEM_THUMBNAIL_MAX_SCORE, this.thumbnailScoreNodeContainer);
-										this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemTitleScore, this.scoringUtils.ITEM_TITLE_MAX_SCORE, this.titleScoreNodeContainer);
-										this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemSummaryScore, this.scoringUtils.ITEM_SUMMARY_MAX_SCORE, this.summaryScoreNodeContainer);
-										this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemDescriptionScore, this.scoringUtils.ITEM_DESC_MAX_SCORE, this.descScoreNodeContainer);
-
-										// section overall score
-										this.scoringUtils.itemDetailsScore = this.scoringUtils.itemThumbnailScore + this.scoringUtils.itemTitleScore + this.scoringUtils.itemSummaryScore + this.scoringUtils.itemDescriptionScore;
-										this.scoringUtils.updateSectionScore(this.scoringUtils.itemDetailsScore, this.detailsNode, this.scoringUtils.ITEM_DETAILS_MAX_SCORE);
-										this.scoringUtils.updateOverallScore();
-									}
-								}));
-					}));
-
-					// update thumbnail
+				on(this.cancelBtnNode, "click", lang.hitch(this, function () {
+					this.itemThumbnailListener.remove();
+					// update thumbnail cursor/message
 					domStyle.set(query(".edit-thumbnail-msg")[0], "display", "none");
 					domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
 
 					// update the title
 					domConstruct.empty(this.itemTitleNode);
-					domConstruct.create("div", {
-						innerHTML: this.itemTitle
-					}, this.itemTitleNode, "first");
+					domConstruct.create("div", {innerHTML:this.itemTitle_clean}, this.itemTitleNode, "first");
 					domAttr.remove(this.itemTitleNode, "data-dojo-type");
 					domAttr.set(this.itemTitleNode, "id", this.titleID);
 
 					// update the summary
 					domConstruct.empty(this.itemSummaryNode);
-					domConstruct.create("div", {
-						innerHTML: this.itemSummary
-					}, this.itemSummaryNode, "first");
+					domConstruct.create("div", {innerHTML:this.itemSummary_clean}, this.itemSummaryNode, "first");
 					domAttr.remove(this.itemSummaryNode, "data-dojo-type");
 					domAttr.set(this.itemSummaryNode, "id", this.snippetID);
 
@@ -375,110 +438,43 @@ define([
 					// empty the contents
 					if (dijit.byId("description-editor-widget")) {
 						dijit.byId("description-editor-widget").destroy();
-						domAttr.remove(this.itemDescriptionNode, "id");
-						domConstruct.create("div", {
-							id: "description-editor-widget",
-							innerHTML: this.itemDescription
-						}, this.itemDescriptionNode, "first");
 					}
+
+					domAttr.remove(this.itemDescriptionNode, "id");
+					domConstruct.create("div", {
+						id:"description-editor-widget"
+					}, this.itemDescriptionNode, "first");
 
 					if (this.itemDescription === "") {
 						domConstruct.place("<span></span>", "description-editor-widget", "first");
+					} else {
+						domConstruct.place("<span>" + this.itemDescription_clean + "</span>", "description-editor-widget", "first");
 					}
-				}
-			}));
-			// CANCEL
-			on(this.cancelBtnNode, "click", lang.hitch(this, function () {
-				this.itemThumbnailListener.remove();
-				// update thumbnail cursor/message
-				domStyle.set(query(".edit-thumbnail-msg")[0], "display", "none");
-				domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
 
-				// update the title
-				domConstruct.empty(this.itemTitleNode);
-				domConstruct.create("div", {innerHTML: this.itemTitle_clean}, this.itemTitleNode, "first");
-				domAttr.remove(this.itemTitleNode, "data-dojo-type");
-				domAttr.set(this.itemTitleNode, "id", this.titleID);
+					domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
+					domStyle.set(this.cancelBtnNode, "display", "none");
 
-				// update the summary
-				domConstruct.empty(this.itemSummaryNode);
-				domConstruct.create("div", {innerHTML: this.itemSummary_clean}, this.itemSummaryNode, "first");
-				domAttr.remove(this.itemSummaryNode, "data-dojo-type");
-				domAttr.set(this.itemSummaryNode, "id", this.snippetID);
+					// set numerator
+					//scoringUtils.itemThumbnailScore = validator.setThumbnailScore(results);
+					this.scoringUtils.itemTitleScore = this.validator.setItemTitleScore(this.itemTitle_clean);
+					this.scoringUtils.itemSummaryScore = this.validator.setItemSummaryScore(this.itemSummary_clean);
+					this.scoringUtils.itemDescriptionScore = this.validator.setItemDescriptionScore(this.itemDescription_clean);
+					this.thumbnailScoreNumeratorNode.innerHTML = this.scoringUtils.itemThumbnailScore;
+					this.titleScoreNumeratorNode.innerHTML = this.scoringUtils.itemTitleScore;
+					this.summaryScoreNumeratorNode.innerHTML = this.scoringUtils.itemSummaryScore;
+					this.descScoreNumeratorNode.innerHTML = this.scoringUtils.itemDescriptionScore;
 
-				// update the description
-				// empty the contents
-				if (dijit.byId("description-editor-widget")) {
-					dijit.byId("description-editor-widget").destroy();
-				}
+					// update section style score graphics
+					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemThumbnailScore, this.scoringUtils.ITEM_THUMBNAIL_MAX_SCORE, this.thumbnailScoreNodeContainer);
+					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemTitleScore, this.scoringUtils.ITEM_TITLE_MAX_SCORE, this.titleScoreNodeContainer);
+					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemSummaryScore, this.scoringUtils.ITEM_SUMMARY_MAX_SCORE, this.summaryScoreNodeContainer);
+					this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemDescriptionScore, this.scoringUtils.ITEM_DESC_MAX_SCORE, this.descScoreNodeContainer);
 
-				domAttr.remove(this.itemDescriptionNode, "id");
-				domConstruct.create("div", {
-					id: "description-editor-widget"
-				}, this.itemDescriptionNode, "first");
-
-				if (this.itemDescription === "") {
-					domConstruct.place("<span></span>", "description-editor-widget", "first");
-				} else {
-					domConstruct.place("<span>" + this.itemDescription_clean + "</span>", "description-editor-widget", "first");
-				}
-
-				domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
-				domStyle.set(this.cancelBtnNode, "display", "none");
-
-				// set numerator
-				//scoringUtils.itemThumbnailScore = validator.setThumbnailScore(results);
-				this.scoringUtils.itemTitleScore = this.validator.setItemTitleScore(this.itemTitle_clean);
-				this.scoringUtils.itemSummaryScore = this.validator.setItemSummaryScore(this.itemSummary_clean);
-				this.scoringUtils.itemDescriptionScore = this.validator.setItemDescriptionScore(this.itemDescription_clean);
-				this.thumbnailScoreNumeratorNode.innerHTML = this.scoringUtils.itemThumbnailScore;
-				this.titleScoreNumeratorNode.innerHTML = this.scoringUtils.itemTitleScore;
-				this.summaryScoreNumeratorNode.innerHTML = this.scoringUtils.itemSummaryScore;
-				this.descScoreNumeratorNode.innerHTML = this.scoringUtils.itemDescriptionScore;
-
-				// update section style score graphics
-				this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemThumbnailScore, this.scoringUtils.ITEM_THUMBNAIL_MAX_SCORE, this.thumbnailScoreNodeContainer);
-				this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemTitleScore, this.scoringUtils.ITEM_TITLE_MAX_SCORE, this.titleScoreNodeContainer);
-				this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemSummaryScore, this.scoringUtils.ITEM_SUMMARY_MAX_SCORE, this.summaryScoreNodeContainer);
-				this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.itemDescriptionScore, this.scoringUtils.ITEM_DESC_MAX_SCORE, this.descScoreNodeContainer);
-
-				// section overall score
-				this.scoringUtils.itemDetailsScore = this.scoringUtils.itemThumbnailScore + this.scoringUtils.itemTitleScore + this.scoringUtils.itemSummaryScore + this.scoringUtils.itemDescriptionScore;
-				this.scoringUtils.updateSectionScore(this.scoringUtils.itemDetailsScore, this.detailsNode, this.scoringUtils.ITEM_DETAILS_MAX_SCORE);
-				this.scoringUtils.updateOverallScore();
-			}));
-
-			if (this.portalUtils.IS_CURATOR) {
-				// only permit nominated items to have notes added by curators
-				this.userInterfaceUtils.getFeature(item.id).then(lang.hitch(this, function (response) {
-				var notesFeature = response.features[0];
-				if (notesFeature) {
-					// admin dialog hover/click listeners
-					on(this.thumbnailLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.thumbnailLabelNode)));
-					on(this.thumbnailLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.thumbnailLabelNode)));
-					on(this.thumbnailLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-
-					on(this.titleNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.titleNode)));
-					on(this.titleNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.titleNode)));
-					on(this.titleNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-
-					on(this.summaryLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.summaryLabelNode)));
-					on(this.summaryLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.summaryLabelNode)));
-					on(this.summaryLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-
-					on(this.descriptionLabelNode, mouse.enter, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseEnterHandler, this.descriptionLabelNode)));
-					on(this.descriptionLabelNode, mouse.leave, lang.hitch(this, lang.partial(this.userInterfaceUtils.nodeMouseLeaveHandler, this.descriptionLabelNode)));
-					on(this.descriptionLabelNode, "click", lang.hitch(this, this.adminNodeClickHandler));
-				}
-			}));
-				// EMAIL
-				on(this.emailUserBtn, "click", lang.hitch(this, function () {
-				// display final email
-				this.openEmailDialog();
-			}));
-			} else {
-				domStyle.set(query(".email-btn")[0], "display", "none");
-				domStyle.set(this.nominateUtils.acceptBtnNode, "display", "none");
+					// section overall score
+					this.scoringUtils.itemDetailsScore = this.scoringUtils.itemThumbnailScore + this.scoringUtils.itemTitleScore + this.scoringUtils.itemSummaryScore + this.scoringUtils.itemDescriptionScore;
+					this.scoringUtils.updateSectionScore(this.scoringUtils.itemDetailsScore, this.detailsNode, this.scoringUtils.ITEM_DETAILS_MAX_SCORE);
+					this.scoringUtils.updateOverallScore();
+				}));
 			}
 		},
 
@@ -489,31 +485,31 @@ define([
 		 * @param imageSizeName
 		 * @returns {*}
 		 */
-		uploadItemThumbnail: function (item, imageSizeName) {
+		uploadItemThumbnail:function (item, imageSizeName) {
 			var deferred = new Deferred();
 			var previewDlg = new Dialog({
-				title: item.title,
-				className: "upload-thumbnail-dialog"
+				title:item.title,
+				className:"upload-thumbnail-dialog"
 			});
 			previewDlg.show();
 			var dialogContent = put(previewDlg.containerNode, "div.dijitDialogPaneContentArea");
 			var actionBar = put(previewDlg.containerNode, "div.dijitDialogPaneActionBar");
 			var uploadThumbBtn = new Button({
-				label: "Upload Thumbnail"
+				label:"Upload Thumbnail"
 			}, put(actionBar, "div"));
 			domClass.add(uploadThumbBtn.domNode, "dijitHidden");
 			var cancelBtn = new Button({
-				label: "Cancel",
-				onClick: lang.hitch(previewDlg, previewDlg.hide)
+				label:"Cancel",
+				onClick:lang.hitch(previewDlg, previewDlg.hide)
 			}, put(actionBar, "div"));
 			var msgPane = put(dialogContent, "div.msgPane", "Upload alternate image:");
 			var form = put(dialogContent, "form", {
-				"method": "post",
-				"enctype": "multipart/form-data"
+				"method":"post",
+				"enctype":"multipart/form-data"
 			});
 			var fileInput = put(form, "input", {
-				type: "file",
-				name: (imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
+				type:"file",
+				name:(imageSizeName === "LARGE") ? "largeThumbnail" : "thumbnail"
 			});
 
 			on(fileInput, "change", lang.hitch(this, function (evt) {
@@ -578,7 +574,7 @@ define([
 		 * @param form
 		 * @returns {*}
 		 */
-		updateItemThumbnail: function (userItem, form) {
+		updateItemThumbnail:function (userItem, form) {
 			// Item
 			// http://www.arcgis.com/sharing/rest/content/users/cmahlke/items/b95a9fb4dec5443f9e0ea0fcb4859c67/update
 			// profile
@@ -593,12 +589,12 @@ define([
 			// https://www.arcgis.com/sharing/rest/community/users/cmahlke/update
 			// UPDATE LARGE THUMBNAIL //
 			esriRequest({
-				url: lang.replace("{userItemUrl}/update", userItem),
-				form: form,
-				content: {
-					f: "json"
+				url:lang.replace("{userItemUrl}/update", userItem),
+				form:form,
+				content:{
+					f:"json"
 				},
-				handleAs: "json"
+				handleAs:"json"
 			}).then(deferred.resolve, deferred.reject);
 			return deferred.promise;
 		},
@@ -608,7 +604,7 @@ define([
 		 *
 		 * @param evt
 		 */
-		adminNodeClickHandler: function (evt) {
+		adminNodeClickHandler:function (evt) {
 			var label = evt.target.innerHTML;
 
 			// destroy dijit
@@ -635,15 +631,15 @@ define([
 		 *
 		 * @param focusedNode - node that should have focus
 		 */
-		loadAdminDialog: function (focusedNode) {
+		loadAdminDialog:function (focusedNode) {
 			this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, function (response) {
 				var feature = response.features[0];
 
 				this.detailsAdminDialog = new Dialog({
-					id: "adminDialog",
-					title: "DETAILS Section",
-					class: "details-admin-dialog",
-					onFocus: function () {
+					id:"adminDialog",
+					title:"DETAILS Section",
+					class:"details-admin-dialog",
+					onFocus:function () {
 						focusUtil.focus(dom.byId(focusedNode));
 					}
 				});
@@ -727,24 +723,24 @@ define([
 		 * @param itemDescriptionNotes
 		 * @param response
 		 */
-		updateAdminDialogNotes: function (itemThumbnailNotes, itemTitleNotes, itemSummaryNotes, itemDescriptionNotes, response) {
+		updateAdminDialogNotes:function (itemThumbnailNotes, itemTitleNotes, itemSummaryNotes, itemDescriptionNotes, response) {
 			var feature = response.features[0];
 			var dateTime = new Date();
 			var pt = new Point({
-				"x": -13024380.422813008,
-				"y": 4028802.0261344062,
-				"spatialReference": {
-					"wkid": 102100
+				"x":-13024380.422813008,
+				"y":4028802.0261344062,
+				"spatialReference":{
+					"wkid":102100
 				}
 			});
 			var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
 			var attr = {
-				"FID": feature.attributes.FID,
-				"LastContactComments": dateTime,
-				"notesThumbnail": itemThumbnailNotes,
-				"notesSummary": itemSummaryNotes,
-				"notesDescription": itemDescriptionNotes,
-				"notesTitle": itemTitleNotes
+				"FID":feature.attributes.FID,
+				"LastContactComments":dateTime,
+				"notesThumbnail":itemThumbnailNotes,
+				"notesSummary":itemSummaryNotes,
+				"notesDescription":itemDescriptionNotes,
+				"notesTitle":itemTitleNotes
 			};
 			var graphic = new Graphic(pt, sms, attr);
 			this.nominateUtils.nominateAdminFeatureLayer.applyEdits(null, [graphic], null);
