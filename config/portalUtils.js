@@ -15,6 +15,7 @@ define([
 		portalUser:null,
 		portalQueryParams:null,
 		fullName:null,
+		userDescription:null,
 		IS_CURATOR:null,
 
 		constructor:function (portal) {
@@ -25,6 +26,7 @@ define([
 				num:100
 			};
 			this.fullName = this.portalUser.fullName;
+			this.userDescription = this.portalUser.description;
 		},
 
 		getItem:function (selectedRowID) {
@@ -37,6 +39,10 @@ define([
 
 		setUserFullName:function (fullName) {
 			this.fullName = fullName;
+		},
+
+		setUserDescription:function (description) {
+			this.userDescription = description;
 		},
 
 		getListOfCurators:function () {

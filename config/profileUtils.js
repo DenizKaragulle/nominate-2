@@ -164,7 +164,8 @@ define([
 				} else {
 					this.userFullName = this.validator.validateStr(this.portalUtils.fullName);
 					this.userFullName_clean = this.userFullName;
-					this.userDescription = this.validator.validateStr(item.portal.user.description);
+					//this.userDescription = this.validator.validateStr(item.portal.user.description);
+					this.userDescription = this.validator.validateStr(this.portalUtils.userDescription);
 					this.userDescription_clean = this.userDescription;
 
 					domStyle.set(query(".email-btn")[0], "display", "none");
@@ -210,6 +211,8 @@ define([
 							this.userFullName = query(".edit-user-full-name")[0].value;
 							this.userDescription = query(".edit-user-description")[0].value;
 
+							console.log(this.userDescription);
+
 							domStyle.set(query(".edit-profile-thumbnail-msg")[0], "display", "none");
 							domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
 
@@ -229,6 +232,7 @@ define([
 										this.userFullName_clean = this.userFullName;
 										this.userDescription_clean = this.userDescription;
 										this.portalUtils.setUserFullName(this.userFullName);
+										this.portalUtils.setUserDescription(this.userDescription);
 										// update the Edit/Save buttons
 										this.userInterfaceUtils.updateEditSaveButton(this.editSaveBtnNode, defaults.EDIT_BTN_LABEL, this.cancelBtnNode, "none");
 										// update the scoring numerator(s)
