@@ -303,11 +303,11 @@ define([
 								"<\/div>" +
 
 								"<div class='row right dialog-btn-row'>" +
-								"	<div class='column-10'>" +
-								"		<button class='btn item-title-btn-save'> Save <\/button>" +
+								"	<div class='column-13'>" +
+								"		<button class='btn item-title-btn-cancel'> Cancel <\/button>" +
 								"	<\/div>" +
 								"	<div class='column-3'>" +
-								"		<button class='btn item-title-btn-cancel'> Cancel <\/button>" +
+								"		<button class='btn item-title-btn-save'> Save <\/button>" +
 								"	<\/div>" +
 								"<\/div>");
 

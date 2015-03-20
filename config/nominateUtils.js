@@ -188,13 +188,20 @@ define([
 				}
 			});
 			var sms = new SimpleMarkerSymbol().setStyle(SimpleMarkerSymbol.STYLE_CIRCLE).setColor(new Color([255, 0, 0, 0.5]));
-
+			console.log(status);
 			var attr = {};
 			if (status === "Nominated") {
 				attr = {
 					"FID":feature.attributes.FID,
 					"OnineStatus":status,
 					"NominatedDate":dateTime
+				};
+			} else if (status === "Under Review") {
+				attr = {
+					"FID":feature.attributes.FID,
+					"OnineStatus":status,
+					"OriginalAcceptedDate":dateTime,
+					"AcceptedDate":dateTime
 				};
 			} else if (status === "Accepted") {
 				attr = {

@@ -119,13 +119,13 @@ define({
 			"label": "<h4> </h4>"
 		},
 		{
-			"label": "<h4 class='icon-checked icon-red' style='color:#C86A4A'> NOMINATED </h4>"
+			"label": "<h5 class='icon-checked icon-red' style='color:#C86A4A'> NOMINATED </h5>"
 		},
 		{
-			"label": "<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h5 style='color:#C86A4A'> UNDER REVIEW </h5>"
+			"label": "<img src='assets/images/DotDotDot.png' class='status-thumbnail'/><h6 style='color:#C86A4A'> UNDER REVIEW </h6>"
 		},
 		{
-			"label": "<img src='assets/images/ThumbsUp_Blue.png' class='status-thumbnail'/><h4 style='color:#0079C1'> ACCEPTED </h4>"
+			"label": "<img src='assets/images/ThumbsUp_Blue.png' class='status-thumbnail'/><h5 style='color:#0079C1'> ACCEPTED </h5>"
 		}
 	],
 

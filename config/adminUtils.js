@@ -136,7 +136,7 @@ define([
 					on(query(".email-btn-send"), "click", lang.hitch(this, function () {
 						this.portalUtils.portalUser.getItem(this.selectedID).then(lang.hitch(this, function (item) {
 							var status = defaults.STATUS_UNDER_REVIEW;
-							this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, lang.partial(this.nominateUtils.updateItemStatus, status, defaults.CURRENT_STATUS[2].label)));
+							this.userInterfaceUtils.getFeature(this.selectedID).then(lang.hitch(this, lang.partial(this.nominateUtils.updateItemStatus, defaults.CURRENT_STATUS[2].label, status)));
 						}));
 						var link = "mailto:" + userEmail +
 								"?cc=" + defaults.LIVING_ATLAS_EMAIL_ALIAS +
