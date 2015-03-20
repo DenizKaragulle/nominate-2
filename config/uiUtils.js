@@ -131,15 +131,15 @@ define([
 			// homepage header message
 			query(".intro")[0].innerHTML = "";
 
-			var searchInputNode = query(".search-items")[0];
+			//var searchInputNode = query(".search-items")[0];
 			var dropdownSortNode = query(".dropdown-item-sort")[0];
 			var dropdownItemFilterNode = query(".dropdown-item-filter")[0];
-			//var helpButtonNode = query(".help-button")[0];
+			var helpButtonNode = query(".help-button")[0];
 
-			domStyle.set(searchInputNode, "display", "block");
+			//domStyle.set(searchInputNode, "display", "block");
 			domStyle.set(dropdownSortNode, "display", "block");
 			domStyle.set(dropdownItemFilterNode, "display", "block");
-			//domStyle.set(helpButtonNode, "display", "block");
+			domStyle.set(helpButtonNode, "display", "block");
 
 			var signInRow = query(".sign-in-row")[0];
 			domStyle.set(signInRow, "display", "none");

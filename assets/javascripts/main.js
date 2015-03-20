@@ -96,7 +96,6 @@ require([
 	var searchInputNode = "";
 	var dropdownSortNode = "";
 	var dropdownItemFilterNode = "";
-	//var helpButtonNode = "";
 	var progressBarNode = "";
 	// div dimensions
 	var COLLAPSE_ROW_HEIGHT = 125;
@@ -136,110 +135,157 @@ require([
 
 	var selectedTab = ".details";
 
+	// OAuth
+	var info = null;
+
 	ready(function () {
 
 		run();
 
-		renderRow = function (object, data, cell) {
-			// item title
-			var itemTitle = object.title;
-			// thumbnail url
-			var thumbnailUrl = userInterfaceUtils.formatThumbnailUrl(object);
-			// item type
-			var type = validator.validateStr(object.type);
-			// item last modified
-			var modifiedDate = userInterfaceUtils.formatDate(object.modified);
-			// item number of views
-			var views = validator.validateStr(object.numViews);
-			// item access
-			var access = object.access;
-			// item status ("NOMINATED", "UNDER REVIEW", "ACCEPTED")
-			var status = "";
-			array.forEach(nominateUtils.nominatedItems.features, function (feature) {
-				if (object.id === feature.attributes.itemID) {
-					if (feature.attributes["OnineStatus"] === "") {
-						status = defaults.CURRENT_STATUS[0].label;
-					} else if (feature.attributes["OnineStatus"] === defaults.STATUS_NOMINATED) {
-						status = defaults.CURRENT_STATUS[1].label;
-					} else if (feature.attributes["OnineStatus"] === defaults.STATUS_UNDER_REVIEW) {
-						status = defaults.CURRENT_STATUS[2].label;
-					} else if (feature.attributes["OnineStatus"] === defaults.STATUS_ACCEPTED) {
-						status = defaults.CURRENT_STATUS[3].label;
-					}
-				}
-			});
-
-			var n = domConstruct.create("div", {
-				innerHTML:'<div class="row">' +
-						'	<div class="column-3">' +
-						'		<div class="thumbnail">' +
-						'			<img class="item-thumbnail-' + object.id + '" src="' + thumbnailUrl + '" />' +
-						'		</div>' +
-						'	</div>' +
-
-						'	<div class="column-18">' +
-						'		<div class="item-title title-' + object.id + '">' + itemTitle + '</div>' +
-						'		<div class="item-meta-data">' +
-						'			<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
-						'		</div>' +
-						'		<div class="item-number-views">' + views + ' views</div>' +
-						'	</div>' +
-
-						'	<div class="column-3">' +
-						'		<div class="item-nomination-status-' + object.id + '">' + status + '</div>' +
-						'	</div>' +
-						'</div>'
-			});
-			cell.appendChild(n);
-		};
-
-		detailsNodeClickHandler = function () {
-			userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "details");
-			selectedTab = ".details";
-			detailsContentPane();
-		};
-		creditsNodeClickHandler = function () {
-			userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "credits");
-			selectedTab = ".credits";
-			creditsContentPane();
-		};
-		tagsNodeClickHandler = function () {
-			userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "tags");
-			selectedTab = ".tags";
-			tagsContentPane();
-		};
-		performanceNodeClickHandler = function (response, layers) {
-			userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "performance");
-			selectedTab = ".performance";
-			performanceContentPane(response, layers);
-		};
-		profileNodeClickHandler = function () {
-			userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "profile");
-			selectedTab = ".profile";
-			profileContentPane();
-		};
-
 		function run() {
-			userInterfaceUtils = new UserInterfaceUtils();
+			info = new ArcGISOAuthInfo({
+				appId: "A7LGXdfYyyfvcAEx",
+				// Uncomment this line to prevent the user's signed in state from being shared
+				// with other apps on the same domain with the same authNamespace value.
+				//authNamespace: "portal_oauth_inline",
+				popup: false
+			});
+			esriId.registerOAuthInfos([info]);
+
+			esriId.checkSignInStatus(info.portalUrl).then(
+					function () {
+						loadContent();
+					}
+			).otherwise(
+					function () {
+						// Anonymous view
+						//domStyle.set("anonymousPanel", "display", "block");
+						//domStyle.set("personalizedPanel", "display", "none");
+
+						// user interface utilty methods
+						userInterfaceUtils = new UserInterfaceUtils();
+						// homepage nodes
+						/*searchInputNode = query(".search-items")[0];
+						 dropdownSortNode = query(".dropdown-item-sort")[0];
+						 dropdownItemFilterNode = query(".dropdown-item-filter")[0];*/
+						//helpButtonNode = query(".help-button")[0];
+						// ArcGIS Portal
+						//	portal = new arcgisPortal.Portal(defaults.sharinghost);
+						//
+						//	on(portal, "ready", lang.hitch(this, function (p) {
+						on(dom.byId(SIGNIN_BUTTON_ID), "click", portalSignInHandler);
+						//on(searchInputNode, "keydown", searchItemsClickHandler);
+						//on(query(".filter-list"), "click", filterItemsClickHandler);
+						//on(query(".sort-items"), "click", sortItemsClickHandler);
+						/*on(query(".icon-help")[0], "click", helpBtnClickHandler);*/
+						//	}));
+					}
+			);
+		}
+
+		function portalSignInHandler() {
+			esriId.getCredential(info.portalUrl);
+		}
+
+		function loadContent() {
 
 			searchInputNode = query(".search-items")[0];
 			dropdownSortNode = query(".dropdown-item-sort")[0];
 			dropdownItemFilterNode = query(".dropdown-item-filter")[0];
-			/*helpButtonNode = query(".help-button")[0];*/
 
-			portal = new arcgisPortal.Portal(defaults.sharinghost);
+			//on(searchInputNode, "keydown", searchItemsClickHandler);
+			on(query(".filter-list"), "click", filterItemsClickHandler);
+			on(query(".sort-items"), "click", sortItemsClickHandler);
+			on(query(".help-button")[0], "click", function () {
+				esriId.destroyCredentials();
+				window.location.reload();
+			});
 
-			on(portal, "ready", lang.hitch(this, function (p) {
-				on(dom.byId(SIGNIN_BUTTON_ID), "click", portalSignInHandler);
-				on(searchInputNode, "keydown", searchItemsClickHandler);
-				on(query(".filter-list"), "click", filterItemsClickHandler);
-				on(query(".sort-items"), "click", sortItemsClickHandler);
-				/*on(query(".icon-help")[0], "click", helpBtnClickHandler);*/
-			}));
-		}
+			var userInterfaceUtils = new UserInterfaceUtils();
 
-		function portalSignInHandler() {
-			portal.signIn().then(function (user) {
+			renderRow = function (object, data, cell) {
+				// item title
+				var itemTitle = object.title;
+				// thumbnail url
+				var thumbnailUrl = userInterfaceUtils.formatThumbnailUrl(object);
+				// item type
+				var type = validator.validateStr(object.type);
+				// item last modified
+				var modifiedDate = userInterfaceUtils.formatDate(object.modified);
+				// item number of views
+				var views = validator.validateStr(object.numViews);
+				// item access
+				var access = object.access;
+				// item status ("NOMINATED", "UNDER REVIEW", "ACCEPTED")
+				var status = "";
+				array.forEach(nominateUtils.nominatedItems.features, function (feature) {
+					if (object.id === feature.attributes.itemID) {
+						if (feature.attributes["OnineStatus"] === "") {
+							status = defaults.CURRENT_STATUS[0].label;
+						} else if (feature.attributes["OnineStatus"] === defaults.STATUS_NOMINATED) {
+							status = defaults.CURRENT_STATUS[1].label;
+						} else if (feature.attributes["OnineStatus"] === defaults.STATUS_UNDER_REVIEW) {
+							status = defaults.CURRENT_STATUS[2].label;
+						} else if (feature.attributes["OnineStatus"] === defaults.STATUS_ACCEPTED) {
+							status = defaults.CURRENT_STATUS[3].label;
+						}
+					}
+				});
+
+				var n = domConstruct.create("div", {
+					innerHTML: '<div class="row">' +
+							'	<div class="column-3">' +
+							'		<div class="thumbnail">' +
+							'			<img class="item-thumbnail-' + object.id + '" src="' + thumbnailUrl + '" />' +
+							'		</div>' +
+							'	</div>' +
+
+							'	<div class="column-18">' +
+							'		<div class="item-title title-' + object.id + '">' + itemTitle + '</div>' +
+							'		<div class="item-meta-data">' +
+							'			<span class="item-type">' + type + '</span> - <span class="item-access">Sharing:' + access + ' - Updated ' + modifiedDate + '</span>' +
+							'		</div>' +
+							'		<div class="item-number-views">' + views + ' views</div>' +
+							'	</div>' +
+
+							'	<div class="column-3">' +
+							'		<div class="item-nomination-status-' + object.id + '">' + status + '</div>' +
+							'	</div>' +
+							'</div>'
+				});
+				cell.appendChild(n);
+			};
+
+			detailsNodeClickHandler = function () {
+				userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "details");
+				selectedTab = ".details";
+				detailsContentPane();
+			};
+			creditsNodeClickHandler = function () {
+				userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "credits");
+				selectedTab = ".credits";
+				creditsContentPane();
+			};
+			tagsNodeClickHandler = function () {
+				userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "tags");
+				selectedTab = ".tags";
+				tagsContentPane();
+			};
+			performanceNodeClickHandler = function (response, layers) {
+				userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "performance");
+				selectedTab = ".performance";
+				performanceContentPane(response, layers);
+			};
+			profileNodeClickHandler = function () {
+				userInterfaceUtils.setActiveTab(this, query(selectedTab)[0], "profile");
+				selectedTab = ".profile";
+				profileContentPane();
+			};
+
+			new arcgisPortal.Portal(defaults.sharinghost).signIn().then(function (portalUser) {
+
+				var portal = portalUser.portal;
+
 				// hide the sign in button
 				userInterfaceUtils.hideNode(dom.byId("sign-in"));
 				// hide the intro text
@@ -254,9 +300,9 @@ require([
 				// update the header row
 				userInterfaceUtils.updateHeader();
 
-				// url to the thumbnail image for the user.
+				// url to the thumbnail image for the portalUser.
 				portalUserThumbnailUrl = portalUtils.portalUser.thumbnailUrl;
-				// if user has no thumbnail in the dGrid, user the default thumbnail for a user
+				// if portalUser has no thumbnail in the dGrid, use the default thumbnail for a portalUser
 				if (portalUserThumbnailUrl === null) {
 					portalUserThumbnailUrl = "https://cdn.arcgis.com/cdn/5777/js/arcgisonline/css/images/no-user-thumb.jpg";
 				}
@@ -264,24 +310,24 @@ require([
 				// dGrid columns
 				var dgridColumns = [
 					{
-						label:"",
-						field:"thumbnailUrl",
-						renderCell:renderRow
+						label: "",
+						field: "thumbnailUrl",
+						renderCell: renderRow
 					}
 				];
 
 				portalUtils.getListOfCurators().then(lang.hitch(this, function (response) {
-					// query the list of curators
-					var deferred = new Deferred();
-					var curators = response.features;
-					var is_a_curator = array.some(curators, lang.hitch(this, function (curator) {
-						if (curator.attributes["curatorID"] === portalUtils.portalUser.username) {
-							return true;
-						}
-					}));
-					deferred.resolve(is_a_curator);
-					return deferred.promise;
-				})).then(function (result) {
+							// query the list of curators
+							var deferred = new Deferred();
+							var curators = response.features;
+							var is_a_curator = array.some(curators, lang.hitch(this, function (curator) {
+								if (curator.attributes["curatorID"] === portalUtils.portalUser.username) {
+									return true;
+								}
+							}));
+							deferred.resolve(is_a_curator);
+							return deferred.promise;
+						})).then(function (result) {
 							if (result) {
 								portalUtils.IS_CURATOR = true;
 								var process = nominateUtils.loadNominatedItemsInMemory();
@@ -298,18 +344,18 @@ require([
 											domAttr.set(userInterfaceUtils.ribbonHeaderNumItemsNode, "class", "icon-stack");
 											// dGrid item store
 											itemStore = new Memory({
-												data:results
+												data: results
 											});
 											// dGrid
 											dgrid = new (declare([OnDemandGrid, Pagination]))({
-												store:itemStore,
-												rowsPerPage:6,
-												pagingLinks:true,
-												pagingTextBox:false,
-												firstLastArrows:true,
-												columns:dgridColumns,
-												showHeader:false,
-												noDataMessage:"No results found"
+												store: itemStore,
+												rowsPerPage: 6,
+												pagingLinks: true,
+												pagingTextBox: false,
+												firstLastArrows: true,
+												columns: dgridColumns,
+												showHeader: false,
+												noDataMessage: "No results found"
 											}, "dgrid");
 											dgrid.startup();
 											gridUtils = new GridUtils(portal, dgrid, userInterfaceUtils);
@@ -317,7 +363,7 @@ require([
 
 											// "Nominate" button edits-complete handler
 											on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", function (complete) {
-												console.debug("complete", complete);
+
 												// curator has added comments to an nominated item
 												if (complete.updates.length > 0) {
 													if (complete.updates[0].success) {
@@ -346,13 +392,13 @@ require([
 														nominateUtils.loadNominatedItemsInMemory().then(function (results) {
 															nominateUtils.nominatedItems = results;
 															var nominateBtnDialog = new Dialog({
-																title:results.features[results.features.length - 1].attributes.itemName,
-																content:'<div class="dialog-container">' +
+																title: results.features[results.features.length - 1].attributes.itemName,
+																content: '<div class="dialog-container">' +
 																		'	<div class="row">' +
 																		'		<div class="column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
 																		'	<\/div>' +
 																		'<\/div>',
-																style:"width: 300px"
+																style: "width: 300px"
 															});
 															nominateBtnDialog.show();
 														});
@@ -406,135 +452,127 @@ require([
 													portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
 														// get the item's owner details
 														portalUtils.getItemUserProfileContent(item).then(function (userProfile) {
-															// get details about the nominated item
-															nominateUtils.getItemStatus(selectedRowID).then(function (nominatedItem) {
-																scoringUtils = new ScoringUtils(userProfile, validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
-																scoringUtils.removeScoreBar();
+															scoringUtils = new ScoringUtils(userProfile, validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
+															scoringUtils.removeScoreBar();
 
-																domConstruct.place(
-																		"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
-																			//
-																				"	<div class='content-container'>" +
-																				"		<div class='row'>" +
-																				"			<div class='column-21 pre-3'>" +
-																				"				<div id='map-mask' class='loader'>" +
-																				"					<span class='side side-left'><span class='fill'></span></span>" +
-																				"					<span class='side side-right'><span class='fill'></span></span>" +
-																				"				</div>" +
-																				"				<div id='map'></div>" +
-																				"			</div>" +
-																				"		</div>" +
 
-																				"		<div class='row'>" +
-																				"			<div class='column-21 pre-3'>" +
-																				"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-																				"			</div>" +
-																				"		</div>" +
+															domConstruct.place(
+																	"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
+																		//
+																			"	<div class='content-container'>" +
+																			"		<div class='row'>" +
+																			"			<div class='column-21 pre-3'>" +
+																			"				<div id='map-mask' class='loader'>" +
+																			"					<span class='side side-left'><span class='fill'></span></span>" +
+																			"					<span class='side side-right'><span class='fill'></span></span>" +
+																			"				</div>" +
+																			"				<div id='map'></div>" +
+																			"			</div>" +
+																			"		</div>" +
 
-																			// Scoring
-																				"		<div class='row'>" +
-																				"			<div class='column-15 pre-3'>" +
-																				"				<div class='current-score-graphic-container'></div>" +
-																				"			</div>" +
-																				"			<div class='column-2'>" +
-																				"				<div class='current-score-number'></div>" +
-																				"				<div id='progressBarMarker'></div>" +
-																				"			</div>" +
-																				"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-																				"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled' style='display:none;'> NOMINATE </button>" +
-																				"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn enabled'> ACCEPT </button>" +
-																				"			</div>" +
-																				"		</div>" +
+																			"		<div class='row'>" +
+																			"			<div class='column-21 pre-3'>" +
+																			"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+																			"			</div>" +
+																			"		</div>" +
 
-																			// Overall Score
-																				"		<div class='row'>" +
-																				"			<div class='column-15 pre-3'>" +
-																				"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-																				"			</div>" +
-																				"		</div>" +
+																		// Scoring
+																			"		<div class='row'>" +
+																			"			<div class='column-15 pre-3'>" +
+																			"				<div class='current-score-graphic-container'></div>" +
+																			"			</div>" +
+																			"			<div class='column-2'>" +
+																			"				<div class='current-score-number'></div>" +
+																			"				<div id='progressBarMarker'></div>" +
+																			"			</div>" +
+																			"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+																			"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled' style='display:none;'> NOMINATE </button>" +
+																			"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn enabled'> ACCEPT </button>" +
+																			"			</div>" +
+																			"		</div>" +
 
-																			// Button Group (i.e. sections)
-																				"		<div class='row'>" +
-																				"			<div class='column-18 pre-3'>" +
-																				"				<div id='" + tcID + "'></div>" +
-																				"			</div>" +
-																				"		</div>" +
-																				"	</div>" +
-																				"</div>",
-																		selectedRow.firstElementChild, "last");
+																		// Overall Score
+																			"		<div class='row'>" +
+																			"			<div class='column-15 pre-3'>" +
+																			"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+																			"			</div>" +
+																			"		</div>" +
 
-																// get progress bar node
-																progressBarNode = query(".current-score-graphic-container")[0];
-																// nominate button node
-																nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
-																// accept button node
-																nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
+																		// Button Group (i.e. sections)
+																			"		<div class='row'>" +
+																			"			<div class='column-18 pre-3'>" +
+																			"				<div id='" + tcID + "'></div>" +
+																			"			</div>" +
+																			"		</div>" +
+																			"	</div>" +
+																			"</div>",
+																	selectedRow.firstElementChild, "last");
 
-																// get the item's status
-																if (nominatedItem.features[0].attributes["OnineStatus"] === defaults.STATUS_ACCEPTED) {
-																	// disable accepted button
-																	userInterfaceUtils.disableNominateButton(nominateUtils.acceptBtnNode);
-																}
+															// get progress bar node
+															progressBarNode = query(".current-score-graphic-container")[0];
+															// nominate button node
+															nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
+															// accept button node
+															nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
 
-																// create button group
-																initContentButtonGroup(tcID);
+															// create button group
+															initContentButtonGroup(tcID);
 
-																// initialize content area with details data
-																detailsContentPane();
+															// initialize content area with details data
+															detailsContentPane();
 
-																if (item.type === "Web Map") {
-																	var mapDrawBegin = performance.now();
-																	var mapDrawComplete;
-																	// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
-																	arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
-																		//console.log(response);
-																		layers = response.itemInfo.itemData.operationalLayers;
-																		map = response.map;
+															if (item.type === "Web Map") {
+																var mapDrawBegin = performance.now();
+																var mapDrawComplete;
+																// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
+																arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
+																	//console.log(response);
+																	layers = response.itemInfo.itemData.operationalLayers;
+																	map = response.map;
 
-																		// make sure map is loaded
-																		if (map.loaded) {
-																			mapDrawComplete = performance.now();
-																			var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-																			userInterfaceUtils.fadeLoader();
+																	// make sure map is loaded
+																	if (map.loaded) {
+																		mapDrawComplete = performance.now();
+																		var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+																		userInterfaceUtils.fadeLoader();
 
-																			// set performance scores
-																			scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
-																			scoringUtils.nLayersScore = validator.setNumLayersScore(response);
-																			scoringUtils.popupsScore = validator.setPopupScore(response);
-																			scoringUtils.sharingScore = validator.setSharingScore(item);
-																			scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
-																			// set style on performance button
-																			userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
-																			// initialize the scores
-																			scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																			HAS_PERFORMANCE_CONTENT = true;
+																		// set performance scores
+																		scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
+																		scoringUtils.nLayersScore = validator.setNumLayersScore(response);
+																		scoringUtils.popupsScore = validator.setPopupScore(response);
+																		scoringUtils.sharingScore = validator.setSharingScore(item);
+																		scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+																		// set style on performance button
+																		userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
+																		// initialize the scores
+																		scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+																		HAS_PERFORMANCE_CONTENT = true;
 
-																			on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
-																		}
-																	});
-																} else {
-																	// fade the loader
-																	userInterfaceUtils.fadeLoader();
-																	// hide the map div
-																	domStyle.set("map", "display", "none");
-																	//
-																	on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
+																		on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
+																	}
+																});
+															} else {
+																// fade the loader
+																userInterfaceUtils.fadeLoader();
+																// hide the map div
+																domStyle.set("map", "display", "none");
+																//
+																on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
 
-																	scoringUtils.mapDrawTimeScore = 0;
-																	scoringUtils.nLayersScore = 0;
-																	scoringUtils.popupsScore = 0;
-																	scoringUtils.sharingScore = validator.setSharingScore(item);
-																	scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+																scoringUtils.mapDrawTimeScore = 0;
+																scoringUtils.nLayersScore = 0;
+																scoringUtils.popupsScore = 0;
+																scoringUtils.sharingScore = validator.setSharingScore(item);
+																scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
 
-																	// initialize the scores
-																	scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																	HAS_PERFORMANCE_CONTENT = false;
-																}
-																on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
-																on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
-																on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
-																on(profileNode, "click", lang.partial(profileNodeClickHandler));
-															});
+																// initialize the scores
+																scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+																HAS_PERFORMANCE_CONTENT = false;
+															}
+															on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
+															on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
+															on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
+															on(profileNode, "click", lang.partial(profileNodeClickHandler));
 														});
 													}); // END getItem
 												} // END if
@@ -564,18 +602,18 @@ require([
 												nominateUtils.nominatedItems = results;
 												// dGrid item store
 												itemStore = new Memory({
-													data:portalItems.results
+													data: portalItems.results
 												});
 												// dGrid
 												dgrid = new (declare([OnDemandGrid, Pagination]))({
-													store:itemStore,
-													rowsPerPage:6,
-													pagingLinks:true,
-													pagingTextBox:false,
-													firstLastArrows:true,
-													columns:dgridColumns,
-													showHeader:false,
-													noDataMessage:"No results found"
+													store: itemStore,
+													rowsPerPage: 6,
+													pagingLinks: true,
+													pagingTextBox: false,
+													firstLastArrows: true,
+													columns: dgridColumns,
+													showHeader: false,
+													noDataMessage: "No results found"
 												}, "dgrid");
 												dgrid.startup();
 
@@ -584,6 +622,7 @@ require([
 
 												// "Nominate" button edits-complete handler
 												on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", function (complete) {
+
 													// curator has added comments to an nominated item
 													if (complete.updates.length > 0) {
 														if (complete.updates[0].success) {
@@ -608,13 +647,13 @@ require([
 															nominateUtils.loadNominatedItemsInMemory().then(function (results) {
 																nominateUtils.nominatedItems = results;
 																var nominateBtnDialog = new Dialog({
-																	title:results.features[results.features.length - 1].attributes.itemName,
-																	content:'<div class="dialog-container">' +
+																	title: results.features[results.features.length - 1].attributes.itemName,
+																	content: '<div class="dialog-container">' +
 																			'	<div class="row">' +
 																			'		<div class="column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
 																			'	<\/div>' +
 																			'<\/div>',
-																	style:"width: 300px"
+																	style: "width: 300px"
 																});
 																nominateBtnDialog.show();
 															});
@@ -778,6 +817,8 @@ require([
 																	scoringUtils.sharingScore = validator.setSharingScore(item);
 																	scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
 
+																	console.log(scoringUtils.performanceScore);
+																	
 																	// initialize the scores
 																	scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
 																	HAS_PERFORMANCE_CONTENT = false;
@@ -790,150 +831,151 @@ require([
 														}); // END getItem
 													} // END if
 												}); // END dGrid click
-											}); // END loadNominatedItemsInMemory
+											}); // loadNominatedItemsInMemory
 											userInterfaceUtils.hideNode(query(".init-loader")[0]);
 										});
 							}
 						});
 			});
-		}
 
-		function filterItemsClickHandler() {
-			var checkedListItem = query(".filter-check");
-			domAttr.set(checkedListItem, "class", "filter-list");
-			domClass.remove(checkedListItem[0], "icon-check filter-check");
-			domStyle.set(checkedListItem, "margin-left", "20px");
-			query(".filter-list").style("margin-left", "20px");
-			domAttr.set(this, "class", "filter-list icon-check filter-check");
-			domStyle.set(this, "margin-left", "2px");
-			var target = domAttr.get(this, "data-value");
-			gridUtils.applyFilter(target);
-		}
-
-		function sortItemsClickHandler() {
-			var checkedListItem = query(".icon-check");
-			domAttr.set(checkedListItem, "class", "sort-items");
-			domClass.remove(checkedListItem[0], "icon-check");
-			domStyle.set(checkedListItem, "margin-left", "20px");
-			query(".sort-items").style("margin-left", "20px");
-			domAttr.set(this, "class", "sort-items icon-check");
-			domStyle.set(this, "margin-left", "2px");
-			var target = domAttr.get(this, "data-value");
-			gridUtils.applySort(target);
-		}
-
-		/*function helpBtnClickHandler() {
-		 var helpDialog = new Dialog({
-		 title:"HELP",
-		 content:"<div>Not implemented yet</div>",
-		 style:"width: 300px"
-		 });
-		 helpDialog.show();
-		 }*/
-
-		function searchItemsClickHandler(event) {
-			switch (event.keyCode) {
-				case keys.ENTER:
-					searchBtnClickHandler(event);
-					break;
-				default:
-				//console.log("some other key: " + event.keyCode);
+			function filterItemsClickHandler() {
+				var checkedListItem = query(".filter-check");
+				domAttr.set(checkedListItem, "class", "filter-list");
+				domClass.remove(checkedListItem[0], "icon-check filter-check");
+				domStyle.set(checkedListItem, "margin-left", "20px");
+				query(".filter-list").style("margin-left", "20px");
+				domAttr.set(this, "class", "filter-list icon-check filter-check");
+				domStyle.set(this, "margin-left", "2px");
+				var target = domAttr.get(this, "data-value");
+				gridUtils.applyFilter(target);
 			}
-		}
 
-		function searchBtnClickHandler() {
-			var searchInputNode = query(".search-input-text-box")[0];
-			var searchQueryParams = searchInputNode.value;
-			var queryParams = {
-				q:"title: " + searchQueryParams,
-				num:100
-			};
+			function sortItemsClickHandler() {
+				var checkedListItem = query(".icon-check");
+				domAttr.set(checkedListItem, "class", "sort-items");
+				domClass.remove(checkedListItem[0], "icon-check");
+				domStyle.set(checkedListItem, "margin-left", "20px");
+				query(".sort-items").style("margin-left", "20px");
+				domAttr.set(this, "class", "sort-items icon-check");
+				domStyle.set(this, "margin-left", "2px");
+				var target = domAttr.get(this, "data-value");
+				gridUtils.applySort(target);
+			}
 
-			portalUtils.portalUser.portal.queryItems(queryParams).then(lang.hitch(this, function (response) {
-				var searchResults = response.results;
-				itemStore.data = searchResults;
-				dgrid.refresh();
-			}));
-		}
+			/*function helpBtnClickHandler() {
+			 var helpDialog = new Dialog({
+			 title: "HELP",
+			 content: "<div>Not implemented yet</div>",
+			 style: "width: 300px"
+			 });
+			 helpDialog.show();
+			 }*/
 
+			/*function searchItemsClickHandler(event) {
+				switch (event.keyCode) {
+					case keys.ENTER:
+						searchBtnClickHandler(event);
+						break;
+					default:
+					//console.log("some other key: " + event.keyCode);
+				}
+			}
 
-		// BEGIN DETAILS
-		function detailsContentPane() {
-			portalUtils.getItem(selectedRowID).then(loadDetailsContent);
-		}
+			function searchBtnClickHandler() {
+				var searchInputNode = query(".search-input-text-box")[0];
+				var searchQueryParams = searchInputNode.value;
+				console.log(portalUtils.portalUser.username);
+				var queryParams = {
+					q: "title: " + searchQueryParams,
+					num: 100
+				};
 
-		function loadDetailsContent(item) {
-			userInterfaceUtils.loadContent(details.DETAILS_CONTENT);
-			detailsUtils = new DetailsUtils(item, itemStore, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils);
-		}
-
-		// END DETAILS
-
-
-		// BEGIN CREDITS AND ACCESS USE CONSTRAINTS
-		function creditsContentPane() {
-			portalUtils.getItem(selectedRowID).then(loadCreditsContent);
-		}
-
-		function loadCreditsContent(item) {
-			userInterfaceUtils.loadContent(credits.ACCESS_CREDITS_CONTENT);
-			creditsUtils = new CreditsUtils(item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils);
-		}
-
-		// END CREDITS
-
-
-		// BEGIN TAGS
-		function tagsContentPane() {
-			portalUtils.getItem(selectedRowID).then(loadTagsContent);
-		}
-
-		function loadTagsContent(item) {
-			userInterfaceUtils.loadContent(tags.TAGS_CONTENT);
-			tagUtils = new TagUtils(item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils);
-		}
-
-		// END TAGS
+				portalUtils.portalUser.portal.queryItems(queryParams).then(lang.hitch(this, function (response) {
+					var searchResults = response.results;
+					itemStore.data = searchResults;
+					dgrid.refresh();
+				}));
+			}*/
 
 
-		// BEGIN PERFORMANCE
-		function performanceContentPane(response, layers) {
-			// load the content
-			userInterfaceUtils.loadContent(performanceConfig.PERFORMANCE_CONTENT);
-			performanceUtils = new PerformanceUtils(response, layers, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils);
-		}
+			// BEGIN DETAILS
+			function detailsContentPane() {
+				portalUtils.getItem(selectedRowID).then(loadDetailsContent);
+			}
 
-		// END PERFORMANCE*/
+			function loadDetailsContent(item) {
+				userInterfaceUtils.loadContent(details.DETAILS_CONTENT);
+				detailsUtils = new DetailsUtils(item, itemStore, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils);
+			}
 
-		// BEGIN PROFILE
-		function profileContentPane() {
-			portalUtils.getItem(selectedRowID).then(loadProfileContent);
-		}
+			// END DETAILS
 
-		function loadProfileContent(item) {
-			userInterfaceUtils.loadContent(profileConfig.PROFILE_CONTENT);
-			profileUtils = new ProfileUtils(item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils, portal, portalUserThumbnailUrl);
-		}
 
-		// END PROFILE
+			// BEGIN CREDITS AND ACCESS USE CONSTRAINTS
+			function creditsContentPane() {
+				portalUtils.getItem(selectedRowID).then(loadCreditsContent);
+			}
 
-		function initContentButtonGroup(id) {
-			domConstruct.place(
-					'<div class="row btn-group-container">' +
-							'	<div class="btn-group column-24 icon-edit-btn-group">' +
-							'		<a class="column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
-							'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
-							'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
-							'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
-							'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
-							'	</div>' +
-							'</div>', id, "last");
+			function loadCreditsContent(item) {
+				userInterfaceUtils.loadContent(credits.ACCESS_CREDITS_CONTENT);
+				creditsUtils = new CreditsUtils(item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils);
+			}
 
-			detailsNode = query(".details")[0];
-			creditsNode = query(".credits")[0];
-			tagsNode = query(".tags")[0];
-			performanceNode = query(".performance")[0];
-			profileNode = query(".profile")[0];
+			// END CREDITS
+
+
+			// BEGIN TAGS
+			function tagsContentPane() {
+				portalUtils.getItem(selectedRowID).then(loadTagsContent);
+			}
+
+			function loadTagsContent(item) {
+				userInterfaceUtils.loadContent(tags.TAGS_CONTENT);
+				tagUtils = new TagUtils(item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils);
+			}
+
+			// END TAGS
+
+
+			// BEGIN PERFORMANCE
+			function performanceContentPane(response, layers) {
+				// load the content
+				userInterfaceUtils.loadContent(performanceConfig.PERFORMANCE_CONTENT);
+				performanceUtils = new PerformanceUtils(response, layers, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils);
+			}
+
+			// END PERFORMANCE*/
+
+			// BEGIN PROFILE
+			function profileContentPane() {
+				portalUtils.getItem(selectedRowID).then(loadProfileContent);
+			}
+
+			function loadProfileContent(item) {
+				userInterfaceUtils.loadContent(profileConfig.PROFILE_CONTENT);
+				profileUtils = new ProfileUtils(item, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils, portal, portalUserThumbnailUrl);
+			}
+
+			// END PROFILE
+
+			function initContentButtonGroup(id) {
+				domConstruct.place(
+						'<div class="row btn-group-container">' +
+								'	<div class="btn-group column-24 icon-edit-btn-group">' +
+								'		<a class="column-4 details icon-edit"> ' + defaults.DETAILS + '</a>' +
+								'		<a class="column-4 credits icon-edit"> ' + defaults.USE_CREDITS + '</a>' +
+								'		<a class="column-4 tags icon-edit"> ' + defaults.TAGS + '</a>' +
+								'		<a class="column-4 performance icon-edit"> ' + defaults.PERFORMANCE + '</a>' +
+								'		<a class="column-4 profile icon-edit"> ' + defaults.MY_PROFILE + '</a>' +
+								'	</div>' +
+								'</div>', id, "last");
+
+				detailsNode = query(".details")[0];
+				creditsNode = query(".credits")[0];
+				tagsNode = query(".tags")[0];
+				performanceNode = query(".performance")[0];
+				profileNode = query(".profile")[0];
+			}
 		}
 	});
 });

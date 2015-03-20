@@ -21,7 +21,7 @@ define([
 			this.portal = portal;
 			this.portalUser = portal.getPortalUser();
 			this.portalQueryParams = {
-				q:"owner:" + this.portalUser.username,
+				q:"owner:" + this.portalUser.username + " type: 'Web Map'",
 				num:100
 			};
 			this.fullName = this.portalUser.fullName;
