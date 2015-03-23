@@ -1,4 +1,5 @@
 define([
+	"esri/arcgis/Portal",
 	"esri/Color",
 	"esri/request",
 	"esri/geometry/Point",
@@ -29,7 +30,7 @@ define([
 	"dijit/form/Button",
 	"config/defaults",
 	"config/adminUtils"
-], function (Color, esriRequest, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, Dialog, focusUtil, array, declare, lang, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, mouse, on, query, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, defaults, AdminUtils) {
+], function (arcgisPortal, Color, esriRequest, Point, Graphic, FeatureLayer, SimpleMarkerSymbol, Dialog, focusUtil, array, declare, lang, Deferred, dom, domAttr, domClass, domConstruct, domStyle, html, mouse, on, query, Dialog, Editor, LinkDialog, TextColor, ViewSource, FontChoice, Button, defaults, AdminUtils) {
 
 	return declare([AdminUtils], {
 
@@ -101,6 +102,7 @@ define([
 			this.currentOverallScoreNode = query(".current-score-number")[0];
 			this.profileNode = query(".profile")[0];
 			this.editSaveBtnNode = query(".edit-save-btn")[0];
+			this.refreshBtnNode = query(".refresh-btn")[0];
 			this.cancelBtnNode = query(".cancel-btn")[0];
 			this.emailUserBtn = query(".email-btn")[0];
 			this.profileThumbnailLabelNode = query(".profile-thumbnail-attr-label")[0];
@@ -173,6 +175,11 @@ define([
 					domStyle.set(this.editSaveBtnNode, "display", "block");
 
 					on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
+						var profilePageUrl = "https://" + item.portal.urlKey + "." + item.portal.customBaseUrl + "/home/user.html";
+						window.open(profilePageUrl);
+					}));
+
+					/*on(this.editSaveBtnNode, "click", lang.hitch(this, function () {
 						if (this.editSaveBtnNode.innerHTML === defaults.EDIT_BTN_LABEL) {
 							// "EDIT" clicked
 							// update EDIT/SAVE button
@@ -269,42 +276,83 @@ define([
 							domAttr.remove(this.profileUserDescriptionNode, "data-dojo-type");
 							domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
 						}
-					}));
+					}));*/
 
-					on(this.cancelBtnNode, "click", lang.hitch(this, function () {
-						this.profileThumbnailListener.remove();
-						domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
+					/*on(this.cancelBtnNode, "click", lang.hitch(this, function () {
+					 this.profileThumbnailListener.remove();
+					 domStyle.set(query(".expanded-item-thumbnail")[0], "cursor", "inherit");
 
-						domStyle.set(query(".edit-profile-thumbnail-msg")[0], "display", "none");
-						domConstruct.empty(this.profileUserFullNameNode);
-						domConstruct.create("div", {
-							innerHTML:this.userFullName_clean
-						}, this.profileUserFullNameNode, "first");
-						domAttr.remove(this.profileUserFullNameNode, "data-dojo-type");
-						domAttr.set(this.profileUserFullNameNode, "id", this.userNameID);
+					 domStyle.set(query(".edit-profile-thumbnail-msg")[0], "display", "none");
+					 domConstruct.empty(this.profileUserFullNameNode);
+					 domConstruct.create("div", {
+					 innerHTML:this.userFullName_clean
+					 }, this.profileUserFullNameNode, "first");
+					 domAttr.remove(this.profileUserFullNameNode, "data-dojo-type");
+					 domAttr.set(this.profileUserFullNameNode, "id", this.userNameID);
 
-						domConstruct.empty(this.profileUserDescriptionNode);
-						domConstruct.create("div", {
-							innerHTML:this.userDescription_clean
-						}, this.profileUserDescriptionNode, "first");
-						domAttr.remove(this.profileUserDescriptionNode, "data-dojo-type");
-						domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
-						domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
-						domStyle.set(this.cancelBtnNode, "display", "none");
+					 domConstruct.empty(this.profileUserDescriptionNode);
+					 domConstruct.create("div", {
+					 innerHTML:this.userDescription_clean
+					 }, this.profileUserDescriptionNode, "first");
+					 domAttr.remove(this.profileUserDescriptionNode, "data-dojo-type");
+					 domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
+					 domAttr.set(this.editSaveBtnNode, "innerHTML", defaults.EDIT_BTN_LABEL);
+					 domStyle.set(this.cancelBtnNode, "display", "none");
 
-						this.scoringUtils.userThumbnailScore = 0;
-						this.scoringUtils.userNameScore = this.validator.setUserProfileFullNameScore(this.userFullName_clean);
-						this.scoringUtils.userDescriptionScore = this.validator.setUserDescriptionScore(this.userDescription_clean);
-						this.userNameScoreNumeratorNode.innerHTML = this.scoringUtils.userNameScore;
-						this.userDescriptionScoreNumeratorNode.innerHTML = this.scoringUtils.userDescriptionScore;
+					 this.scoringUtils.userThumbnailScore = 0;
+					 this.scoringUtils.userNameScore = this.validator.setUserProfileFullNameScore(this.userFullName_clean);
+					 this.scoringUtils.userDescriptionScore = this.validator.setUserDescriptionScore(this.userDescription_clean);
+					 this.userNameScoreNumeratorNode.innerHTML = this.scoringUtils.userNameScore;
+					 this.userDescriptionScoreNumeratorNode.innerHTML = this.scoringUtils.userDescriptionScore;
 
-						// update section style score graphics
-						this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.userNameScore, this.scoringUtils.USER_PROFILE_FULLNAME, this.userNameScoreNodeContainer);
-						this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.userDescriptionScore, this.scoringUtils.USER_PROFILE_DESCRIPTION, this.userDescriptionScoreNodeContainer);
+					 // update section style score graphics
+					 this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.userNameScore, this.scoringUtils.USER_PROFILE_FULLNAME, this.userNameScoreNodeContainer);
+					 this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.userDescriptionScore, this.scoringUtils.USER_PROFILE_DESCRIPTION, this.userDescriptionScoreNodeContainer);
 
-						this.scoringUtils.userProfileScore = this.scoringUtils.userThumbnailScore + this.scoringUtils.userNameScore + this.scoringUtils.userDescriptionScore;
-						this.scoringUtils.updateSectionScore(this.scoringUtils.userProfileScore, this.profileNode, this.scoringUtils.USER_PROFILE_MAX_SCORE);
-						this.scoringUtils.updateOverallScore();
+					 this.scoringUtils.userProfileScore = this.scoringUtils.userThumbnailScore + this.scoringUtils.userNameScore + this.scoringUtils.userDescriptionScore;
+					 this.scoringUtils.updateSectionScore(this.scoringUtils.userProfileScore, this.profileNode, this.scoringUtils.USER_PROFILE_MAX_SCORE);
+					 this.scoringUtils.updateOverallScore();
+					 }));*/
+					on(this.refreshBtnNode, "click", lang.hitch(this, function () {
+
+						new arcgisPortal.Portal(defaults.sharinghost).signIn().then(lang.hitch(this, function (portalUser) {
+							console.log(portalUser);
+
+							this.portalUtils.fullName = portalUser.fullName;
+							this.portalUtils.userDescription = portalUser.description;
+
+							this.userFullName = this.validator.validateStr(this.portalUtils.fullName);
+							this.userDescription = this.validator.validateStr(this.portalUtils.userDescription);
+
+							domConstruct.empty(this.profileUserFullNameNode);
+							domConstruct.create("div", {
+								innerHTML:this.userFullName
+							}, this.profileUserFullNameNode, "first");
+							domAttr.remove(this.profileUserFullNameNode, "data-dojo-type");
+							domAttr.set(this.profileUserFullNameNode, "id", this.userNameID);
+
+							domConstruct.empty(this.profileUserDescriptionNode);
+							domConstruct.create("div", {
+								innerHTML:this.userDescription
+							}, this.profileUserDescriptionNode, "first");
+							domAttr.remove(this.profileUserDescriptionNode, "data-dojo-type");
+							domAttr.set(this.profileUserDescriptionNode, "id", this.userDescriptionID);
+
+
+							this.scoringUtils.userThumbnailScore = 0;
+							this.scoringUtils.userNameScore = this.validator.setUserProfileFullNameScore(this.userFullName);
+							this.scoringUtils.userDescriptionScore = this.validator.setUserDescriptionScore(this.userDescription);
+							this.userNameScoreNumeratorNode.innerHTML = this.scoringUtils.userNameScore;
+							this.userDescriptionScoreNumeratorNode.innerHTML = this.scoringUtils.userDescriptionScore;
+
+							// update section style score graphics
+							this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.userNameScore, this.scoringUtils.USER_PROFILE_FULLNAME, this.userNameScoreNodeContainer);
+							this.userInterfaceUtils.updateSectionScoreStyle(this.scoringUtils.userDescriptionScore, this.scoringUtils.USER_PROFILE_DESCRIPTION, this.userDescriptionScoreNodeContainer);
+
+							this.scoringUtils.userProfileScore = this.scoringUtils.userThumbnailScore + this.scoringUtils.userNameScore + this.scoringUtils.userDescriptionScore;
+							this.scoringUtils.updateSectionScore(this.scoringUtils.userProfileScore, this.profileNode, this.scoringUtils.USER_PROFILE_MAX_SCORE);
+							this.scoringUtils.updateOverallScore();
+						}));
 					}));
 				}
 

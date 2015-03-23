@@ -102,6 +102,10 @@ define([
 		detailsAdminDialog:null,
 
 		constructor:function (item, itemStore, validator, nominateUtils, userInterfaceUtils, scoringUtils, scoring, tooltipsConfig, portalUtils) {
+
+			console.log(item);
+
+
 			this.validator = validator;
 			this.itemStore = itemStore;
 			this.nominateUtils = nominateUtils;

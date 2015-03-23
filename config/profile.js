@@ -39,6 +39,7 @@ define({
 			'		<div class="column-2">' +
 			'			<button class="btn custom-btn edit-save-btn"> EDIT </button>' +
 			'			<button class="btn custom-btn cancel-btn"> CANCEL </button>' +
+			'			<button class="btn custom-btn refresh-btn" style="margin-top: 5px;"> REFRESH </button>' +
 			'			<button class="btn custom-btn email-btn"> EMAIL USER </button>' +
 			'		</div>' +
 			'	</div>' +
