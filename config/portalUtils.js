@@ -69,7 +69,12 @@ define([
 					num:100
 				};
 				this.portal.queryItems(params).then(function (result) {
-					deferred.resolve(result.results[0]);
+					if (result.results.length > 0) {
+						deferred.resolve(result.results[0]);
+					} else {
+						//console.log(item);
+						deferred.resolve("");
+					}
 				});
 				defs.push(deferred.promise);
 				if (i === nItems - 1) {

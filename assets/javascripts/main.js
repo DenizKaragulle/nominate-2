@@ -153,11 +153,11 @@ require([
 			esriConfig.defaults.io.alwaysUseProxy = false;
 
 			info = new ArcGISOAuthInfo({
-				appId: "A7LGXdfYyyfvcAEx",
+				appId:"A7LGXdfYyyfvcAEx",
 				// Uncomment this line to prevent the user's signed in state from being shared
 				// with other apps on the same domain with the same authNamespace value.
 				//authNamespace: "portal_oauth_inline",
-				popup: false
+				popup:false
 			});
 			esriId.registerOAuthInfos([info]);
 
@@ -227,7 +227,7 @@ require([
 				});
 
 				var n = domConstruct.create("div", {
-					innerHTML: '<div class="row">' +
+					innerHTML:'<div class="row">' +
 							'	<div class="column-3">' +
 							'		<div class="thumbnail">' +
 							'			<img class="item-thumbnail-' + object.id + '" src="' + thumbnailUrl + '" />' +
@@ -304,34 +304,38 @@ require([
 				// dGrid columns
 				dgridColumns = [
 					{
-						label: "",
-						field: "thumbnailUrl",
-						renderCell: renderRow
+						label:"",
+						field:"thumbnailUrl",
+						renderCell:renderRow
 					}
 				];
 
 				portalUtils.getListOfCurators().then(lang.hitch(this, function (response) {
-							// query the list of curators
-							var deferred = new Deferred();
-							var curators = response.features;
-							var is_a_curator = array.some(curators, lang.hitch(this, function (curator) {
-								if (curator.attributes["curatorID"] === portalUtils.portalUser.username) {
-									return true;
-								}
-							}));
-							deferred.resolve(is_a_curator);
-							return deferred.promise;
-						})).then(function (result) {
+					// query the list of curators
+					var deferred = new Deferred();
+					var curators = response.features;
+					var is_a_curator = array.some(curators, lang.hitch(this, function (curator) {
+						if (curator.attributes["curatorID"] === portalUtils.portalUser.username) {
+							return true;
+						}
+					}));
+					deferred.resolve(is_a_curator);
+					return deferred.promise;
+				})).then(function (result) {
 							if (result) {
 								portalUtils.IS_CURATOR = true;
 								var process = nominateUtils.loadNominatedItemsInMemory();
 								process.then(lang.hitch(this, function (items) {
 									portalUtils.queryMultiplePortals(items.features).then(lang.hitch(this, function (response) {
 										all(response).then(lang.hitch(this, function (results) {
-											console.debug("results", results);
-											console.debug("items", items);
+											//console.debug("results", results);
+											//console.debug("items", items);
+											var filteredResults = array.filter(results, function (item) {
+												return item !== "";
+											});
+
 											nominateUtils.nominatedItems = items;
-											load(results, portalUtils.portalUser.fullName, portalUtils.portalUser.username);
+											load(filteredResults, portalUtils.portalUser.fullName, portalUtils.portalUser.username);
 										}));
 									}));
 								}));
@@ -362,17 +366,17 @@ require([
 				domAttr.set(userInterfaceUtils.ribbonHeaderNumItemsNode, "class", "icon-stack");
 
 				itemStore = new Memory({
-					data: results
+					data:results
 				});
 				dgrid = new (declare([OnDemandGrid, Pagination]))({
-					store: itemStore,
-					rowsPerPage: 6,
-					pagingLinks: true,
-					pagingTextBox: false,
-					firstLastArrows: true,
-					columns: dgridColumns,
-					showHeader: false,
-					noDataMessage: "No results found"
+					store:itemStore,
+					rowsPerPage:6,
+					pagingLinks:true,
+					pagingTextBox:false,
+					firstLastArrows:true,
+					columns:dgridColumns,
+					showHeader:false,
+					noDataMessage:"No results found"
 				}, "dgrid");
 				dgrid.startup();
 				gridUtils = new GridUtils(portal, dgrid, userInterfaceUtils);
@@ -409,13 +413,13 @@ require([
 							nominateUtils.loadNominatedItemsInMemory().then(function (nominatedItemResults) {
 								nominateUtils.nominatedItems = nominatedItemResults;
 								var nominateBtnDialog = new Dialog({
-									title: nominatedItemResults.features[nominatedItemResults.features.length - 1].attributes.itemName,
+									title:nominatedItemResults.features[nominatedItemResults.features.length - 1].attributes.itemName,
 									/*content: '<div class="dialog-container">' +
-											'	<div class="row">' +
-											'		<div class="column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
-											'	<\/div>' +
-											'<\/div>',*/
-									content: '<div class="dialog-container">' +
+									 '	<div class="row">' +
+									 '		<div class="column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
+									 '	<\/div>' +
+									 '<\/div>',*/
+									content:'<div class="dialog-container">' +
 											'	<div class="row">' +
 											'		<div class = "column-24">' + defaults.NOMINATED_SUCCESS_DIALOG +
 											'	<\/div>' +
@@ -427,7 +431,7 @@ require([
 											'		<\/div>' +
 											'	<\/div>' +
 											'<\/div>',
-									style: "width: 300px"
+									style:"width: 300px"
 								});
 								nominateBtnDialog.show();
 
