@@ -58,7 +58,7 @@ define([
 			return deferred.promise;
 		},
 
-		queryPortal:function (items) {
+		queryMultiplePortals:function (items) {
 			var defs = [];
 			var d = new Deferred();
 			var nItems = items.length;

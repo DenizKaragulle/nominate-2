@@ -79,6 +79,7 @@ require([
 	var layers;
 	//
 	var dgrid;
+	var dgridColumns;
 	var itemStore;
 	var renderRow;
 	//
@@ -123,7 +124,6 @@ require([
 	var portalUtils = null;
 	var gridUtils = null;
 	var validator = null;
-	var userInterfaceUtils = null;
 	var scoringUtils = null;
 	var nominateUtils = null;
 
@@ -138,11 +138,20 @@ require([
 	// OAuth
 	var info = null;
 
+	var _config = {};
+
 	ready(function () {
 
 		run();
 
 		function run() {
+
+			var appLocation = location.pathname.indexOf("/apps/");
+			var instance = location.pathname.substr(0, appLocation);
+			_config.proxyurl = location.protocol + "//" + location.host + instance + "/sharing/proxy";
+			esriConfig.defaults.io.proxyUrl = _config.proxyurl;
+			esriConfig.defaults.io.alwaysUseProxy = false;
+
 			info = new ArcGISOAuthInfo({
 				appId: "A7LGXdfYyyfvcAEx",
 				// Uncomment this line to prevent the user's signed in state from being shared
@@ -158,20 +167,7 @@ require([
 					}
 			).otherwise(
 					function () {
-						// Anonymous view
-						//domStyle.set("anonymousPanel", "display", "block");
-						//domStyle.set("personalizedPanel", "display", "none");
-
-						// user interface utilty methods
-						userInterfaceUtils = new UserInterfaceUtils();
-						// homepage nodes
-						/*searchInputNode = query(".search-items")[0];
-						 dropdownSortNode = query(".dropdown-item-sort")[0];
-						 dropdownItemFilterNode = query(".dropdown-item-filter")[0];*/
-						//helpButtonNode = query(".help-button")[0];
-						// ArcGIS Portal
-						//	portal = new arcgisPortal.Portal(defaults.sharinghost);
-						//
+						var userInterfaceUtils = new UserInterfaceUtils();
 						//	on(portal, "ready", lang.hitch(this, function (p) {
 						on(dom.byId(SIGNIN_BUTTON_ID), "click", portalSignInHandler);
 						//on(searchInputNode, "keydown", searchItemsClickHandler);
@@ -188,12 +184,10 @@ require([
 		}
 
 		function loadContent() {
-
 			searchInputNode = query(".search-items")[0];
 			dropdownSortNode = query(".dropdown-item-sort")[0];
 			dropdownItemFilterNode = query(".dropdown-item-filter")[0];
 
-			//on(searchInputNode, "keydown", searchItemsClickHandler);
 			on(query(".filter-list"), "click", filterItemsClickHandler);
 			on(query(".sort-items"), "click", sortItemsClickHandler);
 			on(query(".help-button")[0], "click", function () {
@@ -308,7 +302,7 @@ require([
 				}
 
 				// dGrid columns
-				var dgridColumns = [
+				dgridColumns = [
 					{
 						label: "",
 						field: "thumbnailUrl",
@@ -332,252 +326,12 @@ require([
 								portalUtils.IS_CURATOR = true;
 								var process = nominateUtils.loadNominatedItemsInMemory();
 								process.then(lang.hitch(this, function (items) {
-									portalUtils.queryPortal(items.features).then(lang.hitch(this, function (response) {
+									portalUtils.queryMultiplePortals(items.features).then(lang.hitch(this, function (response) {
 										all(response).then(lang.hitch(this, function (results) {
+											console.debug("results", results);
+											console.debug("items", items);
 											nominateUtils.nominatedItems = items;
-											var numItems = results.length;
-											// update the ribbon header
-											userInterfaceUtils.updateRibbonHeaderTitle();
-											var hdrUserNameText = " (" + portalUtils.portalUser.fullName + " - " + portalUtils.portalUser.username + ")";
-											userInterfaceUtils.setNodeContent(".ribbon-header-user", hdrUserNameText);
-											userInterfaceUtils.ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
-											domAttr.set(userInterfaceUtils.ribbonHeaderNumItemsNode, "class", "icon-stack");
-											// dGrid item store
-											itemStore = new Memory({
-												data: results
-											});
-											// dGrid
-											dgrid = new (declare([OnDemandGrid, Pagination]))({
-												store: itemStore,
-												rowsPerPage: 6,
-												pagingLinks: true,
-												pagingTextBox: false,
-												firstLastArrows: true,
-												columns: dgridColumns,
-												showHeader: false,
-												noDataMessage: "No results found"
-											}, "dgrid");
-											dgrid.startup();
-											gridUtils = new GridUtils(portal, dgrid, userInterfaceUtils);
-											gridUtils.startup();
-
-											// "Nominate" button edits-complete handler
-											on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", function (complete) {
-
-												// curator has added comments to an nominated item
-												if (complete.updates.length > 0) {
-													if (complete.updates[0].success) {
-														// update the list
-														nominateUtils.loadNominatedItemsInMemory().then(function (results) {
-															nominateUtils.nominatedItems = results;
-														});
-														dijit.byId("adminDialog").destroy();
-													}
-												}
-
-												// new item has been nominated
-												if (complete.adds.length > 0) {
-													if (complete.adds[0].success) {
-														// selected item ID
-														var selectedID = nominateUtils.selectedID;
-														// item status (NOMINATED)
-														var nodeLabel = defaults.CURRENT_STATUS[1].label;
-														// item status node in dGrid
-														var itemStatusNode = query(".item-nomination-status-" + selectedID)[0];
-														// update the status label of the item in the dGrid to "Nominated"
-														var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + selectedID + "'>" + nodeLabel + "</div>");
-														domConstruct.place(updatedItemStatusNode, itemStatusNode, "last");
-
-														// update the client-side collection of nominated items
-														nominateUtils.loadNominatedItemsInMemory().then(function (results) {
-															nominateUtils.nominatedItems = results;
-															var nominateBtnDialog = new Dialog({
-																title: results.features[results.features.length - 1].attributes.itemName,
-																content: '<div class="dialog-container">' +
-																		'	<div class="row">' +
-																		'		<div class="column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
-																		'	<\/div>' +
-																		'<\/div>',
-																style: "width: 300px"
-															});
-															nominateBtnDialog.show();
-														});
-														// disable "NOMINATE" button
-														userInterfaceUtils.disableNominateButton(nominateUtils.nominateBtnNode);
-														// enable "ACCEPT" button
-														userInterfaceUtils.enableNominateButton(nominateUtils.acceptBtnNode);
-													}
-												}
-											});
-
-											// dGrid row click handler
-											on(dgrid.domNode, ".item-title:click", function (event) {
-												// selected row
-												selectedRow = dgrid.row(event).element;
-												// selected row ID
-												selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
-												nominateUtils.setSelectedID(selectedRowID);
-
-												// get row width
-												var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
-												// set row height (expand the row)
-												domStyle.set(selectedRow, "height", "600px");
-
-												if (previousSelectedRow) {
-													// collapse the previously selected row height
-													userInterfaceUtils.updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
-													domConstruct.destroy(EXPANDED_ROW_NAME + previousSelectedRowID);
-													if (previousSelectedRowID === selectedRowID) {
-														previousSelectedRowID = "";
-														previousSelectedRow = null;
-													} else {
-														// expand selected row height
-														userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
-														previousSelectedRow = selectedRow;
-													}
-												} else {
-													userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
-													previousSelectedRow = selectedRow;
-												}
-
-												if (previousSelectedRowID !== selectedRowID && previousSelectedRow !== null) {
-													previousSelectedRowID = selectedRowID;
-													// unique id's
-													rowID = EXPANDED_ROW_NAME + selectedRowID;
-													tcID = TAB_CONTAINER_NAME + selectedRowID;
-													nominateUtils.nominateBtnID = nominateUtils.NOMINATE_BTN_ID + selectedRowID;
-													nominateUtils.acceptBtnID = nominateUtils.ACCEPT_BTN_ID + selectedRowID;
-
-													// get item details
-													portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
-														// get the item's owner details
-														portalUtils.getItemUserProfileContent(item).then(function (userProfile) {
-															scoringUtils = new ScoringUtils(userProfile, validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
-															scoringUtils.removeScoreBar();
-
-
-															domConstruct.place(
-																	"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
-																		//
-																			"	<div class='content-container'>" +
-																			"		<div class='row'>" +
-																			"			<div class='column-21 pre-3'>" +
-																			"				<div id='map-mask' class='loader'>" +
-																			"					<span class='side side-left'><span class='fill'></span></span>" +
-																			"					<span class='side side-right'><span class='fill'></span></span>" +
-																			"				</div>" +
-																			"				<div id='map'></div>" +
-																			"			</div>" +
-																			"		</div>" +
-
-																			"		<div class='row'>" +
-																			"			<div class='column-21 pre-3'>" +
-																			"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-																			"			</div>" +
-																			"		</div>" +
-
-																		// Scoring
-																			"		<div class='row'>" +
-																			"			<div class='column-15 pre-3'>" +
-																			"				<div class='current-score-graphic-container'></div>" +
-																			"			</div>" +
-																			"			<div class='column-2'>" +
-																			"				<div class='current-score-number'></div>" +
-																			"				<div id='progressBarMarker'></div>" +
-																			"			</div>" +
-																			"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-																			"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled' style='display:none;'> NOMINATE </button>" +
-																			"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn enabled'> ACCEPT </button>" +
-																			"			</div>" +
-																			"		</div>" +
-
-																		// Overall Score
-																			"		<div class='row'>" +
-																			"			<div class='column-15 pre-3'>" +
-																			"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-																			"			</div>" +
-																			"		</div>" +
-
-																		// Button Group (i.e. sections)
-																			"		<div class='row'>" +
-																			"			<div class='column-18 pre-3'>" +
-																			"				<div id='" + tcID + "'></div>" +
-																			"			</div>" +
-																			"		</div>" +
-																			"	</div>" +
-																			"</div>",
-																	selectedRow.firstElementChild, "last");
-
-															// get progress bar node
-															progressBarNode = query(".current-score-graphic-container")[0];
-															// nominate button node
-															nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
-															// accept button node
-															nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
-
-															// create button group
-															initContentButtonGroup(tcID);
-
-															// initialize content area with details data
-															detailsContentPane();
-
-															if (item.type === "Web Map") {
-																var mapDrawBegin = performance.now();
-																var mapDrawComplete;
-																// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
-																arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
-																	//console.log(response);
-																	layers = response.itemInfo.itemData.operationalLayers;
-																	map = response.map;
-
-																	// make sure map is loaded
-																	if (map.loaded) {
-																		mapDrawComplete = performance.now();
-																		var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-																		userInterfaceUtils.fadeLoader();
-
-																		// set performance scores
-																		scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
-																		scoringUtils.nLayersScore = validator.setNumLayersScore(response);
-																		scoringUtils.popupsScore = validator.setPopupScore(response);
-																		scoringUtils.sharingScore = validator.setSharingScore(item);
-																		scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
-																		// set style on performance button
-																		userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
-																		// initialize the scores
-																		scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																		HAS_PERFORMANCE_CONTENT = true;
-
-																		on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
-																	}
-																});
-															} else {
-																// fade the loader
-																userInterfaceUtils.fadeLoader();
-																// hide the map div
-																domStyle.set("map", "display", "none");
-																//
-																on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
-
-																scoringUtils.mapDrawTimeScore = 0;
-																scoringUtils.nLayersScore = 0;
-																scoringUtils.popupsScore = 0;
-																scoringUtils.sharingScore = validator.setSharingScore(item);
-																scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
-
-																// initialize the scores
-																scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																HAS_PERFORMANCE_CONTENT = false;
-															}
-															on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
-															on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
-															on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
-															on(profileNode, "click", lang.partial(profileNodeClickHandler));
-														});
-													}); // END getItem
-												} // END if
-											}); // END dGrid click
-											userInterfaceUtils.hideNode(query(".init-loader")[0]);
+											load(results, portalUtils.portalUser.fullName, portalUtils.portalUser.username);
 										}));
 									}));
 								}));
@@ -589,254 +343,274 @@ require([
 									deferred.resolve(portalQueryResult);
 									return deferred.promise;
 								}).then(function (portalItems) {
-											// total number of items
-											var numItems = portalItems.total;
-											// update the ribbon header
-											userInterfaceUtils.updateRibbonHeaderTitle();
-											var hdrUserNameText = " (" + portalUtils.portalUser.fullName + " - " + portalUtils.portalUser.username + ")";
-											userInterfaceUtils.setNodeContent(".ribbon-header-user", hdrUserNameText);
-											userInterfaceUtils.ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
-											domAttr.set(userInterfaceUtils.ribbonHeaderNumItemsNode, "class", "icon-stack");
-
-											nominateUtils.loadNominatedItemsInMemory().then(function (results) {
+											var process = nominateUtils.loadNominatedItemsInMemory();
+											process.then(lang.hitch(this, function (results) {
 												nominateUtils.nominatedItems = results;
-												// dGrid item store
-												itemStore = new Memory({
-													data: portalItems.results
-												});
-												// dGrid
-												dgrid = new (declare([OnDemandGrid, Pagination]))({
-													store: itemStore,
-													rowsPerPage: 6,
-													pagingLinks: true,
-													pagingTextBox: false,
-													firstLastArrows: true,
-													columns: dgridColumns,
-													showHeader: false,
-													noDataMessage: "No results found"
-												}, "dgrid");
-												dgrid.startup();
-
-												gridUtils = new GridUtils(portal, dgrid, userInterfaceUtils);
-												gridUtils.startup();
-
-												// "Nominate" button edits-complete handler
-												on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", function (complete) {
-
-													// curator has added comments to an nominated item
-													if (complete.updates.length > 0) {
-														if (complete.updates[0].success) {
-															dijit.byId("adminDialog").destroy();
-														}
-													}
-
-													// new item has been nominated
-													if (complete.adds.length > 0) {
-														if (complete.adds[0].success) {
-															// selected item ID
-															var selectedID = nominateUtils.selectedID;
-															// item status (NOMINATED)
-															var nodeLabel = defaults.CURRENT_STATUS[1].label;
-															// item status node in dGrid
-															var itemStatusNode = query(".item-nomination-status-" + selectedID)[0];
-															// update the status label of the item in the dGrid to "Nominated"
-															var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + selectedID + "'>" + nodeLabel + "</div>");
-															domConstruct.place(updatedItemStatusNode, itemStatusNode, "last");
-
-															// update the client-side collection of nominated items
-															nominateUtils.loadNominatedItemsInMemory().then(function (results) {
-																nominateUtils.nominatedItems = results;
-																var nominateBtnDialog = new Dialog({
-																	title: results.features[results.features.length - 1].attributes.itemName,
-																	content: '<div class="dialog-container">' +
-																			'	<div class="row">' +
-																			'		<div class="column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
-																			'	<\/div>' +
-																			'<\/div>',
-																	style: "width: 300px"
-																});
-																nominateBtnDialog.show();
-															});
-															// disable "NOMINATE" button
-															userInterfaceUtils.disableNominateButton(nominateUtils.nominateBtnNode);
-															// enable "ACCEPT" button
-															userInterfaceUtils.enableNominateButton(nominateUtils.acceptBtnNode);
-														}
-													}
-												});
-
-												// dGrid row click handler
-												on(dgrid.domNode, ".item-title:click", function (event) {
-													// selected row
-													selectedRow = dgrid.row(event).element;
-													// selected row ID
-													selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
-													nominateUtils.setSelectedID(selectedRowID);
-
-													// get row width
-													var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
-													// set row height (expand the row)
-													domStyle.set(selectedRow, "height", "600px");
-
-													if (previousSelectedRow) {
-														// collapse the previously selected row height
-														userInterfaceUtils.updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
-														domConstruct.destroy(EXPANDED_ROW_NAME + previousSelectedRowID);
-														if (previousSelectedRowID === selectedRowID) {
-															previousSelectedRowID = "";
-															previousSelectedRow = null;
-														} else {
-															// expand selected row height
-															userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
-															previousSelectedRow = selectedRow;
-														}
-													} else {
-														userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
-														previousSelectedRow = selectedRow;
-													}
-
-													if (previousSelectedRowID !== selectedRowID && previousSelectedRow !== null) {
-														previousSelectedRowID = selectedRowID;
-														// unique id's
-														rowID = EXPANDED_ROW_NAME + selectedRowID;
-														tcID = TAB_CONTAINER_NAME + selectedRowID;
-														nominateUtils.nominateBtnID = nominateUtils.NOMINATE_BTN_ID + selectedRowID;
-														nominateUtils.acceptBtnID = nominateUtils.ACCEPT_BTN_ID + selectedRowID;
-
-														portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
-															portalUtils.getItemUserProfileContent(item).then(function (userProfile) {
-																scoringUtils = new ScoringUtils(userProfile, validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
-																scoringUtils.removeScoreBar();
-
-																domConstruct.place(
-																		"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
-																			//
-																				"	<div class='content-container'>" +
-																				"		<div class='row'>" +
-																				"			<div class='column-21 pre-3'>" +
-																				"				<div id='map-mask' class='loader'>" +
-																				"					<span class='side side-left'><span class='fill'></span></span>" +
-																				"					<span class='side side-right'><span class='fill'></span></span>" +
-																				"				</div>" +
-																				"				<div id='map'></div>" +
-																				"			</div>" +
-																				"		</div>" +
-
-																				"		<div class='row'>" +
-																				"			<div class='column-21 pre-3'>" +
-																				"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
-																				"			</div>" +
-																				"		</div>" +
-
-																			// Scoring
-																				"		<div class='row'>" +
-																				"			<div class='column-15 pre-3'>" +
-																				"				<div class='current-score-graphic-container'></div>" +
-																				"			</div>" +
-																				"			<div class='column-2'>" +
-																				"				<div class='current-score-number'></div>" +
-																				"				<div id='progressBarMarker'></div>" +
-																				"			</div>" +
-																				"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
-																				"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn disabled'> NOMINATE </button>" +
-																				"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn disabled' style='display: none;'> ACCEPT </button>" +
-																				"			</div>" +
-																				"		</div>" +
-
-																			// Overall Score
-																				"		<div class='row'>" +
-																				"			<div class='column-15 pre-3'>" +
-																				"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
-																				"			</div>" +
-																				"		</div>" +
-
-																			// Button Group (i.e. sections)
-																				"		<div class='row'>" +
-																				"			<div class='column-18 pre-3'>" +
-																				"				<div id='" + tcID + "'></div>" +
-																				"			</div>" +
-																				"		</div>" +
-																				"	</div>" +
-																				"</div>",
-																		selectedRow.firstElementChild, "last");
-
-																// get progress bar node
-																progressBarNode = query(".current-score-graphic-container")[0];
-																// nominate button node
-																nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
-																// accept button node
-																nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
-
-																// create button group
-																initContentButtonGroup(tcID);
-
-																// initialize content area with details data
-																detailsContentPane();
-
-																if (item.type === "Web Map") {
-																	var mapDrawBegin = performance.now();
-																	var mapDrawComplete;
-																	// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
-																	arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
-																		//console.log(response);
-																		layers = response.itemInfo.itemData.operationalLayers;
-																		map = response.map;
-
-																		// make sure map is loaded
-																		if (map.loaded) {
-																			mapDrawComplete = performance.now();
-																			var mapDrawTime = (mapDrawComplete - mapDrawBegin);
-																			userInterfaceUtils.fadeLoader();
-
-																			// set performance scores
-																			scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
-																			scoringUtils.nLayersScore = validator.setNumLayersScore(response);
-																			scoringUtils.popupsScore = validator.setPopupScore(response);
-																			scoringUtils.sharingScore = validator.setSharingScore(item);
-																			scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
-																			// set style on performance button
-																			userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
-																			// initialize the scores
-																			scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																			HAS_PERFORMANCE_CONTENT = true;
-
-																			on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
-																		}
-																	});
-																} else {
-																	// fade the loader
-																	userInterfaceUtils.fadeLoader();
-																	// hide the map div
-																	domStyle.set("map", "display", "none");
-																	//
-																	on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
-
-																	scoringUtils.mapDrawTimeScore = 0;
-																	scoringUtils.nLayersScore = 0;
-																	scoringUtils.popupsScore = 0;
-																	scoringUtils.sharingScore = validator.setSharingScore(item);
-																	scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
-
-																	console.log(scoringUtils.performanceScore);
-																	
-																	// initialize the scores
-																	scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
-																	HAS_PERFORMANCE_CONTENT = false;
-																}
-																on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
-																on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
-																on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
-																on(profileNode, "click", lang.partial(profileNodeClickHandler));
-															});
-														}); // END getItem
-													} // END if
-												}); // END dGrid click
-											}); // loadNominatedItemsInMemory
-											userInterfaceUtils.hideNode(query(".init-loader")[0]);
+												load(portalItems.results, portalUtils.portalUser.fullName, portalUtils.portalUser.username);
+											}));
 										});
 							}
 						});
 			});
+
+			function load(results, fullName, userName) {
+				var numItems = results.length;
+				userInterfaceUtils.updateRibbonHeaderTitle();
+				var hdrUserNameText = " (" + fullName + " - " + userName + ")";
+				userInterfaceUtils.setNodeContent(".ribbon-header-user", hdrUserNameText);
+				userInterfaceUtils.ribbonHeaderNumItemsNode.innerHTML = " " + numItems + " Items";
+				domAttr.set(userInterfaceUtils.ribbonHeaderNumItemsNode, "class", "icon-stack");
+
+				itemStore = new Memory({
+					data: results
+				});
+				dgrid = new (declare([OnDemandGrid, Pagination]))({
+					store: itemStore,
+					rowsPerPage: 6,
+					pagingLinks: true,
+					pagingTextBox: false,
+					firstLastArrows: true,
+					columns: dgridColumns,
+					showHeader: false,
+					noDataMessage: "No results found"
+				}, "dgrid");
+				dgrid.startup();
+				gridUtils = new GridUtils(portal, dgrid, userInterfaceUtils);
+				gridUtils.startup();
+
+				// "Nominate" button edits-complete handler
+				on(nominateUtils.nominateAdminFeatureLayer, "edits-complete", function (complete) {
+
+					// curator has added comments to an nominated item
+					if (complete.updates.length > 0) {
+						if (complete.updates[0].success) {
+							// update the list
+							nominateUtils.loadNominatedItemsInMemory().then(function (nominatedItemResults) {
+								nominateUtils.nominatedItems = nominatedItemResults;
+							});
+							dijit.byId("adminDialog").destroy();
+						}
+					}
+
+					// new item has been nominated
+					if (complete.adds.length > 0) {
+						if (complete.adds[0].success) {
+							// selected item ID
+							var selectedID = nominateUtils.selectedID;
+							// item status (NOMINATED)
+							var nodeLabel = defaults.CURRENT_STATUS[1].label;
+							// item status node in dGrid
+							var itemStatusNode = query(".item-nomination-status-" + selectedID)[0];
+							// update the status label of the item in the dGrid to "Nominated"
+							var updatedItemStatusNode = domConstruct.toDom("<div class='item-nomination-status-" + selectedID + "'>" + nodeLabel + "</div>");
+							domConstruct.place(updatedItemStatusNode, itemStatusNode, "last");
+
+							// update the client-side collection of nominated items
+							nominateUtils.loadNominatedItemsInMemory().then(function (nominatedItemResults) {
+								nominateUtils.nominatedItems = nominatedItemResults;
+								var nominateBtnDialog = new Dialog({
+									title: nominatedItemResults.features[nominatedItemResults.features.length - 1].attributes.itemName,
+									/*content: '<div class="dialog-container">' +
+											'	<div class="row">' +
+											'		<div class="column-24" >' + defaults.NOMINATED_SUCCESS_DIALOG +
+											'	<\/div>' +
+											'<\/div>',*/
+									content: '<div class="dialog-container">' +
+											'	<div class="row">' +
+											'		<div class = "column-24">' + defaults.NOMINATED_SUCCESS_DIALOG +
+											'	<\/div>' +
+											'	<div class="dialog-btn-container">' +
+											'		<div class="row">' +
+											'			<div class = "column-24" >' +
+											'				<button class="btn dialog-ok-btn"> Ok <\/button>' +
+											'			<\/div>' +
+											'		<\/div>' +
+											'	<\/div>' +
+											'<\/div>',
+									style: "width: 300px"
+								});
+								nominateBtnDialog.show();
+
+								on(query(".dialog-ok-btn")[0], "click", function () {
+									nominateBtnDialog.hide();
+									console.log("OK");
+								});
+							});
+							// disable "NOMINATE" button
+							userInterfaceUtils.disableNominateButton(nominateUtils.nominateBtnNode);
+							// enable "ACCEPT" button
+							userInterfaceUtils.enableNominateButton(nominateUtils.acceptBtnNode);
+						}
+					}
+				});
+
+				// dGrid row click handler
+				on(dgrid.domNode, ".item-title:click", function (event) {
+					// selected row
+					selectedRow = dgrid.row(event).element;
+					// selected row ID
+					selectedRowID = domAttr.get(selectedRow, "id").split("dgrid-row-")[1];
+					nominateUtils.setSelectedID(selectedRowID);
+
+					// get row width
+					var selectedNodeWidth = domStyle.get(selectedRow, "width") - 10;
+					// set row height (expand the row)
+					domStyle.set(selectedRow, "height", "600px");
+
+					if (previousSelectedRow) {
+						// collapse the previously selected row height
+						userInterfaceUtils.updateNodeHeight(previousSelectedRow, COLLAPSE_ROW_HEIGHT);
+						domConstruct.destroy(EXPANDED_ROW_NAME + previousSelectedRowID);
+						if (previousSelectedRowID === selectedRowID) {
+							previousSelectedRowID = "";
+							previousSelectedRow = null;
+						} else {
+							// expand selected row height
+							userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
+							previousSelectedRow = selectedRow;
+						}
+					} else {
+						userInterfaceUtils.updateNodeHeight(selectedRow, EXPAND_ROW_HEIGHT);
+						previousSelectedRow = selectedRow;
+					}
+
+					if (previousSelectedRowID !== selectedRowID && previousSelectedRow !== null) {
+						previousSelectedRowID = selectedRowID;
+						// unique id's
+						rowID = EXPANDED_ROW_NAME + selectedRowID;
+						tcID = TAB_CONTAINER_NAME + selectedRowID;
+						nominateUtils.nominateBtnID = nominateUtils.NOMINATE_BTN_ID + selectedRowID;
+						nominateUtils.acceptBtnID = nominateUtils.ACCEPT_BTN_ID + selectedRowID;
+
+						// get item details
+						portalUtils.portalUser.getItem(selectedRowID).then(function (item) {
+							// get the item's owner details
+							portalUtils.getItemUserProfileContent(item).then(function (userProfile) {
+								scoringUtils = new ScoringUtils(userProfile, validator, selectedRowID, defaults, scoring, portalUtils, nominateUtils, userInterfaceUtils);
+								scoringUtils.removeScoreBar();
+
+								domConstruct.place(
+										"<div id='" + rowID + "' class='container' style='width: " + selectedNodeWidth + "px;'>" +
+											//
+												"	<div class='content-container'>" +
+												"		<div class='row'>" +
+												"			<div class='column-21 pre-3'>" +
+												"				<div id='map-mask' class='loader'>" +
+												"					<span class='side side-left'><span class='fill'></span></span>" +
+												"					<span class='side side-right'><span class='fill'></span></span>" +
+												"				</div>" +
+												"				<div id='map'></div>" +
+												"			</div>" +
+												"		</div>" +
+
+												"		<div class='row'>" +
+												"			<div class='column-21 pre-3'>" +
+												"				<div class='current-score-header'>" + defaults.CURRENT_SCORE_HEADER_TEXT + "</div>" +
+												"			</div>" +
+												"		</div>" +
+
+											// Scoring
+												"		<div class='row'>" +
+												"			<div class='column-15 pre-3'>" +
+												"				<div class='current-score-graphic-container'></div>" +
+												"			</div>" +
+												"			<div class='column-2'>" +
+												"				<div class='current-score-number'></div>" +
+												"				<div id='progressBarMarker'></div>" +
+												"			</div>" +
+												"			<div class='column-3 right' style='margin-top: -15px !important;'>" +
+												"				<button id='" + nominateUtils.nominateBtnID + "' class='btn icon-email custom-btn enabled'> NOMINATE </button>" +
+												"				<button id='" + nominateUtils.acceptBtnID + "' class='btn icon-check success custom-btn accept-item-btn enabled'> ACCEPT </button>" +
+												"			</div>" +
+												"		</div>" +
+
+											// Overall Score
+												"		<div class='row'>" +
+												"			<div class='column-15 pre-3'>" +
+												"				<div class='expanded-item-text'>" + defaults.OVERALL_TXT + "</div>" +
+												"			</div>" +
+												"		</div>" +
+
+											// Button Group (i.e. sections)
+												"		<div class='row'>" +
+												"			<div class='column-18 pre-3'>" +
+												"				<div id='" + tcID + "'></div>" +
+												"			</div>" +
+												"		</div>" +
+												"	</div>" +
+												"</div>",
+										selectedRow.firstElementChild, "last");
+
+								// get progress bar node
+								progressBarNode = query(".current-score-graphic-container")[0];
+								// nominate button node
+								nominateUtils.nominateBtnNode = dom.byId(nominateUtils.nominateBtnID);
+								// accept button node
+								nominateUtils.acceptBtnNode = dom.byId(nominateUtils.acceptBtnID);
+
+								// create button group
+								initContentButtonGroup(tcID);
+
+								// initialize content area with details data
+								detailsContentPane();
+
+								if (item.type === "Web Map") {
+									var mapDrawBegin = performance.now();
+									var mapDrawComplete;
+									// Web Map, Feature Service, Map Service, Image Service, Web Mapping Application
+									arcgisUtils.createMap(selectedRowID, "map").then(function (response) {
+										layers = response.itemInfo.itemData.operationalLayers;
+										map = response.map;
+
+										// make sure map is loaded
+										if (map.loaded) {
+											mapDrawComplete = performance.now();
+											var mapDrawTime = (mapDrawComplete - mapDrawBegin);
+											userInterfaceUtils.fadeLoader();
+
+											// set performance scores
+											scoringUtils.mapDrawTimeScore = validator.setMapDrawTimeScore(mapDrawTime);
+											scoringUtils.nLayersScore = validator.setNumLayersScore(response);
+											scoringUtils.popupsScore = validator.setPopupScore(response);
+											scoringUtils.sharingScore = validator.setSharingScore(item);
+											scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+											// set style on performance button
+											userInterfaceUtils.setPassFailStyleOnTabNode(scoringUtils.performanceScore, performanceNode, scoringUtils.PERFORMANCE_MAX_SCORE);
+											// initialize the scores
+											scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+											HAS_PERFORMANCE_CONTENT = true;
+
+											on(performanceNode, "click", lang.partial(performanceNodeClickHandler, response, layers));
+										}
+									});
+								} else {
+									// fade the loader
+									userInterfaceUtils.fadeLoader();
+									// hide the map div
+									domStyle.set("map", "display", "none");
+									//
+									on(performanceNode, "click", lang.partial(performanceNodeClickHandler, "", layers));
+
+									scoringUtils.mapDrawTimeScore = 0;
+									scoringUtils.nLayersScore = 0;
+									scoringUtils.popupsScore = 0;
+									scoringUtils.sharingScore = validator.setSharingScore(item);
+									scoringUtils.performanceScore = scoringUtils.mapDrawTimeScore + scoringUtils.nLayersScore + scoringUtils.popupsScore + scoringUtils.sharingScore;
+
+									// initialize the scores
+									scoringUtils.updateScore(item, detailsNode, creditsNode, tagsNode, performanceNode, profileNode);
+									HAS_PERFORMANCE_CONTENT = false;
+								}
+								on(detailsNode, "click", lang.partial(detailsNodeClickHandler));
+								on(creditsNode, "click", lang.partial(creditsNodeClickHandler));
+								on(tagsNode, "click", lang.partial(tagsNodeClickHandler));
+								on(profileNode, "click", lang.partial(profileNodeClickHandler));
+							});
+						}); // END getItem
+					} // END if
+				});
+				userInterfaceUtils.hideNode(query(".init-loader")[0]);
+			}
 
 			function filterItemsClickHandler() {
 				var checkedListItem = query(".filter-check");
@@ -861,42 +635,6 @@ require([
 				var target = domAttr.get(this, "data-value");
 				gridUtils.applySort(target);
 			}
-
-			/*function helpBtnClickHandler() {
-			 var helpDialog = new Dialog({
-			 title: "HELP",
-			 content: "<div>Not implemented yet</div>",
-			 style: "width: 300px"
-			 });
-			 helpDialog.show();
-			 }*/
-
-			/*function searchItemsClickHandler(event) {
-				switch (event.keyCode) {
-					case keys.ENTER:
-						searchBtnClickHandler(event);
-						break;
-					default:
-					//console.log("some other key: " + event.keyCode);
-				}
-			}
-
-			function searchBtnClickHandler() {
-				var searchInputNode = query(".search-input-text-box")[0];
-				var searchQueryParams = searchInputNode.value;
-				console.log(portalUtils.portalUser.username);
-				var queryParams = {
-					q: "title: " + searchQueryParams,
-					num: 100
-				};
-
-				portalUtils.portalUser.portal.queryItems(queryParams).then(lang.hitch(this, function (response) {
-					var searchResults = response.results;
-					itemStore.data = searchResults;
-					dgrid.refresh();
-				}));
-			}*/
-
 
 			// BEGIN DETAILS
 			function detailsContentPane() {
