@@ -8,3 +8,4 @@ Prototype used to nominate items going into the Living Atlas.
 ## Getting Started
 * [Test](https://chrismahlke.github.io/nominate-2/) application
 * Log in using your ArcGIS Online credentials
+he
